@@ -1,0 +1,61 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: zhanghuiquan
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"
+    depends_on:
+      - api
+      - client
+  redis:
+    image: "redis:latest"
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_PORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./stack-client
+    volumes:
+      - /app/node_modules
+      - ./stack-client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379

@@ -1,0 +1,15 @@
+module.exports = {
+  redisHost: process.env.REDIS_HOST,
+  redisPort: process.env.REDIS_PORT,
+  pgUser: process.env.POSTGRES_USER,
+  pgHost: process.env.POSTGRES_HOST,
+  pgDatabase: process.env.POSTGRES_DATABASE,
+  pgPassword: process.env.POSTGRES_PASSWORD,
+  pgAuth: process.env.POSTGRES_HOST_AUTH_METHOD,
+  pgPort: process.env.POSTGRES_PORT,
+  mongoUser: process.env.MONGO_USER,
+  mongoHost: process.env.MONGO_HOST,
+  mongoDatabase: process.env.MONGO_DATABASE,
+  mongoPassword: process.env.MONGO_PASSWORD,
+  mongoPort: process.env.MONGO_PORT,
+};
