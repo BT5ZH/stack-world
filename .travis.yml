@@ -13,7 +13,7 @@ after_success:
   - docker build -t huiqzhang619/multi-stack-server ./server
   - docker build -t huiqzhang619/multi-stack-worker ./worker
   - docker build -t huiqzhang619/multi-stack-mongo ./mongo
-  # Log in to the docker CLI
+  # Log in to the docker CLI -Take a test
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to the docker hub
   - docker push huiqzhang619/multi-stack-client
