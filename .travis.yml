@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t huiqzhang619/vue-test -f ./stack-client/Dockerfile.dev ./stack-client
+
+scripts:
+  - docker run huiqzhang619/vue-test npm -version
+
+after_success:
+  - docker build -t huiqzhang619/multi-stack-client ./stack-client
+  - docker build -t huiqzhang619/multi-stack-nginx ./nginx
+  - docker build -t huiqzhang619/multi-stack-server ./server
+  - docker build -t huiqzhang619/multi-stack-worker ./worker
+  - docker build -t huiqzhang619/multi-stack-mongo ./mongo
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to the docker hub
+  - docker push huiqzhang619/multi-stack-client
+  - docker push huiqzhang619/multi-stack-nginx
+  - docker push huiqzhang619/multi-stack-server
+  - docker push huiqzhang619/multi-stack-worker
+  - docker push huiqzhang619/multi-stack-mongo
