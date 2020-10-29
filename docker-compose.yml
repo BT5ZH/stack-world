@@ -1,17 +1,23 @@
 version: "3"
 services:
-  postgres:
-    image: "postgres:latest"
+  # postgres:
+  #   image: "postgres:latest"
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_PASSWORD=postgres_password
+  mongodb:
+    build:
+      context: ./mongo
+      dockerfile: Dockerfile.dev
     ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=postgres_password
-  mongo:
-    image: mongo
+      - "27019:27017"
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: zhanghuiquan
+    volumes:
+      - /Users/btzh/data/db:/data/db
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: zhanghuiquan
   nginx:
     depends_on:
       - api
@@ -22,9 +28,6 @@ services:
       context: ./nginx
     ports:
       - "3050:80"
-    depends_on:
-      - api
-      - client
   redis:
     image: "redis:latest"
   api:
@@ -34,6 +37,8 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
+    depends_on:
+      - mongodb
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -42,6 +47,9 @@ services:
       - POSTGRES_DATABASE=postgres
       - POSTGRES_PASSWORD=postgres_password
       - POSTGRES_PORT=5432
+      - MONGO_DATABASE=mongodb
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
   client:
     build:
       dockerfile: Dockerfile.dev
