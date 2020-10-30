@@ -12,9 +12,9 @@ dotenv.config({ path: "./config.env" });
 const mgApp = require("./mgApp");
 
 // MongoDB Client Setup
+/*
 const DB =
   "mongodb://btUser:btPass@mongodb:27017/stack-learning?authSource=admin";
-// const DB = "mongodb://root:zhanghuiquan@mongodb:27017/admin";
 mongoose
   .connect(DB, {
     useCreateIndex: true,
@@ -22,11 +22,29 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("successful-------------");
-    console.log("DB connection successful!");
+    console.log("DB Cluster connection successful!------");
   })
   .catch((err) => {
-    console.error("err-------------");
+    console.error("DB Cluster connection err------");
+    console.log(err);
+  });
+*/
+
+const Altas = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
+mongoose
+  .connect(Altas, {
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Altas Cluster connection successful!");
+  })
+  .catch((err) => {
+    console.error("Altas Cluster connection err");
     console.log(err);
   });
 

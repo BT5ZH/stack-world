@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerrunVersion":2,
+    "containerDefinitions": [
+        {
+            "name":"client",
+            "image":"huiqzhang619/multi-stack-client",
+            "hostname":"client",
+            "essential":false
+        },
+        {
+            "name":"server",
+            "image":"huiqzhang619/multi-stack-server",
+            "hostname":"api",
+            "essential":false
+        },
+        {
+            "name":"worker",
+            "image":"huiqzhang619/multi-stack-worker",
+            "hostname":"worker",
+            "essential":false
+        },
+        {
+            "name":"nginx",
+            "image":"huiqzhang619/multi-stack-nginx",
+            "hostname":"nginx",
+            "essential":true,
+            "portMappings":[
+                {
+                    "hostPort":80,
+                    "containerPort":80
+                }
+            ],
+            "links":["client", "server"]
+        }
+    ]
+}
