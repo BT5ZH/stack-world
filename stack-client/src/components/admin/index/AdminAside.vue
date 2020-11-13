@@ -1,7 +1,9 @@
 <template>
   <a-menu mode="inline" theme="dark" @click="route_to">
     <a-sub-menu key="teaching">
-      <span slot="title"><a-icon type="mail" /><span>教学信息管理</span></span>
+      <template #title>
+        <span><a-icon type="mail" /><span>教学信息管理</span></span>
+      </template>
       <a-menu-item key="admin_semester">
         <a-icon type="deployment-unit" />
         <span>学年学期</span>

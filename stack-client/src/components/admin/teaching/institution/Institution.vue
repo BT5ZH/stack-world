@@ -27,11 +27,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  padding: 10px;
-  height: 100%;
-}
-
 .tree {
   height: 100%;
   border-right: 2px dashed #ccc;
@@ -46,5 +41,10 @@ export default {
 
 .class-table {
   padding-left: 20px;
+}
+
+.container {
+  padding: 10px;
+  height: 100%;
 }
 </style>
