@@ -10,6 +10,15 @@ module.exports = {
       scss: {
         prependData: `@import "~@/assets/scss/variables.scss";`,
       },
+      less: {
+        lessOptions: {
+          modifyVars: {
+            "primary-color": "#1DA57A",
+            "border-color-base": "#CCC",
+          },
+          javascriptEnabled: true,
+        },
+      },
     },
   },
 };

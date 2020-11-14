@@ -1,15 +1,7 @@
 <template>
   <a-row class="container">
     <a-col :span="4" class="tree">
-      <tree></tree>
-      <div class="btn-area">
-        <a-button-group>
-          <a-button type="primary">+ 学院</a-button>
-          <a-button type="primary">+ 专业</a-button>
-          <a-button type="primary">编辑</a-button>
-          <a-button type="primary">删除</a-button>
-        </a-button-group>
-      </div>
+      <tree></tree>      
     </a-col>
     <a-col :span="19">
       <class-table class="class-table"></class-table>
@@ -30,13 +22,6 @@ export default {
 .tree {
   height: 100%;
   border-right: 2px dashed #ccc;
-}
-
-.btn-area {
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
 }
 
 .class-table {
