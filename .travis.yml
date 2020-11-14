@@ -21,3 +21,15 @@ after_success:
   - docker push huiqzhang619/multi-stack-server
   - docker push huiqzhang619/multi-stack-worker
   - docker push huiqzhang619/multi-stack-mongo
+
+deploy:
+  provider: elasticbeanstalk
+  region: cn-northwest-1
+  app: stacks-docker
+  env: StacksDocker-env
+  bucket_name: elasticbeanstalk-cn-northwest-1-796401082536
+  bucket_path: docker-stacks
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
