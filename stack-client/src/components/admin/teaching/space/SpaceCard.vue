@@ -80,4 +80,13 @@ export default {
 .card-container {
   padding-bottom: 20px;
 }
+
+.ant-card-bordered {
+  border: 1px solid #ccc;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid #ccc !important;
+}
+
 </style>

@@ -4,17 +4,17 @@
       <tree></tree>      
     </a-col>
     <a-col :span="19">
-      <class-table class="class-table"></class-table>
+      <institution-table class="class-table"></institution-table>
     </a-col>
   </a-row>
 </template>
 
 <script>
 import Tree from "./InstitutionTree";
-import ClassTable from "./ClassTable";
+import InstitutionTable from "./InstitutionTable";
 
 export default {
-  components: { Tree, ClassTable },
+  components: { Tree, InstitutionTable },
 };
 </script>
 

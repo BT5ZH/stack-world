@@ -1,20 +1,10 @@
 <template>
-  <div>
-    <a-tree
-      :load-data="onLoadData"
-      :tree-data="treeData"
-      :show-line="true"
-      :defaultExpandedKeys="['1']"
-    />
-    <div class="btn-area">
-      <a-button-group>
-        <a-button type="primary">+ 楼</a-button>
-        <a-button type="primary">+ 层</a-button>
-        <a-button type="primary">编辑</a-button>
-        <a-button type="primary">删除</a-button>
-      </a-button-group>
-    </div>
-  </div>
+  <a-tree
+    :load-data="onLoadData"
+    :tree-data="treeData"
+    :show-line="true"
+    :defaultExpandedKeys="['1']"
+  />
 </template>
 
 <script>
