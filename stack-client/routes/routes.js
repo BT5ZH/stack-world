@@ -1,5 +1,10 @@
 const IndexPage = () => import("@/components/index/IndexPage");
 
+// supervisor router
+const SupervisorRouter = ()=> import("@/components/supervisor/index/SupervisorRouter");
+const SupervisorAdmin = () => import("@/components/supervisor/admin/AdminManagement");
+const SupervisorSchool = () => import("@/components/supervisor/school/SchoolManagement");
+
 // admin router
 const AdminRouter = () => import("@/components/admin/index/AdminRouter");
 const AdminResource = () => import("@/components/admin/resource/ResourceManagement");
@@ -69,4 +74,20 @@ export const routes = [
       }
     ],
   },
+  {
+    path: "/supervisor",
+    component: SupervisorRouter,
+    children:[
+      {
+        path: "admin",
+        name: "supervisor_admin",
+        component: SupervisorAdmin,
+      },
+      {
+        path: "school",
+        name: "supervisor_school",
+        component: SupervisorSchool,
+      },
+    ]
+  }
 ];

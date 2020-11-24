@@ -1,10 +1,14 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const catchAsync = require("./utils/catchAsync");
+const AppError = require("./utils/appError");
 // const { redisClient, redisPublisher } = require("./dbsSetup");
 
 const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");
+const orgRouter = require("./routes/organizationRoutes");
+const classRouter = require("./routes/classRoutes");
 
 const mgApp = express();
 
@@ -20,11 +24,11 @@ mgApp.use((req, res, next) => {
   next();
 });
 mgApp.use(cors());
-console.error("err-------------11111");
 // 3) ROUTES
 mgApp.use("/pc/v1/courses", courseRouter);
 mgApp.use("/pc/v1/users", userRouter);
-console.error("err-------------22222");
+mgApp.use("/pc/v1/organizations", orgRouter);
+mgApp.use("/pc/v1/classes", classRouter);
 mgApp.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });

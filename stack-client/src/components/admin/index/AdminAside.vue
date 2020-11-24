@@ -1,5 +1,5 @@
 <template>
-  <a-menu mode="inline" theme="dark" @click="route_to">
+  <a-menu mode="inline" theme="dark" @click="route_to" :default-open-keys="['teaching']">
     <a-sub-menu key="teaching">
       <template #title>
         <span><a-icon type="mail" /><span>教学信息管理</span></span>

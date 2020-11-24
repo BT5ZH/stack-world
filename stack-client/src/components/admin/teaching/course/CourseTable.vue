@@ -3,15 +3,15 @@
     <a-row class="btn-area">
       <a-col :span="5">
         <a-input-search
-          placeholder="班级名称"
+          placeholder="课程编号/名称"
           enter-button
           @search="onSearch"
         />
       </a-col>
       <a-col :span="13"></a-col>
       <a-col :span="6" class="btn">
-        <a-button type="primary">批量添加班级</a-button>
-        <a-button type="primary">添加班级</a-button>
+        <a-button type="primary">批量添加课程</a-button>
+        <a-button type="primary">添加课程</a-button>
         <a-button type="primary">批量删除</a-button>
       </a-col>
     </a-row>
@@ -24,14 +24,13 @@
       }"
       :bordered="true"
       :row-selection="{
-        selectedRowKeys: selectedClasses,
+        selectedRowKeys: selectedCourses,
         onChange: onSelectChange,
       }"
       :columns="columns"
-      :data-source="classList"
+      :data-source="courseList"
     >
       <template v-slot:operation>
-        <a-button type="link">详情</a-button>
         <a-button type="link">编辑</a-button>
         <a-button type="link">删除</a-button>
       </template>
@@ -45,12 +44,17 @@ export default {
     return {
       columns: [
         {
-          title: "班级名称",
-          dataIndex: "className",
+          title: "课程编号",
+          dataIndex: "_id",
           align: "center",
         },
         {
-          title: "学院",
+          title: "课程名称",
+          dataIndex: "courseName",
+          align: "center",
+        },
+        {
+          title: "所属学院",
           dataIndex: "college",
           align: "center",
         },
@@ -60,52 +64,37 @@ export default {
           align: "center",
         },
         {
-          title: "学生数量",
-          dataIndex: "studentNum",
-          align: "center",
-        },
-        {
-          title: "操作",
+          title: "编辑",
           align: "center",
           scopedSlots: { customRender: "operation" },
         },
       ],
-      selectedClasses: [],
-      classList: [
+      selectedCourses: [],
+      courseList: [
         {
           _id: "1",
-          className: "软工1702",
+          courseName: "数据结构",
           college: "计算机科学学院",
           major: "软件工程",
-          studentNum: 40,
         },
         {
           _id: "2",
-          className: "软工1701",
+          courseName: "计算机体系结构",
           college: "计算机科学学院",
-          major: "软件工程",
-          studentNum: 40,
+          major: "计算机科学与技术",
         },
         {
           _id: "3",
-          className: "计创1701",
+          courseName: "数据科学",
           college: "计算机科学学院",
-          major: "计算机科学与技术（创新实验班）",
-          studentNum: 40,
-        },
-        {
-          _id: "4",
-          className: "计创1701",
-          college: "计算机科学学院",
-          major: "计算机科学与技术（创新实验班）",
-          studentNum: 40,
+          major: "软件工程",
         },
       ],
     };
   },
   methods: {
     onSelectChange(selectedKeys) {
-      this.selectedClasses = selectedKeys;
+      this.selectedCourses = selectedKeys;
     },
     onSearch() {},
   },

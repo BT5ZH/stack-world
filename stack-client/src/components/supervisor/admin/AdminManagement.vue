@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>学校管理员</div>
 </template>
 
 <script>

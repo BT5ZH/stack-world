@@ -8,6 +8,11 @@
         </div>
         <form class="login100-form validate-form">
           <span class="login100-form-title">用户登录</span>
+
+          <div class="wrap-input100">
+            <a-alert type="error" message="账号或密码错误" show-icon />
+          </div>
+
           <div class="wrap-input100 validate-input">
             <input
               class="input100"
@@ -55,6 +60,8 @@
 </template>
 
 <script>
+// import axios from "@/utils/axios";
+
 export default {
   name: "IndexLogin",
   data() {
@@ -91,6 +98,17 @@ export default {
       //     console.error({ 登录失败: error });
       //     this.$message({ type: "error", message: "登录失败" });
       //   }
+      // const requestData = {
+      //   email: "zhanghuiquan@w-click.cn",
+      //   password: "zbt00549",
+      // };
+      // axios.post("pc/v1/users/login", requestData).then();
+      // const tempData = {
+      //   role: "admin",
+      //   sid: "5fb3af35dcbcf8002453dd37",
+      // };
+      // axios.defaults.headers.common["Authorization"] = "";
+      // this.$store.commit("updateSessionStorage", tempData);
       this.$router.push({ name: "admin_institution" });
     },
   },
