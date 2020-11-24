@@ -1,33 +1,49 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <h1>Routing</h1>
-    <hr>
-
-    <app-header></app-header>
-    <router-view></router-view>
+    <a-config-provider :locale="zhCN">
+      <router-view></router-view>
+    </a-config-provider>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import Header from './components/Header.vue'
-export default {
-  name: 'App',
-  components: {
+import zhCN from "ant-design-vue/lib/locale-provider/zh_CN";
 
-    appHeader:Header
-  }
-}
+export default {
+  name: "App",
+  data: () => ({ zhCN }),
+};
 </script>
 
-<style lang="scss"> 
+<style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
 }
 </style>
+
+<style>
+/* to change antdesign table border color */
+
+.ant-table-bordered .ant-table-thead > tr > th,
+.ant-table-bordered .ant-table-tbody > tr > td {
+  border-right: 1px solid #ccc !important;
+}
+.ant-table-thead > tr > th {
+  border-bottom: 1px solid #ccc !important;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #ccc !important;
+}
+.ant-table-bordered .ant-table-header > table,
+.ant-table-bordered .ant-table-body > table,
+.ant-table-bordered .ant-table-fixed-left table,
+.ant-table-bordered .ant-table-fixed-right table {
+  border-top: 1px solid #ccc !important;
+  border-left: 1px solid #ccc !important;
+}
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th {
+  border-bottom: 1px solid #ccc !important;
+}
+</style>
+
+styl

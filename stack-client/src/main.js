@@ -1,15 +1,18 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueRouter from "vue-router";
-import Other from "./components/OtherPage.vue";
 import { routes } from "../routes/routes";
+import store from "./vuex/index";
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.less';
+
+Vue.use(Antd);
+Vue.use(VueRouter);
 
 Vue.config.productionTip = false;
-
-Vue.component("other-page", Other);
-Vue.use(VueRouter);
 const router = new VueRouter({
   routes,
+  store,
   mode: "history",
 });
 
