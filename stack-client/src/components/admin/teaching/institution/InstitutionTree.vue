@@ -47,9 +47,6 @@
             v-model="addCollegeForm.collegeDesc"
           ></a-textarea>
         </a-form-model-item>
-        <a-form-model-item label="开办时间" prop="startDate">
-          <a-date-picker v-model="addCollegeForm.startDate" />
-        </a-form-model-item>
       </a-form-model>
     </a-modal>
 
@@ -78,7 +75,7 @@
             v-model="addMajorForm.majorDesc"
           ></a-textarea>
         </a-form-model-item>
-        <a-form-model-item label="开办时间" prop="startDate">
+        <a-form-model-item label="开设时间" prop="startDate">
           <a-date-picker v-model="addMajorForm.startDate" />
         </a-form-model-item>
       </a-form-model>
@@ -88,6 +85,9 @@
 
 <script>
 import { treeNodeTiles } from "@/utils/antComponent";
+import axios from "@/utils/axios";
+import errHandler from "@/utils/errorHandler";
+import { mapState } from 'vuex'
 
 export default {
   name: "InstitutionTree",
@@ -116,7 +116,6 @@ export default {
       addCollegeForm: {
         collegeName: "",
         collegeDesc: "",
-        startDate: "",
       },
       addMajorVisible: false,
       addMajorForm: {
@@ -135,6 +134,11 @@ export default {
         startDate: [{ required: true, message: "开办时间不能为空" }],
       },
     };
+  },
+  computed: {
+    ...mapState({
+      sid: state => state.sid
+    })
   },
   methods: {
     onLoadData(treeNode) {
@@ -164,7 +168,20 @@ export default {
     },
     onChange() {},
     addCollege() {},
-    addMajor() {},
+    addMajor() {
+      const { collegeName, collegeDesc } = this.addCollegeForm;
+      const requestData = {
+        subOrgName: collegeName,
+        subOrgIntro: collegeDesc
+      };
+      const url = `pc/v1/organizations/${this.sid}/suborgs`;
+      axios.post(url, requestData )
+      .then(({data}) => {
+        console.log(data);
+      })
+      .catch(errHandler.call(this));
+
+    },
     edit() {
       const nodeTile = treeNodeTiles(this.currentNode);
       if (nodeTile === 1) {

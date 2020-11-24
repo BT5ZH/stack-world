@@ -30,12 +30,14 @@
       :columns="columns"
       :data-source="classList"
     >
-      <template v-slot:operation>
+      <!-- <template #operation> -->
         <a-button type="link">详情</a-button>
         <a-button type="link">编辑</a-button>
         <a-button type="link">删除</a-button>
-      </template>
+      <!-- </template> -->
     </a-table>
+
+    <a-button @click="handle">点击</a-button>
   </div>
 </template>
 
@@ -77,7 +79,7 @@ export default {
           className: "软工1702",
           college: "计算机科学学院",
           major: "软件工程",
-          studentNum: 40,
+          studentNum: 10,
         },
         {
           _id: "2",
@@ -108,6 +110,9 @@ export default {
       this.selectedClasses = selectedKeys;
     },
     onSearch() {},
+    handle() {
+      this.$store.commit("changeState", true);
+    }
   },
 };
 </script>

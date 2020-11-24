@@ -7,7 +7,7 @@
           enter-button
           @search="onSearch"
         />
-      </a-col>
+      </a-col>  
       <a-col :span="13"></a-col>
       <a-col :span="6" class="btn">
         <a-button type="primary">批量添加教室</a-button>

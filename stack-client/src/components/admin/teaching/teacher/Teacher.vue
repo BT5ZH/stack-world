@@ -123,7 +123,9 @@ export default {
     };
   },
   methods: {
-    onSelectChange() {},
+    onSelectChange(keys) {
+      this.selectedTeachers = keys;
+    },
     onSearch() {},
     deleteTeacher(record) {
       console.log(record);
