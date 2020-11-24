@@ -9,6 +9,9 @@ const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");
 const orgRouter = require("./routes/organizationRoutes");
 const classRouter = require("./routes/classRoutes");
+const deviceRouter = require("./routes/deviceRoutes");
+const resourceRouter = require("./routes/resourceRoutes");
+const activityRouter = require("./routes/liveActivityRoutes");
 
 const mgApp = express();
 
@@ -29,6 +32,9 @@ mgApp.use("/pc/v1/courses", courseRouter);
 mgApp.use("/pc/v1/users", userRouter);
 mgApp.use("/pc/v1/organizations", orgRouter);
 mgApp.use("/pc/v1/classes", classRouter);
+mgApp.use("/pc/v1/devices", deviceRouter);
+mgApp.use("/pc/v1/resources", resourceRouter);
+mgApp.use("/pc/v1/activities", activityRouter);
 mgApp.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });

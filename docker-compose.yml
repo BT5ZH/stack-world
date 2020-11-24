@@ -6,18 +6,15 @@ services:
   #     - "5432:5432"
   #   environment:
   #     - POSTGRES_PASSWORD=postgres_password
-  mongodb:
-    build:
-      context: ./mongo
-      dockerfile: Dockerfile.dev
-    ports:
-      - "27019:27017"
-    restart: always
-    volumes:
-      - /Users/btzh/data/db:/data/db
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: zhanghuiquan
+  # mongodb:
+  #   build:
+  #     context: ./mongo
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "27019:27017"
+  #   restart: always
+  #   volumes:
+  #     - /Users/btzh/data/db:/data/db
   nginx:
     depends_on:
       - api
@@ -37,8 +34,8 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
-    depends_on:
-      - mongodb
+    # depends_on:
+    #   - mongodb
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

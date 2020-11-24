@@ -10,7 +10,10 @@ dotenv.config({ path: "./config.env" });
 // });
 
 const mgApp = require("./mgApp");
-
+const io = require("socket.io")(mgApp);
+io.on("connection", (socket) => {
+  console.log("connect");
+});
 // MongoDB Client Setup
 /*
 const DB =
@@ -39,6 +42,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
+    useNewUrlParser: true,
   })
   .then(() => {
     console.log("Altas Cluster connection successful!");

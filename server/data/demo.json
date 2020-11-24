@@ -1,0 +1,129 @@
+{
+    "subOrgName":"外语学院",
+    "subOrgIntro":"This is a test",
+    "majors":[
+        {"majorName":"公共外语教学","majorIntro":"this is a test ","startDate":"1990-02-02"},
+        {"majorName":"英语","majorIntro":"this is a test ","startDate":"1990-02-12"},
+        {"majorName":"翻译","majorIntro":"this is a test ","startDate":"1990-02-12"},
+        {"majorName":"俄语","majorIntro":"this is a test ","startDate":"1990-02-12"},
+        {"majorName":"日语","majorIntro":"this is a test ","startDate":"1990-02-12"},
+        {"majorName":"法语","majorIntro":"this is a test ","startDate":"1990-02-12"},
+        {"majorName":"西班牙语","majorIntro":"this is a test ","startDate":"1990-02-12"}
+    ]
+}
+
+{
+    "subOrgName":"文学院",
+    "subOrgIntro":"This is a test",
+    "majors":[
+        {"majorName":"现代文学","majorIntro":"this is a test ","startDate":"1990-02-02"},
+        {"majorName":"古代文学","majorIntro":"this is a test ","startDate":"1990-02-12"}
+    ]
+}
+
+{
+    "subOrgName":"计算机科学学院",
+    "subOrgIntro": "这个学院实在没啥可介绍的",
+    "majors":[
+        {"majorName":"计算机科学与技术","majorIntro":"培养优秀卓越工程师","startDate":"1981-01-01"},
+        {"majorName":"信息管理","majorIntro":"培养优秀科研人才","startDate":"1985-01-11"},
+        {"majorName":"软件工程","majorIntro":"培养优秀信息管理人才","startDate":"1989-01-21"},
+        {"majorName":"人工智能与大数据","majorIntro":"培养优秀卓越教师","startDate":"1989-11-01"},
+        {"majorName":"网络信息安全","majorIntro":"培养新世纪IT人才","startDate":"1988-01-31"}
+    ]
+}
+
+{
+    "organizationName":"西安交通大学",
+    "subOrgs":[
+        {
+            "subOrgName":"经济与金融学院",
+            "subOrgIntro": "这个学院实在没啥可介绍的",
+            "majors":[
+                {"majorName":"经济学类","majorIntro":"培养优秀卓越工程师","startDate":"1981-01-01"},
+                {"majorName":"财政学类","majorIntro":"培养优秀科研人才","startDate":"1985-01-11"},
+                {"majorName":"金融学类","majorIntro":"培养优秀信息管理人才","startDate":"1989-01-21"},
+                {"majorName":"经济与贸易类","majorIntro":"培养优秀卓越教师","startDate":"1989-11-01"},
+                {"majorName":"电子商务类","majorIntro":"培养新世纪IT人才","startDate":"1988-01-31"}
+            ]
+        }
+    ]
+   
+  }
+
+  {
+    "students":[
+     {
+         "studentID":"41812177",
+         "studentName":"蔡安娜",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812178",
+         "studentName":"谢雨卿",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812180",
+         "studentName":"梁琪琪",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812186",
+         "studentName":"王海宁",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812194",
+         "studentName":"樊雪娇",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812199",
+         "studentName":"杨涵",
+         "remark":"这是一条备注"
+     }
+ ]
+}
+
+{
+    "students":[
+     {
+         "studentID":"41812118",
+         "studentName":"杨蕾",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812126",
+         "studentName":"陈慧兰",
+         "remark":"这是一条备注"
+     },
+     {
+         "studentID":"41812129",
+         "studentName":"李欢",
+         "remark":"这是一条备注"
+     }
+ ]
+}
+
+{
+    "students":[
+     {
+         "_id":"5fafb4d5051ded0120502ec1",
+         "studentID":"41812177",
+         "studentName":"蔡安娜",
+         "remark":"更新备注测试"
+     },
+     {
+         "_id":"5fafb4d5051ded0120502ec2",
+         "studentID":"41812178",
+         "studentName":"谢雨卿更新",
+         "remark":"这是一条备注"
+     },
+     {
+         "_id":"5fafb4d5051ded0120502ec3",
+         "studentID":"4181218000",
+         "studentName":"梁琪琪",
+         "remark":"这是一条备注"
+     }]
+}
