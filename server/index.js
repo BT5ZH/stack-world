@@ -10,7 +10,8 @@ dotenv.config({ path: "./config.env" });
 // });
 
 const mgApp = require("./mgApp");
-const io = require("socket.io")(mgApp);
+const http = require("http").createServer(mgApp);
+const io = require("socket.io")(http);
 io.on("connection", (socket) => {
   console.log("connect");
 });
