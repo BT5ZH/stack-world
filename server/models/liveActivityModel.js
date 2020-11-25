@@ -28,6 +28,10 @@ const activitySchema = new mongoose.Schema(
     subOrg: { type: String, required: true },
     liveContent: { type: String, required: true },
     teacher: { type: String, required: true },
+    attendance: {
+      list: { type: Array },
+      rate: { type: String },
+    },
   },
   {
     toJSON: { virtuals: true },
