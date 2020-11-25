@@ -56,16 +56,6 @@
             <a-icon slot="extra" type="setting" @click="handleClick" />
           </a-collapse-panel>
         </a-collapse>
-        <br />
-        <span>Expand Icon Position: </span>
-        <a-select v-model="expandIconPosition">
-          <a-select-option value="left">
-            left
-          </a-select-option>
-          <a-select-option value="right">
-            right
-          </a-select-option>
-        </a-select>
       </a-col>
     </a-row> 
   </div>
@@ -79,7 +69,6 @@ export default {
       text2: `西安邮电大学（Xi’an University of Posts & Telecommunications）简称西邮、西安邮电，是中华人民共和国工业和信息化部与陕西省政府共建高校、陕西省省属高水平大学、教育部“卓越工程师教育培养计划”实施高校、国家级大学生创新创业训练计划立项高校、教育部”新工科研究与实践项目“入选高校、长安联盟、CDIO工程教育联盟成员单位，中国人民解放军后备军官选拔培养基地、全国首批试办边防军人子女预科班的高校、西北地区唯一承担亚太电信组织和东盟培训任务的高校，已发展成一所以工学为主，以信息科学技术为特色，工、理、管、经、文、法、艺多学科协调发展的教学研究型大学。`,
       text3:'长安大学（Chang’an University）座落于陕西省会西安，直属中华人民共和国教育部，是教育部和交通运输部、自然资源部、住房和城乡建设部、陕西省人民政府共建的国家“世界一流学科建设高校”，国家“211工程”重点建设大学，国家“985工程优势学科创新平台”建设高校；入选国家“111计划”、“双万计划”、教育部“卓越工程师教育培养计划”、国家建设高水平大学公派研究生项目、国家级大学生创新创业训练计划、国家级新工科研究与实践项目；是高水平行业特色大学优质资源共享联盟、中俄交通大学联盟成员高校，是中国政府奖学金来华留学生接收院校、国家大学生文化素质教育基地、首批高等学校科技成果转化和技术转移基地。',
       activeKey: ['1'],
-      expandIconPosition: 'left',
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       addUniversityVisible: false,
