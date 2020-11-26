@@ -1,0 +1,39 @@
+.container{
+    background-color: $color-grey-light-2;
+
+    &__item{
+        width: 100%;
+        background-color: #fff;
+        margin: .8rem auto;
+    }
+}
+
+.my-row {
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem;
+  }
+
+.my-col{
+    min-width: 3rem;
+    min-height: 3rem;
+    color: #000;
+    border-radius: 50%;
+    &:active,
+    &:link,
+    &:hover {
+        background-color: #50b8ee;
+        color: #fff;
+    }
+}
+.col-active{
+    min-width: 3rem;
+    min-height: 3rem;
+    color: #000;
+    border-radius: 50%;
+    background-color: #50b8ee;
+    color: #fff;
+}
