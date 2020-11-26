@@ -45,5 +45,3 @@ export default {
   border-bottom: 1px solid #ccc !important;
 }
 </style>
-
-styl

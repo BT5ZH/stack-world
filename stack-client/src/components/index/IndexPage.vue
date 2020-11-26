@@ -109,7 +109,8 @@ export default {
       // };
       // axios.defaults.headers.common["Authorization"] = "";
       // this.$store.commit("updateSessionStorage", tempData);
-      this.$router.push({ name: "admin_institution" });
+      // this.$router.push({ name: "admin_institution" });
+      this.$router.push("/student/home");
     },
   },
   checkInputFormatter() {

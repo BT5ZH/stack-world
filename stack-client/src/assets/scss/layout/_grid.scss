@@ -1,0 +1,17 @@
+.grid_container {
+    width: 100%;
+    height: 80rem;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 3rem repeat(5, 1fr);
+    grid-gap: .2rem;
+    padding: .6rem;
+    background-color: #f7f7f7;
+}
+.col-item{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: #fff;
+}
+.col-icon{font-size: 2.2rem;margin-top: 4rem;}
