@@ -48,7 +48,7 @@ const classSchema = new mongoose.Schema(
                   required: true,
                   enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
                 },
-                order: { type: Number, required: true, min: 1, max: 10 },
+                order: { type: [Number] },
                 location: { type: String, required: true },
               },
             ],

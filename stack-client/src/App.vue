@@ -12,6 +12,20 @@ import zhCN from "ant-design-vue/lib/locale-provider/zh_CN";
 export default {
   name: "App",
   data: () => ({ zhCN }),
+  created() {
+    if (sessionStorage.getItem("store")) {
+      this.$store.replaceState(
+        Object.assign(
+          {},
+          this.$store.state,
+          JSON.parse(sessionStorage.getItem("store"))
+        )
+      );
+    }
+    window.addEventListener("beforeunload", () => {
+      sessionStorage.setItem("store", JSON.stringify(this.$store.state));
+    });
+  },
 };
 </script>
 

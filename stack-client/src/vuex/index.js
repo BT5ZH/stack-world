@@ -22,9 +22,13 @@ import TeacherGetter from "./teacher/getter";
 import TeacherMutation from "./teacher/mutation";
 import TeacherState from "./teacher/state";
 
-
+import PublicAction from "./public/action";
+import PublicGetter from "./public/getter";
+import PublicMutation from "./public/mutation";
+import PublicState from "./public/state";
 
 const SuperModule = {
+  namespaced: true,
   state: () => ({ ...SuperState }),
   mutations: { ...SuperMutation },
   actions: { ...SuperAction },
@@ -32,6 +36,7 @@ const SuperModule = {
 };
 
 const AdminModule = {
+  namespaced: true,
   state: () => ({ ...AdminState }),
   mutations: { ...AdminMutation },
   actions: { ...AdminAction },
@@ -39,6 +44,7 @@ const AdminModule = {
 };
 
 const TeacherModule = {
+  namespaced: true,
   state: () => ({ ...TeacherState }),
   mutations: { ...TeacherMutation },
   actions: { ...TeacherAction },
@@ -46,10 +52,19 @@ const TeacherModule = {
 };
 
 const StudentModule = {
+  namespaced: true,
   state: () => ({ ...StudentState }),
   mutations: { ...StudentMutation },
   actions: { ...StudentAction },
   getters: { ...StudentGetter },
+};
+
+const PublicModule = {
+  namespaced: true,
+  state: () => ({ ...PublicState }),
+  mutations: { ...PublicMutation },
+  actions: { ...PublicAction },
+  getters: { ...PublicGetter },
 };
 
 const store = new Vuex.Store({
@@ -58,6 +73,7 @@ const store = new Vuex.Store({
     super: SuperModule,
     teacher: TeacherModule,
     student: StudentModule,
+    public: PublicModule,
   },
 });
 

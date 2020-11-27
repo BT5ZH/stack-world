@@ -24,11 +24,11 @@ const organizationSchema = new mongoose.Schema(
                 startDate: String,
               },
             ],
-            validate: (m) => Array.isArray(m) && m.length > 0,
+            // validate: (m) => Array.isArray(m) && m.length > 0,
           },
         },
       ],
-      validate: (o) => Array.isArray(o) && o.length > 0,
+      // validate: (o) => Array.isArray(o) && o.length > 0,
     },
 
     // tags: {

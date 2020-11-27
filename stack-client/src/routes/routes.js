@@ -18,6 +18,10 @@ const AdminTeacher = () => import("@/components/admin/teaching/teacher/Teacher")
 const AdminCourse = () => import("@/components/admin/teaching/course/Course");
 const AdminSchedule = () => import("@/components/admin/teaching/schedule/Schedule");
 
+// 设备管理
+const AdminInstallation = () => import("@/components/admin/device/installation/Installation");
+const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
+
 // teacher router
 
 // student router
@@ -97,6 +101,16 @@ export const routes = [
         name: "admin_semester",
         component: AdminSemester,
       },
+      {
+        path: "installation",
+        name: "admin_installation",
+        component: AdminInstallation
+      },
+      {
+        path: "upgrade",
+        name: "admin_upgrade",
+        component: AdminUpgrade
+      }
     ],
   },
   {
