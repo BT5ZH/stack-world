@@ -9,7 +9,7 @@
         <form class="login100-form validate-form">
           <span class="login100-form-title">用户登录</span>
 
-          <div class="wrap-input100">
+          <div class="wrap-input100" v-show="errorTipShow">
             <a-alert type="error" message="账号或密码错误" show-icon />
           </div>
 
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-// import axios from "@/utils/axios";
+import axios from "@/utils/axios";
 
 export default {
   name: "IndexLogin",
@@ -68,75 +68,78 @@ export default {
     return {
       account: "",
       password: "",
-      message_can: true,
+      errorTipShow: false,
+      userMap: {
+        superAdmin: { name: "super", index: "/supervisor/school" },
+        user: { name: "user", index: "/student/home" },
+        orgAdmin: { name: "admin", index: "/admin/semester" },
+        instructor: { name: "teacher", index: "/teacher" },
+        patrol: { name: "patrol", index: "/patrol" },
+      },
     };
   },
   methods: {
-    async login() {
-      // let form = { account: this.account, pass: MD5(this.password) };
-      // if (this.checkInputFormatter()) {
-      //   try {
-      //     let { data } = await instance.post("/login", form);
-      //     console.log({ 登录: data });
-      //     if (data.status) {
-      //       let { auth, user } = data.message;
-      //       this.$store.commit("changeUserInfo", user);
-      //       localStorage.setItem("auth", auth);
-      //       this.$store.commit("initHeaders");
-      //       await this.$store.dispatch("getAccountList");
-      //       await this.$store.dispatch("getUserSettings");
-      //       this.$router.push("/news");
-      //       this.$message({
-      //         message: `欢迎回来  ${user.name}`,
-      //         type: "success"
-      //       });
-      //     } else {
-      //       this.$message({ message: "账号或密码错误!", type: "error" });
-      //       this.password = "";
-      //     }
-      //   } catch (error) {
-      //     console.error({ 登录失败: error });
-      //     this.$message({ type: "error", message: "登录失败" });
-      //   }
-      // const requestData = {
-      //   email: "zhanghuiquan@w-click.cn",
-      //   password: "zbt00549",
-      // };
-      // axios.post("pc/v1/users/login", requestData).then();
-      // const tempData = {
-      //   role: "admin",
-      //   sid: "5fb3af35dcbcf8002453dd37",
-      // };
-      // axios.defaults.headers.common["Authorization"] = "";
-      // this.$store.commit("updateSessionStorage", tempData);
-      this.$router.push({ name: "admin_institution" });
+    login() {
+      const requestData = {
+        email: this.account,
+        password: this.password,
+      };
+      axios
+        .post("pc/v1/users/login", requestData)
+        .then(({ data }) => {
+          const { status, token } = data;
+          // TODO replce the word 'scccess' with 'success' whenever backend fixs the bug
+          if (status !== "scccess") {
+            this.errorTipShow = true;
+            return;
+          }
+          axios.defaults.headers.common["Authorization"] = token;
+          const navigateUrl = this.updatePublicVuexData(data.data);
+          this.$router.push(navigateUrl);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
-  },
-  checkInputFormatter() {
-    if (!this.message_can) return false;
-    if (!this.account) {
-      this.$message({ type: "error", message: "请输入账号" });
-      this.message_can = false;
-      setTimeout(() => (this.message_can = true), 2000);
-      return false;
-    }
-    if (!this.password) {
-      this.$message({ type: "error", message: "请输入密码" });
-      this.message_can = false;
-      setTimeout(() => (this.message_can = true), 2000);
-      return false;
-    }
-    const exp_email = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-    const exp_phone = /^1(3|4|5|6|7|8|9)\d{9}$/;
-    let isEmail = exp_email.test(this.account);
-    let isPhone = exp_phone.test(this.account);
-    if (!isEmail && !isPhone) {
-      this.$message({ type: "error", message: "请输入邮箱或手机号" });
-      this.message_can = false;
-      setTimeout(() => (this.message_can = true), 2000);
-      return false;
-    }
-    return true;
+    updatePublicVuexData(context) {
+      const publicVuexData = {
+        role: this.userMap[context.role]["name"],
+        oid: context.orgId,
+        sid: context.subOrgId,
+        mid: context.majorId,
+        cid: context.classId,
+        uid: context._id,
+        photo: context.photo,
+      };
+      this.$store.commit("public/updateIdList", publicVuexData);
+      return this.userMap[context.role]["index"];
+    },
+    checkInputFormatter() {
+      if (!this.message_can) return false;
+      if (!this.account) {
+        this.$message({ type: "error", message: "请输入账号" });
+        this.message_can = false;
+        setTimeout(() => (this.message_can = true), 2000);
+        return false;
+      }
+      if (!this.password) {
+        this.$message({ type: "error", message: "请输入密码" });
+        this.message_can = false;
+        setTimeout(() => (this.message_can = true), 2000);
+        return false;
+      }
+      const exp_email = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      const exp_phone = /^1(3|4|5|6|7|8|9)\d{9}$/;
+      let isEmail = exp_email.test(this.account);
+      let isPhone = exp_phone.test(this.account);
+      if (!isEmail && !isPhone) {
+        this.$message({ type: "error", message: "请输入邮箱或手机号" });
+        this.message_can = false;
+        setTimeout(() => (this.message_can = true), 2000);
+        return false;
+      }
+      return true;
+    },
   },
 };
 </script>
