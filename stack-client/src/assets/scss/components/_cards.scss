@@ -1,0 +1,27 @@
+.schedule_card {
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border-radius: .8rem;
+  border: none;
+}
+
+.card_rectangle{
+  width: 96%;
+  min-height: 8rem;
+  border-radius: 6px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.5rem;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #888888;
+  border: 1px solid#e5ebe8;
+  box-shadow: 1px 2px 8px 1px #e5ebe8;
+
+  &--row{
+    display: flex;
+    justify-content: space-between;
+    &:not(:last-child){
+      margin-bottom: 1.5rem;
+    }
+  }
+}

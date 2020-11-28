@@ -15,15 +15,18 @@ router
   .delete(authController.protect, classController.deleteClass);
 router
   .route("/:id/students")
-  // .get(authController.protect, classController.getStudents);
+  .get(authController.protect, classController.getStudents)
   .patch(authController.protect, classController.updateStudents)
-  .post(authController.protect, classController.addStudents);
-// .delete(authController.protect, classController.deleteStudents);
-// router
-//   .route("/:id/student/:sid")
-//   .get(authController.protect, classController.getStudent)
-//   .patch(authController.protect, classController.updateStudent)
-//   .post(authController.protect, classController.addStudent)
-//   .delete(authController.protect, classController.deleteStudent);
+  .post(authController.protect, classController.addStudents)
+  .delete(authController.protect, classController.deleteStudents);
+router
+  .route("/:id/curriculum")
+  .get(authController.protect, classController.getCurriculum)
+  //   .patch(authController.protect, classController.updateStudent)
+  .post(authController.protect, classController.addCurriculum)
+  .delete(
+    authController.protect,
+    classController.deleteMultipleCourseTimeTable
+  );
 
 module.exports = router;

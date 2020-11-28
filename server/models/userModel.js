@@ -19,9 +19,15 @@ const userSchema = new mongoose.Schema({
   photo: { type: String, default: "default.jpg" },
   role: {
     type: String,
-    enum: ["user", "instructor", "manager", "admin"],
+    enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
     default: "user",
   },
+
+  orgId: { type: String },
+  subOrgId: { type: String },
+  majorId: { type: String },
+  classId: { type: String },
+
   password: {
     type: String,
     required: [true, "Please provide a password"],
