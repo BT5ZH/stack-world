@@ -2,38 +2,9 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
+const app = require("./app");
 
-// const pgApp = require("./pgApp");
-// const pgPort = process.env.PGSPORT || 5001;
-// const pgAppServer = pgApp.listen(pgPort, (err) => {
-//   console.log(`App running on port ${pgPort}...`);
-// });
-
-const mgApp = require("./mgApp");
-const http = require("http").createServer(mgApp);
-const io = require("socket.io")(http);
-io.on("connection", (socket) => {
-  console.log("connect");
-});
-// MongoDB Client Setup
-/*
-const DB =
-  "mongodb://btUser:btPass@mongodb:27017/stack-learning?authSource=admin";
-mongoose
-  .connect(DB, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("DB Cluster connection successful!------");
-  })
-  .catch((err) => {
-    console.error("DB Cluster connection err------");
-    console.log(err);
-  });
-*/
-
+// Mongodb Setup
 const Altas = process.env.DATABASE.replace(
   "<password>",
   process.env.DATABASE_PASSWORD
@@ -53,7 +24,27 @@ mongoose
     console.log(err);
   });
 
+// Server Setup
 const mgPort = process.env.MGSPORT || 5001;
-const mgAppServer = mgApp.listen(mgPort, (err) => {
+const server = require("http").createServer(app);
+const options = {
+  cors: {
+    origin: "http://localhost:3050",
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+  },
+};
+const io = require("socket.io")(server, options);
+const nsp = io.of("/api");
+nsp.on("connection", (socket) => {
+  console.log("server connected");
+
+  socket.on("message", (eventData) => {
+    // attach the current time
+    eventData.processed = Date.now();
+    // send the message back to the client
+    socket.emit("message", eventData);
+  });
+});
+server.listen(mgPort, (err) => {
   console.log(`App running on port ${mgPort}...`);
 });
