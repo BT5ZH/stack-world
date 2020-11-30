@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^1.7.2",
+    "aws-sdk": "^2.799.0",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
