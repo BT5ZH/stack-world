@@ -23,6 +23,9 @@ const AdminInstallation = () => import("@/components/admin/device/installation/I
 const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
 
 // teacher router
+const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
+const TeacherCourse = () => import("@/components/teacher/course/Course");
+
 
 // student router
 const landPage = () => import("@/pages/LandingPage.vue");
@@ -128,6 +131,18 @@ export const routes = [
         component: SupervisorSchool,
       },
     ],
+  },
+  {
+    path: "/teacher",
+    name: "teacher",
+    component: TeacherRouter,
+    children:[
+      {
+        path:"course",
+        name: "teacher_course",
+        component: TeacherCourse
+      }
+    ]
   },
   {
     path: "/signin",
