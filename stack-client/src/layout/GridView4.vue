@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-row type="flex" justify="start" :gutter='[0,24]'>
+        <a-row type="flex" justify="start" :gutter='[0,18]'>
             <a-col :span="6" :key='item.id' v-for='item in gridItems'
                 style="display: flex;flex-direction: column;align-items: center;">
                 <a-button type="primary" :icon="item.icon" :style="item.style"

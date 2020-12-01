@@ -1,13 +1,13 @@
 <template>
     <div class="course_content">
-        <leftSlider v-for='item in FavResList' :key='item.id' :item='item' :isClick=0 :courseId='courseId'></leftSlider>
-        <!-- <resCard v-for='item in ResList' :key='item.id' :item='item' :isClick='isClick'></resCard> -->
+        <empty v-if='FavResList.length==0'></empty>
+        <leftSlider v-else v-for='item in FavResList' :key='item.id' :item='item' :isClick=0 :courseId='courseId'></leftSlider>
     </div>
 </template>
 
 <script>
     import leftSlider from '../../../components/LeftSlider.vue';
-    // import resCard from '../../../components/student/ResCard.vue';
+    import empty from '../../../components/Empty.vue'
 
     import { mapState } from "vuex";
 
@@ -15,7 +15,7 @@
         name: 'Favorite',
         components: {
             leftSlider,
-            // resCard,
+            empty,
         },
         data() {
             return {

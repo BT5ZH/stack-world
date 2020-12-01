@@ -1,9 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueRouter from "vue-router";
-// import Other from "./components/OtherPage.vue";
-import { routes } from "./router/index.js";
-// import { routes } from "../routes/routes";
+// import { routes } from "./router/index.js";
+import { routes } from "../routes/routes.js";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
 import {store} from './store';
@@ -14,7 +13,6 @@ import axios from 'axios';
 Vue.config.productionTip = false;
 Vue.prototype.$echarts = echarts
 
-// Vue.component("other-page", Other);
 Vue.use(VueRouter);
 Vue.use(Antd);
 Vue.use(VueResource);

@@ -39,8 +39,8 @@
                     this.isClick==0? this.download(item): this.jmpHomework(item);
                 }
             },
-            jmpTest(){
-                console.log('testttttttttt')
+            jmpTest(item){
+                this.$router.push({ path: this.$route.path + '/test',query: { title: item.title } });
             },
             jmpVideo(item){
                 this.$router.push({ path: '/student/course/'+ this.courseId + '/video/'+ item.id,query: { title: item.id } });

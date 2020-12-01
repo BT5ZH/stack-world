@@ -18,7 +18,8 @@
                       rgba($color-white,.85)0%,
                       rgba($color-white,.85)50%,
                       transparent 50%),
-                    url($img-url +'hotel-2.jpg');
+                    // url($img-url +'hotel-2.jpg')
+                    ;
     background-size: cover;
     border-radius: 3px;
     box-shadow: 0 1.5rem 4rem rgba($color-black, .3);

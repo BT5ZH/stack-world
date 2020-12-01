@@ -51,3 +51,9 @@
     }
   }
 </script>
+
+<style lang='scss'>
+  .headdd{
+  color:aliceblue;
+}
+</style>

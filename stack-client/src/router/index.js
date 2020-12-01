@@ -1,4 +1,3 @@
-import landPage from '../pages/LandingPage.vue';
 import studentHome from '../pages/student/StudentHomePage.vue';
 import studentNavigator from '../pages/student/StudentNavigatorPage.vue';
 
@@ -28,14 +27,6 @@ import analysis from "../pages/student/menu/Analysis.vue";
 
 
 export const routes = [
-  {
-    path: "/",
-    component: landPage,
-  },
-  {
-    path: "/signin",
-    component: landPage,
-  },
   {
     path: "/student/home",
     component: studentHome,

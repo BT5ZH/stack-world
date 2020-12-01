@@ -7,14 +7,15 @@
             </a-col>
         </a-row>
         <div class="course_content" v-if='isClick==0'>
-            <leftSlider v-for='item in resList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></leftSlider>
-            <!-- <resCard v-for='item in ResList' :key='item.id' :item='item' :isClick='isClick'></resCard> -->
+            <empty v-if='resList.length==0'></empty>
+            <leftSlider v-else v-for='item in resList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></leftSlider>
         </div>
         <div class="course_content" v-if='isClick==1'>
             <gridView4 :gridItems='classMenu'></gridView4>
         </div>
         <div class="course_content" v-if='isClick==2'>
-            <resCard v-for='item in homeworkList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></resCard>
+            <empty v-if='homeworkList.length==0'></empty>
+            <resCard v-else v-for='item in homeworkList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></resCard>
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@
     import leftSlider from '../../../components/LeftSlider.vue';
     import resCard from '../../../components/student/ResCard.vue';
     import gridView4 from "../../../layout/GridView4.vue";
+    import empty from '../../../components/Empty.vue';
 
     import { mapState } from "vuex";
 
@@ -32,6 +34,7 @@
             leftSlider,
             resCard,
             gridView4,
+            empty,
         },
         data() {
             return {
@@ -63,7 +66,7 @@
     }
 </script>
 
-<style>
+<style lang="scss">
     .course_menu{
         margin-bottom: 2rem;
     }

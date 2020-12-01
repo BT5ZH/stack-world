@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-page-header style="display: flex; justify-content: space-between; align-items: center;" :ghost="false"
-            title="User Name" sub-title='class,school' :avatar='{ props:{ user } }'>
+            title="User Name" sub-title='welcome' :avatar='{ props:{ user } }'>
         </a-page-header>
     </div>
 </template>

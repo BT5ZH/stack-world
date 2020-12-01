@@ -21,17 +21,13 @@ const random = () => import ('@/pages/student/course/class/Random.vue');
 const questionnaire = () => import ('@/pages/student/course/class/Questionnaire.vue');
 const vote = () => import ('@/pages/student/course/class/Vote.vue');
 const test = () => import ('@/pages/student/course/class/Test.vue');
-const file = () => import ('@/pages/student/ourse/class/File.vue');
+const file = () => import ('@/pages/student/course/class/File.vue');
 
 
 export const routes = [
   {
     path: "/",
-    component: landPage,
-  },
-  {
-    path: "/signin",
-    component: landPage,
+    component: studentHome,
   },
   {
     path: "/student/home",

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0ddfb5"],{8469:function(a,t,s){"use strict";s.r(t);var r=function(){var a=this,t=a.$createElement,s=a._self._c||t;return s("a-card",[s("a-card-meta",{attrs:{title:"User Name",description:"class,school"}},[s("a-avatar",{attrs:{slot:"avatar",src:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"},slot:"avatar"})],1)],1)},c=[],e=s("2877"),n={},l=Object(e["a"])(n,r,c,!1,null,null,null);t["default"]=l.exports}}]);
+//# sourceMappingURL=chunk-2d0ddfb5.55d9d7bb.js.map
