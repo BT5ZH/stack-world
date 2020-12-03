@@ -5,7 +5,7 @@ const DEFAULT_REGION = "cn-northwest-1";
 
 const DEFAULT_PARAMS = {
   ACL: "public-read",
-  Bucket: "stack_world",
+  Bucket: "stack-world",
 };
 
 const DEFAULT_CONFIG = {
@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
     console.error(error);
   },
   progressCallback: function () {},
-  uploadFailCallback: function (error) {
+  failCallback: function (error) {
     console.error("error happened when file is uploading, reason is:");
     console.error(error);
     !error && console.error("file upload ended, but no Etag returned.");
@@ -28,7 +28,7 @@ const DEFAULT_CONFIG = {
  * @returns {Array<String> | String}  文件后缀
  */
 function getFileContentType(files) {
-  const regExp = /[^\.]\w*$/;
+  const regExp = /[^.]\w*$/;
   const callback = (file) => file.name.match(regExp)[0];
   if (files instanceof File) {
     return callback(files);
@@ -48,13 +48,16 @@ function getFileContentType(files) {
 async function updateAccessConfig(apiUrl, callback) {
   try {
     const { data } = await axios.get(apiUrl);
-    AWS.config = new AWS.Config({
-      accessKeyId: "",
-      secretAccessKey: "",
-      sessionToken: "",
-      ...DEFAULT_REGION,
-    });
-    DEFAULT_PARAMS.Key = data.fileID;
+    if (data.credentials && data.fileID) {
+      const { AccessKeyId, SecretAccessKey, SessionToken } = data.credentials;
+      AWS.config = new AWS.Config({
+        accessKeyId: AccessKeyId,
+        secretAccessKey: SecretAccessKey,
+        sessionToken: SessionToken,
+        region: DEFAULT_REGION,
+      });
+      DEFAULT_PARAMS.Key = data.fileID;
+    }
     return new AWS.S3();
   } catch (error) {
     callback(error);
@@ -71,14 +74,14 @@ async function updateAccessConfig(apiUrl, callback) {
  */
 function updateUploadParams(file, filePath, that, params) {
   const key = getFileContentType(file);
-  const uploaderId = that.$store.state.public.uid;
+  const uploaderId = that.$store.state.public.uid || "administrator";
   const { Metadata = {} } = params;
   delete params.Metadata;
   return {
     ...DEFAULT_PARAMS,
     ...params,
     Body: file,
-    Key: `${filePath}/${DEFAULT_PARAMS.Key}.${key}`,
+    Key: `${filePath}${DEFAULT_PARAMS.Key}.${key}`,
     ContentType: file.type || key,
     Metadata: { uploader: uploaderId || "default", ...Metadata },
   };
@@ -95,21 +98,23 @@ function updateUploadParams(file, filePath, that, params) {
  * - successCallback 文件上传成功的回调函数 <必需>
  * - accessErrCallback 获取 S3 凭证失败时的回调函数，默认会在控制台打出错误
  * - progressCallback 上传进度更新回调函数，一般用于上传进度展示，无默认行为
- * - uploadFailCallback 文件上传失败回调函数，上传过程中出错、上传结束后未收到
+ * - failCallback 文件上传失败回调函数，上传过程中出错、上传结束后未收到
  *   S3 SDK 返回的 data 中的 Etag均视为上传失败，默认会在控制台打出错误
  * @param {Object} params 属性如下：
  * - ACL 默认值 public-read，文件公有，获取链接者可读取文件
  * - Bucket 默认值 stack_world，存储桶的名称
  * - Metadata 默认值只有 uploader, 即当前用户的 ID
  */
-async function uploadFile(files, apiUrl, filePath, config = {}, params = {}) {
+async function uploadFile([file], apiUrl, filePath, config = {}, params = {}) {
   config = { ...DEFAULT_CONFIG, ...config };
-  params = updateUploadParams(files, filePath, config.that, params);
-  const S3Instance = await updateAccessConfig(config.accessErrCallback);
+  const S3Instance = await updateAccessConfig(apiUrl, config.accessErrCallback);
+  params = updateUploadParams(file, filePath, config.that, params);
   if (!S3Instance) return;
-  S3Intance.putObject(params, (err, data) => {
+  console.log({ config });
+  console.log({ params });
+  S3Instance.putObject(params, (err, data) => {
     if (err || data.Etag) {
-      config.uploadFailCallback(err);
+      config.failCallback(err);
       return;
     }
     config.successCallback();

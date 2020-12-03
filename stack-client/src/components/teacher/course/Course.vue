@@ -14,12 +14,17 @@
       </a-col>
     </a-row>
     <a-row class="content">
-        
+      <a-upload :before-upload="fileInput" :file-list="fileList">
+        <a-button type="primary">选择文件</a-button>
+      </a-upload>
+      <a-button type="primary" @click="uploadFile">开始上传</a-button>
     </a-row>
   </a-row>
 </template>
 
 <script>
+import fileUploader from "@/utils/fileUploader";
+
 export default {
   components: {},
   data() {
@@ -27,8 +32,33 @@ export default {
       teacherName: "李师",
       uid: "201501245789",
       workNumber: "201501245789",
+      fileList: []
     };
   },
+  methods: {
+    fileInput(file) {
+      console.log(file);
+      this.fileList = [file];
+      return false;
+    },
+    uploadFile() {
+      const url = "/s3";
+      const config = {
+        that: this,
+        successCallback() {
+          this.$message.success("上传成功！");
+        },
+        failCallback(err) {
+          console.error(err);
+          this.$message.error("上传失败！");
+        }
+      };
+      const params = {
+        Metadata: { uploader: "Henrenx", star: "10" }
+      };
+      fileUploader(this.fileList, url, "", config, params);
+    }
+  }
 };
 </script>
 
