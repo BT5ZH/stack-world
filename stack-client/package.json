@@ -14,11 +14,12 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "echarts": "^4.9.0",
+    "socket.io-client": "^3.0.3",
     "vue": "^2.6.11",
     "vue-echarts": "^5.0.0-beta.0",
     "vue-router": "^3.4.7",
-    "vue-socket.io": "^3.0.10",
     "vuex": "^3.5.1",
+    "wangeditor": "^4.5.2",
     "xlsx": "^0.16.8"
   },
   "devDependencies": {

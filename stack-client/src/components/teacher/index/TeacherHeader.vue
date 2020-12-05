@@ -30,9 +30,9 @@ export default {
       menus: [
         { name: "首页", id: "teacher_index" },
         { name: "课程中心", id: "teacher_course" },
-        { name: "资源中心", id: "teacher_resource" },
-        { name: "教学分析", id: "teacher_analysis" },
-        { name: "金课工具", id: "teacher_tools" },
+        // { name: "资源中心", id: "teacher_resource" },
+        // { name: "教学分析", id: "teacher_analysis" },
+        // { name: "金课工具", id: "teacher_tools" },
       ],
     };
   },

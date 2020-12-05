@@ -24,7 +24,7 @@ const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
 
 // teacher router
 const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
-const TeacherCourse = () => import("@/components/teacher/course/Course");
+const TeacherCourse = () => import("@/components/teacher/course/Index");
 
 
 // student router
