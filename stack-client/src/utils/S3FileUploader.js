@@ -9,12 +9,12 @@ const DEFAULT_PARAMS = {
 };
 
 const DEFAULT_CONFIG = {
-  accessErrCallback: function (error) {
+  accessErrCallback: function(error) {
     console.error("update S3 credential failed！");
     console.error(error);
   },
-  progressCallback: function () {},
-  failCallback: function (error) {
+  progressCallback: function() {},
+  failCallback: function(error) {
     console.error("error happened when file is uploading, reason is:");
     console.error(error);
     !error && console.error("file upload ended, but no Etag returned.");
@@ -112,7 +112,7 @@ async function uploadFile([file], apiUrl, filePath, config = {}, params = {}) {
   if (!S3Instance) return;
   console.log({ config });
   console.log({ params });
-  S3Instance.putObject(params, (err, data) => {
+  const request = S3Instance.putObject(params, (err, data) => {
     if (err || data.Etag) {
       config.failCallback(err);
       return;
@@ -120,6 +120,8 @@ async function uploadFile([file], apiUrl, filePath, config = {}, params = {}) {
     config.successCallback();
     console.info("file upload successfully!");
   });
+  // TODO 进度回调函数暂时无效，在解决中，不影响接口。
+  config.progressCallback && request.on(config.progressCallback);
 }
 
 export default uploadFile;

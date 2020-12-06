@@ -25,6 +25,7 @@
           <span style="float: left; color: #bbb">{{ course.progress }}</span>
           <span style="float: right; color: #bbb">{{ course.editTime }}</span>
           <template slot="actions" class="ant-card-actions">
+            <a-button type="primary">详情</a-button>
             <a-button type="primary">编辑</a-button>
             <a-button type="primary">备课</a-button>
           </template>

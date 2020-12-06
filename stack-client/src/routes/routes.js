@@ -25,7 +25,7 @@ const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
 // teacher router
 const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
 const TeacherCourse = () => import("@/components/teacher/course/Index");
-
+const TeacherCourseDetail = () => import("@/components/teacher/coursedetail/index/CourseDetail");
 
 // student router
 const landPage = () => import("@/pages/LandingPage.vue");
@@ -141,6 +141,11 @@ export const routes = [
         path:"course",
         name: "teacher_course",
         component: TeacherCourse
+      },
+      {
+        path:"coursedetail",
+        name:"teacher_coursedetail",
+        component: TeacherCourseDetail
       }
     ]
   },
