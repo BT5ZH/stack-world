@@ -6,11 +6,14 @@
     <a-layout-content>
       <a-layout>
         <a-layout-sider>
-          <teacher-aside></teacher-aside>
+          <!-- <teacher-aside></teacher-aside> -->
         </a-layout-sider>
         <a-layout-content>
           <router-view />
         </a-layout-content>
+        <a-layout-sider>
+          <!-- <teacher-aside></teacher-aside> -->
+        </a-layout-sider>
       </a-layout>
     </a-layout-content>
   </a-layout>
@@ -18,10 +21,10 @@
 
 <script>
 import TeacherHeader from "./TeacherHeader";
-import TeacherAside from "./TeacherAside";
+// import TeacherAside from "./TeacherAside";
 
 export default {
-  components: { TeacherHeader, TeacherAside },
+  components: { TeacherHeader },
 };
 </script>
 

@@ -30,14 +30,12 @@
       :columns="columns"
       :data-source="classList"
     >
-      <!-- <template #operation> -->
+      <template #operation>
         <a-button type="link">详情</a-button>
         <a-button type="link">编辑</a-button>
         <a-button type="link">删除</a-button>
-      <!-- </template> -->
+      </template>
     </a-table>
-
-    <a-button @click="handle">点击</a-button>
   </div>
 </template>
 

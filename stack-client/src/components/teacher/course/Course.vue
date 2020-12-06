@@ -1,79 +1,101 @@
 <template>
-  <a-row>
-    <a-row type="flex" justify="center" align="middle" class="profile">
-      <a-col :span="1">
-        <a-icon type="tags" style="font-size: 40px; color: #5c6bc0" />
+  <a-row class="container" :style="{ 'height': containerHeight }">
+    <a-row>
+      <a-col :span="5">
+        <a-input-search
+          placeholder="课程名称"
+          enter-button
+          @search="onSearch"
+        />
       </a-col>
-      <a-col :span="15">
-        <h2>{{ teacherName }}</h2>
-        <span class="account">账号：{{ uid }}</span>
-        <span>工号：{{ workNumber }}</span>
-      </a-col>
-      <a-col :span="7">
-        <a-button icon="calendar" size="large">我的课表</a-button>
+      <a-col :span="16"></a-col>
+      <a-col :span="3">
+        <a-button type="primary" @click="addCourse">新建课程</a-button>
       </a-col>
     </a-row>
-    <a-row class="content">
-      <a-upload :before-upload="fileInput" :file-list="fileList">
-        <a-button type="primary">选择文件</a-button>
-      </a-upload>
-      <a-button type="primary" @click="uploadFile">开始上传</a-button>
+    <a-row class="cards-area" :gutter="30">
+      <a-col :span="6" v-for="(course, index) in courses" :key="index">
+        <a-card style="margin-top: 15px" size="small">
+          <img
+            slot="cover"
+            alt="example"
+            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          />
+          <h3>{{ course.courseName }}</h3>
+          <span style="float: left; color: #bbb">{{ course.progress }}</span>
+          <span style="float: right; color: #bbb">{{ course.editTime }}</span>
+          <template slot="actions" class="ant-card-actions">
+            <a-button type="primary">详情</a-button>
+            <a-button type="primary">编辑</a-button>
+            <a-button type="primary">备课</a-button>
+          </template>
+        </a-card>
+      </a-col>
+    </a-row>
+    <a-row type="flex" justify="center">
+      <a-pagination
+        class="pagination"
+        :total="50"
+        :show-size-changer="true"
+        :show-quick-jumper="true"
+      ></a-pagination>
     </a-row>
   </a-row>
 </template>
 
 <script>
-import fileUploader from "@/utils/fileUploader";
-
 export default {
-  components: {},
   data() {
     return {
-      teacherName: "李师",
-      uid: "201501245789",
-      workNumber: "201501245789",
-      fileList: []
+      courses: [
+        {
+          courseName: "线性代数",
+          progress: "9备课/10课次",
+          courseCover: "",
+          editTime: "2020/10/11",
+        },
+        {
+          courseName: "线性代数",
+          progress: "9备课/10课次",
+          courseCover: "",
+          editTime: "2020/10/11",
+        },
+        {
+          courseName: "线性代数",
+          progress: "9备课/10课次",
+          courseCover: "",
+          editTime: "2020/10/11",
+        },
+        {
+          courseName: "线性代数",
+          progress: "9备课/10课次",
+          courseCover: "",
+          editTime: "2020/10/11",
+        },
+        {
+          courseName: "线性代数",
+          progress: "9备课/10课次",
+          courseCover: "",
+          editTime: "2020/10/11",
+        },
+      ],
     };
   },
   methods: {
-    fileInput(file) {
-      console.log(file);
-      this.fileList = [file];
-      return false;
+    addCourse() {},
+    onSearch() {},
+  },
+  computed: {
+    containerHeight() {
+      const height = window.innerHeight;
+      return `${height - 220}px`;
     },
-    uploadFile() {
-      const url = "/s3";
-      const config = {
-        that: this,
-        successCallback() {
-          this.$message.success("上传成功！");
-        },
-        failCallback(err) {
-          console.error(err);
-          this.$message.error("上传失败！");
-        }
-      };
-      const params = {
-        Metadata: { uploader: "Henrenx", star: "10" }
-      };
-      fileUploader(this.fileList, url, "", config, params);
-    }
-  }
+  },
 };
 </script>
 
 <style scoped>
-.profile,
-.content {
-  background: #f8f8f8;
-  padding: 20px 0;
-}
-
-.account {
-  margin-right: 30px;
-}
-
-.content {
-  margin-top: 10px;
+.pagination {
+  margin-top: 20px;
 }
 </style>
