@@ -1,96 +1,95 @@
-const Course = require('../models/courseModel');
-const catchAsync = require('./../utils/catchAsync');
-// const catchAsync = require('./../utils/appError');
-// const courses = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/data/course-simple.json`)
-// );
+const Course = require('../models/courseModel')
 
-exports.getAllCourses = catchAsync(async (req, res, next) => {
-  console.log('courseController getAllCourses 进来啦');
+exports.get_all = async (req, res) => {
+    try {
+        course = await Course.find();
+        res.status(200).json({
+            status: true,
+            course,
+        })
+    } catch (err) {
+        res.status(404).json({
+            status: true,
+            err,
+        })
+    }
+}
 
-  // BUILD QUERY
-  // 1) Filtering
-  const queryObj = { ...req.query };
-  const excludedFields = ['page', 'sort', 'limit', 'fields'];
-  excludedFields.forEach((el) => delete queryObj[el]);
+exports.create_course = async (req, res) => {
+    try {
+        var course = await Course.findOne({ _id: req.body._id })
+        if (course) {
+            res.status(200).json({
+                message: "course already exists"
+            })
+        } else {
+            Course.create(req.body)
+            // const uu = await new User(req.body).save()
+            res.status(200).json({
+                message: "success"
+            })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ status: false, message: err });
+    }
+}
 
-  // 2) Advanced filtering
-  let queryString = JSON.stringify(queryObj);
-  queryString = queryString.replace(
-    /\b(gte|gt|lte|le)\b/g,
-    (match) => `$${match}`
-  );
-  // console.log(queryString);
-  const query = Course.find(JSON.parse(queryString)).select(
-    'rating isFavorite title price imageUrl description'
-  );
-  // console.log(query);
-  // EXECUTE QUERY
-  const courses = await query;
-  // console.log(courses);
+// 传id删除
+exports.del_course = async (req, res) => {
+    try {
+        await Course.deleteOne({ _id: req.body._id })
+        res.status(200).json({
+            status: true,
+            message: "success"
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ status: false, message: err })
+    }
+}
 
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    resulrs: courses.length,
-    data: {
-      courses,
-    },
-  });
-});
+// 传id修改数据req(_id,想修改的数据)
+exports.update_course = async (req, res) => {
+    try {
+        const course = await Course.findByIdAndUpdate(req.body._id, req.body, {
+            new: true,
+            runValidators: true,
+        })
+        res.status(200).json({
+            message: 'success'
+        })
+    } catch (err) {
+        res.status(404).json({
+            err
+        })
+    }
+}
 
-exports.getCourse = catchAsync(async (req, res, next) => {
-  console.log('getCourse 进来啦');
+//通过id获取数据
+exports.getcourse = async (req, res) => {
+    try {
+        console.log(req)
+        const course = await Course.findById(req.query.id);
+        if (course) {
+            res.status(200).json({
+                course,
+            })
+        } else {
+            res.status(404).json({
+                message: 'not found',
+            })
+        }
+    } catch (err) {
+        res.status(409).json({
+            err
+        })
+    }
+}
 
-  const course = await Course.findById(req.params.id);
-  // .populate('reviews')
-  // .populate({ path: 'registedUsers', select: 'course' });
-
-  if (!course) {
-    return next(new AppError('该课程不存在', 404));
-  }
-
-  console.log(course);
-  res.status(200).json({
-    status: 'success',
-    data: {
-      course,
-    },
-  });
-});
-
-exports.createCourse = catchAsync(async (req, res, next) => {
-  const newCourse = await Course.create(req.body);
-  res.status(201).json({
-    status: 'scccess',
-    data: newCourse,
-  });
-});
-
-exports.updateCourse = catchAsync(async (req, res, next) => {
-  const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!course) {
-    return next(new AppError('该课程不存在', 404));
-  }
-  res.status(200).json({
-    status: 'scccess',
-    data: {
-      course,
-    },
-  });
-});
-exports.deleteCourse = catchAsync(async (req, res, next) => {
-  const course = await Course.findByIdAndDelete(req.params.id);
-
-  if (!course) {
-    return next(new AppError('该课程不存在', 404));
-  }
-
-  res.status(204).json({
-    status: 'scccess',
-    data: null,
-  });
-});
+// new： bool - 默认为false。返回修改后的数据。
+// 　　upsert： bool - 默认为false。如果不存在则创建记录。
+// 　　runValidators： 如果值为true，执行Validation验证。
+// 　　setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。
+// 　　sort： 如果有多个查询条件，按顺序进行查询更新。
+// 　　select： 设置数据的返回。

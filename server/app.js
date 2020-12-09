@@ -33,6 +33,7 @@ const roomRouter = require("./routes/roomRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
 const prepareCourseRouter = require("./routes/prepareRoutes")
 
+
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
 app.use("/pc/v1/organizations", orgRouter);

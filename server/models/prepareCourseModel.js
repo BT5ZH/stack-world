@@ -7,40 +7,47 @@ const prepareCourseSchema = new mongoose.Schema(
         type:String,
         required: [true, 'Please tell us the ID'],
         default:uuid.v1,
-    
     },
-    courseId: {
-      type: String
-      // type: mongoose.Schema.Types.ObjectID,
-      // ref: 'Course',
+    courseId:{
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'Course',
     },
     teacherId: {
-      type: String
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
     },
-    duration: {
-      type: Number,
-      default:50
-    },
-
-    description: {
-      type: String,
-      required: [true, 'A course must have a description'],
-    },
-
-    nodes: [
+    one_class:[
         {
-            tag: {
-                    type: String,
-                    default: 'Teach',
-                    enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test'],
+            ppt:{
+                //PPTurl
+                type:String ,
+                required: [true, 'A course must have a ppt'],
             },
-            start: Number,
-            end:Number,
-            content:String,
-            options:[{type:String,}],
+            duration: {
+                type: Number,
+                default:50
+              },
+          
+              description: {
+                type: String,
+                required: [true, 'A course must have a description'],
+              },
+          
+              nodes: [
+                  {
+                      tag: {
+                              type: String,
+                              default: 'Teach',
+                              enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework',],
+                      },
+                      start: Number,
+                      end:Number,
+                      content:String,
+                      options:[{type:String,}],
+                  }
+              ],
         }
-    ],
-
+    ]
   },{_id:false});
 
 const prepareCourse = mongoose.model('prepareCourse', prepareCourseSchema);
