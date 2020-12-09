@@ -50,14 +50,15 @@ export default {
     },
     uploadFile() {
       this.confirmLoading = true;
-      const url = "/s3";
       const that = this;
       const config = {
         that,
+        filePath: "/shaanxi-normal-university/",
+        body: { name: "第一次上课PPT", tags: ["计算机基础", "计算机历史", "软件开发"] },
         successCallback() {
           that.$message.success("上传成功！");
           that.confirmLoading = false;
-          that.$emit('update:visible', false);
+          that.$emit("update:visible", false);
         },
         failCallback(err) {
           console.error(err);
@@ -71,7 +72,7 @@ export default {
       const params = {
         Metadata: { uploader: "Henrenx", star: "10" },
       };
-      fileUploader(this.fileList, url, "", config, params);
+      fileUploader(this.fileList, config, params);
     },
   },
 };

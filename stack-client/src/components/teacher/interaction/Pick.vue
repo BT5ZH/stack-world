@@ -1,5 +1,5 @@
 <template>
-  <div>签到</div>
+  <div>随机抽人</div>
 </template>
 
 <script>

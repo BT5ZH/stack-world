@@ -9,6 +9,7 @@ const DEFAULT_PARAMS = {
 };
 
 const DEFAULT_CONFIG = {
+  apiUrl: "pc/v1/resources/upload",
   accessErrCallback: function(error) {
     console.error("update S3 credential failed！");
     console.error(error);
@@ -43,11 +44,12 @@ function getFileContentType(files) {
  * 更新 S3 上传凭证
  *
  * @param {String} apiUrl 文件上传地址
+ * @param {Object} body 要插入数据库的字段
  * @param {Function} callback 凭证更新失败回调
  */
-async function updateAccessConfig(apiUrl, callback) {
+async function updateAccessConfig(apiUrl, body, callback) {
   try {
-    const { data } = await axios.get(apiUrl);
+    const { data } = await axios.post(apiUrl, body);
     if (data.credentials && data.fileID) {
       const { AccessKeyId, SecretAccessKey, SessionToken } = data.credentials;
       AWS.config = new AWS.Config({
@@ -91,11 +93,12 @@ function updateUploadParams(file, filePath, that, params) {
  * 上传文件到 S3
  *
  * @param {Array<File> | File} files 要上传的文件或文件列表 <必需>
- * @param {String} apiUrl 可能不同角色有不同 API，用于获取 S3 凭证 <必需>
- * @param {String} filePath 该文件在存储桶中的存储位置 <必需>
  * @param {Object} config 属性如下：
  * - that 传值 this 即可，用于获取 vuex public下的 uid <必需>
+ * - filePath 该文件在存储桶中的存储位置 格式为：/{location}/ (两端都加斜杠)<必需>
+ * - body 要插入数据库的字段 <必需>
  * - successCallback 文件上传成功的回调函数 <必需>
+ * - apiUrl 可能不同角色有不同 API，用于获取 S3 凭证
  * - accessErrCallback 获取 S3 凭证失败时的回调函数，默认会在控制台打出错误
  * - progressCallback 上传进度更新回调函数，一般用于上传进度展示，无默认行为
  * - failCallback 文件上传失败回调函数，上传过程中出错、上传结束后未收到
@@ -105,13 +108,11 @@ function updateUploadParams(file, filePath, that, params) {
  * - Bucket 默认值 stack_world，存储桶的名称
  * - Metadata 默认值只有 uploader, 即当前用户的 ID
  */
-async function uploadFile([file], apiUrl, filePath, config = {}, params = {}) {
+async function uploadFile([file], config = {}, params = {}) {
   config = { ...DEFAULT_CONFIG, ...config };
-  const S3Instance = await updateAccessConfig(apiUrl, config.accessErrCallback);
-  params = updateUploadParams(file, filePath, config.that, params);
+  const S3Instance = await updateAccessConfig(config.apiUrl, config.accessErrCallback);
+  params = updateUploadParams(file, config.filePath, config.that, params);
   if (!S3Instance) return;
-  console.log({ config });
-  console.log({ params });
   const request = S3Instance.putObject(params, (err, data) => {
     if (err || data.Etag) {
       config.failCallback(err);
@@ -121,7 +122,8 @@ async function uploadFile([file], apiUrl, filePath, config = {}, params = {}) {
     console.info("file upload successfully!");
   });
   // TODO 进度回调函数暂时无效，在解决中，不影响接口。
-  config.progressCallback && request.on(config.progressCallback);
+  config.progressCallback &&
+    request.on("httpUploadProgress", config.progressCallback);
 }
 
 export default uploadFile;
