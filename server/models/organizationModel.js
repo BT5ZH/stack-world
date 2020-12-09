@@ -10,6 +10,11 @@ const organizationSchema = new mongoose.Schema(
     organizationNameEn: {
       type: String,
       default: "name for organization",
+      required: [true, "organization must have an English Name"],
+    },
+    organizationDescription: {
+      type: String,
+      default: "name for organization",
     },
     subOrgs: {
       type: [
