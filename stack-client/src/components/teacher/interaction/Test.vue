@@ -1,5 +1,5 @@
 <template>
-  <div>签到</div>
+  <div>随堂测试</div>
 </template>
 
 <script>

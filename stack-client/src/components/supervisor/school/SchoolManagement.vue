@@ -1,5 +1,6 @@
 <template>
   <div>
+    <a-button type="primary">提交</a-button>
     <a-row class="btn-area">
       <a-col :span="5">
         <a-input-search

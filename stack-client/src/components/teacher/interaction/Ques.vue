@@ -1,5 +1,5 @@
 <template>
-  <div>签到</div>
+  <div>提问</div>
 </template>
 
 <script>
