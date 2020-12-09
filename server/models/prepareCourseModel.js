@@ -9,6 +9,14 @@ const prepareCourseSchema = new mongoose.Schema(
         default:uuid.v1,
     
     },
+    courseId: {
+      type: String
+      // type: mongoose.Schema.Types.ObjectID,
+      // ref: 'Course',
+    },
+    teacherId: {
+      type: String
+    },
     duration: {
       type: Number,
       default:50
