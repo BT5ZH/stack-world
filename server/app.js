@@ -31,6 +31,7 @@ const activityRouter = require("./routes/liveActivityRoutes");
 const campusRouter = require("./routes/campusRoutes");
 const roomRouter = require("./routes/roomRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
+const prepareCourseRouter = require("./routes/prepareRoutes")
 
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
@@ -42,6 +43,8 @@ app.use("/pc/v1/activities", activityRouter);
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/rooms", roomRouter);
 app.use("/pc/v1/timetable", timeTableRouter);
+app.use("/pc/v1/prepare", prepareCourseRouter);
+
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
