@@ -42,6 +42,7 @@ app.use("/pc/v1/activities", activityRouter);
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/rooms", roomRouter);
 app.use("/pc/v1/timetable", timeTableRouter);
+
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
