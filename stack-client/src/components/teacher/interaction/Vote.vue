@@ -1,13 +1,14 @@
 <template>
-  <div></div>
+  <div>投票</div>
 </template>
 
 <script>
 export default {
-
+  data() {return { }},
+  methods:{ }
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

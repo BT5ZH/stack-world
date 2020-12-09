@@ -30,8 +30,8 @@
       :columns="columns"
       :data-source="classList"
     >
-      <template #operation>
-        <a-button type="link">详情</a-button>
+      <template #operation="record">
+        <a-button type="link" @click="viewClassInfo(record._id)">详情</a-button>
         <a-button type="link">编辑</a-button>
         <a-button type="link">删除</a-button>
       </template>
@@ -110,7 +110,13 @@ export default {
     onSearch() {},
     handle() {
       this.$store.commit("changeState", true);
-    }
+    },
+    viewClassInfo(classId) {
+      this.$router.push({
+        name: "admin_classinfo",
+        query: { classId: classId },
+      });
+    },
   },
 };
 </script>

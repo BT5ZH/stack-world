@@ -3,7 +3,7 @@
     <a-row>
       <a-col :span="5">
         <a-input-search
-          placeholder="课程名称"
+          placeholder="名称、知识点"
           enter-button
           @search="onSearch"
         />

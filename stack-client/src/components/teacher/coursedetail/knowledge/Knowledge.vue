@@ -1,14 +1,15 @@
 <template>
-  <div>签到</div>
+  <div>课程知识点</div>
 </template>
 
 <script>
 export default {
-  data() {return { }},
-  methods:{ }
-}
+  data() {
+    return {};
+  },
+  methods: {},
+};
 </script>
 
 <style scoped>
-
 </style>

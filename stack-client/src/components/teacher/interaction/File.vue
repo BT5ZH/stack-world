@@ -1,5 +1,5 @@
 <template>
-  <div>签到</div>
+  <div>文件下发</div>
 </template>
 
 <script>
