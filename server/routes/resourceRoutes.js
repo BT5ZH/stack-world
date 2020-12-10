@@ -1,19 +1,10 @@
 const express = require("express");
+
 const resourceController = require("../controller/resourceController");
-const courseController = require("../controller/coursecontroller");
 
 
 const router = express.Router();
-
-router.patch(
-  "/upload",
-  resourceController.uploadResourceFile,
-  resourceController.uploadResource
-);
-router
-  .route("/")
-  .get(resourceController.getAllResources)
-  .post(resourceController.createResource);
+router.route("/upload").post(resourceController.uploadResource);
 
 // // 测试
 // router.route("/del").post(courseController.del_course);

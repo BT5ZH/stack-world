@@ -1,10 +1,16 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-
+const uuid = require("../node_modules/uuid/dist");
 // name, email, photo, password, passwordConfirm
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      required: [true,'you must tell us your user_id'],
+      default:uuid.v1,
+  },
   name: {
     type: String,
     // required: [true, 'Please tell us your name'],
@@ -16,17 +22,28 @@ const userSchema = new mongoose.Schema({
     lowercase: [true, "Please provide your password"],
     validate: [validator.isEmail, "Plese provide a valid email"],
   },
+  phone:{ type: String, },
   photo: { type: String, default: "default.jpg" },
   role: {
     type: String,
-    enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
-    default: "user",
+    // enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
+    enum: ["student", "teacher", "patrol", "orgAdmin", "superAdmin"],
+    default: "student",
   },
 
-  orgId: { type: String },
-  subOrgId: { type: String },
-  majorId: { type: String },
-  classId: { type: String },
+  org_id: {  
+    type: mongoose.Schema.Types.String,
+    ref: 'Org',
+  },
+  subOrg_id:{ 
+    type: mongoose.Schema.Types.String,
+     ref: 'SubOrg',
+  },
+  major_id: {  
+    type: mongoose.Schema.Types.String,
+    ref: 'Major', 
+  },
+  //classId: { type: String },
 
   password: {
     type: String,
@@ -53,23 +70,23 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
-  buyCourses: [
-    {
-      course: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Course",
-      },
-    },
-  ],
-  createdCourse: [
-    {
-      course: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Course",
-      },
-    },
-  ],
-});
+  // buyCourses: [
+  //   {
+  //     course: {
+  //       type: mongoose.Schema.ObjectId,
+  //       ref: "Course",
+  //     },
+  //   },
+  // ],
+  // createdCourse: [
+  //   {
+  //     course: {
+  //       type: mongoose.Schema.ObjectId,
+  //       ref: "Course",
+  //     },
+  //   },
+  // ],
+},{_id:false});
 
 // virtual populate
 // userSchema.virtual('courses', {
