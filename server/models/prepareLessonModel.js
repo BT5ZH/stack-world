@@ -9,11 +9,11 @@ const prepareLessonSchema = new mongoose.Schema(
       default: uuid.v1
     },
     lesson_id:{
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'Course',
+        type: mongoose.Schema.Types.String,
+        ref: 'Lesson',
     },
     teacher_id: {
-        type: mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.String,
         ref: 'User',
     },
     one_class:[
