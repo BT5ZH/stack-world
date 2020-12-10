@@ -24,7 +24,7 @@ const orgSchema = new mongoose.Schema(
     subOrgs: [
         {
             type: mongoose.Schema.Types.String,//type: mongoose.Schema.Types.ObjectID,
-            ref: 'SubOrgs',
+            ref: 'SubOrg',
         },
     ],
  },{_id:false}

@@ -1,32 +1,38 @@
 const mongoose = require('mongoose');
 const uuid = require("../node_modules/uuid/dist");
 
-const prepareCourseSchema = new mongoose.Schema(
+const prepareLessonSchema = new mongoose.Schema(
   {
     _id:{
         type:String,
         required: [true, 'Please tell us the ID'],
         default:uuid.v1,
     },
-    courseId:{
+    lesson_id:{
         type: mongoose.Schema.Types.ObjectID,
         ref: 'Course',
     },
-    teacherId: {
+    teacher_id: {
         type: mongoose.Schema.Types.ObjectID,
         ref: 'User',
     },
     one_class:[
         {
-            duration: {
+          name:  {
+            type:String,
+            required: [true, 'One class must have a name'],
+          },
+          PPT:{
+              type:String,//URL
+            },
+          duration: {
                 type: Number,
                 default:50
-              },
-          
-              description: {
-                type: String,
-                required: [true, 'A course must have a description'],
-              },
+          },
+          description: {
+              type: String,
+            
+          },
           
               nodes: [
                   {
@@ -45,6 +51,6 @@ const prepareCourseSchema = new mongoose.Schema(
     ]
   },{_id:false});
 
-const prepareCourse = mongoose.model('prepareCourse', prepareCourseSchema);
+const PrepareLesson = mongoose.model('PrepareLesson', prepareLessonSchema);
 
-module.exports = prepareCourse;
+module.exports = PrepareLesson;
