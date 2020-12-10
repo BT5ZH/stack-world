@@ -22,14 +22,7 @@ const roomSchema = new mongoose.Schema(
       },
     },
 
-    org_id: {  
-      type: mongoose.Schema.Types.String,
-      ref: 'Org',
-    },
-    campus: {  
-      type: mongoose.Schema.Types.String,
-      ref: 'Campus',
-    },
+    
     building: { 
       type: mongoose.Schema.Types.String,
       ref: 'Building', 

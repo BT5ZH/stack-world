@@ -45,6 +45,7 @@ const prepareLessonSchema = new mongoose.Schema(
                       end:Number,
                       content:String,
                       options:[{type:String,}],
+                      attachment_url: { type: String },//use to save the attachment url of one homework
                   }
               ],
         }
