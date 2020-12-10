@@ -4,8 +4,12 @@ const prepareCourseController = require('../controller/prepareCourseController')
 const router = express.Router({ mergeParams: true });
 
 router
-.route('/createPrepareCourse')
-.post(prepareCourseController.createPrepareCourse);
+.route('/createOnePrepareCourse')
+.post(prepareCourseController.createOnePrepareCourse);
+
+router
+.route('/deleteOnePrepareCourse')
+.delete(prepareCourseController.deleteOnePrepareCourse);
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
