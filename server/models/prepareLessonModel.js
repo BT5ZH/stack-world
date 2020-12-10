@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-const mongoose = require('mongoose');
-=======
 const mongoose = require("mongoose");
->>>>>>> 24ef08093f8cf64439f66e14af3ba558d79a97ac
 const uuid = require("uuid");
 
 const prepareLessonSchema = new mongoose.Schema(
@@ -57,12 +53,6 @@ const prepareLessonSchema = new mongoose.Schema(
   { _id: false }
 );
 
-<<<<<<< HEAD:server/models/prepareCourseModel.js
-const prepareCourse = mongoose.model("prepareCourse", prepareCourseSchema);
-
-module.exports = prepareCourse;
-=======
-const PrepareLesson = mongoose.model('PrepareLesson', prepareLessonSchema);
+const PrepareLesson = mongoose.model("PrepareLesson", prepareLessonSchema);
 
 module.exports = PrepareLesson;
->>>>>>> c19221dd09c8b80ff5814df9ef6056709ecbc49a:server/models/prepareLessonModel.js
