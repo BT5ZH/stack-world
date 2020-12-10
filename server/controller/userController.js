@@ -86,6 +86,43 @@ exports.createUser = catchAsync(async (req, res) => {
   });
 });
 
+exports.createAdmin = catchAsync(async (req, res) => {
+  const newUser = await User.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      newUser,
+    },
+  });
+});
+
+exports.createTeacher = catchAsync(async (req, res) => {
+  // Allow nested routes
+
+  const newUser = await User.create(req.body);
+
+  // if (!req.body.user) req.body.user = req.user.id;
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      newUser,
+    },
+  });
+});
+
+exports.createStudent = catchAsync(async (req, res) => {
+  const newUser = await User.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      selected,
+    },
+  });
+});
+
 exports.updateUserRecords = catchAsync(async (req, res) => {
   const newRecords = await User.findByIdAndUpdate(req.params.id, {
     $push: {
