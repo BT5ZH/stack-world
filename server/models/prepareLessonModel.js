@@ -9,14 +9,11 @@ const prepareLessonSchema = new mongoose.Schema(
       default: uuid.v1
     },
     lesson_id: {
-      type: mongoose.Schema.Types.ObjectID,
-      ref: "Course"
-    },
-    lesson_name:{
-
+      type: mongoose.Schema.Types.String,
+      ref: "Lesson"
     },
     teacher_id: {
-      type: mongoose.Schema.Types.ObjectID,
+      type: mongoose.Schema.Types.String,
       ref: "User"
     },
     one_class: [
@@ -35,6 +32,7 @@ const prepareLessonSchema = new mongoose.Schema(
         description: {
           type: String
         },
+
         nodes: [
           {
             tag: {
@@ -54,7 +52,8 @@ const prepareLessonSchema = new mongoose.Schema(
             start: Number,
             end: Number,
             content: String,
-            options: [{ type: String }]
+            options: [{ type: String }],
+            attachment_url: { type: String } //use to save the attachment url of one homework
           }
         ]
       }

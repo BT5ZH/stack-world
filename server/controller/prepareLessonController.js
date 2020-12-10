@@ -1,4 +1,4 @@
-const PrepareCourse = require("../models/prepareLessonModel");
+const PrepareLesson = require("../models/PrepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
 
 /**
@@ -24,12 +24,11 @@ exports.getAllPrepareCourseByTeacherId = catchAsync(async (req, res) => {
  * 新建一门备课（此时备课内容为空）
  * req中包括课程信息如course_id、name、备课教师信息teacher_id等
  */
-exports.createOnePrepareCourse = catchAsync(async (req, res) => {
-  var newPrepareCourseInfo = req.body;
+exports.createOnePrepareLesson = catchAsync(async (req, res) => {
+  var newPrepareLessonInfo = req.body;
   try {
-    var course = await PrepareCourse.find(
-      { lesson_id: newPrepareCourseInfo.course_id,
-        teacher_id: newPrepareCourseInfo.teacher_id }
+    var course = await PrepareLesson.find(
+      { courseId: newPrepareLessonInfo.courseId,teacherId: newPrepareLessonInfo.teacherId }
     );
     if (course.length != 0) {
       res.status(200).json({
@@ -37,11 +36,11 @@ exports.createOnePrepareCourse = catchAsync(async (req, res) => {
         message: "the course is exist"
       });
     } else {
-      var pc = await PrepareCourse.create(newPrepareCourseInfo);
+      var pc = await PrepareLesson.create(newPrepareLessonInfo);
       res.status(200).json({
         status: "success",
         courseInfo: pc,
-        msg: "success create a new prepareCourse"
+        msg: "success create a new PrepareLesson"
       });
     }
   } catch (err) {
@@ -52,19 +51,19 @@ exports.createOnePrepareCourse = catchAsync(async (req, res) => {
 /**
  * 根据teacher_id和course_id删除一门备课
  */
-exports.deleteOnePrepareCourse = catchAsync(async (req, res) => {
+exports.deleteOnePrepareLesson = catchAsync(async (req, res) => {
   var courseInfo = req.body;
   try {
-    var delCourseInfo = await PrepareCourse.deleteOne({course_id:courseInfo.course_id,teacher_id:courseInfo.teacher_id})
+    var delCourseInfo = await PrepareLesson.deleteOne({courseId:courseInfo.courseId,teacherId:courseInfo.teacherId})
     if (delCourseInfo.deletedCount != 0) {
       res.status(200).json({
         status: "success",
-        message: "success delete prepareCourse"
+        message: "success delete PrepareLesson"
       });
     } else {
       res.status(200).json({
         status: "fail",
-        msg: "fail delete prepareCourse"
+        msg: "fail delete PrepareLesson"
       });
     }
   } catch (err) {
@@ -91,11 +90,11 @@ exports.addNewLesson = catchAsync(async (req, res) => {
         message: "the course is exist"
       });
     } else {
-      var pc = await PrepareCourse.create(newPrepareCourseInfo);
+      var pc = await PrepareLesson.create(newPrepareLessonInfo);
       res.status(200).json({
         status: "success",
         courseInfo: pc,
-        msg: "success create a new prepareCourse"
+        msg: "success create a new PrepareLesson"
       });
     }
   } catch (err) {
