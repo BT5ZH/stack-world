@@ -8,46 +8,56 @@ const prepareLessonSchema = new mongoose.Schema(
       required: [true, "Please tell us the ID"],
       default: uuid.v1
     },
-    lesson_id:{
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'Course',
+    lesson_id: {
+      type: mongoose.Schema.Types.ObjectID,
+      ref: "Course"
+    },
+    lesson_name:{
+
     },
     teacher_id: {
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'User',
+      type: mongoose.Schema.Types.ObjectID,
+      ref: "User"
     },
-    one_class:[
-        {
-          name:  {
-            type:String,
-            required: [true, 'One class must have a name'],
-          },
-          PPT:{
-              type:String,//URL
-            },
-          duration: {
-                type: Number,
-                default:50
-          },
-          description: {
+    one_class: [
+      {
+        name: {
+          type: String,
+          required: [true, "One class must have a name"]
+        },
+        PPT: {
+          type: String //URL
+        },
+        duration: {
+          type: Number,
+          default: 50
+        },
+        description: {
+          type: String
+        },
+        nodes: [
+          {
+            tag: {
               type: String,
-            
-          },
-          
-              nodes: [
-                  {
-                      tag: {
-                              type: String,
-                              default: 'Teach',
-                              enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework',],
-                      },
-                      start: Number,
-                      end:Number,
-                      content:String,
-                      options:[{type:String,}],
-                  }
-              ],
-        }
+              default: "Teach",
+              enum: [
+                "Teach",
+                "Sign",
+                "Ask",
+                "Race",
+                "Vote",
+                "Dispatch",
+                "Test",
+                "Homework"
+              ]
+            },
+            start: Number,
+            end: Number,
+            content: String,
+            options: [{ type: String }]
+          }
+        ]
+      }
     ]
   },
   { _id: false }
