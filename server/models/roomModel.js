@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
+const uuid = require("../node_modules/uuid/dist");
 
 const roomSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      required: [true,'you must tell us your id'],
+      default:uuid.v1,
+    },
     roomNumber: {
       type: Number,
       required: [true, "room must have a number"],
@@ -16,22 +22,20 @@ const roomSchema = new mongoose.Schema(
       },
     },
 
-    // empty: { type: Boolean, required: true },
-    organization: { type: String, required: true },
-    campus: { type: String, required: true },
-    building: { type: String, required: true },
-  },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  }
+    org_id: {  
+      type: mongoose.Schema.Types.String,
+      ref: 'Org',
+    },
+    campus: {  
+      type: mongoose.Schema.Types.String,
+      ref: 'Campus',
+    },
+    building: { 
+      type: mongoose.Schema.Types.String,
+      ref: 'Building', 
+    },
+  },{_id:false}
 );
-
-roomSchema.virtual("reviews", {
-  ref: "Review",
-  foreignField: "room",
-  localField: "_id",
-});
 
 const Room = mongoose.model("Room", roomSchema);
 
