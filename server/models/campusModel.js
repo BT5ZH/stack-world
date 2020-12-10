@@ -15,8 +15,7 @@ const campusSchema = new mongoose.Schema(
     },
     //organization: { type: String, required: true }, // 键 组织
     org_id: {  
-      type: mongoose.Schema.Types.String,
-      ref: 'Org',
+      type: String,
     },
     address: { type: String },
     buildings: [

@@ -1,13 +1,13 @@
-const PrepareCourse = require("../models/prepareCourseModel");
+const PrepareLesson = require("../models/PrepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
 
 /**
  * 根据教师Id获取该教师所有的备课
  */
-// exports.getAllPrepareCourseByTeacherId = catchAsync(async (req, res) => {
+// exports.getAllPrepareLessonByTeacherId = catchAsync(async (req, res) => {
 //   var teacherId=req.param.teacherId;
 //   try {
-//     const prepareCourses = await PrepareCourse.find(prepareCourse)
+//     const PrepareLessons = await PrepareLesson.find(PrepareLesson)
 
 //     res.status(200).json({
 //       status: 'success',
@@ -26,11 +26,11 @@ const catchAsync = require("../utils/catchAsync");
  * 新建一门备课（此时备课内容为空）
  * req中包括课程信息如courseId、courseName、备课教师信息TeacherId等
  */
-exports.createOnePrepareCourse = catchAsync(async (req, res) => {
-  var newPrepareCourseInfo = req.body;
+exports.createOnePrepareLesson = catchAsync(async (req, res) => {
+  var newPrepareLessonInfo = req.body;
   try {
-    var course = await PrepareCourse.find(
-      { courseId: newPrepareCourseInfo.courseId,teacherId: newPrepareCourseInfo.teacherId }
+    var course = await PrepareLesson.find(
+      { courseId: newPrepareLessonInfo.courseId,teacherId: newPrepareLessonInfo.teacherId }
     );
     if (course.length != 0) {
       res.status(200).json({
@@ -38,11 +38,11 @@ exports.createOnePrepareCourse = catchAsync(async (req, res) => {
         message: "the course is exist"
       });
     } else {
-      var pc = await PrepareCourse.create(newPrepareCourseInfo);
+      var pc = await PrepareLesson.create(newPrepareLessonInfo);
       res.status(200).json({
         status: "success",
         courseInfo: pc,
-        msg: "success create a new prepareCourse"
+        msg: "success create a new PrepareLesson"
       });
     }
   } catch (err) {
@@ -53,19 +53,19 @@ exports.createOnePrepareCourse = catchAsync(async (req, res) => {
 /**
  * 根据teacherId和courseId删除一门备课
  */
-exports.deleteOnePrepareCourse = catchAsync(async (req, res) => {
+exports.deleteOnePrepareLesson = catchAsync(async (req, res) => {
   var courseInfo = req.body;
   try {
-    var delCourseInfo = await PrepareCourse.deleteOne({courseId:courseInfo.courseId,teacherId:courseInfo.teacherId})
+    var delCourseInfo = await PrepareLesson.deleteOne({courseId:courseInfo.courseId,teacherId:courseInfo.teacherId})
     if (delCourseInfo.deletedCount != 0) {
       res.status(200).json({
         status: "success",
-        message: "success delete prepareCourse"
+        message: "success delete PrepareLesson"
       });
     } else {
       res.status(200).json({
         status: "fail",
-        msg: "fail delete prepareCourse"
+        msg: "fail delete PrepareLesson"
       });
     }
   } catch (err) {
@@ -80,11 +80,11 @@ exports.deleteOnePrepareCourse = catchAsync(async (req, res) => {
 exports.addNewLesson = catchAsync(async (req, res) => {
   var newLessonInfo = req.body;
   try {
-    var course = await PrepareCourse.findOne({courseId:newLessonInfo.courseId,teacherId:newLessonInfo.teacherId});
+    var course = await PrepareLesson.findOne({courseId:newLessonInfo.courseId,teacherId:newLessonInfo.teacherId});
     
     var oldClass = course.oneClass
-    var lesson = await PrepareCourse.updateOne(
-      { courseId: newPrepareCourseInfo.courseId,teacherId: newPrepareCourseInfo.teacherId },{oneClass:newClass}
+    var lesson = await PrepareLesson.updateOne(
+      { courseId: newPrepareLessonInfo.courseId,teacherId: newPrepareLessonInfo.teacherId },{oneClass:newClass}
     );
     if (course.length != 0) {
       res.status(200).json({
@@ -92,11 +92,11 @@ exports.addNewLesson = catchAsync(async (req, res) => {
         message: "the course is exist"
       });
     } else {
-      var pc = await PrepareCourse.create(newPrepareCourseInfo);
+      var pc = await PrepareLesson.create(newPrepareLessonInfo);
       res.status(200).json({
         status: "success",
         courseInfo: pc,
-        msg: "success create a new prepareCourse"
+        msg: "success create a new PrepareLesson"
       });
     }
   } catch (err) {

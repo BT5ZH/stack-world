@@ -12,15 +12,16 @@ const setHomeworkSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       ref: 'Lesson',
     },
+ 
     number_of_time: { type: Number, required: true, min: 1,  },
     //teacher_id: { type: mongoose.Schema.ObjectId, ref: "User" },
 
     content: { type: String },
-    url: { type: String },
+    attachment_url: { type: String },
   },
   { _id: false }
 );
 
-const setHomework = mongoose.model("SetHomework", setHomeworkSchema);
+const SetHomework = mongoose.model("SetHomework", setHomeworkSchema);
 
-module.exports = setHomework;
+module.exports = SetHomework;

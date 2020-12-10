@@ -26,16 +26,13 @@ const classSchema = new mongoose.Schema(
       //   validate: (o) => Array.isArray(o) && o.length > 0,
     
       org_id: {  
-        type: mongoose.Schema.Types.String,
-        ref: 'Org',
+        type: String,
       },
       subOrg_id:{ 
-        type: mongoose.Schema.Types.String,
-         ref: 'SubOrg',
+        type: String,
       },
       major_id: {  
-        type: mongoose.Schema.Types.String,
-        ref: 'Major', 
+        type: String,
       },
    },{_id:false}
   );
