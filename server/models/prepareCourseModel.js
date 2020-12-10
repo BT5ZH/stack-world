@@ -1,55 +1,70 @@
-const mongoose = require('mongoose');
-const uuid = require("../node_modules/uuid/dist");
+const mongoose = require("mongoose");
+const uuid = require("uuid");
 
 const prepareCourseSchema = new mongoose.Schema(
   {
-    _id:{
-        type:String,
-        required: [true, 'Please tell us the ID'],
-        default:uuid.v1,
+    _id: {
+      type: String,
+      required: [true, "Please tell us the ID"],
+      default: uuid.v1
     },
-    courseId:{
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'Course',
+    courseId: {
+      type: String
+    },
+    courseName: {
+      type: String
     },
     teacherId: {
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'User',
+      type: String
     },
-    one_class:[
-        {
-            ppt:{
-                //PPTurl
-                type:String ,
-                required: [true, 'A course must have a ppt'],
-            },
-            duration: {
-                type: Number,
-                default:50
-              },
-          
-              description: {
-                type: String,
-                required: [true, 'A course must have a description'],
-              },
-          
-              nodes: [
-                  {
-                      tag: {
-                              type: String,
-                              default: 'Teach',
-                              enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework',],
-                      },
-                      start: Number,
-                      end:Number,
-                      content:String,
-                      options:[{type:String,}],
-                  }
-              ],
-        }
-    ]
-  },{_id:false});
+    oneClass: [
+      {
+        lessonName: {
+          //课时名
+          type: String
+        },
+        ppt: {
+          //PPTurl
+          type: String,
+          required: [true, "A course must have a ppt"]
+        },
+        duration: {
+          type: Number,
+          default: 50
+        },
 
-const prepareCourse = mongoose.model('prepareCourse', prepareCourseSchema);
+        description: {
+          type: String,
+          required: [true, "A course must have a description"]
+        },
+        nodes: [
+          {
+            tag: {
+              type: String,
+              default: "Teach",
+              enum: [
+                "Teach",
+                "Sign",
+                "Ask",
+                "Race",
+                "Vote",
+                "Dispatch",
+                "Test",
+                "Homework"
+              ]
+            },
+            start: Number,
+            end: Number,
+            content: String,
+            options: [{ type: String }]
+          }
+        ]
+      }
+    ]
+  },
+  { _id: false }
+);
+
+const prepareCourse = mongoose.model("prepareCourse", prepareCourseSchema);
 
 module.exports = prepareCourse;

@@ -2,7 +2,6 @@ const multer = require("multer");
 const AppError = require("./../utils/appError");
 
 const Resource = require("../models/resourceModel");
-const { assumeRole } = require("..utils/aws");
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {

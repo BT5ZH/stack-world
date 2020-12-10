@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(cors());
 
 // 3) ROUTES
-const courseRouter = require("./routes/courseRoutes");
+const courseRouter = require("./routes/courseRoutes-old");
 const userRouter = require("./routes/userRoutes");
 const orgRouter = require("./routes/organizationRoutes");
 const classRouter = require("./routes/classRoutes");
