@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-AWS.config.loadFromPath("./CONFIG.json");
+// AWS.config.loadFromPath("./CONFIG.json");
 const STS = new AWS.STS();
 
 const params = {

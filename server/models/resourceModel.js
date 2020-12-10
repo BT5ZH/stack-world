@@ -8,17 +8,6 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     required: [true, "A resource must have an authorId"],
   },
-  // type: {
-  //   type: String,
-  //   required: [true, 'A resource must have a resourceType'],
-  // },
-
-  type: {
-    type: mongoose.Schema.Types.String,
-    required: [true, "A resource must have a resourceType"],
-    ref: "ResourceType",
-  },
-
   url: {
     type: String,
     required: [true, "A resource must have a rul"],
@@ -33,22 +22,16 @@ const resourceSchema = new mongoose.Schema({
   },
   createTime: {
     type: Date,
-    required: [true, "A resource must have a createTime"],
+    default: Date.now,
   },
-  resourceType: {
+  rsType: {
     type: String,
     required: [true, "A resource must have a resourceType"],
     enum: ["mp4", "pdf", "doc", "jpeg", "jpg", "png", "docx"],
   },
-  tag: {
+  tags: {
     select: false,
-    type: [
-      {
-        chapterIndex: String,
-        courseId: String,
-        lessonIndex: String,
-      },
-    ],
+    type: Array,
   },
 });
 
