@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uuid = require("../node_modules/uuid/dist");
+const uuid = require("uuid");
 
 const prepareLessonSchema = new mongoose.Schema(
   {

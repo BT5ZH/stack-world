@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const uuid = require("../node_modules/uuid/dist");
+const uuid = require("uuid");
 // name, email, photo, password, passwordConfirm
 
 const userSchema = new mongoose.Schema(
