@@ -1,42 +1,32 @@
 const mongoose = require("mongoose");
+const uuid = require("../node_modules/uuid/dist");
 
 const campusSchema = new mongoose.Schema(
   {
-    campus: {
+    _id: {
+      type: String,
+      required: [true,'you must tell us your campus id'],
+      default:uuid.v1,
+    },
+    campus_name: {
       type: String,
       default: "校区",
-      required: [true, "   must have a campus"],
+      required: [true, "campus must have a name"],
     },
-    organization: { type: String, required: true }, // 键 组织
-    campusAddress: { type: String },
-    buildings: {
-      type: [
-        {
-          buildingName: {
-            type: String,
-            required: [true, "building must have a name"],
-          },
-          buildingType: {
-            type: String,
-            required: [true, "building must have a type"],
-          },
-          buildingIntro: String,
-        },
-      ],
-      validate: (p) => Array.isArray(p) && p.length > 0,
+    //organization: { type: String, required: true }, // 键 组织
+    org_id: {  
+      type: mongoose.Schema.Types.String,
+      ref: 'Org',
     },
-  },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  }
+    address: { type: String },
+    buildings: [
+      {
+        type: mongoose.Schema.Types.String,
+        ref: 'Building',
+      },
+    ],
+  },{_id:false}
 );
-
-campusSchema.virtual("reviews", {
-  ref: "Review",
-  foreignField: "campus",
-  localField: "_id",
-});
 
 const Campus = mongoose.model("campus", campusSchema);
 

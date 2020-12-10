@@ -1,31 +1,47 @@
 const mongoose = require('mongoose');
+const uuid = require("../node_modules/uuid/dist");
 
 var courseSchema = mongoose.Schema({
     _id: {
         type: String,
         required: [true,'you must tell us your course_id'],
+        default:uuid.v1,
     },
     name: {
         type: String,
         required: [true,'you must tell us your course_name'],
     },
-    school: {
-        type: String,
-        required: [true,'you must tell us your school'],
+    org_id: {  
+        type: mongoose.Schema.Types.String,
+        ref: 'Org',
     },
-    // 学院
-    academy: {
-        type: String,
-        required: [true,'you must tell us your academy'],
+    subOrg_id:{ 
+        type: mongoose.Schema.Types.String,
+         ref: 'SubOrg',
     },
-    // 专业
-    profession: {
-        type: String,
+    major_id: {  
+        type: mongoose.Schema.Types.String,
+        ref: 'Major', 
+    },
+    // school: {
+    //     type: String,
+    //     required: [true,'you must tell us your school'],
+    // },
+    // // 学院
+    // academy: {
+    //     type: String,
+    //     required: [true,'you must tell us your academy'],
+    // },
+    // // 专业
+    // profession: {
+    //     type: String,
         
-    },
+    // },
+
+   
 },{_id:false})
 
 
-var courseModel = mongoose.model('Course',courseSchema)
+var Course = mongoose.model('Course',courseSchema)
 
-module.exports = courseModel;//暴露模块
+module.exports = Course;//暴露模块

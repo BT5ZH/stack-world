@@ -1,56 +1,55 @@
 const mongoose = require("mongoose");
+const uuid = require("../node_modules/uuid/dist");
 
 const timeTableSchema = new mongoose.Schema(
   {
-    courseId: { type: Number, required: true },
-    courseName: { type: String, required: true },
-    courseStartYear: { type: Date, required: true },
-    location: { type: Object, required: true },
-    courseSemaster: {
+    _id: {
       type: String,
-      required: true,
-      enum: ["spring", "autumn"],
+      required: [true,'you must tell us your id'],
+      default:uuid.v1,
     },
-    weekSingle: {
-      type: String,
-      default: "both",
-      enum: ["true", "false", "both"],
+    lesson_id:{
+      type: mongoose.Schema.Types.String,
+      ref: 'Lesson',
     },
-
-    curriculum: {
-      type: [
+    teacher_id: {  
+      type: mongoose.Schema.Types.String,//type: mongoose.Schema.Types.ObjectID,
+      ref: 'User', 
+    },
+    curriculum: [
         {
           date: {
             type: String,
             required: true,
             enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
           },
-          order: {
-            type: Array,
-            required: true,
+          order: [
+            {
+              type:Number,
+              required: true,
+            }
+          ],
+          odd_or_even: {//weekSingle
+            type: Number,
+            default: 0,
+            enum: [0, 1, 2],//1 means odd week. 2 means even week.
+          },
+          location:{
+            type:mongoose.Schema.Types.String,
+            ref:'Room'
+          },
+          class_id:{
+            type: mongoose.Schema.Types.String,//type: mongoose.Schema.Types.ObjectID,
+            ref: 'Class',
           },
         },
-      ],
-    },
-
-    teacherId: { type: Number, required: true },
-    studentId: [
-      {
-        type: Number,
-      },
-    ],
+      ],   
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    _id:false
   }
 );
 
-timeTableSchema.virtual("reviews", {
-  ref: "Review",
-  foreignField: "timeTable",
-  localField: "_id",
-});
 
 const TimeTable = mongoose.model("TimeTable", timeTableSchema);
 

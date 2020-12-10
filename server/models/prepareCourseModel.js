@@ -18,11 +18,6 @@ const prepareCourseSchema = new mongoose.Schema(
     },
     one_class:[
         {
-            ppt:{
-                //PPTurl
-                type:String ,
-                required: [true, 'A course must have a ppt'],
-            },
             duration: {
                 type: Number,
                 default:50
