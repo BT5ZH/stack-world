@@ -11,16 +11,19 @@ const prepareLessonSchema = new mongoose.Schema(
     lesson_id: {
       type: mongoose.Schema.Types.String,
       ref: "Lesson"
+      // type:String
     },
     teacher_id: {
       type: mongoose.Schema.Types.String,
       ref: "User"
+      // type:String
+
     },
     one_class: [
       {
         name: {
           type: String,
-          required: [true, "One class must have a name"]
+          //required: [true, "One class must have a name"]
         },
         PPT: {
           type: String //URL
