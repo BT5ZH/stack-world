@@ -19,7 +19,7 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Organization.find(JSON.parse(queryString)).select(
-    "organizationName subOrgs"
+    "organizationName subOrgs organizationDescription"
   );
   //   console.log(query);
   // EXECUTE QUERY

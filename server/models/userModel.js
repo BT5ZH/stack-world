@@ -8,85 +8,84 @@ const userSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      required: [true,'you must tell us your user_id'],
-      default:uuid.v1,
-  },
-  name: {
-    type: String,
-    // required: [true, 'Please tell us your name'],
-  },
-  email: {
-    type: String,
-    required: [true, "Please provide your email"],
-    unique: true,
-    lowercase: [true, "Please provide your password"],
-    validate: [validator.isEmail, "Plese provide a valid email"],
-  },
-  phone:{ type: String, },
-  photo: { type: String, default: "default.jpg" },
-  role: {
-    type: String,
-    // enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
-    enum: ["student", "teacher", "patrol", "orgAdmin", "superAdmin"],
-    default: "student",
-  },
-
-  org_id: {  
-    type: mongoose.Schema.Types.String,
-    ref: 'Org',
-  },
-  subOrg_id:{ 
-    type: mongoose.Schema.Types.String,
-     ref: 'SubOrg',
-  },
-  major_id: {  
-    type: mongoose.Schema.Types.String,
-    ref: 'Major', 
-  },
-  //classId: { type: String },
-
-  password: {
-    type: String,
-    required: [true, "Please provide a password"],
-    minlength: 8,
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please comfirm your password"],
-    validate: {
-      // This only works on CREATE SAVE!!!
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "Passwords are not the same",
+      required: [true, "you must tell us your user_id"],
+      default: uuid.v1,
     },
+    name: {
+      type: String,
+      // required: [true, 'Please tell us your name'],
+    },
+    email: {
+      type: String,
+      required: [true, "Please provide your email"],
+      unique: true,
+      lowercase: [true, "Please provide your password"],
+      validate: [validator.isEmail, "Plese provide a valid email"],
+    },
+    phone: { type: String },
+    photo: { type: String, default: "default.jpg" },
+    role: {
+      type: String,
+      // enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
+      enum: ["student", "teacher", "patrol", "orgAdmin", "superAdmin"],
+      default: "student",
+    },
+
+    org_id: {
+      type: mongoose.Schema.Types.String,
+    },
+    subOrg_id: {
+      type: mongoose.Schema.Types.String,
+    },
+    major_id: {
+      type: mongoose.Schema.Types.String,
+    },
+    //classId: { type: String },
+
+    password: {
+      type: String,
+      required: [true, "Please provide a password"],
+      minlength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please comfirm your password"],
+      validate: {
+        // This only works on CREATE SAVE!!!
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Passwords are not the same",
+      },
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
+    // buyCourses: [
+    //   {
+    //     course: {
+    //       type: mongoose.Schema.ObjectId,
+    //       ref: "Course",
+    //     },
+    //   },
+    // ],
+    // createdCourse: [
+    //   {
+    //     course: {
+    //       type: mongoose.Schema.ObjectId,
+    //       ref: "Course",
+    //     },
+    //   },
+    // ],
   },
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
-  },
-  // buyCourses: [
-  //   {
-  //     course: {
-  //       type: mongoose.Schema.ObjectId,
-  //       ref: "Course",
-  //     },
-  //   },
-  // ],
-  // createdCourse: [
-  //   {
-  //     course: {
-  //       type: mongoose.Schema.ObjectId,
-  //       ref: "Course",
-  //     },
-  //   },
-  // ],
-},{_id:false});
+  { _id: false }
+);
 
 // virtual populate
 // userSchema.virtual('courses', {
