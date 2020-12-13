@@ -17,9 +17,9 @@ const buildingSchema = new mongoose.Schema(
         type: String,
         //required: [true, "building must have a type"],
       },
-    org_id: {  
-        type: String,
-      },
+    // org_name: {  
+    //     type: String,
+    //   },
     campus: {  
         type: mongoose.Schema.Types.String,
         ref: 'Campus',

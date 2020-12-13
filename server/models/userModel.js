@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema(
       required: [true, "you must tell us your user_id"],
       default: uuid.v1,
     },
+    user_id:{ type: String,},
+    title:{ 
+      type: String,
+      enum: ["student", "lecturer", "professor", "vice-professor", ],
+      default: "student",
+    },
     name: {
       type: String,
       // required: [true, 'Please tell us your name'],
@@ -31,13 +37,13 @@ const userSchema = new mongoose.Schema(
       default: "student",
     },
 
-    org_id: {
+    org_name: {
       type: mongoose.Schema.Types.String,
     },
-    subOrg_id: {
+    subOrg_name: {
       type: mongoose.Schema.Types.String,
     },
-    major_id: {
+    major_name: {
       type: mongoose.Schema.Types.String,
     },
     //classId: { type: String },

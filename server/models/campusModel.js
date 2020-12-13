@@ -14,7 +14,7 @@ const campusSchema = new mongoose.Schema(
       required: [true, "campus must have a name"],
     },
     //organization: { type: String, required: true }, // 键 组织
-    org_id: {  
+    org_name: {  
       type: String,
     },
     address: { type: String },

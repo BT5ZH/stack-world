@@ -11,17 +11,17 @@ var courseSchema = mongoose.Schema({
         type: String,
         required: [true,'you must tell us your course_name'],
     },
-    org_id: {  
+    org_name: {  
         type: mongoose.Schema.Types.String,
-        ref: 'Org',
+        //ref: 'Org',
     },
-    subOrg_id:{ 
+    subOrg_name:{ 
         type: mongoose.Schema.Types.String,
-         ref: 'SubOrg',
+         //ref: 'SubOrg',
     },
-    major_id: {  
+    major_name: {  
         type: mongoose.Schema.Types.String,
-        ref: 'Major', 
+        //ref: 'Major', 
     },
     // school: {
     //     type: String,

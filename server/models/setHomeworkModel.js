@@ -13,7 +13,7 @@ const setHomeworkSchema = new mongoose.Schema(
       ref: 'Lesson',
     },
  
-    number_of_time: { type: Number, required: true, min: 1,  },
+    number_of_time: { type: Number, required: true, min: 0,  },
     //teacher_id: { type: mongoose.Schema.ObjectId, ref: "User" },
 
     content: { type: String },
