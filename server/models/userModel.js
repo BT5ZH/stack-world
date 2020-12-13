@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
@@ -11,10 +12,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "you must tell us your user_id"],
       default: uuid.v1,
     },
-    user_id:{ type: String,},
-    title:{ 
+    user_id: { type: String },
+    title: {
       type: String,
-      enum: ["student", "lecturer", "professor", "vice-professor", ],
+      enum: ["student", "lecturer", "professor", "vice-professor"],
       default: "student",
     },
     name: {
@@ -32,7 +33,6 @@ const userSchema = new mongoose.Schema(
     photo: { type: String, default: "default.jpg" },
     role: {
       type: String,
-      // enum: ["user", "instructor", "patrol", "orgAdmin", "superAdmin"],
       enum: ["student", "teacher", "patrol", "orgAdmin", "superAdmin"],
       default: "student",
     },
@@ -46,7 +46,6 @@ const userSchema = new mongoose.Schema(
     major_name: {
       type: mongoose.Schema.Types.String,
     },
-    //classId: { type: String },
 
     password: {
       type: String,
@@ -73,22 +72,6 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
-    // buyCourses: [
-    //   {
-    //     course: {
-    //       type: mongoose.Schema.ObjectId,
-    //       ref: "Course",
-    //     },
-    //   },
-    // ],
-    // createdCourse: [
-    //   {
-    //     course: {
-    //       type: mongoose.Schema.ObjectId,
-    //       ref: "Course",
-    //     },
-    //   },
-    // ],
   },
   { _id: false }
 );
@@ -106,6 +89,13 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+  next();
+});
+
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew()) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
@@ -128,36 +118,25 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 /*
-userSchema.pre('save', function (next) {
-  if (!this.isModified('password') || this.isNew) return next();
-
-  this.passwordChangedAt = Date.now() - 1000;
-  next();
-});
-
 userSchema.pre(/^find/, function (next) {
   // this points to the current query
   this.find({ active: { $ne: false } });
   next();
 });
-
-
-
-
-
+*/
 userSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(32).toString("hex");
 
   this.passwordResetToken = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(resetToken)
-    .digest('hex');
+    .digest("hex");
 
   // console.log({ resetToken }, this.passwordResetToken);
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
-*/
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
