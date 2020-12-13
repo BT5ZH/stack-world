@@ -12,8 +12,6 @@ const roomSchema = new mongoose.Schema(
       type: Number,
       required: [true, "room must have a number"],
     },
-    section: { type: Number, default: 1 },
-    floor: { type: Number, default: 1 },
     roomType: {
       type: String,
       required: [true, "room bust have a type"],
@@ -21,12 +19,18 @@ const roomSchema = new mongoose.Schema(
         values: ["classroom", "lab", "office", "others"],
       },
     },
-
-    
     building: { 
       type: mongoose.Schema.Types.String,
       ref: 'Building', 
     },
+    ////////////////////////////////////////////////////
+    section: { 
+      type: Number, default: 1 
+    },
+    floor: { 
+      type: Number, default: 1 
+    },
+    ///////////////////////////////////////////////////
   },{_id:false}
 );
 

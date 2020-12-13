@@ -25,13 +25,13 @@ const classSchema = new mongoose.Schema(
     ],
       //   validate: (o) => Array.isArray(o) && o.length > 0,
     
-      org_id: {  
+      org_name: {  
         type: String,
       },
-      subOrg_id:{ 
+      subOrg_name:{ 
         type: String,
       },
-      major_id: {  
+      major_name: {  
         type: String,
       },
    },{_id:false}
