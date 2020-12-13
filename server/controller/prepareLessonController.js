@@ -1,4 +1,4 @@
-const PrepareLesson = require("../models/PrepareLessonModel");
+const PrepareLesson = require("../models/prepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
 
 /**
