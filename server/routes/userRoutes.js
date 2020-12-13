@@ -28,6 +28,12 @@ router
 router.route("/admin").post(userController.createAdmin);
 router.route("/teacher").post(userController.createTeacher);
 router.route("/student").post(userController.createStudent);
+
+router
+  .route("/multipleUsers")
+  .get(userController.getOrgTeachers)
+  .post(userController.createMultipleUsers);
+
 router
   .route("/:id")
   .get(userController.getUser)
