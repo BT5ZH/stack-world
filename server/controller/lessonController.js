@@ -4,11 +4,16 @@ const AppError = require("./../utils/appError");
 
 //author: Chaos 12-13 
 exports.createLesson = catchAsync(async (req, res, next) => {
-  const onelesson = await Lesson.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: NewTimeTable,
-  });
+  const data = await Lesson.findOne({ course_id:req.body.course_id,teacher_id:req.body.teacher_id});
+  if(!data){
+    const onelesson = await Lesson.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: onelesson,
+    });
+  }else{
+    return next(new AppError("该课已存在", 500));
+  }
 });
 
 exports.getLesson = catchAsync(async (req, res, next) => {
