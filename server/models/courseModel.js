@@ -12,15 +12,15 @@ var courseSchema = mongoose.Schema({
         required: [true,'you must tell us your course_name'],
     },
     org_name: {  
-        type: mongoose.Schema.Types.String,
+        type: String,
         //ref: 'Org',
     },
     subOrg_name:{ 
-        type: mongoose.Schema.Types.String,
+        type: String,
          //ref: 'SubOrg',
     },
     major_name: {  
-        type: mongoose.Schema.Types.String,
+        type: String,
         //ref: 'Major', 
     },
     // school: {
