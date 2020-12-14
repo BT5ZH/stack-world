@@ -11,6 +11,9 @@ const router = express.Router({ mergeParams: true });
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);
 
+router.post("/forgotPassword", authController.forgotPassword);
+router.post("/resetPassword", authController.resetPassword);
+
 router.patch(
   "/updateMe",
   userController.uploadUserPhoto,
@@ -25,6 +28,12 @@ router
 router.route("/admin").post(userController.createAdmin);
 router.route("/teacher").post(userController.createTeacher);
 router.route("/student").post(userController.createStudent);
+
+router
+  .route("/multipleUsers")
+  .get(userController.getOrgTeachers)
+  .post(userController.createMultipleUsers);
+
 router
   .route("/:id")
   .get(userController.getUser)

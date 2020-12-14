@@ -1,4 +1,4 @@
-const PrepareLesson = require("../models/PrepareLessonModel");
+const PrepareLesson = require("../models/prepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
 
 /**
@@ -111,7 +111,7 @@ exports.addNewSection = catchAsync(async (req, res) => {
 });
 
 /**
- * 将某一门课删除某一课时备课
+ * 将一门课的某一课时备课删除
  * req中包括课程信息如lesson_id、备课教师信息teacher_id、课时信息section_index（课时的序号从1开始）
  */
 exports.deleteSection = catchAsync(async (req, res) => {

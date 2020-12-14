@@ -6,16 +6,16 @@
         <a-row>
           <a-col :span="8" style="background: #2d5a88">
             <a-select default-value="请选择学院" size="large" style="width: 350px" @change="handleChange">
-              <a-select-option v-for="sName in sugOrgList" :value="sName" :key="sName">
-                {{sName}}
+              <a-select-option v-for="sName in sugOrgList" :value="sName.subOrgName" :key="sName.subOrgName">
+                {{sName.subOrgName}}
               </a-select-option>
             </a-select>
             
           </a-col>
           <a-col :span="8" style="background: #a6a8e9">
             <a-select default-value="请选择教师" size="large" style="width: 350px" @change="handleChange">
-              <a-select-option v-for="iTeacher in instructorList" :value="iTeacher.orgId" :key="iTeacher.orgId">
-                {{iTeacher.userName}}({{iTeacher.title}})
+              <a-select-option v-for="iTeacher in instructorList" :value="iTeacher.name" :key="iTeacher._id">
+                {{iTeacher.name}} | {{iTeacher.title}}
               </a-select-option>
             </a-select>
           </a-col>
@@ -106,43 +106,13 @@ const data = [
     tags: ['cool', 'teacher'],
   },
 ];
+import axiosInstance from "../../../utils/axios.js"
 export default {
   data() {
     return {
       size: 'default',
-      sugOrgList:[
-        "马克思主义学院",
-        "哲学与政府管理学院",
-        "文学院",
-        "教育学院（田家炳教育书院）",
-        "心理学院",
-        "外国语学院",
-        "数学与信息科学学院",
-        "物理学与信息技术学院",
-        "化学化工学院",
-        "材料科学与工程学院",
-        "生命科学学院",
-        "地理科学与旅游学院",
-        "计算机科学学院",
-        "新闻与传播学院",
-        "体育学院",
-        "音乐学院",
-        "美术学院",
-        "国际商学院",
-        "国际汉学院",
-        "食品工程与营养科学学院",
-        "哲学书院",
-        "民族教育学院",
-        "基础实验教学中心",
-        "教师干部教育学院",
-        "远程教育学院"
-      ],
-      instructorList:[
-        {orgId:"1998123", userName:"李永明",title:"教授"},
-        {orgId:"1998124", userName:"王小明",title:"教授"},
-        {orgId:"1998125", userName:"曹菡",title:"教授"},
-        {orgId:"1998126", userName:"汪西莉",title:"教授"},
-      ],
+      sugOrgList:[],
+      instructorList:[],
       data,
       columns,
     };
@@ -151,12 +121,41 @@ export default {
     handleChange(value) {
       console.log(`Selected: ${value}`);
     },
-    popupScroll() {
-      console.log('popupScroll');
+    async getSubOrgsName(){
+      const orgId="5facabb2cf3bb2002b4b3f38"
+      const url="/pc/v1/organizations/"+orgId+"/suborgs";
+      try{
+        const {data}= await axiosInstance.get(url);
+        this.sugOrgList = data.subOrgs;
+      }catch(err){
+        console.log(err)
+      }
+    },
+    async getTeacherName(){
+      // const orgId="5facabb2cf3bb2002b4b3f38"
+      const queryObject = {"org_name":"陕西师范大学","subOrg_name":"计算机科学学院","major_name":"软件工程","role":"teacher"};
+      let queryString = "";
+      Object.keys(queryObject).forEach(key => {
+        queryString+= key+"="+queryObject[key]+"&"
+      });
+      queryString="?"+queryString.slice(0,-1)
+      const url="/pc/v1/users/multipleUsers"+queryString;
+      console.log(url);
+      try{
+        const {data}= await axiosInstance.get(url);
+        this.instructorList=data.teachers;
+        console.log(data);
+      }catch(err){
+        console.log(err)
+      }
     }
   },
-  mounted:{
-
+  created: function () {
+    
+  },
+  mounted(){
+    this.getSubOrgsName();
+    this.getTeacherName();
   }
 };
 </script>
