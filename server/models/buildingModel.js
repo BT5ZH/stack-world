@@ -5,8 +5,8 @@ const buildingSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      required: [true,'you must tell us your building id'],
-      default:uuid.v1,
+      required: [true, "you must tell us your building id"],
+      default: uuid.v1,
     },
     name: {
       type: String,
@@ -14,19 +14,19 @@ const buildingSchema = new mongoose.Schema(
       required: [true, "building must have a name"],
     },
     type: {
-        type: String,
-        //required: [true, "building must have a type"],
-      },
-    // org_name: {  
+      type: String,
+      //required: [true, "building must have a type"],
+    },
+    // org_name: {
     //     type: String,
     //   },
-    campus: {  
-        type: mongoose.Schema.Types.String,
-        ref: 'Campus',
-      },
+    campus: {
+      type: mongoose.Schema.Types.String,
+      ref: "Campus",
+    },
   },
   {
-    _id:false
+    _id: false,
   }
 );
 
