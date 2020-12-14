@@ -53,7 +53,6 @@ app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/building", buildingRouter);
 app.use("/pc/v1/rooms", roomRouter);
 app.use("/pc/v1/timetable", timeTableRouter);
-app.use("/pc/v1/prepare", prepareLessonRouter);
 app.use("/pc/v1/lesson", lessonRouter);
 
 app.all("*", (req, res, next) => {
