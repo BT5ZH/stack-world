@@ -22,22 +22,7 @@ var courseSchema = mongoose.Schema({
     major_name: {  
         type: String,
         //ref: 'Major', 
-    },
-    // school: {
-    //     type: String,
-    //     required: [true,'you must tell us your school'],
-    // },
-    // // 学院
-    // academy: {
-    //     type: String,
-    //     required: [true,'you must tell us your academy'],
-    // },
-    // // 专业
-    // profession: {
-    //     type: String,
-        
-    // },
-
+    }
    
 },{_id:false})
 
