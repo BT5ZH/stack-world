@@ -43,7 +43,7 @@ exports.getAllLessons = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ teacher_id:req.params.teacher_id});
+  const data = await Lesson.find({ teacher_id:req.body.teacher_id});
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -57,7 +57,7 @@ exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByCourseID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ course_id:req.params.course_id});
+  const data = await Lesson.find({ course_id:req.body.course_id});
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -71,7 +71,7 @@ exports.getLessonsByCourseID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByClassID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ class_id:req.params.class_id});
+  const data = await Lesson.find({ class_id:req.body.class_id});
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
