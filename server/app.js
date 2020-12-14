@@ -35,7 +35,6 @@ const campusRouter = require("./routes/campusRoutes");
 const buildingRouter = require("./routes/buildingRouter");
 const roomRouter = require("./routes/roomRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
-const prepareLessonRouter = require("./routes/prepareRoutes");
 const lessonRouter = require("./routes/lessonRoutes");
 
 
