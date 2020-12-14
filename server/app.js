@@ -32,6 +32,7 @@ const campusRouter = require("./routes/campusRoutes");
 const roomRouter = require("./routes/roomRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
 const prepareLessonRouter = require("./routes/prepareRoutes");
+const lessonRouter = require("./routes/lessonRoutes");
 
 
 app.use("/pc/v1/courses", courseRouter);
