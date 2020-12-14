@@ -19,7 +19,7 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Organization.find(JSON.parse(queryString)).select(
-    "organizationName subOrgs"
+    "organizationName subOrgs organizationDescription"
   );
   //   console.log(query);
   // EXECUTE QUERY
@@ -135,13 +135,11 @@ exports.getSubOrganizations = catchAsync(async (req, res, next) => {
   if (!organization) {
     return next(new AppError("该院/系不存在", 404));
   }
-
-  res.status(200).json({
+  const result = {
     status: "success",
-    data: {
-      subOrgs: organization.subOrgs,
-    },
-  });
+    subOrgs: organization.subOrgs,
+  };
+  res.status(200).json(result);
 });
 
 exports.updateSubOrganization = catchAsync(async (req, res, next) => {

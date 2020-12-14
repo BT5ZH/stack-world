@@ -1,19 +1,19 @@
-const mongoose = require('mongoose');
-const uuid = require("../node_modules/uuid/dist");
+const mongoose = require("mongoose");
+const uuid = require("uuid");
 
 const prepareLessonSchema = new mongoose.Schema(
   {
-    _id:{
-        type:String,
-        required: [true, 'Please tell us the ID'],
-        default:uuid.v1,
+    _id: {
+      type: String,
+      required: [true, "Please tell us the ID"],
+      default: uuid.v1
     },
     lesson_id:{
-        type: mongoose.Schema.Types.ObjectID,
-        ref: 'Course',
+        type: mongoose.Schema.Types.String,
+        ref: 'Lesson',
     },
     teacher_id: {
-        type: mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.String,
         ref: 'User',
     },
     one_class:[
@@ -33,8 +33,7 @@ const prepareLessonSchema = new mongoose.Schema(
               type: String,
             
           },
-          
-              nodes: [
+          nodes: [
                   {
                       tag: {
                               type: String,
@@ -45,12 +44,15 @@ const prepareLessonSchema = new mongoose.Schema(
                       end:Number,
                       content:String,
                       options:[{type:String,}],
+                      attachment_url: { type: String },//use to save the attachment url of one homework
                   }
-              ],
+          ],
         }
     ]
-  },{_id:false});
+  },
+  { _id: false }
+);
 
-const PrepareLesson = mongoose.model('PrepareLesson', prepareLessonSchema);
+const PrepareLesson = mongoose.model("PrepareLesson", prepareLessonSchema);
 
 module.exports = PrepareLesson;

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const uuid = require("../node_modules/uuid/dist");
+const uuid = require("uuid");
 
 const buildingSchema = new mongoose.Schema(
   {
@@ -16,6 +16,13 @@ const buildingSchema = new mongoose.Schema(
     type: {
         type: String,
         //required: [true, "building must have a type"],
+      },
+    // org_name: {  
+    //     type: String,
+    //   },
+    campus: {  
+        type: mongoose.Schema.Types.String,
+        ref: 'Campus',
       },
   },
   {

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const uuid = require("../node_modules/uuid/dist");
+const uuid = require("uuid");
 
 const setHomeworkSchema = new mongoose.Schema(
   {
@@ -8,16 +8,20 @@ const setHomeworkSchema = new mongoose.Schema(
       required: [true, "Please tell us the ID"],
       default: uuid.v1,
     },
-    courseId: { type: mongoose.Schema.ObjectId, ref: "Course" },
-    courseTimes: { type: Number, required: true, min: 1, max: 32 },
-    teacherId: { type: mongoose.Schema.ObjectId, ref: "User" },
+    lesson_id:{
+      type: mongoose.Schema.Types.String,
+      ref: 'Lesson',
+    },
+ 
+    number_of_time: { type: Number, required: true, min: 0,  },
+    //teacher_id: { type: mongoose.Schema.ObjectId, ref: "User" },
 
     content: { type: String },
-    url: { type: String },
+    attachment_url: { type: String },
   },
   { _id: false }
 );
 
-const setHomework = mongoose.model("SetHomework", setHomeworkSchema);
+const SetHomework = mongoose.model("SetHomework", setHomeworkSchema);
 
-module.exports = setHomework;
+module.exports = SetHomework;

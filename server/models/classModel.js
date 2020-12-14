@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const uuid = require("../node_modules/uuid/dist");
+const uuid = require("uuid");
 
 const classSchema = new mongoose.Schema(
   {
@@ -25,17 +25,14 @@ const classSchema = new mongoose.Schema(
     ],
       //   validate: (o) => Array.isArray(o) && o.length > 0,
     
-      org_id: {  
-        type: mongoose.Schema.Types.String,
-        ref: 'Org',
+      org_name: {  
+        type: String,
       },
-      subOrg_id:{ 
-        type: mongoose.Schema.Types.String,
-         ref: 'SubOrg',
+      subOrg_name:{ 
+        type: String,
       },
-      major_id: {  
-        type: mongoose.Schema.Types.String,
-        ref: 'Major', 
+      major_name: {  
+        type: String,
       },
    },{_id:false}
   );

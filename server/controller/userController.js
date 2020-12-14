@@ -57,6 +57,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     },
   });
 });
+
 exports.getUser = catchAsync(async (req, res) => {
   const user = await User.findById(req.params.id);
   //course.findOne({_id:req.params.id});
@@ -77,6 +78,83 @@ exports.createUser = catchAsync(async (req, res) => {
   } else {
   }
   // if (!req.body.user) req.body.user = req.user.id;
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      selected,
+    },
+  });
+});
+
+exports.createMultipleUsers = catchAsync(async (req, res) => {
+  const multipleUsers = req.body;
+
+  if (!multipleUsers || multipleUsers.length == 0) {
+    return next(new AppError("用户列表为空或无数据", 404));
+  }
+  const result = await User.insertMany(req.body);
+
+  res.status(201).json({
+    status: "success",
+    result,
+  });
+});
+
+exports.getOrgTeachers = catchAsync(async (req, res) => {
+  const queryObj = { ...req.query };
+
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+
+  const query = User.find(JSON.parse(queryString)).select(" name title ");
+
+  // EXECUTE QUERY
+  const users = await query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    teachers: [...users],
+  });
+});
+
+exports.createAdmin = catchAsync(async (req, res) => {
+  const newUser = await User.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      newUser,
+    },
+  });
+});
+
+exports.createTeacher = catchAsync(async (req, res) => {
+  // Allow nested routes
+
+  const newUser = await User.create(req.body);
+
+  // if (!req.body.user) req.body.user = req.user.id;
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      newUser,
+    },
+  });
+});
+
+exports.createStudent = catchAsync(async (req, res) => {
+  const newUser = await User.create(req.body);
 
   res.status(201).json({
     status: "success",
