@@ -4,31 +4,31 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(lessonController.getAllLessons)
-  .post(lessonController.createLesson);
+  .get(authController.protect,lessonController.getAllLessons)
+  .post(authController.protect,lessonController.createLesson);
 
 router
   .route("/:lesson_id")
-  .get(lessonController.getLesson)
-  .patch(lessonController.updateLesson)
-  .delete(lessonController.deleteLesson);
+  .get(authController.protect,lessonController.getLesson)
+  .patch(authController.protect,lessonController.updateLesson)
+  .delete(authController.protect,lessonController.deleteLesson);
 router
   .route("/getLessonsByTeacherID")
-  .post(lessonController.getLessonsByTeacherID)
+  .post(authController.protect,lessonController.getLessonsByTeacherID)
 router
   .route("/getLessonsByCourseID")
-  .post(lessonController.getLessonsByCourseID)
+  .post(authController.protect,lessonController.getLessonsByCourseID)
 router
   .route("/getLessonsByClassID")
-  .post(lessonController.getLessonsByClassID)
+  .post(authController.protect,lessonController.getLessonsByClassID)
 router
   .route("/getLessonByCourseIDandTeacherID")
-  .post(lessonController.getLessonByCourseIDandTeacherID)
+  .post(authController.protect,lessonController.getLessonByCourseIDandTeacherID)
 router
   .route("/getLessonByCourseIDandClassID")
-  .post(lessonController.getLessonByCourseIDandClassID)
+  .post(authController.protect,lessonController.getLessonByCourseIDandClassID)
 router
   .route("/getLessonByTeacherIDandClassID")
-  .post(lessonController.getLessonByTeacherIDandClassID)
+  .post(authController.protect,lessonController.getLessonByTeacherIDandClassID)
 
 module.exports = router;

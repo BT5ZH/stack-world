@@ -86,10 +86,30 @@ exports.getcourse = async (req, res) => {
         })
     }
 }
+exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
+    const data = await course.find({ subOrg_name:req.body.subOrg_name});
+    if (!data) {
+      return next(new AppError("该课程不存在", 404));
+    }
+  
+    res.status(200).json({
+      status: "success",
+      data: {
+        data,
+      },
+    });
+  });
 
-// new： bool - 默认为false。返回修改后的数据。
-// 　　upsert： bool - 默认为false。如果不存在则创建记录。
-// 　　runValidators： 如果值为true，执行Validation验证。
-// 　　setDefaultsOnInsert： 如果upsert选项为true，在新建时插入文档定义的默认值。
-// 　　sort： 如果有多个查询条件，按顺序进行查询更新。
-// 　　select： 设置数据的返回。
+  exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
+    const data = await course.find({ major_name:req.body.major_name});
+    if (!data) {
+      return next(new AppError("该课程不存在", 404));
+    }
+  
+    res.status(200).json({
+      status: "success",
+      data: {
+        data,
+      },
+    });
+  });

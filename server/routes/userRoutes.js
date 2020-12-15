@@ -41,4 +41,8 @@ router
   .delete(userController.deleteUser)
   .post(authController.protect, userController.updateUserRecords);
 
+router//edit by Chaos on 12-15 
+  .route("/getTeachersBySubOrgName")
+  .post(authController.protect,userController.getTeachersBySubOrgName);
+  
 module.exports = router;
