@@ -4,16 +4,17 @@
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <a-row>
-          <a-col :span="8" style="background: #2d5a88">
-            <a-select default-value="请选择学院" size="large" style="width: 350px" @change="handleChange">
-              <a-select-option v-for="sName in sugOrgList" :value="sName.subOrgName" :key="sName.subOrgName">
-                {{sName.subOrgName}}
-              </a-select-option>
-            </a-select>
+          <a-col  :span="8" style="background: #2d5a88">
+            <a-select default-value="请选择学院" size="large" style="width: 350px" @change="collegeChange">
+                <a-select-option v-for="sName in sugOrgList" :value="sName.subOrgName" :key="sName.subOrgName">
+                  {{sName.subOrgName}}
+                </a-select-option>
+              </a-select>
             
           </a-col>
           <a-col :span="8" style="background: #a6a8e9">
-            <a-select default-value="请选择教师" size="large" style="width: 350px" @change="handleChange">
+            <a-switch checked-children="开" un-checked-children="关" default-checked @change="switchChange"/>
+            <a-select default-value="请选择教师" size="large" style="width: 350px" @change="peopleChange" :disabled="peopleSwitch">
               <a-select-option v-for="iTeacher in instructorList" :value="iTeacher.name" :key="iTeacher._id">
                 {{iTeacher.name}} | {{iTeacher.title}}
               </a-select-option>
@@ -115,11 +116,30 @@ export default {
       instructorList:[],
       data,
       columns,
+      peopleSwitch:false
     };
   },
   methods: {
-    handleChange(value) {
+    collegeChange(value) {
       console.log(`Selected: ${value}`);
+      // if switch close, just check resource of college
+
+      //if switch open, do NOTHING
+      this.getTeacherName(value)
+    },
+    peopleChange(value) {
+      console.log(`Selected: ${value}`);
+      //if switch open, check out resource of people in college
+    },
+    switchChange(checked){
+      console.log(`a-switch to ${checked}`);
+      if(checked){
+        // open switch 
+        this.peopleSwitch=false
+      }else{
+        //close switch
+        this.peopleSwitch=true
+      }
     },
     async getSubOrgsName(){
       const orgId="5facabb2cf3bb2002b4b3f38"
@@ -131,9 +151,10 @@ export default {
         console.log(err)
       }
     },
-    async getTeacherName(){
+    async getTeacherName(value){
+      console.log(value)
       // const orgId="5facabb2cf3bb2002b4b3f38"
-      const queryObject = {"org_name":"陕西师范大学","subOrg_name":"计算机科学学院","major_name":"软件工程","role":"teacher"};
+      const queryObject = {"org_name":"陕西师范大学","subOrg_name":value,"role":"teacher"};
       let queryString = "";
       Object.keys(queryObject).forEach(key => {
         queryString+= key+"="+queryObject[key]+"&"
@@ -161,5 +182,11 @@ export default {
 </script>
 
 <style>
+.temp{
+  display: flex;
+  flex-direction: column;
+}
+.college{
 
+}
 </style>

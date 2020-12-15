@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const ms = require("ms");
 const { promisify } = require("util");
 const User = require("./../models/userModel");
+const Organization = require("./../models/organizationModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("../utils/appError");
 
@@ -38,8 +39,15 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 2) Check if user exists && password is correct
-  const user = await User.findOne({ email }).select("+password");
-
+  const user = await User.findOne({ email })
+    .select("+password")
+    .populate({ path: "organization", select: "_id" }); //.select("+password")
+  const orgEntity = await Organization.findOne({
+    organizationName: user.org_name,
+  }).select("_id");
+  const orgId = orgEntity._id;
+  user.org_id = orgId;
+  console.log(orgId);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
   }
@@ -50,7 +58,6 @@ exports.login = catchAsync(async (req, res, next) => {
   const token = signToken(user._id);
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   console.log(decoded);
-  console.log("----");
   console.log(decoded.exp);
   user["expiresIn"] = decoded.exp;
   res.status(200).json({

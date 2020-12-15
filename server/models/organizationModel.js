@@ -5,6 +5,7 @@ const organizationSchema = new mongoose.Schema(
     organizationName: {
       type: String,
       default: "组织机构名称",
+      ref: "User",
       required: [true, "organization must have an Name"],
     },
     organizationNameEn: {

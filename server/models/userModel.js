@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
 
     org_name: {
       type: mongoose.Schema.Types.String,
+      ref: "Organization",
+    },
+    org_id: {
+      type: mongoose.Schema.Types.String,
     },
     subOrg_name: {
       type: mongoose.Schema.Types.String,
@@ -46,6 +50,10 @@ const userSchema = new mongoose.Schema(
     major_name: {
       type: mongoose.Schema.Types.String,
     },
+    //     organization:{
+    // type:String,
+    // ref: 'Organization'
+    //     },
 
     password: {
       type: String,
@@ -73,14 +81,23 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { _id: false }
+  // { _id: false }
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
 // virtual populate
-// userSchema.virtual('courses', {
-//   ref: 'Course',
-//   foreignField: 'user',
-//   localField: '_id',
+userSchema.virtual("organizations", {
+  ref: "Organization",
+  foreignField: "organizationName",
+  localField: "org_name",
+});
+
+// userSchema.pre(/^find/, function (next) {
+//   this.populate({ path: "org_name", select: "_id" });
+//   next();
 // });
 
 userSchema.pre("save", async function (next) {
@@ -92,12 +109,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.pre("save", function (next) {
-  if (!this.isModified("password") || this.isNew()) return next();
+// userSchema.pre("save", function (next) {
+//   if (!this.isModified("password") || this.isNew()) return next();
 
-  this.passwordChangedAt = Date.now() - 1000;
-  next();
-});
+//   this.passwordChangedAt = Date.now() - 1000;
+//   next();
+// });
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,
