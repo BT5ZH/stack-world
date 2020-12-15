@@ -8,7 +8,7 @@
         <supervisor-aside />
       </a-layout-sider>
       <a-layout-content>
-        <router-view />
+        <router-view class="container" />
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -22,3 +22,9 @@ export default {
   components: { SupervisorAside, SupervisorHeader },
 };
 </script>
+
+<style scoped>
+.container {
+  padding: 10px 20px 20px;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <layout>
+  
        <div>
     <a-row type="flex">
       <a-col :span="1" :order="1">
@@ -23,16 +23,16 @@
       </a-col>
     </a-row>
   </div>
-    </layout>
+   
     <br>
-    <layout>
+   
       <a-row type="flex">
       <a-col :span="1" :order="1"/>
       <a-col :span="23" :order="2" class="classlist">
       <class-list></class-list>
       </a-col>
       </a-row>
-    </layout>
+
   </div>
 </template>
 
@@ -84,6 +84,8 @@ export default {
     onChange(value) {
       console.log(value);
     },
-  },
+
+onSearch(){},
+},
 };
 </script>

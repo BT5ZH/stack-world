@@ -9,7 +9,7 @@ const state = {
   // class id 班级
   cid: "",
   // user id
-  uid: "",
+  uid: "123456",
   photo: "",
 };
 

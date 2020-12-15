@@ -39,6 +39,8 @@ const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
 const TeacherCourse = () => import("@/components/teacher/course/Index");
 const TeacherCourseDetail = () =>
   import("@/components/teacher/coursedetail/index/CourseDetail");
+const TeacherPreCourse = () =>
+  import("@/components/teacher/precourse/PreCourse");
 
 // -----------------------  student router  -------------------------------
 const landPage = () => import("@/pages/LandingPage.vue");
@@ -70,7 +72,9 @@ const test = () => import("@/pages/student/course/class/Test.vue");
 const file = () => import("@/pages/student/course/class/File.vue");
 
 // ----------------  interaction router --------------------------
-const Interaction = () => import("@/components/teacher/interaction/Index");
+const Interaction = () =>
+  import("@/components/teacher/interaction/InteractionRouter");
+const InteractionIndex = () => import("@/components/teacher/interaction/Index");
 const InteractionVote = () => import("@/components/teacher/interaction/Vote");
 const InteractionPick = () => import("@/components/teacher/interaction/Pick");
 const InteractionRace = () => import("@/components/teacher/interaction/Race");
@@ -179,6 +183,12 @@ export const routes = [
         component: TeacherCourseDetail,
         props: (route) => ({ query: route.query.courseId }),
       },
+      {
+        path: "precourse",
+        name: "teacher_precourse",
+        component: TeacherPreCourse,
+        props: (route) => ({ query: route.query.courseId }),
+      },
     ],
   },
   {
@@ -270,6 +280,7 @@ export const routes = [
     name: "interaction",
     component: Interaction,
     children: [
+      { path: "index", component: InteractionIndex, name: "interaction_vote" },
       { path: "vote", component: InteractionVote, name: "interaction_vote" },
       { path: "pick", component: InteractionPick, name: "interaction_pick" },
       { path: "race", component: InteractionRace, name: "interaction_race" },

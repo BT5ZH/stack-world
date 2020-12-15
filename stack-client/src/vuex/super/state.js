@@ -1,3 +1,5 @@
-const state = {};
+const state = {
+  schoolList: [],
+};
 
 export default state;

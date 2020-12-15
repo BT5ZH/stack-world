@@ -11,13 +11,19 @@
         {{ tag.toUpperCase() }}
       </a-tag>
     </span>
-    <span slot="action" slot-scope="text, record">
-      <a>学生详情{{ record.num }}</a>
+    <span slot="action" >
+      <a>学生详情</a>
+      <a-divider type="vertical" />
+      <a @click="homework">批改作业</a>
       
     </span>
   </a-table>
 </template>
+
+
 <script>
+
+
 const columns = [
   {
     dataIndex: 'name',
@@ -39,7 +45,7 @@ const columns = [
     title: '上课时间',
     key: '上课时间',
     dataIndex: 'tags',
-    scopedSlots: { customRender: 'tags' },
+   
   },
   {
     title: '操作',
@@ -52,21 +58,21 @@ const data = [
   {
     key: '1',
     name: '1',
-    age:'软件1班',
+    num:'软件1班',
     address: '32',
-    tags: ['2020-2021 第二学期周四1/2节'],
+    tags: ['2020-2021 第二学期周四1~2节'],
   },
   {
     key: '2',
     name: '2',
-    age:'软件2班',
+    num:'软件2班',
     address: '38',
     tags: ['2020-10-20'],
   },
   {
     key: '3',
     name: '3',
-    age: '计创1班',
+    num: '计创1班',
     address: '40',
     tags: ['2020-10-20'],
   },
@@ -78,6 +84,13 @@ export default {
       data,
       columns,
     };
+  },
+  methods:{
+
+    homework(){
+      this.$router.push('/homework')
+
+    },
   },
 };
 </script>
