@@ -1,7 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const catchAsync = require("./utils/catchAsync");
 const AppError = require("./utils/appError");
 // const { redisClient, redisPublisher } = require("./dbsSetup");
 
@@ -42,6 +41,7 @@ app.use("/pc/v1/resources", resourceRouter);
 app.use("/pc/v1/activities", activityRouter);
 app.use("/pc/v1/prepare", prepareLessonRouter);
 app.use("/pc/v1/lesson", lessonRouter);
+app.use("/pc/v1/schoolyear", schoolYearRouter);
 
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");
