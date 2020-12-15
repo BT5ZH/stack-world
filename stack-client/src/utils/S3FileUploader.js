@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import axios from "@/utils/axios";
+import random from "@/utils/randomString";
 
 const DEFAULT_REGION = "cn-northwest-1";
 
@@ -40,16 +41,41 @@ function getFileContentType(files) {
 }
 
 /**
+ * 获取视频的时长
+ *
+ * @param {File} file 视频文件
+ * @return {Promise} 视频时长
+ */
+function getVideoDuration(file) {
+  let videoEle = document.createElement("video");
+  videoEle.src = URL.createObjectURL(file);
+  return new Promise((resolve) => {
+    videoEle.onloadedmetadata = function() {
+      resolve(videoEle.duration);
+    };
+  });
+}
+
+/**
  * 更新 S3 上传凭证
  *
- * @param {String} apiUrl 文件上传地址
- * @param {Object} body 要插入数据库的字段
- * @param {Function} callback 凭证更新失败回调
+ * @param {File} file 要上传的文件
+ * @param {Object} config 传入的 config 配置
  */
-async function updateAccessConfig(apiUrl, body, callback) {
+async function updateAccessConfig(file, config) {
   try {
-    const { data } = await axios.post(apiUrl, body);
-    if (data.credentials && data.fileID) {
+    const key = getFileContentType(file);
+    const fileID = random(8, 16);
+    DEFAULT_PARAMS.Key = fileID;
+
+    config.body.url = `${config.filePath}${fileID}.${key}`;
+    config.body.rsType = key;
+    config.body.size = file.size;
+    config.body.originName = file.name;
+    config.body.duration = key === "mp4" ? await getVideoDuration(file) : 0;
+
+    const { data } = await axios.post(config.apiUrl, config.body);
+    if (data.credentials) {
       const { AccessKeyId, SecretAccessKey, SessionToken } = data.credentials;
       AWS.config = new AWS.Config({
         accessKeyId: AccessKeyId,
@@ -57,12 +83,11 @@ async function updateAccessConfig(apiUrl, body, callback) {
         sessionToken: SessionToken,
         region: DEFAULT_REGION,
       });
-      DEFAULT_PARAMS.Key = data.fileID;
       return new AWS.S3();
     }
     throw "credentials syntax error";
   } catch (error) {
-    callback(error);
+    config.accessErrCallback(error);
   }
 }
 
@@ -78,7 +103,6 @@ function updateUploadParams(file, filePath, that, params) {
   const key = getFileContentType(file);
   const uploaderId = that.$store.state.public.uid || "administrator";
   const { Metadata = {} } = params;
-  delete params.Metadata;
   return {
     ...DEFAULT_PARAMS,
     ...params,
@@ -109,12 +133,9 @@ function updateUploadParams(file, filePath, that, params) {
  * - Metadata 默认值只有 uploader, 即当前用户的 ID
  */
 async function uploadFile([file], config = {}, params = {}) {
+  getVideoDuration(file);
   config = { ...DEFAULT_CONFIG, ...config };
-  const S3Instance = await updateAccessConfig(
-    config.apiUrl,
-    config.body,
-    config.accessErrCallback
-  );
+  const S3Instance = await updateAccessConfig(file, config);
   params = updateUploadParams(file, config.filePath, config.that, params);
   if (!S3Instance) return;
   const request = S3Instance.putObject(params, (err, data) => {

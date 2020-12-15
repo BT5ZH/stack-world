@@ -58,7 +58,6 @@ export default {
   data() {
     return {
       fileList: [],
-      resourceUrl: "/shaanxi-normal-university/",
       labelCol: { span: 3 },
       wrapperCol: { span: 14 },
       fileForm: { name: "", tags: "" },
@@ -79,8 +78,8 @@ export default {
       const that = this;
       const config = {
         that,
-        apiUrl: "/pc/v1/resource/upload",
-        filePath: this.resourceUrl,
+        apiUrl: "/pc/v1/resources/upload",
+        filePath: `${this.oid}/teacher/`,
         body: that.createResource(),
         successCallback() {
           that.$message.success("上传成功！");
@@ -111,6 +110,7 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      oid: (state) => state.public.oid,
     }),
   },
 };
