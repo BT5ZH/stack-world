@@ -31,12 +31,6 @@ const activityRouter = require("./routes/liveActivityRoutes");
 const prepareLessonRouter = require("./routes/prepareRoutes");
 const lessonRouter = require("./routes/lessonRoutes");
 
-// ChengNuo
-const campusRouter = require("./routes/campusRoutes");
-const buildingRouter = require("./routes/buildingRouter");
-const roomRouter = require("./routes/roomRoutes");
-const timeTableRouter = require("./routes/timeTableRoutes");
-
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
 app.use("/pc/v1/organizations", orgRouter);
@@ -48,6 +42,11 @@ app.use("/pc/v1/prepare", prepareLessonRouter);
 app.use("/pc/v1/lesson", lessonRouter);
 
 //ChengNuo
+const campusRouter = require("./routes/campusRoutes");
+const buildingRouter = require("./routes/buildingRouter");
+const roomRouter = require("./routes/roomRoutes");
+const timeTableRouter = require("./routes/timeTableRoutes");
+
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/building", buildingRouter);
 app.use("/pc/v1/rooms", roomRouter);
