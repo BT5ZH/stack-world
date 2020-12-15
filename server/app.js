@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(cors());
 
 // 3) ROUTES
-const courseRouter = require("./routes/courseRoutes-old");
+const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");
 const orgRouter = require("./routes/organizationRoutes");
 const classRouter = require("./routes/classRoutes");
@@ -36,6 +36,8 @@ const buildingRouter = require("./routes/buildingRouter");
 const roomRouter = require("./routes/roomRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
 const lessonRouter = require("./routes/lessonRoutes");
+const schoolYearRouter = require("./routes/schoolYearRoutes");
+
 
 
 app.use("/pc/v1/courses", courseRouter);
@@ -46,6 +48,8 @@ app.use("/pc/v1/devices", deviceRouter);
 app.use("/pc/v1/resources", resourceRouter);
 app.use("/pc/v1/activities", activityRouter);
 app.use("/pc/v1/prepare", prepareLessonRouter);
+app.use("/pc/v1/schoolyear", schoolYearRouter);
+
 
 //Nuo
 app.use("/pc/v1/campus", campusRouter);
