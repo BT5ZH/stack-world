@@ -73,14 +73,14 @@ const state = {
         },
         {
             id: 2,
-            name: '随堂提问',
+            name: '随堂测试',
             icon: 'bulb',
             route: 'quiz',
             style: { backgroundColor: colorItems[2], borderColor: colorItems[2] },
         },
         {
             id: 3,
-            name: '随机抽人',
+            name: '直播',
             icon: 'alert',
             route: 'random',
             style: { backgroundColor: colorItems[3], borderColor: colorItems[3] },
@@ -99,13 +99,13 @@ const state = {
             route: 'vote',
             style: { backgroundColor: colorItems[5], borderColor: colorItems[5] },
         },
-        {
-            id: 6,
-            name: '随堂测试',
-            icon: 'bulb',
-            route: 'test',
-            style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
-        },
+        // {
+        //     id: 6,
+        //     name: '随堂测试',
+        //     icon: 'bulb',
+        //     route: 'test',
+        //     style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+        // },
         {
             id: 7,
             name: '文件下发',

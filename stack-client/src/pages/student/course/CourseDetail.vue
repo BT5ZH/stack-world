@@ -8,14 +8,16 @@
         </a-row>
         <div class="course_content" v-if='isClick==0'>
             <empty v-if='resList.length==0'></empty>
-            <leftSlider v-else v-for='item in resList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></leftSlider>
+            <leftSlider v-else v-for='item in resList' :key='item.id' :item='item' :isClick='isClick'
+                :courseId='courseId'></leftSlider>
         </div>
         <div class="course_content" v-if='isClick==1'>
             <gridView4 :gridItems='classMenu'></gridView4>
         </div>
         <div class="course_content" v-if='isClick==2'>
             <empty v-if='homeworkList.length==0'></empty>
-            <resCard v-else v-for='item in homeworkList' :key='item.id' :item='item' :isClick='isClick' :courseId='courseId'></resCard>
+            <resCard v-else v-for='item in homeworkList' :key='item.id' :item='item' :isClick='isClick'
+                :courseId='courseId'></resCard>
         </div>
     </div>
 </template>
@@ -43,6 +45,27 @@
             }
         },
         mounted() {
+            var timerOne = window.setInterval(() => {
+                if (this.$socket) {
+                    this.$socket.emit('connect', 1)
+                    window.clearInterval(timerOne)
+                    return;
+                }
+            }, 500)
+        },
+        sockets: {
+            connect(data){
+                console.log('connected: ',data);
+            },
+            users(data){
+                console.log('online users number: ',data);
+            },
+            reconnect(data){
+                console.log('reconnected: ',data);
+            },
+            disconnect(data){
+                console.log('disconnected: ',data);
+            },
         },
         methods: {
             changeNav(value) {
@@ -67,9 +90,10 @@
 </script>
 
 <style lang="scss">
-    .course_menu{
+    .course_menu {
         margin-bottom: 2rem;
     }
+
     .courseDetailMenu {
         width: 100%;
         height: 100%;

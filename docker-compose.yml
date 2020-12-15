@@ -14,7 +14,7 @@ services:
       - "27019:27017"
     restart: always
     volumes:
-      - /Users/btzh/data/db:/data/db
+      - /Users/huiquanzhang/data/db:/data/db
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: root
     #   MONGO_INITDB_ROOT_PASSWORD: zhanghuiquan

@@ -1,14 +1,17 @@
 import Vue from "vue";
+import VueSocketIO from 'vue-socket.io';
 import App from "./App.vue";
 import VueRouter from "vue-router";
 // import { routes } from "./router/index.js";
 import { routes } from "../routes/routes.js";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
-import {store} from './store';
+import { store } from './store';
 import VueResource from 'vue-resource';
 import echarts from 'echarts'
 import axios from 'axios';
+
+Vue.use(new VueSocketIO({ debug: true, connection: '',}));
 
 Vue.config.productionTip = false;
 Vue.prototype.$echarts = echarts

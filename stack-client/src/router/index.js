@@ -32,7 +32,7 @@ export const routes = [
     component: studentHome,
   },
   {
-      path: '/student',
+      path: '/student/',
       component: studentNavigator, children: [
         {
           path: 'course',
