@@ -6,7 +6,7 @@ const buildingSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your building id"],
-      default: uuid.v1,
+      default: uuid.v4().replace(/\-/g, ''),
     },
     name: {
       type: String,

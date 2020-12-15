@@ -6,7 +6,7 @@ const campusSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true,'you must tell us your campus id'],
-      default:uuid.v1,
+      default:uuid.v4().replace(/\-/g, ''),
     },
     campus_name: {
       type: String,
