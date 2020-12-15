@@ -79,8 +79,8 @@ exports.deleteSchoolYear = catchAsync(async (req, res) => {
 	"year":"2020-2021",
 	"semester":"第二学期",
 	"weeks":"20",
-	"start_time":"5615151515",
-	"end_time":"5615145515"
+	"start_time":"5615151515"时间戳,
+	"end_time":"5615145515"时间戳
 }
  */
 exports.updateSchoolYear = catchAsync(async (req, res) => {
