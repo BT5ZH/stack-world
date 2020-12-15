@@ -1,4 +1,5 @@
 const SchoolYear = require("../models/schoolYearModel");
+const catchAsync = require("./../utils/catchAsync");
 
 exports.getAllSchoolYear = catchAsync(async (req, res) => {
   try {
