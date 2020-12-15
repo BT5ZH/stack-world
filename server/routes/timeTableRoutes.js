@@ -23,4 +23,5 @@ router
 router
   .route("/getCourseTimeTable")
   .post(authController.protect, timeTableController.getCourseTables);
+
 module.exports = router;

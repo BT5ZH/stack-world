@@ -1,4 +1,5 @@
 const TimeTable = require("../models/timeTableModel");
+const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -85,6 +86,7 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
   });
 });
 
+// teacher role selection
 exports.getTeacherTables = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ teacher_id: req.body.teacher_id });
 
@@ -100,6 +102,7 @@ exports.getTeacherTables = catchAsync(async (req, res, next) => {
   });
 });
 
+// course role selection
 exports.getCourseTables = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ course_id: req.body.course_id });
 
