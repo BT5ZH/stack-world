@@ -41,11 +41,19 @@ exports.getAllTimeTable = catchAsync(async (req, res, next) => {
 });
 
 exports.createTimeTable = catchAsync(async (req, res, next) => {
-  const NewTimeTable = await TimeTable.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: NewTimeTable,
+  const data = await TimeTable.findOne({
+    teacher_id: req.body.teacher_id,
+    lesson_id: req.body.lesson_id,
   });
+  if (!data) {
+    const NewTimeTable = await TimeTable.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: NewTimeTable,
+    });
+  } else {
+    return next(new AppError("该课已存在", 500));
+  }
 });
 
 exports.updateTimeTable = catchAsync(async (req, res, next) => {
@@ -78,17 +86,31 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
 });
 
 exports.getTeacherTables = catchAsync(async (req, res, next) => {
-  id = Object(req.params.tid);
-  const timeTable = await TimeTable.findById(id);
+  const data = await TimeTable.find({ teacher_id: req.body.teacher_id });
 
-  if (!timeTable) {
+  if (!data) {
     return next(new AppError("该课表不存在", 404));
   }
 
   res.status(200).json({
     status: "success",
     data: {
-      timeTable,
+      data,
+    },
+  });
+});
+
+exports.getCourseTables = catchAsync(async (req, res, next) => {
+  const data = await TimeTable.find({ course_id: req.body.course_id });
+
+  if (!data) {
+    return next(new AppError("该课表不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data,
     },
   });
 });
