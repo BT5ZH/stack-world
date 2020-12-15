@@ -1,5 +1,4 @@
 const TimeTable = require("../models/timeTableModel");
-const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -66,7 +65,7 @@ exports.updateTimeTable = catchAsync(async (req, res, next) => {
     return next(new AppError("该课表不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       timeTable,
     },
@@ -81,12 +80,11 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });
 
-// teacher role selection
 exports.getTeacherTables = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ teacher_id: req.body.teacher_id });
 
@@ -102,7 +100,6 @@ exports.getTeacherTables = catchAsync(async (req, res, next) => {
   });
 });
 
-// course role selection
 exports.getCourseTables = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ course_id: req.body.course_id });
 
