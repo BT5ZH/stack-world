@@ -1,6 +1,7 @@
 const SchoolYear = require("../models/schoolYearModel");
+const catchAsync = require("./../utils/catchAsync");
 
-exports.getAllSchoolYear = async (req, res) => {
+exports.getAllSchoolYear = catchAsync(async (req, res) => {
   try {
     schoolYears = await SchoolYear.find();
     res.status(200).json({
@@ -13,7 +14,7 @@ exports.getAllSchoolYear = async (req, res) => {
       err
     });
   }
-};
+});
 
 /**
  * 添加学年学期
@@ -26,7 +27,7 @@ exports.getAllSchoolYear = async (req, res) => {
 	"end_time":"5615145515"
 }
  */
-exports.addSchoolYear = async (req, res) => {
+exports.addSchoolYear = catchAsync(async (req, res) => {
   var year = req.body.year;
   var semester = req.body.semester;
 
@@ -49,10 +50,10 @@ exports.addSchoolYear = async (req, res) => {
     console.log(err);
     res.status(404).json({ status: false, message: err });
   }
-};
+});
 
 // 传id删除
-exports.deleteSchoolYear = async (req, res) => {
+exports.deleteSchoolYear = catchAsync(async (req, res) => {
   try {
     var del = await SchoolYear.deleteOne({ _id: req.query._id });
     if ((del.deletedCount = 1)) {
@@ -70,7 +71,7 @@ exports.deleteSchoolYear = async (req, res) => {
     console.log(err);
     res.status(404).json({ status: false, message: err });
   }
-};
+});
 
 /**
  *传参形式
@@ -79,11 +80,11 @@ exports.deleteSchoolYear = async (req, res) => {
 	"year":"2020-2021",
 	"semester":"第二学期",
 	"weeks":"20",
-	"start_time":"5615151515",
-	"end_time":"5615145515"
+	"start_time":"5615151515"时间戳,
+	"end_time":"5615145515"时间戳
 }
  */
-exports.updateSchoolYear = async (req, res) => {
+exports.updateSchoolYear = catchAsync(async (req, res) => {
   try {
     await SchoolYear.findByIdAndUpdate(req.body._id, req.body);
     res.status(200).json({
@@ -94,5 +95,5 @@ exports.updateSchoolYear = async (req, res) => {
       err
     });
   }
-};
+});
 

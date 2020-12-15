@@ -6,11 +6,11 @@ const timeTableSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your id"],
-      default: uuid.v1,
+      default: uuid.v4().replace(/\-/g, ''),
     },
     course_id: {
       type: mongoose.Schema.Types.String,
-      ref: "Lesson",
+      ref: "Course",
     },
     lesson_id: {
       type: mongoose.Schema.Types.String,
@@ -29,7 +29,7 @@ const timeTableSchema = new mongoose.Schema(
         },
         order: [
           {
-            type: Number,
+            type: String, // 上第几节课 如：123 即上1，2，3节课，需要前端截取字符串
             required: true,
           },
         ],

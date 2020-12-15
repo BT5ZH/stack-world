@@ -4,7 +4,7 @@ const uuid = require("uuid");
 var schoolYearSchema = mongoose.Schema({
     _id: {
         type: String,
-        default:uuid.v1,
+        default:uuid.v4().replace(/\-/g, ''),
     },
     year: {//学年
         type: String,

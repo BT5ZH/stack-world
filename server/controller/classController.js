@@ -271,3 +271,31 @@ exports.getCurriculum = catchAsync(async (req, res, next) => {
     },
   });
 });
+//edit by Chaos on 12-15
+exports.getClassesBySubOrgName = catchAsync(async (req, res, next) => {
+  const data = await Class.find({ subOrg_name:req.body.subOrg_name});
+  if (!data) {
+    return next(new AppError("班级不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data,
+    },
+  });
+});
+//edit by Chaos on 12-15
+exports.getClassesByMajorName = catchAsync(async (req, res, next) => {
+  const data = await Class.find({ major_name:req.body.major_name});
+  if (!data) {
+    return next(new AppError("班级不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data,
+    },
+  });
+});
