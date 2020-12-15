@@ -132,7 +132,7 @@ exports.getCourse = async (req, res) => {
 exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
     const data = await course.find({ subOrg_name:req.body.subOrg_name});
     if (!data) {
-      return next(new AppError("该课程不存在", 404));
+      return next(new AppError("课程不存在", 404));
     }
   
     res.status(200).json({
@@ -146,7 +146,7 @@ exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
   exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
     const data = await course.find({ major_name:req.body.major_name});
     if (!data) {
-      return next(new AppError("该课程不存在", 404));
+      return next(new AppError("课程不存在", 404));
     }
   
     res.status(200).json({
