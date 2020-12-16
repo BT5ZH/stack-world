@@ -7,6 +7,14 @@
                 <multi-ques v-else :item='item'></multi-ques>
             </a-list-item>
         </a-list>
+        <div style="display: flex;justify-content: center;">
+            <a-button style="margin-right: 2rem;">
+                保存
+            </a-button>
+            <a-button type="primary">
+                提交
+            </a-button>
+        </div>
     </div>
 </template>
 
@@ -18,7 +26,7 @@
     const QuesData = [];
     for (let i = 0; i < 3; i++) {
         QuesData.push({
-            answer:['A','C'],
+            answer: ['A', 'C'],
             content:
                 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
             options: [

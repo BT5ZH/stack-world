@@ -2,7 +2,7 @@
     <div class="userContainer">
         <a-card class="userCard">
             <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" v-bind="layout">
-                <a-form-model-item has-feedback label="密码" prop="pass">
+                <a-form-model-item has-feedback label="新密码" prop="pass">
                     <a-input v-model="ruleForm.pass" type="password" autocomplete="off" />
                 </a-form-model-item>
                 <a-form-model-item has-feedback label="确认密码" prop="checkPass">
@@ -25,7 +25,7 @@
         data() {
             let validatePass = (rule, value, callback) => {
                 if (value === '') {
-                    callback(new Error('Please input the password'));
+                    callback(new Error('请输入新密码'));
                 } else {
                     if (this.ruleForm.checkPass !== '') {
                         this.$refs.ruleForm.validateField('checkPass');
@@ -35,9 +35,9 @@
             };
             let validatePass2 = (rule, value, callback) => {
                 if (value === '') {
-                    callback(new Error('Please input the password again'));
+                    callback(new Error('请再次输入新密码'));
                 } else if (value !== this.ruleForm.pass) {
-                    callback(new Error("Two inputs don't match!"));
+                    callback(new Error("两次密码不一致!"));
                 } else {
                     callback();
                 }
@@ -61,6 +61,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
+                        //post new password
                         alert('修改成功!');
                     } else {
                         console.log('修改失败!!');

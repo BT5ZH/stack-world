@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueSocketIO from 'vue-socket.io';
+// import VueSocketIO from 'vue-socket.io';
 import App from "./App.vue";
 import VueRouter from "vue-router";
 // import { routes } from "./router/index.js";
@@ -11,7 +11,7 @@ import VueResource from 'vue-resource';
 import echarts from 'echarts'
 import axios from 'axios';
 
-Vue.use(new VueSocketIO({ debug: true, connection: '',}));
+// Vue.use(new VueSocketIO({ debug: true, connection: '',}));
 
 Vue.config.productionTip = false;
 Vue.prototype.$echarts = echarts

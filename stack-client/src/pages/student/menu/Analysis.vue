@@ -1,7 +1,9 @@
 <template>
     <div style="background-color:#f7f7f7; min-height: 90vh;">
-        <a-select style="width: 100%;margin: 0 auto; padding: 2rem 2rem 0;" :default-value="courseList[0].course_name">
-            <a-select-option v-for='item in courseList' :key='item.id' :value="item.course_name">{{item.course_name}}
+        <a-select style="width: 100%;margin: 0 auto; padding: 2rem 2rem 0;" :default-value="courseList[0].course_name"
+            @change="handleChange">
+            <a-select-option v-for='item in courseList' :key='item.id' :value="item.course_name">
+                {{item.course_name}}
             </a-select-option>
         </a-select>
         <a-divider orientation="left" style="padding: 2rem .8rem 0;margin: .8rem 0;">
@@ -9,8 +11,8 @@
         </a-divider>
         <div class="grid_statistic">
             <a-card class="grid_statistic__item grid_statistic__item--1">
-                <a-statistic title="出勤率" :value="11.28" :precision="2" suffix="%"
-                    :value-style="{ color: '#9FE6B8' }" style="margin-right: 50px">
+                <a-statistic title="出勤率" :value="11.28" :precision="2" suffix="%" :value-style="{ color: '#9FE6B8' }"
+                    style="margin-right: 50px">
                     <template #prefix>
                         <!-- <a-icon type="arrow-up" /> -->
                     </template>
@@ -46,8 +48,8 @@
         </a-divider>
         <div class="grid_statistic">
             <a-card class="grid_statistic__item grid_statistic__item--1">
-                <a-statistic title="考试及格率" :value="100" :precision="2" suffix="%"
-                    :value-style="{ color: '#9FE6B8' }" style="margin-right: 50px">
+                <a-statistic title="考试及格率" :value="100" :precision="2" suffix="%" :value-style="{ color: '#9FE6B8' }"
+                    style="margin-right: 50px">
                     <template #prefix>
                         <!-- <a-icon type="arrow-up" /> -->
                     </template>
@@ -70,8 +72,8 @@
                 </a-statistic>
             </a-card>
             <a-card class="grid_statistic__item grid_statistic__item--4">
-                <a-statistic title="资源下载率" :value="100" :precision="2" suffix="%"
-                    :value-style="{ color: '#FFDB5C' }" style="margin-right: 50px;">
+                <a-statistic title="资源下载率" :value="100" :precision="2" suffix="%" :value-style="{ color: '#FFDB5C' }"
+                    style="margin-right: 50px;">
                     <template #prefix>
                         <!-- <a-icon type="arrow-up" /> -->
                     </template>
@@ -91,8 +93,13 @@
             };
         },
         methods: {
+            handleChange(value) {
+                console.log(`selected ${value}`);
+                //get new data
+            },
         },
         mounted() {
+            //get data
         },
         computed: {
             ...mapState({
@@ -103,8 +110,8 @@
 </script>
 
 <style>
-.ant-statistic-title{
-    white-space: nowrap;
-    margin-bottom: 1rem;
-}
+    .ant-statistic-title {
+        white-space: nowrap;
+        margin-bottom: 1rem;
+    }
 </style>

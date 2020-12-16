@@ -23,6 +23,7 @@
             }
         },
         mounted() {
+            //get favResList
         },
         methods: {
         },

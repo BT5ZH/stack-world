@@ -5,21 +5,24 @@
         <a-icon v-if='!isEdit' key="edit" type="edit" @click="editForm" />
         <a-icon v-else key="save" type="save" @click="submitForm" />
       </template>
-      <a-card-meta :title="userName" :description="userClass">
-        <a-avatar slot="avatar" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+      <a-card-meta :title="user.name" :description="user.class">
+        <a-avatar slot="avatar" size="large" :style="{ backgroundColor: '#ffbf00', verticalAlign: 'middle' }">
+          {{ avatarValue }}
+        </a-avatar>
+        <!-- <a-avatar v-else slot="avatar" icon="edit"/> -->
       </a-card-meta>
       <br />
-      <a-input ref="userNameInput" v-model="phone" placeholder="phone number" disabled>
+      <a-input ref="userNameInput" v-model="user.phone" placeholder="phone number" disabled>
         <a-icon slot="prefix" type="phone" />
       </a-input>
       <br />
       <br />
-      <a-input ref="userNameInput" v-model="email" placeholder="email adress" :disabled='!isEdit'>
+      <a-input ref="userNameInput" v-model="user.email" placeholder="email adress" :disabled='!isEdit'>
         <a-icon slot="prefix" type="mail" />
       </a-input>
       <br />
       <br />
-      <a-input ref="userNameInput" v-model="school" placeholder="school" disabled>
+      <a-input ref="userNameInput" v-model="user.org_name" placeholder="school" disabled>
         <a-icon slot="prefix" type="bank" />
       </a-input>
       <br />
@@ -29,28 +32,37 @@
 </template>
 
 <script>
+  import { mapState } from "vuex";
+
   export default {
     data() {
       return {
+        avatarValue: 'Hello',
         isEdit: false,
-        userName: 'Jose Phillips',
-        userClass: 'class 1',
-        phone: '1234567890',
-        email: '112233@qq.com',
-        school: 'hello academy',
+        img: '',
+        datas: new FormData(),
+        files: 0,
+        size: 0
       };
     },
     methods: {
-      emitEmpty() {
-        this.$refs.userNameInput.focus();
-        this.userName = '';
-      },
       submitForm() {
-        this.isEdit = !this.isEdit;
+        this.user.email ? this.$message.info('邮箱不可为空') : (
+          //post userId,email
+          this.isEdit = !this.isEdit);
       },
       editForm() {
         this.isEdit = !this.isEdit;
       },
     },
+    mounted() {
+      let name = new String(this.user.name)
+      this.avatarValue = name.substring(0, 1);
+    },
+    computed: {
+      ...mapState({
+        user: state => state.student.user,
+      })
+    }
   };
 </script>

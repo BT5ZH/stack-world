@@ -23,6 +23,8 @@
 </template>
 
 <script>
+    import * as socketio from '../../../../utils/socket.js';
+
     import leftSlider from '../../../components/LeftSlider.vue';
     import resCard from '../../../components/student/ResCard.vue';
     import gridView4 from "../../../layout/GridView4.vue";
@@ -45,27 +47,9 @@
             }
         },
         mounted() {
-            var timerOne = window.setInterval(() => {
-                if (this.$socket) {
-                    this.$socket.emit('connect', 1)
-                    window.clearInterval(timerOne)
-                    return;
-                }
-            }, 500)
-        },
-        sockets: {
-            connect(data){
-                console.log('connected: ',data);
-            },
-            users(data){
-                console.log('online users number: ',data);
-            },
-            reconnect(data){
-                console.log('reconnected: ',data);
-            },
-            disconnect(data){
-                console.log('disconnected: ',data);
-            },
+            //get resList
+            //get homeworkList
+            socketio.createInstance;
         },
         methods: {
             changeNav(value) {
@@ -82,7 +66,6 @@
                 courseDetailMenu: state => state.student.courseDetailMenu,
                 classMenu: state => state.student.classMenu,
                 resList: state => state.student.resList,
-                classList: state => state.student.classList,
                 homeworkList: state => state.student.homeworkList,
             })
         }
