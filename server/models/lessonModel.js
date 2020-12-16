@@ -5,7 +5,7 @@ var lessonSchema = mongoose.Schema({
     _id: {
         type: String,
         required: [true,'you must tell us your course_id'],
-        default:uuid.v4
+        default:uuid.v1
     },
     course_id:{
         type: mongoose.Schema.Types.String,//type: mongoose.Schema.Types.ObjectID,

@@ -6,7 +6,7 @@ const prepareLessonSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "Please tell us the ID"],
-      default: uuid.v4
+      default: uuid.v1
     },
     lesson_id:{
         type: mongoose.Schema.Types.String,

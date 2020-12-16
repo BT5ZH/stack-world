@@ -6,7 +6,7 @@ const roomSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true,'you must tell us your id'],
-      default:uuid.v4,
+      default:uuid.v1,
     },
     roomNumber: {
       type: Number,

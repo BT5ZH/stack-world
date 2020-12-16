@@ -6,7 +6,7 @@ const classSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true,'you must tell us your class_id'],
-      default:uuid.v4,
+      default:uuid.v1,
     },
     class_name: {
       type: String,
