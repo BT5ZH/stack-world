@@ -5,7 +5,8 @@ const resourceSchema = new mongoose.Schema({
     required: [true, "A resource must have a name"],
   },
   authorId: {
-    type: String,
+    type: mongoose.Schema.Types.String,
+    ref: "User",
     required: [true, "A resource must have an authorId"],
   },
   url: {
@@ -32,6 +33,10 @@ const resourceSchema = new mongoose.Schema({
   tags: {
     select: false,
     type: Array,
+  },
+  click: {
+    type: Number,
+    default: 0,
   },
 });
 
