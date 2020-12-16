@@ -5,7 +5,7 @@ const questionSchema = new mongoose.Schema({
     _id:{
         type:String,
         required: [true, "Please tell us question's ID"],
-        default:uuid.v4().replace(/\-/g, ''),
+        default:uuid.v4,
 
     },
     course_id:{

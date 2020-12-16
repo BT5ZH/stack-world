@@ -6,7 +6,7 @@ const setHomeworkSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "Please tell us the ID"],
-      default: uuid.v4().replace(/\-/g, ''),
+      default: uuid.v4
     },
     lesson_id:{
       type: mongoose.Schema.Types.String,
