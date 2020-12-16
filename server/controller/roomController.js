@@ -19,7 +19,7 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Room.find(JSON.parse(queryString)).select(
-    "roomNumber roomType campus building empty"
+    "room_number room_type campus building empty"
   );
   //   console.log(query);
   // EXECUTE QUERY
