@@ -19,7 +19,7 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Room.find(JSON.parse(queryString)).select(
-    "roomNumber roomType campus building empty"
+    "room_number room_type campus building empty"
   );
   //   console.log(query);
   // EXECUTE QUERY
@@ -88,50 +88,18 @@ exports.deleteRoom = catchAsync(async (req, res, next) => {
   });
 });
 
-// // 一个building中空房间的 数量
-// exports.getEmptyNum = catchAsync(async (req, res, next) => {
-//   const empty = await Room.aggregate([
-//     {
-//       // match :filter object
-//       $match: { empty: { $eq: true } },
-//     },
-//     {
-//       $group: {
-//         _id: "$building", //what we want to group by; toUpper: spell by UPPER case
-//         count: { $sum: 1 }, // 1: quantity of each number counter
-//       },
-//     },
-//   ]);
+exports.batchAddRooms = catchAsync(async (req, res, next) => {
+  var rooms = req.body;
+  await Room.insertMany(rooms, { ordered: false });
+  res.status(200).json({
+    status: true,
+  });
+});
 
-//   res.status(200).json({
-//     status: "success",
-//     data: {
-//       empty,
-//     },
-//   });
-// });
-
-// // 不同building中 空房间 的 类型和数量
-// ex
-// ports.getEmptyType = catchAsync(async (req, res, next) => {
-
-//   const number = await Room.aggregate([
-//     {
-//       $match: { empty: { $eq: true } },
-//     },
-//     {
-//       $group: {
-//         _id: "$roomType",
-//         emptyNumber: { $sum: 1 },
-//         building: { $push: "$building" },
-//       },
-//     },
-//   ]);
-
-//   res.status(200).json({
-//     status: "success",
-//     data: {
-//       empty,
-//     },
-//   });
-// });
+exports.batchDeleteRooms = catchAsync(async (req, res, next) => {
+  var rooms = req.body.rooms._id;
+  await Room.deleteMany({ _id: { $in: rooms } }, { ordered: false });
+  res.status(200).json({
+    status: true,
+  });
+});

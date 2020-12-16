@@ -33,17 +33,18 @@ exports.addSchoolYear = catchAsync(async (req, res) => {
 
   try {
     var schoolYear = await SchoolYear.find({ year: year,semester:semester});
-    console.log(schoolYear);
+    //console.log(schoolYear);
     if(schoolYear.length!=0){
       res.status(500).json({
         status:false,
         message:"该学期已经存在"
       })
     }else{
-      await SchoolYear.create(req.body)
+      var schoolYear= await SchoolYear.create(req.body)
       res.status(200).json({
         status:true,
-        message:"添加成功"
+        message:"添加成功",
+        schoolYear
       })
     }
   } catch (err) {
@@ -55,8 +56,10 @@ exports.addSchoolYear = catchAsync(async (req, res) => {
 // 传id删除
 exports.deleteSchoolYear = catchAsync(async (req, res) => {
   try {
+    //console.log(req)
     var del = await SchoolYear.deleteOne({ _id: req.query._id });
-    if ((del.deletedCount = 1)) {
+    // console.log(req.query._id)
+    if (del.deletedCount = 1) {
       res.status(200).json({
         status: true,
         message: "success"

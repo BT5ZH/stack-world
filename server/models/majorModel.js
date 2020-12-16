@@ -6,7 +6,7 @@ const majorSchema = new mongoose.Schema(
     _id: {
         type: String,
         required: [true,'you must tell us your orgId'],
-        default:uuid.v1,
+        default:uuid.v4,
       },
     name: {
       type: String,

@@ -6,8 +6,8 @@ const authController = require("../controller/authController");
 router
   .route("/")
   .get(authController.protect,lessonController.getAllLessons)
-  .post(authController.protect,lessonController.createLesson);
-
+  //.post(authController.protect,lessonController.createLesson);
+  .post(lessonController.createLesson);
 router
   .route("/:lesson_id")
   .get(authController.protect,lessonController.getLesson)

@@ -5,7 +5,7 @@ var courseSchema = mongoose.Schema({
     _id: {
         type: String,
         required: [true,'you must tell us your course_id'],
-        default:uuid.v4().replace(/\-/g, ''),
+        default:uuid.v4,
     },
     name: {
         type: String,
