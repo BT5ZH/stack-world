@@ -1,12 +1,21 @@
 const express = require("express");
 const schoolYearController = require("../controller/schoolYearController");
+const authController = require("../controller/authController");
 
 const router = express.Router({ mergeParams: true });
 
-router.route("/getAllSchoolYear").get(schoolYearController.getAllSchoolYear);
-router.route("/addSchoolYear").post(schoolYearController.addSchoolYear);
-router.route("/deleteSchoolYear").delete(schoolYearController.deleteSchoolYear);
-router.route("/updateSchoolYear").post(schoolYearController.updateSchoolYear);
+router
+  .route("/getAllSchoolYear")
+  .get(authController.protect, schoolYearController.getAllSchoolYear);
+router
+  .route("/addSchoolYear")
+  .post(authController.protect, schoolYearController.addSchoolYear);
+router
+  .route("/deleteSchoolYear")
+  .delete(authController.protect, schoolYearController.deleteSchoolYear);
+router
+  .route("/updateSchoolYear")
+  .post(authController.protect, schoolYearController.updateSchoolYear);
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

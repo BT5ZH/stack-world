@@ -9,7 +9,8 @@ exports.getAllSchoolYear = catchAsync(async (req, res) => {
       schoolYears
     });
   } catch (err) {
-    res.status(404).json({
+    console.log(err);
+    res.status(500).json({
       status: false,
       err
     });
@@ -30,42 +31,40 @@ exports.getAllSchoolYear = catchAsync(async (req, res) => {
 exports.addSchoolYear = catchAsync(async (req, res) => {
   var year = req.body.year;
   var semester = req.body.semester;
-
+  console.log(req.body);
   try {
-    var schoolYear = await SchoolYear.find({ year: year,semester:semester});
-    //console.log(schoolYear);
-    if(schoolYear.length!=0){
-      res.status(500).json({
-        status:false,
-        message:"该学期已经存在"
-      })
-    }else{
-      var schoolYear= await SchoolYear.create(req.body)
+    var schoolYear = await SchoolYear.find({ year: year, semester: semester });
+    console.log(schoolYear);
+    if (schoolYear.length != 0) {
       res.status(200).json({
-        status:true,
-        message:"添加成功",
+        status: false,
+        message: "该学期已经存在"
+      });
+    } else {
+      var schoolYear = await SchoolYear.create(req.body);
+      res.status(200).json({
+        status: true,
+        message: "添加成功",
         schoolYear
-      })
+      });
     }
   } catch (err) {
     console.log(err);
-    res.status(404).json({ status: false, message: err });
+    res.status(500).json({ status: false, message: err });
   }
 });
 
 // 传id删除
 exports.deleteSchoolYear = catchAsync(async (req, res) => {
   try {
-    //console.log(req)
     var del = await SchoolYear.deleteOne({ _id: req.query._id });
-    // console.log(req.query._id)
-    if (del.deletedCount = 1) {
+    if ((del.deletedCount = 1)) {
       res.status(200).json({
         status: true,
         message: "success"
       });
     } else {
-      res.status(500).json({
+      res.status(200).json({
         status: false,
         message: "false"
       });
@@ -91,12 +90,14 @@ exports.updateSchoolYear = catchAsync(async (req, res) => {
   try {
     await SchoolYear.findByIdAndUpdate(req.body._id, req.body);
     res.status(200).json({
+      status: true,
       message: "success"
     });
   } catch (err) {
-    res.status(404).json({
+    console.log(err);
+    res.status(500).json({
+      status: false,
       err
     });
   }
 });
-
