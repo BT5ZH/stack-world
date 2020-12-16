@@ -26,11 +26,9 @@ const roomSchema = new mongoose.Schema(
     ////////////////////////////////////////////////////
     section: {
       type: Number,
-      default: 1,
     },
     floor: {
       type: Number,
-      default: 1,
     },
     ///////////////////////////////////////////////////
   },
