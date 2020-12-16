@@ -18,7 +18,6 @@ router
 router
   .route("/:id/buildings/")
   .post(authController.protect, campusController.addBuilding) // 新建建筑信息
-  .patch(authController.protect, campusController.updateBuilding) // 更新指定建筑信息
   .delete(authController.protect, campusController.deleteBuilding); // 删除指定建筑信息
 
 module.exports = router;

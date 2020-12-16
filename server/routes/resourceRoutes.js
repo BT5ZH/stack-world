@@ -1,13 +1,17 @@
 const express = require("express");
 
 const resourceController = require("../controller/resourceController");
-
+const authController = require("../controller/authController");
 
 const router = express.Router();
-router.route("/upload").post(resourceController.uploadResource);
+router
+  .route("/upload")
+  .post(authController.protect, resourceController.uploadResource);
 
 // // 测试
-// router.route("/del").post(courseController.del_course);
+router
+  .route("/")
+  .get(authController.protect, resourceController.getAllResources);
 
 // router
 //   .route("/test1")

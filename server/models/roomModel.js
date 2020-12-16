@@ -5,33 +5,34 @@ const roomSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      required: [true,'you must tell us your id'],
-      default:uuid.v4,
+      required: [true, "you must tell us your id"],
+      default: uuid.v4,
     },
-    roomNumber: {
+    room_number: {
       type: Number,
       required: [true, "room must have a number"],
     },
-    roomType: {
+    room_type: {
       type: String,
       required: [true, "room bust have a type"],
       enum: {
         values: ["classroom", "lab", "office", "others"],
       },
     },
-    building: { 
+    building: {
       type: mongoose.Schema.Types.String,
-      ref: 'Building', 
+      ref: "Building",
     },
     ////////////////////////////////////////////////////
-    section: { 
-      type: Number, default: 1 
+    section: {
+      type: Number,
     },
-    floor: { 
-      type: Number, default: 1 
+    floor: {
+      type: Number,
     },
     ///////////////////////////////////////////////////
-  },{_id:false}
+  },
+  { _id: false }
 );
 
 const Room = mongoose.model("Room", roomSchema);
