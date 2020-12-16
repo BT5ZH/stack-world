@@ -6,7 +6,7 @@ const timeTableSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your id"],
-      default: uuid.v1,
+      default: uuid.v4().replace(/\-/g, ''),
     },
     course_id: {
       type: mongoose.Schema.Types.String,
@@ -15,6 +15,7 @@ const timeTableSchema = new mongoose.Schema(
     lesson_id: {
       type: mongoose.Schema.Types.String,
       ref: "Lesson",
+      unique: true,
     },
     teacher_id: {
       type: mongoose.Schema.Types.String, //type: mongoose.Schema.Types.ObjectID,

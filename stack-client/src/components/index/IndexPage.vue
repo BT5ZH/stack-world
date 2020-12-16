@@ -100,17 +100,18 @@ export default {
         })
         .catch((err) => {
           console.error(err);
+          this.$message.error("账号或密码错误");
         });
     },
     updatePublicVuexData(context) {
       const publicVuexData = {
         role: this.userMap[context.role]["name"],
-        oid: context.orgId,
-        sid: context.subOrgId,
-        mid: context.majorId,
-        cid: context.classId,
+        email: context.email,
+        orgName: context.org_name,
+        oid: context.org_id,
         uid: context._id,
         photo: context.photo,
+        title: context.title,
       };
       this.$store.commit("public/updateIdList", publicVuexData);
       return this.userMap[context.role]["index"];
