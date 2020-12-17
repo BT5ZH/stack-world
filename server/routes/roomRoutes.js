@@ -17,6 +17,13 @@ router
   .post(authController.protect, roomController.createRoom);
 
 router
+  .route("/batchAddRooms")
+  .post(authController.protect, roomController.batchAddRooms); // 批量添加房间
+router
+  .route("/batchDeleteRooms")
+  .post(authController.protect, roomController.batchDeleteRooms); //批量删除房间
+
+router
   .route("/:id")
   .get(authController.protect, roomController.getRoom)
   .patch(authController.protect, roomController.updateRoom)

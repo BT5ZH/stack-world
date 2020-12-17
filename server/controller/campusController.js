@@ -23,7 +23,9 @@ exports.getAllCampus = catchAsync(async (req, res, next) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = Campus.find(JSON.parse(queryString)).select("campus buildings");
+  const query = Campus.find(JSON.parse(queryString)).select(
+    "campus_name buildings"
+  );
   //   console.log(query);
   // EXECUTE QUERY
   const campus = await query;
@@ -94,9 +96,7 @@ exports.deleteCampus = catchAsync(async (req, res, next) => {
 });
 
 exports.addBuilding = catchAsync(async (req, res, next) => {
-  const bName = req.body.buildingName;
-  const bType = req.body.buildingType;
-  const bIntro = req.body.buildingIntro;
+  const bid = req.body;
 
   const newBuilding = await Campus.findByIdAndUpdate(
     {
@@ -104,11 +104,7 @@ exports.addBuilding = catchAsync(async (req, res, next) => {
     },
     {
       $addToSet: {
-        buildings: {
-          buildingName: bName,
-          buildingType: bType,
-          buildingIntro: bIntro,
-        },
+        buildings: bid,
       },
     },
     {
@@ -123,37 +119,8 @@ exports.addBuilding = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateBuilding = catchAsync(async (req, res, next) => {
-  const bName = req.body.buildingName;
-  const building = await Campus.findOneAndUpdate(
-    {
-      _id: req.params.id,
-      buildings: { $elemMatch: { buildingName: { $eq: bName } } },
-    },
-    {
-      $set: {
-        "buildings.$.buildingType": req.body.buildingType,
-        "buildings.$.buildingIntro": req.body.buildingIntro,
-      },
-    },
-    {
-      new: true,
-      upsert: true,
-    }
-  );
-  if (!building) {
-    return next(new AppError("更新教学楼信息出错", 404));
-  }
-  res.status(200).json({
-    status: "scccess",
-    data: {
-      building,
-    },
-  });
-});
-
 exports.deleteBuilding = catchAsync(async (req, res, next) => {
-  const bName = req.body.buildingName;
+  const bid = req.body;
   const building = await Campus.findOneAndUpdate(
     {
       _id: req.params.id,
@@ -161,7 +128,7 @@ exports.deleteBuilding = catchAsync(async (req, res, next) => {
     },
     {
       $pull: {
-        buildings: { buildingName: bName },
+        buildings: { $in: bid },
       },
     },
     {
@@ -171,7 +138,7 @@ exports.deleteBuilding = catchAsync(async (req, res, next) => {
   );
 
   if (!building) {
-    return next(new AppError("该建筑", 404));
+    return next(new AppError("该建筑不存在", 404));
   }
 
   res.status(204).json({
