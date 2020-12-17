@@ -6,30 +6,33 @@ const authController = require("../controller/authController");
 router
   .route("/")
   .get(authController.protect,lessonController.getAllLessons)
-  //.post(authController.protect,lessonController.createLesson);
-  .post(lessonController.createLesson);
+  .post(authController.protect,lessonController.createLesson);
+ 
 router
   .route("/:lesson_id")
-  .get(authController.protect,lessonController.getLesson)
-  .patch(authController.protect,lessonController.updateLesson)
-  .delete(authController.protect,lessonController.deleteLesson);
+  .get(authController.protect, lessonController.getLesson)
+  .patch(authController.protect, lessonController.updateLesson)
+  .delete(authController.protect, lessonController.deleteLesson);
 router
   .route("/getLessonsByTeacherID")
-  .post(authController.protect,lessonController.getLessonsByTeacherID)
+  .post(authController.protect, lessonController.getLessonsByTeacherID);
 router
   .route("/getLessonsByCourseID")
-  .post(authController.protect,lessonController.getLessonsByCourseID)
+  .post(authController.protect, lessonController.getLessonsByCourseID);
 router
   .route("/getLessonsByClassID")
-  .post(authController.protect,lessonController.getLessonsByClassID)
+  .post(authController.protect, lessonController.getLessonsByClassID);
 router
   .route("/getLessonByCourseIDandTeacherID")
-  .post(authController.protect,lessonController.getLessonByCourseIDandTeacherID)
+  .post(authController.protect,lessonController.getLessonByCourseIDandTeacherID);
 router
   .route("/getLessonByCourseIDandClassID")
-  .post(authController.protect,lessonController.getLessonByCourseIDandClassID)
+  .post(authController.protect, lessonController.getLessonByCourseIDandClassID);
 router
   .route("/getLessonByTeacherIDandClassID")
-  .post(authController.protect,lessonController.getLessonByTeacherIDandClassID)
+  .post(
+    authController.protect,
+    lessonController.getLessonByTeacherIDandClassID
+  );
 
 module.exports = router;

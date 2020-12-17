@@ -9,13 +9,14 @@ exports.getAllPrepareLessonByTeacherId = catchAsync(async (req, res) => {
   try {
     const prepareLessons = await PrepareLesson.find({ teacher_id: teacher_id });
     res.status(200).json({
-      status: "success",
+      status: true,
       data: {
         prepareLessons
       }
     });
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
 });
 
@@ -31,17 +32,18 @@ exports.deleteOnePrepareLesson = catchAsync(async (req, res) => {
     });
     if (delLessonInfo.deletedCount != 0) {
       res.status(200).json({
-        status: "success",
+        status: true,
         message: "success delete PrepareLesson"
       });
     } else {
       res.status(200).json({
-        status: "fail",
-        msg: "fail delete PrepareLesson"
+        status: false,
+        message: "fail delete PrepareLesson"
       });
     }
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
 });
 
@@ -59,11 +61,12 @@ exports.getOnePrepareLesson = catchAsync(async (req, res) => {
       teacher_id: teacher_id
     });
     res.status(200).json({
-      status: "success",
+      status: true,
       message: lesson
     });
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
 });
 
@@ -95,7 +98,7 @@ exports.addNewSection = catchAsync(async (req, res) => {
         teacher_id: teacher_id,
         one_class: [new_section]
       });
-      res.status(200).json({ status: "success", message: new_lesson });
+      res.status(200).json({ status: true, message: new_lesson });
     } else {
       if (section_index > lesson.one_class.length) {
         lesson.one_class.push(new_section);
@@ -103,10 +106,11 @@ exports.addNewSection = catchAsync(async (req, res) => {
         lesson.one_class.splice(section_index - 1, 0, new_section);
       }
       lesson.save();
-      res.status(200).json({ status: "success", message: lesson });
+      res.status(200).json({ status: true, message: lesson });
     }
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
 });
 
@@ -128,9 +132,10 @@ exports.deleteSection = catchAsync(async (req, res) => {
     lesson.one_class.splice(section_index - 1, 1);
     //此处还没考虑是否要删除相应的附件
     lesson.save();
-    res.status(200).json({ status: "success", message: lesson });
+    res.status(200).json({ status: true, message: lesson });
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
 });
 /**
@@ -150,10 +155,40 @@ exports.updateSectionName = catchAsync(async (req, res) => {
     });
     lesson.one_class[section_index - 1].name = section_name;
     lesson.save();
-    res.status(200).json({ status: "success", message: lesson });
+    res.status(200).json({ status: true, message: lesson });
   } catch (err) {
-    res.status(500).json({ status: "fail", message: err });
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
   }
+});
+exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
+  // BUILD QUERY
+  // 1) Filtering
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+  // console.log(queryString);
+  const query = PrepareLesson.find(JSON.parse(queryString));
+  // console.log(query);
+  // EXECUTE QUERY
+  const prepareLessons = await query;
+  // console.log(courses);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    resulrs: prepareLessons.length,
+    data: {
+      prepareLessons,
+    },
+  });
 });
 ///////////////////////////////////////////////////
 //以下代码暂时不用

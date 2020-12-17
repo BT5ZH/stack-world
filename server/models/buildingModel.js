@@ -6,7 +6,7 @@ const buildingSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your building id"],
-      default: uuid.v4,
+      default: uuid.v1,
     },
     name: {
       type: String,

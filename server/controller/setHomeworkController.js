@@ -14,14 +14,11 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
     /\b(gte|gt|lte|le)\b/g,
     (match) => `$${match}`
   );
-  // console.log(queryString);
-  const query = SetHomework.find(JSON.parse(queryString)).select(
-    "teacherId courseId courseTimes content "
-  );
-  // console.log(query);
-  // EXECUTE QUERY
+ 
+  const query = SetHomework.find(JSON.parse(queryString))
+  //.select("_id lesson_id number_of_time content ");
+
   const setHomework = await query;
-  // console.log(courses);
 
   // SEND RESPONSE
   res.status(200).json({

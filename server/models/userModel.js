@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your user_id"],
-      default: uuid.v4,
+      default: uuid.v1,
     },
     user_id: { type: String },
     title: {
