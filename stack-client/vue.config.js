@@ -1,8 +1,13 @@
 module.exports = {
+  lintOnSave: false,
   publicPath: "/",
   assetsDir: "public",
   devServer: {
     disableHostCheck: true,
+    overlay: {
+      warnings: false,
+      errors: false,
+    },
   },
   css: {
     loaderOptions: {
