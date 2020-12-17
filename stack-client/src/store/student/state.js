@@ -1,8 +1,17 @@
-var colorItems = ['blueviolet', '#9FE6B8', '#FFDB5C', '#ff9f7f', '#fb7293', '#8378EA', '#96BFFF', '#e7bcf3', '#9d96f5',];
+var colorItems = ['blueviolet','#9FE6B8', '#FFDB5C', '#ff9f7f', '#fb7293', '#8378EA', '#96BFFF', '#e7bcf3', '#9d96f5','#f56a00', '#7265e6', '#ffbf00', '#00a2ae', ];
 
 const state = {
     //public
     userId: '111a5b',
+    user:{
+        email:"zhangjingyi@w-click.cn",
+        password:"snnu1234",
+        passwordConfirm:"snnu1234",
+        role:"student",
+        name:"张靖漪",
+        title:"student",
+        org_name:"陕西师范大学",
+    },
     //student
     //首页目录分区
     courseMenu: [
@@ -73,14 +82,14 @@ const state = {
         },
         {
             id: 2,
-            name: '随堂提问',
+            name: '随堂测试',
             icon: 'bulb',
             route: 'quiz',
             style: { backgroundColor: colorItems[2], borderColor: colorItems[2] },
         },
         {
             id: 3,
-            name: '随机抽人',
+            name: '随机点名',
             icon: 'alert',
             route: 'random',
             style: { backgroundColor: colorItems[3], borderColor: colorItems[3] },
@@ -99,13 +108,13 @@ const state = {
             route: 'vote',
             style: { backgroundColor: colorItems[5], borderColor: colorItems[5] },
         },
-        {
-            id: 6,
-            name: '随堂测试',
-            icon: 'bulb',
-            route: 'test',
-            style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
-        },
+        // {
+        //     id: 6,
+        //     name: '随堂测试',
+        //     icon: 'bulb',
+        //     route: 'test',
+        //     style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+        // },
         {
             id: 7,
             name: '文件下发',
@@ -145,7 +154,7 @@ const state = {
         },
         {
             course_id: 4,
-            course_name: 'C4D example',
+            course_name: 'JQery course',
             teacher: 'Sam',
             time: '2-28week',
             week: 2, classroom: '',
@@ -153,7 +162,7 @@ const state = {
         },
         {
             course_id: 5,
-            course_name: 'C4D example',
+            course_name: 'SpringBoot',
             teacher: 'Sam',
             time: '2-28week',
             week: 3,
@@ -162,7 +171,7 @@ const state = {
         },
         {
             course_id: 6,
-            course_name: 'C4D example',
+            course_name: 'Python bootcamp',
             teacher: 'Sam',
             time: '2-28week',
             week: 4,
@@ -176,14 +185,10 @@ const state = {
         { id: 'r01', resType: 1, isFinish: true, title: 'quiz', isFav:false},
         { id: 'r02', resType: 2, isFinish: false, title: 'MP4', isFav:true },
     ],
-    classList: [
-        { id: 'c00', resType: 0, isFinish: false, title: 'class NO.1' },
-    ],
     homeworkList: [
         { id: 'h00', resType: 0, isFinish: false, title: 'homework 1' },
         { id: 'h01', resType: 1, isFinish: true, title: 'homework 2' },
     ],
-    //favResList
     favResList: [
         { id: 'r00', resType: 0, isFinish: false, title: 'PPT', isFav:true},
         { id: 'r02', resType: 2, isFinish: false, title: 'MP4', isFav:true },

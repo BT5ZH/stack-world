@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3000";
+const SOCKET_URL = "http://localhost:3050";
 const options = {};
 let socket = null;
 const client = io(SOCKET_URL, options);
@@ -34,7 +34,7 @@ function initSocketConnection() {
   return new Promise((resolve, reject) => {
     client.on("connect", (sk) => {
       socket = sk;
-      console.log(`socket connection established, id is ${socket_client.id}`);
+      console.log(`socket connection established, id is ${socket.id}`);
       addListenersToScoket(socket);
       resolve();
     });
@@ -43,5 +43,11 @@ function initSocketConnection() {
 }
 
 function createInstance(that, callbacks) {
+  console.log(that);
+  console.log(callbacks);
   if (!socket) initSocketConnection();
+}
+
+function sendEvent(event) {
+  socket.emit(event.type, event.data);
 }
