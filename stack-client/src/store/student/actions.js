@@ -38,7 +38,7 @@ const action = {
   async getFavResList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
     errorHandler(data, "getFavResList");
-    const resList = data.data.organizations.map((item) => ({
+    const favResList = data.data.organizations.map((item) => ({
       resName: item.organizationName,
       desc: item.organizationDescription,
       sid: item._id,
