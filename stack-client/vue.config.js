@@ -3,6 +3,10 @@ module.exports = {
   assetsDir: "public",
   devServer: {
     disableHostCheck: true,
+    overlay: {
+      warnings: false,
+      errors: false,
+    },
   },
   css: {
     loaderOptions: {
