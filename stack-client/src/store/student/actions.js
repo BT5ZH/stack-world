@@ -7,24 +7,43 @@ function errorHandler(data, funcName) {
 }
 
 const action = {
-  async getSchoolList({ commit }) {
+  async getCourseList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
-    errorHandler(data, "getSchoolList");
-    const schoolList = data.data.organizations.map((item) => ({
-      schoolName: item.organizationName,
+    errorHandler(data, "getCourseList");
+    const courseList = data.data.organizations.map((item) => ({
+      courseName: item.organizationName,
       desc: item.organizationDescription,
       sid: item._id,
     }));
-    commit("updateSchoolList", schoolList);
+    commit("updateCourseList", courseList);
   },
-  async getAdminList({ commit }) {
+  async getResList({ commit }) {
+    const { data } = await axios.get("/pc/v1/organizations");
+    errorHandler(data, "getResList");
+    const resList = data.data.organizations.map((item) => ({
+      resName: item.organizationName,
+      desc: item.organizationDescription,
+      sid: item._id,
+    }));
+    commit("updateResList", resList);
+  },
+  async getHomeworkList({ commit }) {
     const { data } = await axios.get("/pc/v1/");
-    errorHandler(data, "getAdminList");
-    const adminList = data.data.adminList.map((item) => {
+    errorHandler(data, "getHomeworkList");
+    const homeworkList = data.data.homeworkList.map((item) => {
       console.log(item);
     });
-    commit("updateAdminList", adminList);
-    // TODO updateAdminList
+    commit("updateHomeworkList", homeworkList);
+  },
+  async getFavResList({ commit }) {
+    const { data } = await axios.get("/pc/v1/organizations");
+    errorHandler(data, "getFavResList");
+    const resList = data.data.organizations.map((item) => ({
+      resName: item.organizationName,
+      desc: item.organizationDescription,
+      sid: item._id,
+    }));
+    commit("updateResList", favResList);
   },
 };
 
