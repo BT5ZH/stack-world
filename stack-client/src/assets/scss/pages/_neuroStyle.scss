@@ -1,0 +1,56 @@
+.NeuroStyle {
+    width: 100%;
+    height: 90vh;
+    position: relative;
+    background-color: #ecedf1;
+    background-repeat: no-repeat;
+    background-size: 80% auto;
+    background-position: 0 100%;
+
+    &__sign{
+        // background-image: url($img-url + "Wireframe.png");
+    }
+
+    &__random{
+        // background-image: url($img-url + "Space.png");
+    }
+
+    &__button {
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border: none;
+        text-decoration: none;
+        font-weight: 500;
+        letter-spacing: 2px;
+        color: #5a84a2;
+        font-size: 2rem;
+        box-shadow: -2px -2px 8px rgba(255, 255, 255, 1), -2px -2px 12px rgba(255, 255, 255, 0.5),
+            inset 2px 2px 4px rgba(255, 255, 255, 0.1), 2px 2px 8px rgba(0, 0, 0, 0.15);
+
+        &:focus {
+            outline: none;
+        }
+
+        &:active {
+            outline: none;
+            border: none;
+            text-decoration: none;
+            box-shadow: inset -2px -2px 8px rgba(255, 255, 255, 1), inset -2px -2px 12px rgba(255, 255, 255, 0.5),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.1), inset 2px 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        &--sign {
+            width: 20rem;
+            height: 20rem;
+            border-radius: 50%;
+        }
+
+        &--random{
+            width: 25rem;
+            height: 10rem;
+            border-radius: 1.2rem;
+        }
+    }
+}

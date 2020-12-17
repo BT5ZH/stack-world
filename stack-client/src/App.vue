@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <a-config-provider :locale="zhCN">
-      <router-view></router-view>
-    </a-config-provider>
+    <!-- <app-header></app-header> -->
+    <!-- <img src="./assets/logo.png" alt="Vue logo"> -->
+    <router-view></router-view>
   </div>
 </template>
 
