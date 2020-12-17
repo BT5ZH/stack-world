@@ -4,6 +4,36 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 //author: Chaos 12-13 
+exports.getAllLessons = catchAsync(async (req, res, next) => {
+  // BUILD QUERY
+  // 1) Filtering
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+  // console.log(queryString);
+  const query = Lesson.find(JSON.parse(queryString));
+  // console.log(query);
+  // EXECUTE QUERY
+  const lessons = await query;
+  // console.log(courses);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    resulrs: lessons.length,
+    data: {
+      lessons,
+    },
+  });
+});
+
 exports.createLesson = catchAsync(async (req, res, next) => {
   const data = await Lesson.findOne({ course_id:req.body.course_id,teacher_id:req.body.teacher_id});
   if(!data){
@@ -31,17 +61,7 @@ exports.getLesson = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllLessons = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find();
-  if (!data) {
-    return next(new AppError("该课不存在", 404));
-  }
 
-  res.status(200).json({
-    status: "success",
-    data,
-  });
-});
 
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
   const data = await Lesson.find({ teacher_id:req.body.teacher_id}).populate('teacher_id','user_id name -_id');

@@ -161,6 +161,35 @@ exports.updateSectionName = catchAsync(async (req, res) => {
     res.status(500).json({ status: false, message: err });
   }
 });
+exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
+  // BUILD QUERY
+  // 1) Filtering
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+  // console.log(queryString);
+  const query = PrepareLesson.find(JSON.parse(queryString));
+  // console.log(query);
+  // EXECUTE QUERY
+  const prepareLessons = await query;
+  // console.log(courses);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    resulrs: prepareLessons.length,
+    data: {
+      prepareLessons,
+    },
+  });
+});
 ///////////////////////////////////////////////////
 //以下代码暂时不用
 ///////////////////////////////////////////////////

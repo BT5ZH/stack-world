@@ -29,7 +29,7 @@ exports.getAllTimeTable = catchAsync(async (req, res, next) => {
   //   console.log(query);
   // EXECUTE QUERY
   const timeTables = await query;
-  console.log(timeTables);
+  //console.log(timeTables);
 
   // SEND RESPONSE
   res.status(200).json({

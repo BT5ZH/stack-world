@@ -12,8 +12,10 @@ const submitHomeworkSchema = new mongoose.Schema(
     student_id: { type: mongoose.Schema.String, ref: "User" },
 
     content: { type: String },
-    comments: { type: String },
     attachment_url: { type: String },
+
+    comments: { type: String },
+    score: { type: Number, default:0},
   },
   { _id: false }
 );
