@@ -48,8 +48,7 @@ exports.createLesson = catchAsync(async (req, res, next) => {
 });
 
 exports.getLesson = catchAsync(async (req, res, next) => {
-  const data = await (await Lesson.findOne({ _id:req.params.lesson_id}));
-  console.log(data)
+  const data = await Lesson.findOne({ _id:req.params.lesson_id});
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -93,48 +92,40 @@ exports.getLessonsByCourseID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByClassID = catchAsync(async (req, res, next) => {
-  //try {
-    let v = req.body.class_id;
-    const data = await Lesson.find({"teacher_id":{$ne:null},classes:{$elemMatch:{$eq:v}}}).populate('teacher_id','user_id name -_id');
-    res.status(200).json({
-      status: "success",
-      data: { 
-        data,
+  try {
+    const lessonObj = await Class.aggregate([
+      {
+        $lookup: {
+          from: "lessons",
+          localField: "_id",
+          foreignField: "classes",
+          as: "Lesson",
+        },
       },
-    });
-  //   const lessonObj = await Class.aggregate([
-  //     {
-  //       $lookup: {
-  //         from: "lessons",
-  //         localField: "_id",
-  //         foreignField: "classes",
-  //         as: "Lesson",
-  //       },
-  //     },
-  //     {$match: { _id: req.body.class_id },},
-  //    // {$match: { year: year },},
-  //    // {$match: { semester: semester },},
-  //     {
-  //       $project: {
-  //         _id: 0,
-  //         class_name: 1,
-  //         "Lesson._id": 1,
-  //         "Lesson.course_id": 1,
-  //       },
-  //     },
-  //   ]);
-  //   //console.log("lessonObj="+lessonObj)
-  //   //if(lessonObj[0].belongedToLesson[0]!=null){
-  //     res.status(200).json({
-  //       status: "success",
-  //       data: {
-  //         lessonObj
-  //       },
-  //     });
-  //  // }
-  // } catch (err) { 
-  //   return false;
-  //}
+      {$match: { _id: req.body.class_id },},
+     // {$match: { year: year },},
+     // {$match: { semester: semester },},
+      {
+        $project: {
+          _id: 0,
+          class_name: 1,
+          "Lesson._id": 1,
+          "Lesson.course_id": 1,
+        },
+      },
+    ]);
+    //console.log("lessonObj="+lessonObj)
+    //if(lessonObj[0].belongedToLesson[0]!=null){
+      res.status(200).json({
+        status: "success",
+        data: {
+          lessonObj
+        },
+      });
+   // }
+  } catch (err) { 
+    return false;
+  }
 });
 
 exports.getLessonByCourseIDandTeacherID = catchAsync(async (req, res, next) => {
@@ -187,7 +178,7 @@ exports.deleteLesson = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });

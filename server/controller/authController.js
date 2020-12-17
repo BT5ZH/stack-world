@@ -24,7 +24,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // });
 
   res.status(201).json({
-    status: "scccess",
+    status: "success",
     token,
     data: newUser,
   });
@@ -61,7 +61,7 @@ exports.login = catchAsync(async (req, res, next) => {
   console.log(decoded.exp);
   user["expiresIn"] = decoded.exp;
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     token,
     data: user,
   });

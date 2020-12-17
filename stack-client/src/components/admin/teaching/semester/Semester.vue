@@ -10,7 +10,7 @@
         :data-source="data"
         bordered
         :pagination="{
-          total: 50,
+          total: data.length,
           'show-size-changer': true,
           'show-quick-jumper': true,
         }"
@@ -41,16 +41,61 @@
             <span v-else>
               <a :disabled="!!editingKey" @click="edit(record.index)">编辑</a>
               &nbsp;&nbsp;
-              <a>删除</a>
+              <a @click="deleteit(record.index)">删除</a>
             </span>
           </div>
         </template>
       </a-table>
     </a-row>
+    <a-modal
+      v-model="visible"
+      title="添加"
+      @ok="hideModal"
+      :maskClosable="false"
+    >
+      <a-form-model
+        :model="addsemester"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+        :rules="formRules"
+      >
+        <a-form-model-item label="学年" prop="addschoolYear">
+          <a-input
+            placeholder="请输入学年"
+            v-model="addsemester.addschoolYear"
+          ></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="学期" prop="addsemester">
+          <a-input
+            placeholder="请输入学期"
+            v-model="addsemester.addsemester"
+          ></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="教学周" prop="addteachingWeek">
+          <a-input
+            placeholder="请输入教学周"
+            v-model="addsemester.addteachingWeek"
+          ></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="开始日期" prop="addstartDate">
+          <a-input
+            placeholder="请输入开始日期"
+            v-model="addsemester.addstartDate"
+          ></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="结束日期" prop="addendDate">
+          <a-input
+            placeholder="请输入结束日期"
+            v-model="addsemester.addendDate"
+          ></a-input>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </a-row>
 </template>
 
 <script>
+import axios from "@/utils/axios";
 const columns = [
   {
     title: "序号",
@@ -94,28 +139,29 @@ const columns = [
     align: "center",
   },
 ];
-const data = [
-  {
-    index: 1,
-    schoolYear: "2020-2021",
-    semester: "第一学期",
-    teachingWeek: "20",
-    startDate: "2020-09-01",
-    endDate: "2021-01-15",
-  },
-  {
-    index: 2,
-    schoolYear: "2020-2021",
-    semester: "第二学期",
-    teachingWeek: "20",
-    startDate: "2021-03-01",
-    endDate: "2021-07-20",
-  },
-];
+let data = [];
 export default {
   data() {
     this.cacheData = data.map((item) => ({ ...item }));
     return {
+      visible: false,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      addsemester: {
+        addschoolYear: "",
+        addsemester: "",
+        addteachingWeek: "",
+        addstartDate: "",
+        addendDate: "",
+      },
+      currentNode: "1",
+      formRules: {
+        addschoolYear: [{ required: true, message: "上课时间不能为空" }],
+        addsemester: [{ required: true, message: "下课时间不能为空" }],
+        addteachingWeek: [{ required: true, message: "上课时间不能为空" }],
+        addstartDate: [{ required: true, message: "上课时间不能为空" }],
+        addendDate: [{ required: true, message: "上课时间不能为空" }],
+      },
       data,
       columns,
       columnTitles: [
@@ -140,6 +186,7 @@ export default {
       }
     },
     edit(index) {
+      this.cacheData = this.data.map((item) => ({ ...item }));
       const newData = [...this.data];
       const target = newData.filter((item) => index === item.index)[0];
       this.editingKey = index;
@@ -149,17 +196,82 @@ export default {
       }
     },
     save(index) {
-      const newData = [...this.data];
-      const newCacheData = [...this.cacheData];
+      const that = this;
+      that.cacheData = that.data.map((item) => ({ ...item }));
+      const newData = [...that.data];
+      const newCacheData = [...that.cacheData];
       const target = newData.filter((item) => index === item.index)[0];
-      const targetCache = newCacheData.filter((item) => index === item.index)[0];
+      const targetCache = newCacheData.filter(
+        (item) => index === item.index
+      )[0];
+      that.editingKey = "";
+      const requestData = {
+        _id: target.id,
+        year: target.schoolYear,
+        semester: target.semester,
+        weeks: target.teachingWeek,
+        start_time: target.startDate,
+        end_time: target.endDate,
+      };
       if (target && targetCache) {
-        delete target.editable;
-        this.data = newData;
-        Object.assign(targetCache, target);
-        this.cacheData = newCacheData;
+        axios
+          .post("pc/v1/schoolyear/updateSchoolYear", requestData)
+          .then(({ data }) => {
+            const { status } = data;
+            if (!status) {
+              that.$message.error("error");
+              return;
+            }
+            delete target.editable;
+            that.data = newData;
+            Object.assign(targetCache, target);
+            that.cacheData = newCacheData;
+          })
+          .catch(() => {
+            that.$message.error("修改失败，请重试！");
+          });
       }
-      this.editingKey = "";
+    },
+    deleteit(index) {
+      const that = this;
+      console.log(that.data[index - 1].id);
+      axios
+        .delete("pc/v1/schoolyear/deleteSchoolYear", {
+          params: { _id: that.data[index - 1].id },
+        })
+        .then(({ data }) => {
+          const { status } = data;
+          if (status) {
+            axios
+              .get("pc/v1/schoolyear/getAllSchoolYear")
+              .then(({ data }) => {
+                const { status, schoolYears } = data;
+                console.log(data);
+                if (!status) {
+                  return;
+                }
+                that.data = schoolYears.map((item, index1) => {
+                  let setindex = index1 + 1;
+                  let newdata = {};
+                  newdata.id = item._id;
+                  newdata.schoolYear = item.year;
+                  newdata.semester = item.semester;
+                  newdata.teachingWeek = item.weeks;
+                  newdata.startDate = item.start_time;
+                  newdata.endDate = item.end_time;
+                  newdata.index = setindex;
+                  return newdata;
+                });
+              })
+              .catch(() => {
+                this.$message.error("失败，请重试！");
+              });
+            return;
+          }
+        })
+        .catch(() => {
+          this.$message.error("删除失败，请重试！");
+        });
     },
     cancel(index) {
       const newData = [...this.data];
@@ -174,7 +286,79 @@ export default {
         this.data = newData;
       }
     },
-    addSemester() {},
+    hideModal() {
+      const {
+        addschoolYear,
+        addsemester,
+        addteachingWeek,
+        addstartDate,
+        addendDate,
+      } = this.addsemester;
+      const requestData = {
+        year: addschoolYear,
+        semester: addsemester,
+        weeks: addteachingWeek,
+        start_time: addstartDate,
+        end_time: addendDate,
+      };
+      const that = this;
+      const url = `pc/v1/schoolyear/addSchoolYear`;
+      axios
+        .post(url, requestData)
+        .then(({ data }) => {
+          console.log(data);
+          const { status, message } = data;
+          console.log(message);
+          if (!status) {
+            that.$message.error(message);
+            return;
+          }
+          const { schoolYear } = data;
+          that.data.push({
+            id: schoolYear._id,
+            schoolYear: schoolYear.year,
+            semester: schoolYear.semester,
+            teachingWeek: schoolYear.weeks,
+            startDate: schoolYear.start_time,
+            endDate: schoolYear.end_time,
+            index: that.data.length + 1,
+          });
+        })
+        .catch(() => {
+          this.$message.error("添加失败，请重试！");
+        });
+      this.visible = false;
+    },
+    addSemester() {
+      this.visible = true;
+    },
+  },
+  created: function () {
+    const that = this;
+    const url = `pc/v1/schoolyear/getAllSchoolYear`;
+    axios
+      .get(url)
+      .then(({ data }) => {
+        const { status, schoolYears } = data;
+        if (!status) {
+          return;
+        }
+        that.data = schoolYears.map((item, index1) => {
+          let setindex = index1 + 1;
+          let newdata = {};
+          newdata.id = item._id;
+          newdata.schoolYear = item.year;
+          newdata.semester = item.semester;
+          newdata.teachingWeek = item.weeks;
+          newdata.startDate = item.start_time;
+          newdata.endDate = item.end_time;
+          newdata.index = setindex;
+          return newdata;
+        });
+      })
+      .catch(() => {
+        this.$message.error("失败，请重试！");
+      });
   },
 };
 </script>

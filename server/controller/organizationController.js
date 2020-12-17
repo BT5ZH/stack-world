@@ -19,7 +19,7 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Organization.find(JSON.parse(queryString)).select(
-    "organizationName subOrgs organizationDescription"
+    "organizationName subOrgs organizationDescription organizationNameEn"
   );
   //   console.log(query);
   // EXECUTE QUERY
@@ -75,7 +75,7 @@ exports.updateOrganization = catchAsync(async (req, res, next) => {
     return next(new AppError("该机构不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       organization,
     },
@@ -90,7 +90,7 @@ exports.deleteOrganization = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });
@@ -164,7 +164,7 @@ exports.updateSubOrganization = catchAsync(async (req, res, next) => {
     return next(new AppError("更新院系信息出错", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       organization,
     },
@@ -194,7 +194,7 @@ exports.deleteSubOrganization = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: organization,
   });
 });
@@ -290,7 +290,7 @@ exports.updateMajor = catchAsync(async (req, res, next) => {
     return next(new AppError("更新院系信息出错", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       resultInfo,
     },
@@ -331,7 +331,7 @@ exports.deleteMajor = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: organization,
   });
 });

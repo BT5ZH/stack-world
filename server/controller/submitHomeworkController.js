@@ -67,7 +67,7 @@ exports.updateSubmitHomework = catchAsync(async (req, res, next) => {
     return next(new AppError("该作业不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       submitHomework,
     },
@@ -82,7 +82,7 @@ exports.deleteSubmitHomework = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });

@@ -68,7 +68,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
     return next(new AppError("该空间不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       room,
     },
@@ -83,7 +83,7 @@ exports.deleteRoom = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });

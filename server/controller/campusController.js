@@ -142,7 +142,7 @@ exports.deleteBuilding = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: building,
   });
 });

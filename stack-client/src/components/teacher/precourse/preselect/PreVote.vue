@@ -52,15 +52,19 @@
           </a-row>
           <a-row>
             <a-input
-              v-for="(option, index) in card.options"
+              v-for="index in optionlength[idx]"
               :key="index"
               class="options"
+              v-model="card.options[index]"
             >
               <template #prefix>
-                <a-button type="primary">{{ ENG_CHARS[index] }}</a-button>
+                <a-button type="primary">{{ ENG_CHARS[index - 1] }}</a-button>
               </template>
               <template #suffix>
-                <a-icon type="close" @click="closeOption(idx, index)"></a-icon>
+                <a-icon
+                  type="close"
+                  @click="closeOption(idx, index - 1)"
+                ></a-icon>
               </template>
             </a-input>
             <a-button type="primary" @click="addOption(idx)">添加选项</a-button>
@@ -81,38 +85,44 @@ export default {
     return {
       ENG_CHARS,
       MAX_OPTIONS,
-      cards: [{ title: "", options: ["A", "B"] }],
+      cards: [{ title: "", options: [] }],
+      optionlength: [2],
     };
   },
   methods: {
     closeOption(idx, index) {
-      if (this.cards[idx].options.length <= 2) {
+      if (this.optionlength[idx] <= 2) {
         this.$message.info("选项不能少于两个！");
         return null;
       }
       this.cards[idx].options.splice(index, 1);
+      let newlength = this.optionlength[idx]-1;
+       this.optionlength.splice(idx, 1,newlength);
     },
     addOption(idx) {
-      const length = this.cards[idx].options.length;
+      const length = this.optionlength[idx];
       if (length >= this.MAX_OPTIONS) {
         this.$message.info(`选项不能超过${this.MAX_OPTIONS}个！`);
         return null;
       }
-      this.cards[idx].options.push(this.ENG_CHARS[length + 1]);
+      let newlength = this.optionlength[idx]+1;
+      this.optionlength.splice(idx, 1,newlength);
     },
-    riseUp(idx) {
-      const card = this.cards.splice(idx, 1);
-      this.cards.splice(idx - 1, 0, card);
-    },
-    dropDown(idx) {
-      const card = this.cards.splice(idx, 1);
-      this.cards.splice(idx + 1, 0, card);
-    },
+    // riseUp(idx) {
+    //   const card = this.cards.splice(idx, 1);
+    //   this.cards.splice(idx - 1, 0, card);
+    // },
+    // dropDown(idx) {
+    //   const card = this.cards.splice(idx, 1);
+    //   this.cards.splice(idx + 1, 0, card);
+    // },
     closeCard(idx) {
       this.cards.splice(idx, 1);
+      this.optionlength.splice(idx, 1);
     },
     addCard() {
-      this.cards.push({ title: "", options: ["A", "B"] });
+      this.cards.push({ title: "", options: [] });
+      this.optionlength.push(2);
       const length = this.cards.length - 1;
       this.$nextTick(() => {
         const selector = "#editor" + length;
@@ -150,7 +160,6 @@ export default {
 </script>
 
 <style scoped>
-
 .card-btn .ant-btn {
   margin: 0 5px;
 }

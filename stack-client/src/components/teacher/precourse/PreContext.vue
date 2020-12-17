@@ -1,20 +1,37 @@
 <template>
   <a-row style="height: 100%">
     <a-row class="box">
+      <a-row type="flex" justify="end" style="padding: 20px">
+        <a-col>
+          <a-radio-group button-style="solid">
+            <a-space>
+              <a-radio-button @click="addsteps"> 添加事件 </a-radio-button>
+              &nbsp;&nbsp;
+              <a-radio-button @click="deletesteps"> 删除事件 </a-radio-button>
+            </a-space>
+          </a-radio-group>
+        </a-col>
+      </a-row>
       <a-row
         justify="space-between"
         type="flex"
         align="middle"
-        style="padding: 20px"
+        class="steptype"
       >
-        <a-col :span="24" @contextmenu.prevent="deletemarks">
-          <a-slider
-            :marks="marks"
-            v-model="slidervalue"
-            :max="50"
-            @afterChange="afterChange"
-            ref="slider"
-          />
+        <a-col :span="24" @contextmenu.prevent="deletesteps">
+          <a-steps
+            size="small"
+            progress-dot
+            v-model="current"
+            @change="onChange"
+          >
+            <a-step
+              v-for="(step, index) in steps"
+              :key="index"
+              :title="step.title"
+              :description="step.description"
+            />
+          </a-steps>
         </a-col>
       </a-row>
       <br />
@@ -31,6 +48,16 @@
       @cancel="modalClose"
       :zIndex="10001"
     >
+      <a-row>
+        花费时间:
+        <a-input-number
+          id="inputNumber"
+          v-model="time"
+          :min="1"
+          :max="1000"
+        />分钟
+      </a-row>
+      <br />
       <div>
         <a-radio-group
           v-model="componentId"
@@ -51,6 +78,7 @@
               <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
             </a-popover>
             <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
+            <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>
           </a-space>
         </a-radio-group>
       </div>
@@ -58,6 +86,7 @@
   </a-row>
 </template>
 <script>
+import PreHomework from "./preselect/PreHomework.vue";
 import PreTeaching from "./preselect/PreTeaching.vue";
 import PreQuestion from "./preselect/PreQuestion.vue";
 import PreCompete from "./preselect/PreCompete.vue";
@@ -75,10 +104,16 @@ export default {
     PreSign,
     PreDocument,
     PreTest,
+    PreHomework,
   },
   data() {
     return {
-      marks: {},
+      time: 10,
+      current: 0,
+      steps: [
+        { title: "讲课", description: "20分钟" },
+        { title: "提问", description: "5分钟" },
+      ],
       event: {
         PreVote: "投票",
         PreSign: "签到",
@@ -87,6 +122,7 @@ export default {
         PreTeaching: "讲课",
         PreTest: "随堂测试",
         PreDocument: "文件下发",
+        PreHomework: "布置作业",
       },
       slidervalue: 5,
       modalvisible: false,
@@ -96,30 +132,34 @@ export default {
   },
   computed: {
     isempty() {
-      return !!Object.keys(this.marks).length;
+      return !!Object.keys(this.current).length;
     },
   },
   methods: {
-    afterChange(value) {
-      let marksvalue = this.marks[value];
-      if (marksvalue) {
-        let findmarks = marksvalue.label.children[2].text;
-        let result = Object.keys(this.event).find((item) => {
-          return this.event[item] === findmarks;
-        });
-        this.componentId = result;
-      } else {
-        this.modalvisible = true;
-      }
+    onChange(current) {
+      this.current = current;
+      let findsteps = this.steps[current].title;
+      let result = Object.keys(this.event).find((item) => {
+        return this.event[item] === findsteps;
+      });
+      this.componentId = result;
     },
-    addmarks() {
-      if (this.marks[this.slidervalue]) {
-        this.$message.info("该时间点已存在事件，请删除后再添加。");
-      } else {
-        this.modalvisible = true;
-      }
+    addsteps() {
+      this.modalvisible = true;
     },
-    deletemarks() {
+    handleOk() {
+      const steptime = this.time + "分钟";
+      this.steps.push({
+        title: this.event[this.componentId],
+        description: steptime,
+      });
+      this.current = this.steps.length-1;
+      this.modalvisible = false;
+    },
+    modalClose() {
+      this.modalvisible = false;
+    },
+    deletesteps() {
       const that = this;
       this.$confirm({
         title: "确定删除此事件吗?",
@@ -127,40 +167,27 @@ export default {
         okType: "danger",
         cancelText: "取消",
         zIndex: 10001,
-        onOk() {          
-          delete that.marks[that.slidervalue];
+        onOk() {
+          that.steps.splice(that.current, 1);
+          that.current = that.steps.length-1;
+          that.onChange(that.current);
         },
         onCancel() {
           console.log("Cancel");
         },
       });
     },
-    callback(val) {
-      console.log(val);
-    },
-    removeEvent() {},
-    modalClose() {
-      this.modalvisible = false;
-      this.$refs.slider.blur();
-    },
-    handleOk() {
-      const value = this.slidervalue + "分钟";
-      this.marks[this.slidervalue] = {
-        label: (
-          <span>
-            {value}
-            <br />
-            {this.event[this.componentId]}
-          </span>
-        ),
-      };
-      this.modalvisible = false;
-    },
   },
 };
 </script>
 
 <style scoped>
+.steptype {
+  padding: 5px;
+  width: 100%;
+  overflow-x: auto;
+}
+
 .event-btn .ant-btn {
   margin: 0 5px;
 }
@@ -186,5 +213,10 @@ export default {
   background: #fff;
   height: 100%;
   width: 100%;
+}
+</style>
+<style>
+.ant-modal-content {
+  width: 540px !important;
 }
 </style>

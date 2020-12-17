@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import axios from "@/utils/axios";
 let courses = [
   {
     courseId: "1",
@@ -67,7 +68,6 @@ let courses = [
       { name: "课时", editable: false },
       { name: "课时", editable: false },
     ],
-    editable: false,
   },
   {
     courseId: "2",
@@ -76,7 +76,6 @@ let courses = [
       { name: "课时", editable: false },
       { name: "课时", editable: false },
     ],
-    editable: false,
   },
   {
     courseId: "3",
@@ -85,7 +84,6 @@ let courses = [
       { name: "课时", editable: false },
       { name: "课时", editable: false },
     ],
-    editable: false,
   },
 ];
 export default {
@@ -110,9 +108,34 @@ export default {
         name: "新增课时",
         editable: false,
       });
+
+      axios
+        .post("pc/v1/prepare/createPrepareCourse", this.courses)
+        .then(({ data }) => {
+          const { status } = data;
+          if (status !== "ok") {
+            this.errorTipShow = true;
+            return;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     deletecourse(idex, index) {
       this.courses[idex].coursehours.splice(index, 1);
+      axios
+        .post("pc/v1/prepare/createPrepareCourse", this.courses)
+        .then(({ data }) => {
+          const { status } = data;
+          if (status !== "ok") {
+            this.errorTipShow = true;
+            return;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     handleChange(idex, index, value) {
       let coursehour = this.courses[idex].coursehours[index];
@@ -124,6 +147,10 @@ export default {
     ispublished() {
       return true;
     },
+    // ...mapState({
+    //   groupList: (state) => state.settings.MATERIAL.IMAGE_GROUP,
+    //   haveAuth: "permission",
+    // }),
   },
 };
 </script>

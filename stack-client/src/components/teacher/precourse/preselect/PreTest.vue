@@ -9,18 +9,6 @@
         <a-empty />
       </a-card>
     </a-row>
-    <a-row
-      type="flex"
-      justify="end"
-      align="bottom"
-      style="position: absolute; bottom: 20px; right: 20px"
-    >
-      <a-col>
-        <a-button type="primary"> 保存 </a-button>
-        &nbsp;&nbsp;&nbsp;
-        <a-button type="primary"> 取消 </a-button>
-      </a-col>
-    </a-row>
   </a-card>
 </template>
 

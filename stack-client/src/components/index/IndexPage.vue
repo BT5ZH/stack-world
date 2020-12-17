@@ -44,15 +44,8 @@
               登&nbsp;&nbsp;录
             </button>
           </div>
-          <div class="text-center p-t-12">
-            <a class="txt2" href="#">忘记密码？</a>
-          </div>
-          <div class="text-center p-t-80">
-            <router-link class="txt2" :to="{ name: 'register' }">
-              还没有账号？立即注册
-              <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-            </router-link>
-          </div>
+          <div class="text-center p-t-12"></div>
+          <div class="text-center p-t-80"></div>
         </form>
       </div>
     </div>
@@ -88,30 +81,32 @@ export default {
         .post("pc/v1/users/login", requestData)
         .then(({ data }) => {
           const { status, token } = data;
-          // TODO replce the word 'scccess' with 'success' whenever backend fixs the bug
-          if (status !== "scccess") {
+          // TODO replce the word 'success' with 'success' whenever backend fixs the bug
+          if (status !== "success") {
             this.errorTipShow = true;
             return;
           }
           localStorage.setItem("tk", token);
-          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+          axios.defaults.headers["Authorization"] = "Bearer " + token;
+          console.log(axios.defaults);
           const navigateUrl = this.updatePublicVuexData(data.data);
-          this.$router.push(navigateUrl);
+          setTimeout(() => {
+            this.$router.push(navigateUrl);
+          }, 1000);
         })
         .catch((err) => {
           console.error(err);
-          this.$message.error("账号或密码错误");
         });
     },
     updatePublicVuexData(context) {
       const publicVuexData = {
         role: this.userMap[context.role]["name"],
-        email: context.email,
-        orgName: context.org_name,
-        oid: context.org_id,
+        oid: context.orgId,
+        sid: context.subOrgId,
+        mid: context.majorId,
+        cid: context.classId,
         uid: context._id,
         photo: context.photo,
-        title: context.title,
       };
       this.$store.commit("public/updateIdList", publicVuexData);
       return this.userMap[context.role]["index"];

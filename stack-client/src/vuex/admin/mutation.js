@@ -13,6 +13,35 @@ const mutation = {
   changeState(state, params) {
     state.temp = params;
   },
+  getClassTable(state, payload) {
+    // console.log(payload);
+    state.classTable = payload;
+  },
+  getSchoolInfo(state, payload) {
+    state.schoolInfo = payload;
+  },
+  getSubOrgId(state, payload) {
+    for (let item of state.schoolInfo) {
+      if (item.subOrgName === payload) {
+        state.subOrgId = item._id;
+      }
+    }
+  },
+  clearStorage(state) {
+    Object.keys(state).forEach((key) => {
+      if (Array.isArray(state[key])) {
+        state[key] = [];
+      } else if (typeof state[key] === "object") {
+        state[key] = {};
+      } else if (typeof state[key] === "number") {
+        state[key] = 0;
+      } else if (typeof state[key] === "boolean") {
+        state[key] = false;
+      } else if (typeof state[key] === "string") {
+        state[key] = "";
+      }
+    });
+  },
 };
 
 export default mutation;

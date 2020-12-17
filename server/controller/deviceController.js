@@ -71,7 +71,7 @@ exports.updateDevice = catchAsync(async (req, res, next) => {
     return next(new AppError("该班级不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       device,
     },
@@ -86,7 +86,7 @@ exports.deleteDevice = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });

@@ -69,7 +69,7 @@ exports.updateClass = catchAsync(async (req, res, next) => {
     return next(new AppError("该班级不存在", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       classEntity,
     },
@@ -84,7 +84,7 @@ exports.deleteClass = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: null,
   });
 });
@@ -149,7 +149,7 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
     return next(new AppError("更新班级学生列表信息出错", 404));
   }
   res.status(200).json({
-    status: "scccess",
+    status: "success",
     data: {
       students: result.students,
     },
@@ -178,7 +178,7 @@ exports.deleteStudents = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: classEntity,
   });
 });
@@ -248,7 +248,7 @@ exports.deleteMultipleCourseTimeTable = catchAsync(async (req, res, next) => {
   }
 
   res.status(204).json({
-    status: "scccess",
+    status: "success",
     data: classEntity.curriculum,
   });
 });

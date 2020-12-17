@@ -10,11 +10,9 @@ const action = {
   async getSchoolList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
     errorHandler(data, "getSchoolList");
-    // if (data.status !== "success") {
-    //   throw "[vuex-super-action] response status of getSchoolList is faild";
-    // }
     const schoolList = data.data.organizations.map((item) => ({
       schoolName: item.organizationName,
+      schoolEnName: item.organizationNameEn,
       desc: item.organizationDescription,
       sid: item._id,
     }));

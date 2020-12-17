@@ -223,7 +223,7 @@ exports.updateUser = catchAsync(async (req, res) => {
       // runValidators: true,
     });
     res.status(200).json({
-      status: "scccess",
+      status: "success",
       data: {
         user,
       },

@@ -1,47 +1,174 @@
 <template>
-  <div class="setcard ant-card ant-card-bordered">
-    <div class="ant-card-head">
-      <div class="ant-card-head-wrapper">
-        <div class="ant-card-head-title">抢答</div>
-      </div>
-    </div>
-      <a-row type="flex" align="middle" style="padding:0 24px;margin:2px">
-        <a-col :span="2"> 抢答名额:</a-col>
-        <a-col :span="5">
-          <a-input-number
-            id="inputNumber"
-            v-model="value"
-            :min="1"
-            :max="1000"
-          />
+  <div class="container">
+    <a-card :title="'抢答'" class="card">
+      <template #extra>
+        <a-row class="card-btn">
+          <a-radio-group name="radioGroup" v-model="ifshow">
+            <a-radio :value="1"> 主观题 </a-radio>
+            <a-radio :value="2"> 单选题 </a-radio>
+            <a-radio :value="3"> 多选题 </a-radio>
+          </a-radio-group>
+        </a-row>
+      </template>
+      <a-row :gutter="20">
+        <a-col :span="ifshow !== 1 ? 14 : 24">
+          <a-row class="title" type="flex" justify="space-between">
+            <a-col :span="3">
+              <h3>题目</h3>
+            </a-col>
+            <a-col :span="5">
+              抢答人数：<a-input-number v-model="value" :min="1" :max="100" />
+            </a-col>
+          </a-row>
+          <a-row style="height: 350px">
+            <div id="editor"></div>
+          </a-row>
+        </a-col>
+        <a-col :span="10" v-if="ifshow !== 1">
+          <a-row class="title">
+            <h3>问题选项</h3>
+          </a-row>
+          <a-row>
+            <a-input
+              v-for="index in optionlength"
+              :key="index"
+              class="options"
+              v-model="cards.options[index - 1]"
+            >
+              <template #prefix>
+                <a-button type="primary">{{ ENG_CHARS[index - 1] }}</a-button>
+              </template>
+              <template #suffix>
+                <a-icon type="close" @click="closeOption(index - 1)"></a-icon>
+              </template>
+            </a-input>
+            <a-row>
+              <a-button type="primary" @click="optionlength++"
+                >添加选项</a-button
+              >
+            </a-row>
+          </a-row>
+          <a-row class="title">
+            <h3>正确答案</h3>
+          </a-row>
+          <a-row>
+            <a-select
+              placeholder="请输入正确答案"
+              style="width: 200px"
+              @change="handleChange"
+              v-if="ifshow === 2"
+            >
+              <a-select-option v-for="index in optionlength" :key="index + ''">
+                {{ ENG_CHARS[index - 1] }}
+              </a-select-option>
+            </a-select>
+            <a-select
+              mode="tags"
+              placeholder="请输入正确答案"
+              style="width: 200px"
+              @change="handleChange"
+              v-else
+            >
+              <a-select-option v-for="index in optionlength" :key="index + ''">
+                {{ ENG_CHARS[index - 1] }}
+              </a-select-option>
+            </a-select>
+          </a-row>
         </a-col>
       </a-row>
-      <a-row type="flex" align="bottom" id="div1">
-      </a-row>
+    </a-card>
   </div>
 </template>
 
 <script>
 import E from "wangeditor";
+
 export default {
   data() {
+    const ENG_CHARS = [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+    ];
+    const MAX_OPTIONS = ENG_CHARS.length;
     return {
       value: 3,
+      ifshow: 1,
+      ENG_CHARS,
+      MAX_OPTIONS,
+      cards: { title: "", options: [] },
+      optionlength: 2,
     };
   },
+  methods: {
+    handleChange(value) {
+      console.log(`Selected: ${value}`);
+    },
+    closeOption(index) {
+      if (this.optionlength <= 2) {
+        this.$message.info("选项不能少于两个！");
+        return null;
+      }
+      this.cards.options.splice(index, 1);
+      this.optionlength--;
+    },
+    createEditor(selector) {
+      const editor = new E(selector);
+      editor.config.showFullScreen = false;
+      editor.config.menus = [
+        "head",
+        "bold",
+        "fontSize",
+        "italic",
+        "underline",
+        "strikeThrough",
+        "lineHeight",
+        "foreColor",
+        "backColor",
+        "link",
+        "list",
+        "justify",
+        "image",
+        "video",
+        "code",
+      ];
+      editor.create();
+    },
+  },
   mounted() {
-    const editor = new E("#div1");
-    editor.create();
+    this.createEditor("#editor");
   },
 };
 </script>
+
 <style scoped>
-.w-e-toolbar {
-  width: 100%;
+.card-btn .ant-btn {
+  margin: 0 5px;
 }
 
-.w-e-text-container {
-  width: 100%;
-  height: 100%;
+.title h3 {
+  padding: 10px 0;
+}
+
+.options {
+  padding-left: 30px;
+  position: relative;
+  right: 10px;
+  margin-bottom: 20px;
+}
+
+.card {
+  margin-bottom: 40px;
 }
 </style>
