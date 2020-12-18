@@ -35,14 +35,18 @@ router
   .post(userController.createMultipleUsers);
 
 router
+  .route("/allOrgAdmin")
+  .get(authController.protect, userController.getOrgTeachers);
+
+router
   .route("/:id")
   .get(userController.getUser)
   .patch(authController.protect, userController.updateUser)
   .delete(userController.deleteUser)
   .post(authController.protect, userController.updateUserRecords);
 
-router//edit by Chaos on 12-15 
+router //edit by Chaos on 12-15
   .route("/getTeachersBySubOrgName")
-  .post(authController.protect,userController.getTeachersBySubOrgName);
-  
+  .post(authController.protect, userController.getTeachersBySubOrgName);
+
 module.exports = router;

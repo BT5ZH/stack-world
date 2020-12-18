@@ -113,6 +113,10 @@ exports.createMultipleUsers = catchAsync(async (req, res) => {
   });
 });
 
+// exports.getAllOrgAdmin= catchAsync(async (req, res, next)=>{
+
+// })
+
 exports.getOrgTeachers = catchAsync(async (req, res) => {
   const queryObj = { ...req.query };
 
@@ -150,17 +154,20 @@ exports.createAdmin = catchAsync(async (req, res) => {
   });
 });
 exports.getTeachersBySubOrgName = catchAsync(async (req, res) => {
-  const data = await User.find({ subOrg_name:req.body.subOrg_name,role:'teacher'});
-    if (!data) {
-      return next(new AppError("该学院没有教师", 404));
-    }
-  
-    res.status(200).json({
-      status: "success",
-      data: {
-        data,
-      },
-    });
+  const data = await User.find({
+    subOrg_name: req.body.subOrg_name,
+    role: "teacher",
+  });
+  if (!data) {
+    return next(new AppError("该学院没有教师", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data,
+    },
+  });
 });
 exports.createTeacher = catchAsync(async (req, res) => {
   // Allow nested routes
