@@ -10,7 +10,7 @@ router
  
 router
   .route("/:lesson_id")
-  .get(authController.protect, lessonController.getLesson)
+  .get(authController.protect, lessonController.getOneLessonByID)
   .patch(authController.protect, lessonController.updateLesson)
   .delete(authController.protect, lessonController.deleteLesson);
 router

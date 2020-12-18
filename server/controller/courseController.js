@@ -3,18 +3,33 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 exports.getAllCourses = catchAsync(async (req, res) => {
-  try {
-    course = await Course.find();
-    res.status(200).json({
-      status: true,
-      course
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: true,
-      err
-    });
-  }
+  // BUILD QUERY
+  // 1) Filtering
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+  // console.log(queryString);
+  const query = Course.find(JSON.parse(queryString));
+  // console.log(query);
+  // EXECUTE QUERY
+  const courses = await query;
+  // console.log(courses);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    resulrs: courses.length,
+    data: {
+      courses,
+    },
+  });
 });
 
 exports.createCourse = catchAsync(async (req, res) => {
