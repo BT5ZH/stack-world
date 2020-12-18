@@ -1,21 +1,22 @@
 const express = require("express");
 const courseController = require("../controller/courseController");
+const authController = require("../controller/authController");
+const router = express.Router({ mergeParams: true });
 
-const router = express.Router();
 
 router
   .route("/")
-  .get(courseController.getAllCourses)
-  .post(courseController.createCourse);
+  .get(authController.protect,courseController.getAllCourses)
+  .post(authController.protect,courseController.createCourse);
 
 router
   .route("/batchOptCourses")
-  .delete(courseController.batchDeleteCourses)
-  .post(courseController.batchAddCourses);
+  .delete(authController.protect,courseController.batchDeleteCourses)
+  .post(authController.protect,courseController.batchAddCourses);
 router
   .route("/:_id")
-  .get(courseController.getCourse)
-  .delete(courseController.deleteOneCourse)
-  .post(courseController.updateCourse);
+  .get(authController.protect,courseController.getCourse)
+  .delete(authController.protect,courseController.deleteOneCourse)
+  .post(authController.protect,courseController.updateCourse);
 
 module.exports = router;

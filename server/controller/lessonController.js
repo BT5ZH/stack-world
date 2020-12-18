@@ -47,7 +47,7 @@ exports.createLesson = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.getLesson = catchAsync(async (req, res, next) => {
+exports.getOneLessonByID = catchAsync(async (req, res, next) => {
   //const data = await Lesson.findOne({ _id:req.params.lesson_id});
   const data = await Lesson.findOne({ teacher_id:{$ne:null},course_id:{$ne:null},_id:req.params.lesson_id}).populate('course_id','name -_id').populate('teacher_id','user_id name -_id');
   
