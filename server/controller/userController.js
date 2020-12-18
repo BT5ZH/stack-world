@@ -127,7 +127,7 @@ exports.getOrgTeachers = catchAsync(async (req, res) => {
     (match) => `$${match}`
   );
 
-  const query = User.find(JSON.parse(queryString)).select(" name title ");
+  const query = User.find(JSON.parse(queryString)).select("name email active");
 
   // EXECUTE QUERY
   const users = await query;
