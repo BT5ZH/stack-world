@@ -90,18 +90,15 @@ exports.createUser = catchAsync(async (req, res) => {
 
 exports.createMultipleUsers = catchAsync(async (req, res) => {
   const multipleUsers = req.body;
-  // const target = [];
   const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
   multipleUsers.forEach((user) => {
-    // temp = { ...user, password: hashPassword, passwordConfirm: "" };
     if (typeof user == "object") {
       user["password"] = hashPassword;
       user["passwordConfirm"] = hashPassword;
     }
-    // target.push(temp);
   });
-  console.log("++++++++");
-  console.log(multipleUsers);
+  // console.log("++++++++");
+  // console.log(multipleUsers);
   if (!multipleUsers || multipleUsers.length == 0) {
     return next(new AppError("用户列表为空或无数据", 404));
   }
@@ -220,7 +217,18 @@ exports.updateMe = catchAsync(async (req, res) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  let hashPassword = "";
+  let newData = req.body;
+  if (req.body.hasOwnProperty("password")) {
+    hashPassword = await bcrypt.hash(newData.password, 12);
+    if (typeof newData == "object") {
+      newData["password"] = hashPassword;
+      // newData["passwordConfirm"] = hashPassword;
+    }
+  }
+  console.log(newData);
+
+  const user = await User.findByIdAndUpdate(req.params.id, newData, {
     new: true,
     runValidators: true,
   });
