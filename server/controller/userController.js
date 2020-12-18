@@ -219,26 +219,22 @@ exports.updateMe = catchAsync(async (req, res) => {
   });
 });
 
-exports.updateUser = catchAsync(async (req, res) => {
-  // console.log(req.body);
-  // console.log(req.params.id);
-  const filter = { _id: req.params.id };
-  const update = { "buyCourses.course": req.body.byCourses[0].course };
-  try {
-    const user = await Course.findOneAndUpdate(filter, update, {
-      new: true,
-      // runValidators: true,
-    });
-    res.status(200).json({
-      status: "success",
-      data: {
-        user,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({ status: "fail", message: err });
+exports.updateUser = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!user) {
+    return next(new AppError("该用户不存在", 404));
   }
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
 });
+
 exports.deleteUser = (req, res) => {
   res.status(500).json({
     status: "error",
