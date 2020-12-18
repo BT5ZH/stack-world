@@ -156,8 +156,9 @@ async function belongedToWhichClass(student_id) {
   }
 };
 //this function is used to get the lesson_id which the class_id belongs to.
-async function belongedToWhichLesson(class_id,year,semester) {
+async function belongedToWhichLesson(class_id) {
   try {
+
     const lessonObj = await Class.aggregate([
       {
         $lookup: {
@@ -168,8 +169,8 @@ async function belongedToWhichLesson(class_id,year,semester) {
         },
       },
       {$match: { _id: class_id },},
-      {$match: { year: year },},
-      {$match: { semester: semester },},
+      // {$match: { belongedToLessonyear: year },},
+      // {$match: { semester: semester },},
       {
         $project: {
           //_id: 0,
@@ -188,6 +189,7 @@ async function belongedToWhichLesson(class_id,year,semester) {
 exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---get all class_id which the student_id belongs to. Then push them into array classIdList one by one.
   const classObj = await belongedToWhichClass(req.body.student_id);
+  // console.log(classObj[0])
   if(classObj[0].belongedToClass[0]!=null){
     let len = classObj[0].belongedToClass.length;
     let classIdList = [];
@@ -199,16 +201,25 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to. 
   //---Then push them into array lessonIdList one by one.
     for(let i=0; i<classIdList.length ; i++) {
-        var lessonObj = await belongedToWhichLesson(classIdList[i],req.body.year,req.body.semester);
-        if(lessonObj[0].belongedToLesson[0]!=null){
-          let len = lessonObj[0].belongedToLesson.length;
-          
-          for(let j=0; j<len ; j++){
-            lessonIdList.push(lessonObj[0].belongedToLesson[j]._id);
+        var lessonObj = await belongedToWhichLesson(classIdList[i]);
+        // console.log(lessonObj[0].belongedToLesson)
+        var lessonsOfOneClass =lessonObj[0].belongedToLesson;
+        for(var j=0;j<lessonsOfOneClass.length;j++){
+          if(lessonsOfOneClass[j].year==req.body.year&&lessonsOfOneClass[j].semester==req.body.semester){
+            lessonIdList.push(lessonsOfOneClass[j]._id)
           }
         }
+
+        // if(lessonObj[0].belongedToLesson[0]!=null){
+        //   let len = lessonObj[0].belongedToLesson.length;
+          
+        //   for(let j=0; j<len ; j++){
+        //     lessonIdList.push(lessonObj[0].belongedToLesson[j]._id);
+        //   }
+        // }
     }
     //---get doc from timeTableModel depending on the lessonIdList.
+    // console.log("lessonIdList",lessonIdList)
     let result=[]//save each lesson timetable data
     for(let i=0; i<lessonIdList.length ; i++) {
       const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
