@@ -1,17 +1,7 @@
 var colorItems = ['blueviolet','#9FE6B8', '#FFDB5C', '#ff9f7f', '#fb7293', '#8378EA', '#96BFFF', '#e7bcf3', '#9d96f5','#f56a00', '#7265e6', '#ffbf00', '#00a2ae', ];
 
 const state = {
-    //public
-    userId: '111a5b',
-    user:{
-        email:"zhangjingyi@w-click.cn",
-        password:"snnu1234",
-        passwordConfirm:"snnu1234",
-        role:"student",
-        name:"张靖漪",
-        title:"student",
-        org_name:"陕西师范大学",
-    },
+    user:{},
     //student
     //首页目录分区
     courseMenu: [
@@ -124,7 +114,7 @@ const state = {
         },
     ],
 
-    //courselist
+    classList:[],
     courseList: [
         {
             course_id: 1,

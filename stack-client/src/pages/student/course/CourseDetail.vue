@@ -27,7 +27,7 @@
       <gridView4 :gridItems="classMenu"></gridView4>
     </div>
     <div class="course_content" v-if="isClick == 2">
-      <empty v-if="homeworkList.length == 0"></empty>
+      <a-empty v-if="homeworkList.length == 0" />
       <resCard
         v-else
         v-for="item in homeworkList"
@@ -44,7 +44,6 @@
 import leftSlider from "../../../components/LeftSlider.vue";
 import resCard from "../../../components/student/ResCard.vue";
 import gridView4 from "../../../layout/GridView4.vue";
-import empty from "../../../components/Empty.vue";
 
 import { mapState } from "vuex";
 
@@ -54,7 +53,6 @@ export default {
     leftSlider,
     resCard,
     gridView4,
-    empty,
   },
   data() {
     return {
