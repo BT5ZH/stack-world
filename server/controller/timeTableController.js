@@ -55,15 +55,15 @@ exports.createTimeTable = catchAsync(async (req, res, next) => {
   // } else {
   //   return next(new AppError("该课已存在", 500));
   // }
-  
-    const NewTimeTable = await TimeTable.create(req.body);
-    if (!NewTimeTable) {
-      return next(new AppError("新课表创建失败", 500));
-    }
-    res.status(201).json({
-      status: "success",
-      data: NewTimeTable,
-    });
+
+  const NewTimeTable = await TimeTable.create(req.body);
+  if (!NewTimeTable) {
+    return next(new AppError("新课表创建失败", 500));
+  }
+  res.status(201).json({
+    status: "success",
+    data: NewTimeTable,
+  });
 });
 
 exports.updateTimeTable = catchAsync(async (req, res, next) => {
@@ -96,12 +96,38 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
 });
 
 exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
-  const data = await TimeTable.find({ teacher_id: req.body.teacher_id });
+  const data = await TimeTable.find({ teacher_id: req.body.teacher_id })
+    .populate("course_id", "name -_id")
+    .populate("teacher_id", "user_id name -_id")
+    .populate("curriculum", "class_name -_id");
 
-  if (!data|| data[0]== null) {
+  if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }
 
+  for (let k = 0; k < data.length; k++) {
+    for (let i = 0; i < data[k].curriculum.length; i++) {
+      let className = await Class.findOne({
+        _id: data[k].curriculum[i].class_id,
+      }).select("class_name");
+      
+      // Object.defineProperty(data[k].curriculum[i], "class_name", {
+      //   value: className.class_name,
+      // });
+      if (typeof data[k].curriculum[i] == "object") {
+        console.log("------" + className.class_name);
+        data[k].curriculum[i]["class_name"] = className.class_name;
+      }
+      // const multipleUsers = req.body;
+      // const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
+      // multipleUsers.forEach((user) => {
+      //   if (typeof user == "object") {
+      //     user["password"] = hashPassword;
+      //     user["passwordConfirm"] = hashPassword;
+      //   }
+      // });
+    }
+  }
   res.status(200).json({
     status: "success",
     data: {
@@ -113,7 +139,7 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
 exports.getTimeTableFromCourseID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ course_id: req.body.course_id });
 
-  if (!data || data[0]== null) {
+  if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }
 
@@ -154,11 +180,10 @@ async function belongedToWhichClass(student_id) {
   } catch (err) {
     return false;
   }
-};
+}
 //this function is used to get the lesson_id which the class_id belongs to.
 async function belongedToWhichLesson(class_id) {
   try {
-
     const lessonObj = await Class.aggregate([
       {
         $lookup: {
@@ -168,7 +193,7 @@ async function belongedToWhichLesson(class_id) {
           as: "belongedToLesson",
         },
       },
-      {$match: { _id: class_id },},
+      { $match: { _id: class_id } },
       // {$match: { belongedToLessonyear: year },},
       // {$match: { semester: semester },},
       {
@@ -185,49 +210,52 @@ async function belongedToWhichLesson(class_id) {
   } catch (err) {
     return false;
   }
-};
+}
 exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---get all class_id which the student_id belongs to. Then push them into array classIdList one by one.
   const classObj = await belongedToWhichClass(req.body.student_id);
   // console.log(classObj[0])
-  if(classObj[0].belongedToClass[0]!=null){
+  if (classObj[0].belongedToClass[0] != null) {
     let len = classObj[0].belongedToClass.length;
     let classIdList = [];
-    let lessonIdList = [];//save all the lesson_id which connected to the class that the student belongs to.
-    for(let i=0; i<len ; i++){
+    let lessonIdList = []; //save all the lesson_id which connected to the class that the student belongs to.
+    for (let i = 0; i < len; i++) {
       classIdList.push(classObj[0].belongedToClass[i]._id);
     }
-  //----------------------------------------------------------------------------------------
-  //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to. 
-  //---Then push them into array lessonIdList one by one.
-    for(let i=0; i<classIdList.length ; i++) {
-        var lessonObj = await belongedToWhichLesson(classIdList[i]);
-        // console.log(lessonObj[0].belongedToLesson)
-        var lessonsOfOneClass =lessonObj[0].belongedToLesson;
-        for(var j=0;j<lessonsOfOneClass.length;j++){
-          if(lessonsOfOneClass[j].year==req.body.year&&lessonsOfOneClass[j].semester==req.body.semester){
-            lessonIdList.push(lessonsOfOneClass[j]._id)
-          }
+    //----------------------------------------------------------------------------------------
+    //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to.
+    //---Then push them into array lessonIdList one by one.
+    for (let i = 0; i < classIdList.length; i++) {
+      var lessonObj = await belongedToWhichLesson(classIdList[i]);
+      // console.log(lessonObj[0].belongedToLesson)
+      var lessonsOfOneClass = lessonObj[0].belongedToLesson;
+      for (var j = 0; j < lessonsOfOneClass.length; j++) {
+        if (
+          lessonsOfOneClass[j].year == req.body.year &&
+          lessonsOfOneClass[j].semester == req.body.semester
+        ) {
+          lessonIdList.push(lessonsOfOneClass[j]._id);
         }
+      }
 
-        // if(lessonObj[0].belongedToLesson[0]!=null){
-        //   let len = lessonObj[0].belongedToLesson.length;
-          
-        //   for(let j=0; j<len ; j++){
-        //     lessonIdList.push(lessonObj[0].belongedToLesson[j]._id);
-        //   }
-        // }
+      // if(lessonObj[0].belongedToLesson[0]!=null){
+      //   let len = lessonObj[0].belongedToLesson.length;
+
+      //   for(let j=0; j<len ; j++){
+      //     lessonIdList.push(lessonObj[0].belongedToLesson[j]._id);
+      //   }
+      // }
     }
     //---get doc from timeTableModel depending on the lessonIdList.
     // console.log("lessonIdList",lessonIdList)
-    let result=[]//save each lesson timetable data
-    for(let i=0; i<lessonIdList.length ; i++) {
+    let result = []; //save each lesson timetable data
+    for (let i = 0; i < lessonIdList.length; i++) {
       const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
-      
+
       if (!data) {
         return next(new AppError("该课不存在", 404));
       }
-      result.push(data)
+      result.push(data);
     }
     res.status(200).json({
       status: "success",
@@ -236,4 +264,4 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       },
     });
   }
-})
+});

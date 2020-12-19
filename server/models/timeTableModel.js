@@ -48,6 +48,8 @@ const timeTableSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.String, //type: mongoose.Schema.Types.ObjectID,
           ref: "Class",
         },
+        class_name:{type: String, 
+          required: true,}
       },
     ],
   },
