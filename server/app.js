@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-
+const cors = require("cors");
 const AppError = require("./utils/appError");
 // const { redisClient, redisPublisher } = require("./dbsSetup");
 
@@ -17,7 +17,12 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
+app.use(
+  cors({
+    origin: ["http://localhost:8080"],
+    methods: ["GET", "HEAD", "OPTIONS", "POST"],
+  })
+);
 // 3) ROUTES
 const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");
