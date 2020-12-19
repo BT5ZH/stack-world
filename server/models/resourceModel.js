@@ -42,6 +42,10 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     ref: "Course",
   },
+  lesson_id: {
+    type: String,
+    ref: "Lesson",
+  },
 });
 
 const Resource = mongoose.model("Resource", resourceSchema);
