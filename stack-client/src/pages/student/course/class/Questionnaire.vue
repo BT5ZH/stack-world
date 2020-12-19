@@ -1,6 +1,6 @@
 <template>
     <div style="padding: 2rem;">
-        <empty v-if='QuesData==null'></empty>
+        <a-empty v-if='QuesData==null' />
         <a-list v-else item-layout="vertical" size="large">
             <a-list-item v-for='(item,index) in QuesData' :key='index'>
                 <single-ques v-if='item.answer.length==1' :item='item'></single-ques>
@@ -13,7 +13,6 @@
 <script>
     import singleQues from '../../../../components/SingleQues.vue'
     import multiQues from '../../../../components/MultiQues.vue'
-    import empty from '../../../../components/Empty.vue'
 
     const QuesData = null;
     // for (let i = 0; i < 3; i++) {
@@ -45,7 +44,6 @@
         components: {
             singleQues,
             multiQues,
-            empty,
         },
         data() {
             return {

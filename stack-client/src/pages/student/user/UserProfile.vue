@@ -66,10 +66,18 @@ export default {
   },
   methods: {
     submitForm() {
-      this.user.email
+      this.user.email==''
         ? this.$message.info("邮箱不可为空")
-        : //post userId,email
-          (this.isEdit = !this.isEdit);
+        : (this.postForm({email:this.user.email})
+          ,this.isEdit = !this.isEdit);
+    },
+    postForm(data){
+      this.$store.dispatch("student/changeUserInfo", data).then((res)=>{
+        console.log(res)
+        res=='success'?
+        this.$message.success("修改成功"):
+        this.$message.error("修改失败");
+      });
     },
     editForm() {
       this.isEdit = !this.isEdit;

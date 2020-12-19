@@ -7,18 +7,30 @@ function errorHandler(data, funcName) {
 }
 
 const action = {
-  async getCourseList({ commit }) {
-    const { data } = await axios.get("/pc/v1/organizations");
+
+  async changeUserInfo({ state },obj) {
+    const url ='/pc/v1/users/'+ state.user.id
+    const { data } = await axios.patch(url,obj);
+    errorHandler(data, "changeUserInfo");
+    console.log(data)
+    return data.status;
+  },
+
+  async getCourseList({ commit },timeData) {
+    const url ='/pc/v1/timetable/getTimeTableFromStudentID'
+    const { data } = await axios.post(url,timeData);
     errorHandler(data, "getCourseList");
-    const courseList = data.data.organizations.map((item) => ({
-      courseName: item.organizationName,
-      desc: item.organizationDescription,
-      sid: item._id,
-    }));
+    console.log(data)
+    const courseList = data.data
+    // .organizations.map((item) => ({
+    //   courseName: item.organizationName,
+    //   desc: item.organizationDescription,
+    //   sid: item._id,
+    // }));
     commit("updateCourseList", courseList);
   },
   async getResList({ commit }) {
-    const { data } = await axios.get("/pc/v1/organizations");
+    const { data } = await axios.get("/pc/v1/resources?course_id=");
     errorHandler(data, "getResList");
     const resList = data.data.organizations.map((item) => ({
       resName: item.organizationName,
