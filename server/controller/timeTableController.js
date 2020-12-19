@@ -168,10 +168,7 @@ async function belongedToWhichClass(student_id) {
       },
       {
         $project: {
-          //_id: 0,
-          //branch_name: 1,
           "belongedToClass._id": 1,
-          //"belongedToDepart.depart_name": 1,
         },
       },
     ]);
@@ -194,16 +191,6 @@ async function belongedToWhichLesson(class_id) {
         },
       },
       { $match: { _id: class_id } },
-      // {$match: { belongedToLessonyear: year },},
-      // {$match: { semester: semester },},
-      // {
-      //   $project: {
-      //     //_id: 0,
-      //     //branch_name: 1,
-      //     "belongedToLesson._id": 1,
-      //     //"belongedToDepart.depart_name": 1,
-      //   },
-      // },
     ]);
 
     return lessonObj;
