@@ -32,9 +32,12 @@ exports.getAllCourses = catchAsync(async (req, res) => {
   });
 });
 
+/**
+ * 创建一门课程，首先根据课程号+学校名称判断数据库中是否已存在
+ */
 exports.createCourse = catchAsync(async (req, res) => {
   try {
-    var course = await Course.findOne({ _id: req.body._id });
+    var course = await Course.findOne({course_id:req.body.course_id,org_name:req.body.org_name });
     if (course) {
       res.status(200).json({
         status: false,

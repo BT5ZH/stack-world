@@ -26,8 +26,3 @@
         }
     }
 </script>
-
-<style>
-    .course_card{
-    }
-</style>

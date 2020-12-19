@@ -1,6 +1,6 @@
 <template>
   <div class="course_content">
-    <empty v-if="FavResList.length == 0"></empty>
+    <a-empty v-if="FavResList.length == 0" />
     <leftSlider
       v-else
       v-for="item in FavResList"
@@ -14,7 +14,6 @@
 
 <script>
 import leftSlider from "../../../components/LeftSlider.vue";
-import empty from "../../../components/Empty.vue";
 
 import { mapState } from "vuex";
 
@@ -22,7 +21,6 @@ export default {
   name: "Favorite",
   components: {
     leftSlider,
-    empty,
   },
   data() {
     return {

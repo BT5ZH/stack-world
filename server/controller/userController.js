@@ -90,18 +90,15 @@ exports.createUser = catchAsync(async (req, res) => {
 
 exports.createMultipleUsers = catchAsync(async (req, res) => {
   const multipleUsers = req.body;
-  // const target = [];
   const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
   multipleUsers.forEach((user) => {
-    // temp = { ...user, password: hashPassword, passwordConfirm: "" };
     if (typeof user == "object") {
       user["password"] = hashPassword;
       user["passwordConfirm"] = hashPassword;
     }
-    // target.push(temp);
   });
-  console.log("++++++++");
-  console.log(multipleUsers);
+  // console.log("++++++++");
+  // console.log(multipleUsers);
   if (!multipleUsers || multipleUsers.length == 0) {
     return next(new AppError("用户列表为空或无数据", 404));
   }
@@ -112,6 +109,10 @@ exports.createMultipleUsers = catchAsync(async (req, res) => {
     result,
   });
 });
+
+// exports.getAllOrgAdmin= catchAsync(async (req, res, next)=>{
+
+// })
 
 exports.getOrgTeachers = catchAsync(async (req, res) => {
   const queryObj = { ...req.query };
@@ -150,17 +151,20 @@ exports.createAdmin = catchAsync(async (req, res) => {
   });
 });
 exports.getTeachersBySubOrgName = catchAsync(async (req, res) => {
-  const data = await User.find({ subOrg_name:req.body.subOrg_name,role:'teacher'});
-    if (!data) {
-      return next(new AppError("该学院没有教师", 404));
-    }
-  
-    res.status(200).json({
-      status: "success",
-      data: {
-        data,
-      },
-    });
+  const data = await User.find({
+    subOrg_name: req.body.subOrg_name,
+    role: "teacher",
+  });
+  if (!data) {
+    return next(new AppError("该学院没有教师", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data,
+    },
+  });
 });
 exports.createTeacher = catchAsync(async (req, res) => {
   // Allow nested routes
@@ -212,26 +216,33 @@ exports.updateMe = catchAsync(async (req, res) => {
   });
 });
 
-exports.updateUser = catchAsync(async (req, res) => {
-  // console.log(req.body);
-  // console.log(req.params.id);
-  const filter = { _id: req.params.id };
-  const update = { "buyCourses.course": req.body.byCourses[0].course };
-  try {
-    const user = await Course.findOneAndUpdate(filter, update, {
-      new: true,
-      // runValidators: true,
-    });
-    res.status(200).json({
-      status: "success",
-      data: {
-        user,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({ status: "fail", message: err });
+exports.updateUser = catchAsync(async (req, res, next) => {
+  let hashPassword = "";
+  let newData = req.body;
+  if (req.body.hasOwnProperty("password")) {
+    hashPassword = await bcrypt.hash(newData.password, 12);
+    if (typeof newData == "object") {
+      newData["password"] = hashPassword;
+      // newData["passwordConfirm"] = hashPassword;
+    }
   }
+  console.log(newData);
+
+  const user = await User.findByIdAndUpdate(req.params.id, newData, {
+    new: true,
+    runValidators: true,
+  });
+  if (!user) {
+    return next(new AppError("该用户不存在", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
 });
+
 exports.deleteUser = (req, res) => {
   res.status(500).json({
     status: "error",

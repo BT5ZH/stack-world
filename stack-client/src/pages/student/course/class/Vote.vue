@@ -1,6 +1,6 @@
 <template>
     <div>
-        <empty v-if='item==null'></empty>
+        <a-empty v-if='item==null' />
         <div v-else class="voteBlock">
             <p style="padding: 2rem 2rem 0;">{{item.content}}</p>
             <div v-if='!isVoted'>
@@ -28,12 +28,8 @@
 </template>
 
 <script>
-    import empty from '../../../../components/Empty.vue'
 
     export default {
-        components: {
-            empty,
-        },
         data() {
             return {
                 value: '',
