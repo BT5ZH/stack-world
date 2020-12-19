@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-const cors = require("cors");
+
 const AppError = require("./utils/appError");
 // const { redisClient, redisPublisher } = require("./dbsSetup");
 
@@ -17,7 +17,6 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-app.use(cors());
 
 // 3) ROUTES
 const courseRouter = require("./routes/courseRoutes");
@@ -39,10 +38,10 @@ app.use("/pc/v1/classes", classRouter);
 app.use("/pc/v1/devices", deviceRouter);
 app.use("/pc/v1/resources", resourceRouter);
 app.use("/pc/v1/activities", activityRouter);
-app.use("/pc/v1/prepare", prepareLessonRouter);
-app.use("/pc/v1/lesson", lessonRouter);
-app.use("/pc/v1/schoolyear", schoolYearRouter);
-app.use("/pc/v1/timetable", timeTableRouter);
+app.use("/pc/v1/prepares", prepareLessonRouter);
+app.use("/pc/v1/lessons", lessonRouter);
+app.use("/pc/v1/schoolyears", schoolYearRouter);
+app.use("/pc/v1/timetables", timeTableRouter);
 
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");
