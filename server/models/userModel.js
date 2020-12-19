@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
+const { type } = require("os");
 // name, email, photo, password, passwordConfirm
 
 const userSchema = new mongoose.Schema(
@@ -10,16 +11,16 @@ const userSchema = new mongoose.Schema(
     _id: {
       type: String,
       required: [true, "you must tell us your user_id"],
-      default: uuid.v1,
+      default: uuid.v1
     },
     user_id: { type: String },
     title: {
       type: String,
       enum: ["student", "lecturer", "professor", "vice-professor"],
-      default: "student",
+      default: "student"
     },
     name: {
-      type: String,
+      type: String
       // required: [true, 'Please tell us your name'],
     },
     email: {
@@ -27,50 +28,57 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please provide your email"],
       unique: true,
       lowercase: [true, "Please provide your password"],
-      validate: [validator.isEmail, "Plese provide a valid email"],
+      validate: [validator.isEmail, "Plese provide a valid email"]
     },
     phone: { type: String },
     photo: { type: String, default: "default.jpg" },
     role: {
       type: String,
       enum: ["student", "teacher", "patrol", "orgAdmin", "superAdmin"],
-      default: "student",
+      default: "student"
     },
 
     org_name: {
       type: mongoose.Schema.Types.String,
-      ref: "Organization",
+      ref: "Organization"
     },
     org_id: {
-      type: mongoose.Schema.Types.String,
+      type: mongoose.Schema.Types.String
     },
     subOrg_name: {
-      type: mongoose.Schema.Types.String,
+      type: mongoose.Schema.Types.String
     },
     major_name: {
-      type: mongoose.Schema.Types.String,
+      type: mongoose.Schema.Types.String
     },
     //     organization:{
     // type:String,
     // ref: 'Organization'
     //     },
-
+    resources: [
+      {
+        res_name:{type:String},
+        res_url: { type: String },
+        collect_time: { type: String },
+        res_type:{type:String},
+      }
+    ], //
     password: {
       type: String,
       required: [true, "Please provide a password"],
       minlength: 8,
-      select: false,
+      select: false
     },
     passwordConfirm: {
       type: String,
       required: [true, "Please comfirm your password"],
       validate: {
         // This only works on CREATE SAVE!!!
-        validator: function (el) {
+        validator: function(el) {
           return el === this.password;
         },
-        message: "Passwords are not the same",
-      },
+        message: "Passwords are not the same"
+      }
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
@@ -78,21 +86,21 @@ const userSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: true,
-      select: false,
-    },
+      select: false
+    }
   },
   // { _id: false }
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
-
+//userSchema.index({ user_id: 1}, { unique: true });
 // virtual populate
 userSchema.virtual("organizations", {
   ref: "Organization",
   foreignField: "organizationName",
-  localField: "org_name",
+  localField: "org_name"
 });
 
 // userSchema.pre(/^find/, function (next) {
@@ -100,7 +108,7 @@ userSchema.virtual("organizations", {
 //   next();
 // });
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function(next) {
   //Only run this function if password was actually modified
   if (!this.isModified("password")) return next();
 
@@ -116,14 +124,14 @@ userSchema.pre("save", async function (next) {
 //   next();
 // });
 
-userSchema.methods.correctPassword = async function (
+userSchema.methods.correctPassword = async function(
   candidatePassword,
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -141,7 +149,7 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 */
-userSchema.methods.createPasswordResetToken = function () {
+userSchema.methods.createPasswordResetToken = function() {
   const resetToken = crypto.randomBytes(32).toString("hex");
 
   this.passwordResetToken = crypto

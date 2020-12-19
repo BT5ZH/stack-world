@@ -34,7 +34,13 @@ const classSchema = new mongoose.Schema(
       major_name: {  
         type: String,
       },
-   },{_id:false}
+   },
+   {_id:false}
+   , 
+   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+   }
   );
     // tags: {
     //   type: [String],
@@ -85,6 +91,12 @@ const classSchema = new mongoose.Schema(
 //   }
  // );
 
+ classSchema.virtual('studentList', {
+   ref: 'User',
+   localField: 'students',
+   foreignField: '_id',
+   justOne: false,
+});
 const Class = mongoose.model("Class", classSchema);
 
 module.exports = Class;

@@ -5,8 +5,12 @@ var courseSchema = mongoose.Schema(
   {
     _id: {
         type: String,
-        required: [true,'you must tell us your course_id'],
+        required: [true,'you must tell us your _id'],
         default:uuid.v1,
+    },
+    course_id:{
+      type: String,
+      required: [true, "you must tell us your course_id"]
     },
     name: {
       type: String,

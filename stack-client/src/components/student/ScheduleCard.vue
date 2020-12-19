@@ -1,15 +1,18 @@
 <template>
   <a-card style="margin-top: .8rem;" :bodyStyle="{padding:'2rem'}">
     <div class="my-row">
-      <a :id="i" :key='i' v-for='i in 7' :class="i==date?'my-col col-active':'my-col'" @click='date=i'>{{i}}</a>
+      <a :id="i" :key='i' v-for='i in 7' :class="i==day?'my-col col-active':'my-col'" @click='day=i'>{{i}}</a>
     </div>
     <div v-if='currentList.length==0'>
       <p style="text-align: center; margin-top: 1.2rem;">今日暂无课程</p>
     </div>
-    <div :key='item.id' v-for='item in currentList' @click='jmpRoute(item)' class="schedule_card" :style='item.style'>
+    <div v-else :key='item.course_id' v-for='item in currentList' @click='jmpRoute(item)' class="schedule_card" :style='item.style'>
       <div class="flexbox">
         <h3 style="color: #fff;">{{item.course_name}}</h3>
         <a-tag color="blue" style="height:fit-content;">
+          {{item.time}}
+        </a-tag>
+        <a-tag color="green" style="height:fit-content;">
           {{item.time}}
         </a-tag>
         <a-icon type="right-circle" style="font-size: 2rem;margin-top: .5rem;" />
@@ -26,20 +29,30 @@
   import { mapState } from "vuex";
   // import moment from 'moment';
 
-
   export default {
     name: 'ScheduleCard',
     data() {
       return {
-        date: 1,
+        nowTime: new Date(),
+        day: 1,
+        currentList:[],
       }
     },
     watch: {
-      date: function () {
-        this.changeSchedule(this.date);
+      day: function () {
+        this.changeSchedule(this.day);
       },
     },
     methods: {
+      getCourse() {
+        let date = this.nowTime
+        let year = date.getFullYear() + '-' + Number(date.getFullYear() + 1);
+        let semester = date.getMonth() < 8 ? 1 : 2;
+        this.day = date.getDay();
+        let timeData = { student_id: this.user.id, year: year, semester: semester };
+        this.$store.dispatch("student/getCourseList", timeData);
+        this.changeSchedule(this.day);
+      },
       changeSchedule(value) {
         this.currentList = this.courseList.filter(item => item.week == value);
       },
@@ -48,14 +61,12 @@
       }
     },
     created: function () {
-      var date = new Date();
-      date = date.getDay();
-      this.date = date;
-      this.changeSchedule(date);
+      this.getCourse();
     },
     computed: {
       ...mapState({
-        courseList: state => state.student.courseList,
+        courseList: (state) => state.student.courseList,
+        user: (state) => state.student.user,
       })
     }
   }

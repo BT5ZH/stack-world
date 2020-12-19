@@ -1,9 +1,12 @@
 <template>
-  <a-row :gutter="[8, 8]">
-    <a-col :span="12" :key="item.id" v-for="item in courseList">
-      <course-card :item="item" style="color: #fff;"></course-card>
-    </a-col>
-  </a-row>
+  <div>
+    <a-empty v-if='courseList.length==0' />
+    <a-row v-else :gutter="[8, 8]">
+      <a-col :span="12" :key="item.id" v-for="item in courseList">
+        <course-card :item="item" style="color: #fff;"></course-card>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 
 <script>

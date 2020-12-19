@@ -16,6 +16,8 @@ const submitHomeworkSchema = new mongoose.Schema(
 
     comments: { type: String },
     score: { type: Number, default:0},
+
+    flg:{type: Number,default:0}
   },
   { _id: false }
 );
