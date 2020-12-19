@@ -215,7 +215,6 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---get all class_id which the student_id belongs to. Then push them into array classIdList one by one.
   let result=[]//save each lesson timetable data
   const classObj = await belongedToWhichClass(req.body.student_id);
-  console.log(classObj[0])
   if(classObj[0].belongedToClass[0]!=null){
     let len = classObj[0].belongedToClass.length;
     let classIdList = [];
@@ -226,10 +225,8 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //----------------------------------------------------------------------------------------
   //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to. 
   //---Then push them into array lessonIdList one by one.
-  // console.log("classIdList",classIdList)
     for(let i=0; i<classIdList.length ; i++) {
         var lessonObj = await belongedToWhichLesson(classIdList[i]);
-        console.log("lessonObj[0]",lessonObj[0])
         var lessonsOfOneClass =lessonObj[0].belongedToLesson;
         for(var j=0;j<lessonsOfOneClass.length;j++){
           if(lessonsOfOneClass[j].year==req.body.year&&lessonsOfOneClass[j].semester==req.body.semester){
@@ -246,7 +243,7 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       //   }
       // }
     
-    console.log("lessonIdList",lessonIdList)
+    // console.log("lessonIdList",lessonIdList)
     //---get doc from timeTableModel depending on the lessonIdList.
     // console.log("lessonIdList",lessonIdList)
     // let result=[]//save each lesson timetable data
@@ -254,7 +251,7 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
 
       if (!data) {
-        return next(new AppError("该课不存在", 404));
+        return next(new AppError("该课不存在", 200));
       }
       result.push(data);
     }
