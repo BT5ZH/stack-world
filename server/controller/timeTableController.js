@@ -158,7 +158,6 @@ async function belongedToWhichClass(student_id) {
 //this function is used to get the lesson_id which the class_id belongs to.
 async function belongedToWhichLesson(class_id) {
   try {
-
     const lessonObj = await Class.aggregate([
       {
         $lookup: {
@@ -171,14 +170,14 @@ async function belongedToWhichLesson(class_id) {
       {$match: { _id: class_id },},
       // {$match: { belongedToLessonyear: year },},
       // {$match: { semester: semester },},
-      {
-        $project: {
-          //_id: 0,
-          //branch_name: 1,
-          "belongedToLesson._id": 1,
-          //"belongedToDepart.depart_name": 1,
-        },
-      },
+      // {
+      //   $project: {
+      //     //_id: 0,
+      //     //branch_name: 1,
+      //     "belongedToLesson._id": 1,
+      //     //"belongedToDepart.depart_name": 1,
+      //   },
+      // },
     ]);
 
     return lessonObj;
@@ -188,8 +187,9 @@ async function belongedToWhichLesson(class_id) {
 };
 exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---get all class_id which the student_id belongs to. Then push them into array classIdList one by one.
+  let result=[]//save each lesson timetable data
   const classObj = await belongedToWhichClass(req.body.student_id);
-  // console.log(classObj[0])
+  console.log(classObj[0])
   if(classObj[0].belongedToClass[0]!=null){
     let len = classObj[0].belongedToClass.length;
     let classIdList = [];
@@ -200,9 +200,10 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //----------------------------------------------------------------------------------------
   //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to. 
   //---Then push them into array lessonIdList one by one.
+  console.log("classIdList",classIdList)
     for(let i=0; i<classIdList.length ; i++) {
         var lessonObj = await belongedToWhichLesson(classIdList[i]);
-        // console.log(lessonObj[0].belongedToLesson)
+        console.log("lessonObj[0]",lessonObj[0])
         var lessonsOfOneClass =lessonObj[0].belongedToLesson;
         for(var j=0;j<lessonsOfOneClass.length;j++){
           if(lessonsOfOneClass[j].year==req.body.year&&lessonsOfOneClass[j].semester==req.body.semester){
@@ -218,9 +219,10 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
         //   }
         // }
     }
+    console.log("lessonIdList",lessonIdList)
     //---get doc from timeTableModel depending on the lessonIdList.
     // console.log("lessonIdList",lessonIdList)
-    let result=[]//save each lesson timetable data
+    // let result=[]//save each lesson timetable data
     for(let i=0; i<lessonIdList.length ; i++) {
       const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
       
@@ -230,9 +232,16 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       result.push(data)
     }
     res.status(200).json({
-      status: "success",
+      status: true,
       data: {
         result,
+      },
+    });
+  }else{//the student have not in any class,so he isn't any lesson
+    res.status(200).json({
+      status: true,
+      data: {
+        result
       },
     });
   }
