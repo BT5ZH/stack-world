@@ -14,8 +14,8 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
     /\b(gte|gt|lte|le)\b/g,
     (match) => `$${match}`
   );
- 
-  const query = SetHomework.find(JSON.parse(queryString))
+
+  const query = SetHomework.find(JSON.parse(queryString));
   //.select("_id lesson_id number_of_time content ");
 
   const setHomework = await query;
@@ -31,24 +31,39 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
 });
 
 exports.createSetHomewrok = catchAsync(async (req, res, next) => {
-  const newSetHomewrok = await SetHomework.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: newSetHomewrok,
+  const oldHomework = await SetHomework.findOne({
+    lesson_id: req.body.lesson_id,
+    number_of_time: req.body.number_of_time,
   });
+  if (!oldHomework) {
+    const newSetHomewrok = await SetHomework.create(req.body);
+    if (!newSetHomewrok) {
+      return next(new AppError("作业创建失败", 500));
+    }
+    res.status(201).json({
+      status: "success",
+      data: newSetHomewrok,
+    });
+  } else {
+    return next(new AppError("本节课作业布置已经存在", 500));
+  }
 });
 
 exports.getSetHomework = catchAsync(async (req, res, next) => {
-  const setHomework = await SetHomework.findById(req.params.id);
+  const Homework = await SetHomework.findById(req.params._id).populate({
+    path: "lesson_id",
+    select: ["course_id", "-_id"]
+    //populate: { path: "course_id", select: ["name", "-_id"] },
+  });
 
-  if (!setHomework) {
+  if (!Homework) {
     return next(new AppError("该作业布置不存在", 404));
   }
 
   res.status(200).json({
     status: "success",
     data: {
-      setHomework,
+      Homework,
     },
   });
 });
