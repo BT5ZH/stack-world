@@ -50,12 +50,17 @@ exports.createSetHomewrok = catchAsync(async (req, res, next) => {
 });
 
 exports.getSetHomework = catchAsync(async (req, res, next) => {
-  const Homework = await SetHomework.findById(req.params._id).populate({
-    path: "lesson_id",
-    select: ["course_id", "-_id"]
-    //populate: { path: "course_id", select: ["name", "-_id"] },
-  });
-
+  const Homework = await SetHomework.findById(req.params.id)
+  .populate({
+    path: 'lesson_id',
+    select: ['_id', 'course_id'],
+    // model: 'College',
+    populate: {
+    path: 'course_id',
+    select: ['_id', 'name']
+    // model: 'Student'
+    }
+  })
   if (!Homework) {
     return next(new AppError("该作业布置不存在", 404));
   }
