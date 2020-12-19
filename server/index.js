@@ -29,20 +29,46 @@ const mgPort = process.env.MGSPORT || 5001;
 const server = require("http").createServer(app);
 const options = {
   cors: {
-    origin: "http://localhost:3050",
+    origin: "http://localhost:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+    allowedHeaders: ["Access-Control-Allow-Origin"],
   },
 };
+
+// app.use(
+//   cors({
+//     origin: ["http://localhost:8080"],
+//     methods: ["GET", "HEAD", "OPTIONS", "POST"],
+//   })
+// );
+
 const io = require("socket.io")(server, options);
-const nsp = io.of("/api");
-nsp.on("connection", (socket) => {
+// io.set("transports", [
+//   "websocket",
+//   "xhr-polling",
+//   "jsonp-polling",
+//   "htmlfile",
+//   "flashsocket",
+// ]);
+// io.set("origins", "*:*");
+
+// const nsp = io.of("/api");
+io.on("connection", (socket) => {
   console.log("server connected");
 
   socket.on("message", (eventData) => {
-    // attach the current time
+    console.log(eventData);
     eventData.processed = Date.now();
     // send the message back to the client
     socket.emit("message", eventData);
+  });
+
+  socket.on("random", (eventData) => {
+    console.log(eventData);
+    // attach the current time
+    eventData.processed = Date.now();
+    // send the message back to the client
+    socket.emit("random", eventData);
   });
 });
 server.listen(mgPort, (err) => {
