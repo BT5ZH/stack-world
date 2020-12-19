@@ -48,7 +48,7 @@ exports.getClass = catchAsync(async (req, res, next) => {
   const classEntity = await Class.findOne({_id:req.params.id})
   .populate('students','user_id name -_id');
   if (!classEntity) {
-    return next(new AppError("该课程不存在", 404));
+    return next(new AppError("该班级不存在", 404));
   }
 
   //console.log(classEntity);

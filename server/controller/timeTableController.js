@@ -99,25 +99,11 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ teacher_id: req.body.teacher_id })
     .populate("course_id", "name -_id")
     .populate("teacher_id", "user_id name -_id")
-    .populate("curriculum", "class_name -_id");
 
   if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }
 
-  for (let k = 0; k < data.length; k++) {
-    for (let i = 0; i < data[k].curriculum.length; i++) {
-      let className = await Class.findOne({
-        _id: data[k].curriculum[i].class_id,
-      }).select("class_name");
-      
-      // Object.defineProperty(data[k].curriculum[i], "class_name", {
-      //   value: className.class_name,
-      // });
-      if (typeof data[k].curriculum[i] == "object") {
-        console.log("------" + className.class_name);
-        data[k].curriculum[i]["class_name"] = className.class_name;
-      }
       // const multipleUsers = req.body;
       // const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
       // multipleUsers.forEach((user) => {
@@ -126,13 +112,11 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
       //     user["passwordConfirm"] = hashPassword;
       //   }
       // });
-    }
-  }
+    
   res.status(200).json({
     status: "success",
-    data: {
-      data,
-    },
+    data,
+   
   });
 });
 
