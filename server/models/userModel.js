@@ -87,7 +87,7 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
+//userSchema.index({ user_id: 1}, { unique: true });
 // virtual populate
 userSchema.virtual("organizations", {
   ref: "Organization",

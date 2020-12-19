@@ -43,15 +43,15 @@ exports.createClass = catchAsync(async (req, res, next) => {
 });
 
 exports.getClass = catchAsync(async (req, res, next) => {
-  console.log("getClass 进来啦");
+  //console.log("getClass 进来啦");
 
-  const classEntity = await Class.findById(req.params.id);
-
+  const classEntity = await Class.findOne({_id:req.params.id})
+  .populate('students','user_id name -_id');
   if (!classEntity) {
     return next(new AppError("该课程不存在", 404));
   }
 
-  console.log(classEntity);
+  //console.log(classEntity);
   res.status(200).json({
     status: "success",
     data: {
