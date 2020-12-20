@@ -99,7 +99,8 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ teacher_id: req.body.teacher_id })
     .populate("course_id", "name -_id")
     .populate("teacher_id", "user_id name -_id")
-
+    .populate("curriculum.class_id", "class_name -_id")
+    .populate("curriculum.room_id", "room_number -_id")
   if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }

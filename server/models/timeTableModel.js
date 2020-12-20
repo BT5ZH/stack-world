@@ -44,17 +44,17 @@ const timeTableSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.String,
           ref: "Room",
         },
-        room_number:{
-          type:Number,
-          required: true,
-        },
+        // room_number:{
+        //   type:Number,
+        //   required: true,
+        // },
         class_id: {
           type: mongoose.Schema.Types.String, //type: mongoose.Schema.Types.ObjectID,
           ref: "Class",
         },
-        class_name:{type: String, 
-          required: true,
-        }
+        // class_name:{type: String, 
+        //   required: true,
+        // }
       },
     ],
   },
