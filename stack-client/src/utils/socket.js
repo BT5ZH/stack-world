@@ -4,7 +4,7 @@ const SOCKET_URL = "http://localhost:3050";
 const options = {};
 let socket = null;
 const client = io(SOCKET_URL, options);
-const listeners = {
+let listeners = {
   // 投票
   vote: () => {},
   // 聊天室
@@ -21,11 +21,13 @@ const listeners = {
   file: () => {},
   // 调查问卷 (questionnaire)
   ques: () => {},
+  //
+  joinRoom: () => {},
 };
 
-function addListenersToScoket(socket) {
-  for (item in listeners) {
-    socket.on(item, listeners[item]);
+function addListenersToScoket() {
+  for (const item in listeners) {
+    client.on(item, listeners[item]);
   }
 }
 
@@ -34,20 +36,24 @@ function initSocketConnection() {
   return new Promise((resolve, reject) => {
     client.on("connect", (sk) => {
       socket = sk;
-      console.log(`socket connection established, id is ${socket.id}`);
-      addListenersToScoket(socket);
+      console.log(`socket connection established, id is ${client.id}`);
+      console.log(listeners);
+      addListenersToScoket();
       resolve();
     });
     client.on("connect_error", () => reject());
   });
 }
 
-function createInstance(that, callbacks) {
-  console.log(that);
-  console.log(callbacks);
+export function createInstance(that, callbacks) {
+  listeners = { ...listeners, ...callbacks };
+  console.log(listeners);
   if (!socket) initSocketConnection();
 }
 
-function sendEvent(event) {
-  socket.emit(event.type, event.data);
+export function sendEvent(event) {
+  let data = { ...event.data, clientId: client.id };
+  console.log(data);
+  console.log(`socket connection established, id is ${client.id}`);
+  client.emit(event.type, data);
 }

@@ -1,6 +1,3 @@
-const keys = require("./keys");
-const mongoose = require("mongoose");
-
 // Postgres Client Setup
 /*
 const { Pool } = require("pg");
@@ -20,12 +17,13 @@ pgClient
 // Redis Client Setup
 const redis = require("redis");
 const redisClient = redis.createClient({
-  host: keys.redisHost,
-  port: keys.redisPort,
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
   retry_strategy: () => 1000,
 });
 const redisPublisher = redisClient.duplicate();
 
 // module.exports.pgClient = pgClient;
+// module.exports = redisClient;
 module.exports.redisClient = redisClient;
 module.exports.redisPublisher = redisPublisher;
