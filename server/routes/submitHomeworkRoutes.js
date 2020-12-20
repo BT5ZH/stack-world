@@ -8,6 +8,11 @@ router
   .route("/")
   .get(authController.protect, submitHomeworkController.getAllSubmitHomework)
   .post(authController.protect, submitHomeworkController.createSubmitHomewrok);
+
+router
+  .route("/getSubmitHomeworkByIDandStudentID")
+  .post(authController.protect, submitHomeworkController.getSubmitHomeworkByIDandStudentID);
+
 router
   .route("/:id")
   .get(authController.protect, submitHomeworkController.getSubmitHomework)

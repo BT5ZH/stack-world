@@ -36,7 +36,7 @@ const lessonRouter = require("./routes/lessonRoutes");
 const schoolYearRouter = require("./routes/schoolYearRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
 const setHomeworkRouter = require("./routes/setHomeworkRoutes");
-//const submitHomeworkRouter = require("./routes/submitHomeworkRoutes");
+const submitHomeworkRouter = require("./routes/submitHomeworkRoutes");
 
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
@@ -50,7 +50,7 @@ app.use("/pc/v1/lessons", lessonRouter);
 app.use("/pc/v1/schoolyears", schoolYearRouter);
 app.use("/pc/v1/timetables", timeTableRouter);
 app.use("/pc/v1/sethomeworks", setHomeworkRouter);
-//app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
+app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
 
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");

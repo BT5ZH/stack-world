@@ -8,16 +8,23 @@ const submitHomeworkSchema = new mongoose.Schema(
       required: [true, "Please tell us the ID"],
       default: uuid.v1
     },
-    homework_id: { type: mongoose.Schema.String, ref: "SetHomework" },
-    student_id: { type: mongoose.Schema.String, ref: "User" },
 
-    content: { type: String },
+    homework_id:{
+      type: mongoose.Schema.Types.String,
+      ref: 'SetHomework',
+    },
+    student_id:{
+      type: mongoose.Schema.Types.String,
+      ref: 'User',
+    },
+
+    content: { type: String, default: "答："},
     attachment_url: { type: String },
 
-    comments: { type: String },
-    score: { type: Number, default:0},
+    comments: { type: String, default: "未评"},
+    score: { type: Number, default: 0 },
 
-    flg:{type: Number,default:0}
+    flg: { type: Number, default: 0 },
   },
   { _id: false }
 );

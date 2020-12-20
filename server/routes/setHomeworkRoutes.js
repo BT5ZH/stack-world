@@ -8,9 +8,18 @@ router
   .route("/")
   .get(authController.protect, setHomeworkController.getAllSetHomework)
   .post(authController.protect, setHomeworkController.createSetHomewrok);
+
+router
+  .route("/getSetHomeworkByLessonID")
+  .post(authController.protect, setHomeworkController.getSetHomeworksByLessonID);
+
+router
+  .route("/getSetHomeworkByLessonIDandNumber")
+  .post(authController.protect, setHomeworkController.getSetHomeworkByLessonIDandNumber);
+
 router
   .route("/:id")
-  .get(authController.protect, setHomeworkController.getSetHomework)
+  .get(authController.protect, setHomeworkController.getSetHomeworkByID)
   .patch(authController.protect, setHomeworkController.updateSetHomework)
   .delete(authController.protect, setHomeworkController.deleteSetHomework);
 

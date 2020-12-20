@@ -101,18 +101,10 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     .populate("teacher_id", "user_id name -_id")
     .populate("curriculum.class_id", "class_name -_id")
     .populate("curriculum.room_id", "room_number -_id")
+
   if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }
-
-      // const multipleUsers = req.body;
-      // const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
-      // multipleUsers.forEach((user) => {
-      //   if (typeof user == "object") {
-      //     user["password"] = hashPassword;
-      //     user["passwordConfirm"] = hashPassword;
-      //   }
-      // });
     
   res.status(200).json({
     status: "success",
@@ -207,18 +199,6 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
         }
       }
 
-      // if(lessonObj[0].belongedToLesson[0]!=null){
-      //   let len = lessonObj[0].belongedToLesson.length;
-
-      //   for(let j=0; j<len ; j++){
-      //     lessonIdList.push(lessonObj[0].belongedToLesson[j]._id);
-      //   }
-      // }
-    
-    // console.log("lessonIdList",lessonIdList)
-    //---get doc from timeTableModel depending on the lessonIdList.
-    // console.log("lessonIdList",lessonIdList)
-    // let result=[]//save each lesson timetable data
     for(let i=0; i<lessonIdList.length ; i++) {
       const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
 
