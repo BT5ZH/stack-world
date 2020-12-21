@@ -208,14 +208,14 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       result.push(data);
     }
     res.status(200).json({
-      status: true,
+      status: "success",
       data: {
         result,
       },
     });
   }else{//the student have not in any class,so he isn't any lesson
     res.status(200).json({
-      status: true,
+      status: "success",
       data: {
         result
       },
