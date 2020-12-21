@@ -7,6 +7,10 @@ const activitySchema = new mongoose.Schema(
       required: [true, "class must have an activityID"],
       unique: true,
     },
+    activityNumber: {
+      type: Number,
+      required: [true, "class must have an activityNumber"],
+    },
     activityLocation: {
       type: String,
       required: [true, "class must have an activityLocation"],
@@ -17,6 +21,7 @@ const activitySchema = new mongoose.Schema(
     },
     activityStartTime: {
       type: Date,
+      default: Date.now(),
     },
     activityEndTime: {
       type: Date,
@@ -26,7 +31,7 @@ const activitySchema = new mongoose.Schema(
     },
     org: { type: String, required: true },
     subOrg: { type: String, required: true },
-    liveContent: { type: String, required: true },
+    liveContent: { type: String },
     teacher: { type: String, required: true },
     attendance: {
       list: { type: Array },
