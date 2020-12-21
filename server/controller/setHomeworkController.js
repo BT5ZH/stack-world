@@ -30,7 +30,7 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createSetHomewrok = catchAsync(async (req, res, next) => {
+exports.createSetHomework = catchAsync(async (req, res, next) => {
   const oldHomework = await SetHomework.findOne({
     lesson_id: req.body.lesson_id,
     number_of_time: req.body.number_of_time,

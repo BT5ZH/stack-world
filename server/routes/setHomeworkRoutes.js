@@ -7,7 +7,7 @@ const router = express.Router();
 router
   .route("/")
   .get(authController.protect, setHomeworkController.getAllSetHomework)
-  .post(authController.protect, setHomeworkController.createSetHomewrok);
+  .post(authController.protect, setHomeworkController.createSetHomework);
 
 router
   .route("/getSetHomeworkByLessonID")
