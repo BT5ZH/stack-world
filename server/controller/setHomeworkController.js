@@ -36,13 +36,13 @@ exports.createSetHomewrok = catchAsync(async (req, res, next) => {
     number_of_time: req.body.number_of_time,
   });
   if (!oldHomework) {
-    const newSetHomewrok = await SetHomework.create(req.body);
-    if (!newSetHomewrok) {
+    const newSetHomework = await SetHomework.create(req.body);
+    if (!newSetHomework) {
       return next(new AppError("作业创建失败", 500));
     }
     res.status(201).json({
       status: "success",
-      data: newSetHomewrok,
+      data: newSetHomework,
     });
   } else {
     return next(new AppError("本节课作业布置已经存在", 500));
