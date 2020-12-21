@@ -208,6 +208,8 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       })
         .populate("course_id", "name")
         .populate("teacher_id", "name")
+        .populate({path:'curriculum.room_id',populate:{path:'building'}})
+        .populate("curriculum.class_id", "class_name -_id")
       if (!data) {
         return next(new AppError("该课不存在", 200));
       }
