@@ -13,7 +13,7 @@
       </a-col>
     </a-row>
     <div class="course_content" v-if="isClick == 0">
-      <empty v-if="resList.length == 0"></empty>
+      <a-empty v-if="resList.length == 0" />
       <leftSlider
         v-else
         v-for="item in resList"
@@ -31,7 +31,7 @@
       <resCard
         v-else
         v-for="item in homeworkList"
-        :key="item.id"
+        :key="item.hid"
         :item="item"
         :isClick="isClick"
         :courseId="courseId"
@@ -60,7 +60,6 @@ export default {
       courseId: null,
     };
   },
-  mounted() {},
   methods: {
     changeNav(value) {
       this.isClick = value;
@@ -70,6 +69,10 @@ export default {
   created: function() {
     this.courseId = this.$route.params.id;
     console.log(this.courseId);
+  },
+  mounted(){
+    this.$store.dispatch("student/getResList", this.$route.params.id);
+    this.$store.dispatch("student/getHomeworkList", this.$route.params.id);
   },
   computed: {
     ...mapState({

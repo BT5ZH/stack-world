@@ -88,6 +88,7 @@
           });
       },
       updatePublicVuexData(context) {
+        console.log(context)
         const publicVuexData = {
           role: this.userMap[context.role]["name"],
           oid: context.org_id,
@@ -108,7 +109,7 @@
           };
         this.$store.commit("public/updateIdList", publicVuexData);
         //new
-        this.$store.commit(context.role + "/updateUserInfo", userData);
+        if(context.role=='student') this.$store.commit( "student/updateUserInfo", userData);
         return this.userMap[context.role]["index"];
       },
 
