@@ -92,14 +92,15 @@ exports.batchAddRooms = catchAsync(async (req, res, next) => {
   var rooms = req.body;
   await Room.insertMany(rooms, { ordered: false });
   res.status(200).json({
-    status: true,
+    status: "success",
   });
 });
 
 exports.batchDeleteRooms = catchAsync(async (req, res, next) => {
   var rooms = req.body.rooms._id;
   await Room.deleteMany({ _id: { $in: rooms } }, { ordered: false });
-  res.status(200).json({
-    status: true,
+  res.status(204).json({
+    status: "success",
+    data: null,
   });
 });

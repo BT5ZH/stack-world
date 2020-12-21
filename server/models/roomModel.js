@@ -5,8 +5,8 @@ const roomSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      required: [true,'you must tell us your id'],
-      default:uuid.v1,
+      required: [true, "you must tell us your id"],
+      default: uuid.v1,
     },
     room_number: {
       type: Number,
@@ -23,6 +23,8 @@ const roomSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       ref: "Building",
     },
+
+    // 以下两个数据 插入数据时忽略
     ////////////////////////////////////////////////////
     section: {
       type: Number,
