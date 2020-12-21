@@ -54,7 +54,7 @@ app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
 
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");
-const buildingRouter = require("./routes/buildingRouter");
+const buildingRouter = require("./routes/buildingRoutes");
 const roomRouter = require("./routes/roomRoutes");
 const testRouter = require("./routes/testRoutes");
 
