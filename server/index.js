@@ -61,17 +61,67 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", (data) => {
     console.log("joinRoom 进来啦");
     console.log(data.roomId);
-
-    if (data.role == "teacher") {
-      // 教师登录房间
-    } else if (data.role == "student") {
-      // 学生登录房间
-    }
+    // res = {
+    //   enter:"",
+    //   vote:"",
+    //   // “select” 选择 “judge” 判断
+    //   ques:{
+    //     type:"select",//
+    //   },
+    //   test:{},
+    //   sign:"",
+    //   randomPick:"",
+    //   file:""
+    // };
 
     const roomChannel = data.roomId;
-    //查找房间标志
-    let roomFlag = false;
+    if (data.role == "teacher") {
+      // 教师登录房间
+      switch (data.actionType) {
+        case "enter":
+          socket.join(roomChannel);
+          io.to(roomChannel).emit(res);
+          break;
+        case "vote":
+          io.to(roomChannel).emit(res);
+          break;
+        case "ques":
+          io.to(roomChannel).emit(res);
+          break;
+        case "test":
+          io.to(roomChannel).emit(res);
+          break;
+        case "sign":
+          io.to(roomChannel).emit(res);
+          break;
+        case "randomPick":
+          io.to(roomChannel).emit(res);
+          break;
+        case "file":
+          io.to(roomChannel).emit(res);
+          break;
+        default:
+          break;
+      }
+    } else if (data.role == "student") {
+      // 学生登录房间
+      switch (data.actionType) {
+        case "answer":
+          socket.join(roomChannel);
+          io.to(roomChannel).emit(res);
+          break;
+        case "answer":
+          socket.join(roomChannel);
+          io.to(roomChannel).emit(res);
+          break;
+        default:
+          break;
+      }
+    }
 
+    //查找房间标志
+    /*
+    let roomFlag = false;
     redisClient.keys("*", function (err, keys) {
       if (err) return console.log(err);
       console.log("有多少老师正在上课: " + keys.length);
@@ -98,6 +148,7 @@ io.on("connection", (socket) => {
         );
       }
     });
+    */
   });
 
   socket.on("sign", (eventData) => {
@@ -105,54 +156,6 @@ io.on("connection", (socket) => {
     eventData.processed = Date.now();
     // send the message back to the client
     socket.emit("sign", eventData);
-  });
-
-  socket.on("ques", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("ques", eventData);
-  });
-
-  socket.on("pick", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("pick", eventData);
-  });
-
-  socket.on("race", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("race", eventData);
-  });
-
-  socket.on("test", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("test", eventData);
-  });
-
-  socket.on("vote", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    io.emit("vote", eventData);
-  });
-
-  socket.on("file", (eventData) => {
-    console.log(eventData);
-    // attach the current time
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("file", eventData);
   });
 });
 server.listen(mgPort, (err) => {
