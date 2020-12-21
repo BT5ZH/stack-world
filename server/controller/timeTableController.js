@@ -13,13 +13,13 @@ const Class = require("../models/classModel");
 exports.getAllTimeTable = catchAsync(async (req, res, next) => {
   const queryObj = { ...req.query };
   const excludedFields = ["page", "sort", "limit", "fields"];
-  excludedFields.forEach((el) => delete queryObj[el]);
+  excludedFields.forEach(el => delete queryObj[el]);
 
   // 2) Advanced filtering
   let queryString = JSON.stringify(queryObj);
   queryString = queryString.replace(
     /\b(gte|gt|lte|le)\b/g,
-    (match) => `$${match}`
+    match => `$${match}`
   );
   // console.log(queryString);
   const query = TimeTable.find(JSON.parse(queryString));
@@ -36,8 +36,8 @@ exports.getAllTimeTable = catchAsync(async (req, res, next) => {
     status: "success",
     results: timeTables.length,
     data: {
-      timeTables,
-    },
+      timeTables
+    }
   });
 });
 
@@ -62,14 +62,14 @@ exports.createTimeTable = catchAsync(async (req, res, next) => {
   }
   res.status(201).json({
     status: "success",
-    data: NewTimeTable,
+    data: NewTimeTable
   });
 });
 
 exports.updateTimeTable = catchAsync(async (req, res, next) => {
   const timeTable = await TimeTable.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true,
+    runValidators: true
   });
   if (!timeTable) {
     return next(new AppError("该课表不存在", 404));
@@ -77,8 +77,8 @@ exports.updateTimeTable = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      timeTable,
-    },
+      timeTable
+    }
   });
 });
 
@@ -91,7 +91,7 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
 
   res.status(204).json({
     status: "success",
-    data: null,
+    data: null
   });
 });
 
@@ -100,16 +100,15 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     .populate("course_id", "name -_id")
     .populate("teacher_id", "user_id name -_id")
     .populate("curriculum.class_id", "class_name -_id")
-    .populate("curriculum.room_id", "room_number -_id")
+    .populate("curriculum.room_id", "room_number -_id");
 
   if (!data || data[0] == null) {
     return next(new AppError("该课表不存在", 404));
   }
-    
+
   res.status(200).json({
     status: "success",
-    data,
-   
+    data
   });
 });
 
@@ -123,8 +122,8 @@ exports.getTimeTableFromCourseID = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      data,
-    },
+      data
+    }
   });
 });
 //////edit by Chaos on 12-15
@@ -137,17 +136,17 @@ async function belongedToWhichClass(student_id) {
           from: "classes",
           localField: "_id",
           foreignField: "students",
-          as: "belongedToClass",
-        },
+          as: "belongedToClass"
+        }
       },
       {
-        $match: { _id: student_id },
+        $match: { _id: student_id }
       },
       {
         $project: {
-          "belongedToClass._id": 1,
-        },
-      },
+          "belongedToClass._id": 1
+        }
+      }
     ]);
 
     return classObj;
@@ -164,10 +163,10 @@ async function belongedToWhichLesson(class_id) {
           from: "lessons",
           localField: "_id",
           foreignField: "classes",
-          as: "belongedToLesson",
-        },
+          as: "belongedToLesson"
+        }
       },
-      { $match: { _id: class_id } },
+      { $match: { _id: class_id } }
     ]);
 
     return lessonObj;
@@ -177,30 +176,39 @@ async function belongedToWhichLesson(class_id) {
 }
 exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   //---get all class_id which the student_id belongs to. Then push them into array classIdList one by one.
-  let result=[]//save each lesson timetable data
+  let result = []; //save each lesson timetable data
   const classObj = await belongedToWhichClass(req.body.student_id);
-  if(classObj[0].belongedToClass[0]!=null){
+  if (classObj[0].belongedToClass[0] != null) {
     let len = classObj[0].belongedToClass.length;
     let classIdList = [];
     let lessonIdList = []; //save all the lesson_id which connected to the class that the student belongs to.
     for (let i = 0; i < len; i++) {
       classIdList.push(classObj[0].belongedToClass[i]._id);
     }
-  //----------------------------------------------------------------------------------------
-  //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to. 
-  //---Then push them into array lessonIdList one by one.
-    for(let i=0; i<classIdList.length ; i++) {
-        var lessonObj = await belongedToWhichLesson(classIdList[i]);
-        var lessonsOfOneClass =lessonObj[0].belongedToLesson;
-        for(var j=0;j<lessonsOfOneClass.length;j++){
-          if(lessonsOfOneClass[j].year==req.body.year&&lessonsOfOneClass[j].semester==req.body.semester){
-            lessonIdList.push(lessonsOfOneClass[j]._id)
-          }
+    //----------------------------------------------------------------------------------------
+    //---take class_id from classIdList one by one and get all lesson_id which the class_id belongs to.
+    //---Then push them into array lessonIdList one by one.
+    for (let i = 0; i < classIdList.length; i++) {
+      var lessonObj = await belongedToWhichLesson(classIdList[i]);
+      var lessonsOfOneClass = lessonObj[0].belongedToLesson;
+      // console.log("lessonsOfOneClass",lessonsOfOneClass)
+      for (var j = 0; j < lessonsOfOneClass.length; j++) {
+        if (
+          lessonsOfOneClass[j].year == req.body.year &&
+          lessonsOfOneClass[j].semester == req.body.semester
+        ) {
+          lessonIdList.push(lessonsOfOneClass[j]._id);
         }
       }
+    }
 
-    for(let i=0; i<lessonIdList.length ; i++) {
-      const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] });
+    for (let i = 0; i < lessonIdList.length; i++) {
+      const data = await TimeTable.findOne({
+        lesson_id: lessonIdList[i]
+      })
+        .populate("course_id", "name")
+        .populate("teacher_id", "name")
+        .populate("curriculum","room_number");
 
       if (!data) {
         return next(new AppError("该课不存在", 200));
@@ -210,15 +218,16 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: "success",
       data: {
-        result,
-      },
+        result
+      }
     });
-  }else{//the student have not in any class,so he isn't any lesson
+  } else {
+    //the student have not in any class,so he isn't any lesson
     res.status(200).json({
       status: "success",
       data: {
         result
-      },
+      }
     });
   }
 });
