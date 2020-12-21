@@ -36,6 +36,7 @@ const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
 
 // ------------------------  teacher router  ------------------------------
 const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
+const TeacherIndex = () => import("@/components/teacher/index/IndexPage");
 const TeacherCourse = () => import("@/components/teacher/course/Index");
 const TeacherCourseDetail = () =>
   import("@/components/teacher/coursedetail/index/CourseDetail");
@@ -173,6 +174,11 @@ export const routes = [
     component: TeacherRouter,
     children: [
       {
+        path: "index",
+        name: "teacher_index",
+        component: TeacherIndex,
+      },
+      {
         path: "course",
         name: "teacher_course",
         component: TeacherCourse,
@@ -280,7 +286,7 @@ export const routes = [
     name: "interaction",
     component: Interaction,
     children: [
-      { path: "index", component: InteractionIndex, name: "interaction_vote" },
+      { path: "index", component: InteractionIndex, name: "interaction_index" },
       { path: "vote", component: InteractionVote, name: "interaction_vote" },
       { path: "pick", component: InteractionPick, name: "interaction_pick" },
       { path: "race", component: InteractionRace, name: "interaction_race" },
