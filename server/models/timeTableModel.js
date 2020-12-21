@@ -40,16 +40,21 @@ const timeTableSchema = new mongoose.Schema(
           default: 0,
           enum: [0, 1, 2], //1 means odd week. 2 means even week.
         },
-        location: {
+        room_id: {
           type: mongoose.Schema.Types.String,
           ref: "Room",
         },
+        // room_number:{
+        //   type:Number,
+        //   required: true,
+        // },
         class_id: {
           type: mongoose.Schema.Types.String, //type: mongoose.Schema.Types.ObjectID,
           ref: "Class",
         },
-        class_name:{type: String, 
-          required: true,}
+        // class_name:{type: String, 
+        //   required: true,
+        // }
       },
     ],
   },

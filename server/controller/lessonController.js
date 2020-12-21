@@ -3,7 +3,7 @@ const Class = require("../models/classModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
-//author: Chaos 12-13 
+//author: Chaos 12-13
 exports.getAllLessons = catchAsync(async (req, res, next) => {
   // BUILD QUERY
   // 1) Filtering
@@ -35,14 +35,17 @@ exports.getAllLessons = catchAsync(async (req, res, next) => {
 });
 
 exports.createLesson = catchAsync(async (req, res, next) => {
-  const data = await Lesson.findOne({ course_id:req.body.course_id,teacher_id:req.body.teacher_id});
-  if(!data){
+  const data = await Lesson.findOne({
+    course_id: req.body.course_id,
+    teacher_id: req.body.teacher_id,
+  });
+  if (!data) {
     const onelesson = await Lesson.create(req.body);
     res.status(201).json({
       status: "success",
       data: onelesson,
     });
-  }else{
+  } else {
     return next(new AppError("该课已存在", 500));
   }
 });
@@ -50,8 +53,10 @@ exports.createLesson = catchAsync(async (req, res, next) => {
 exports.getOneLessonByID = catchAsync(async (req, res, next) => {
   //const data = await Lesson.findOne({ _id:req.params.lesson_id});
   //const data = await Lesson.findOne({ teacher_id:{$ne:null},course_id:{$ne:null},_id:req.params.lesson_id}).populate('course_id','name -_id').populate('teacher_id','user_id name -_id');
-  const data = await Lesson.findOne({ _id:req.params.lesson_id}).populate('course_id','name -_id').populate('teacher_id','user_id name -_id');
-  
+  const data = await Lesson.findOne({ _id: req.params.lesson_id })
+    .populate("course_id", "name -_id")
+    .populate("teacher_id", "user_id name -_id");
+
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -64,10 +69,11 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ teacher_id:req.body.teacher_id}).populate('teacher_id','user_id name -_id');
+  const data = await Lesson.find({ teacher_id: req.body.teacher_id }).populate(
+    "teacher_id",
+    "user_id name -_id"
+  );
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -81,7 +87,10 @@ exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByCourseID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ course_id:req.body.course_id}).populate('course_id','name org_name -_id');
+  const data = await Lesson.find({ course_id: req.body.course_id }).populate(
+    "course_id",
+    "name org_name -_id"
+  );
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -95,9 +104,11 @@ exports.getLessonsByCourseID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByClassID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ classes:{$elemMatch:{$eq:req.body.class_id}}}).populate('course_id','name -_id');
+  const data = await Lesson.find({
+    classes: { $elemMatch: { $eq: req.body.class_id } },
+  }).populate("course_id", "name -_id");
   //const data = await Lesson.find({ course_id:{$ne:null},classes:{$elemMatch:{$eq:req.body.class_id}}}).populate('course_id','name -_id');
-  
+
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -139,13 +150,16 @@ exports.getLessonsByClassID = catchAsync(async (req, res, next) => {
   //       },
   //     });
   //  // }
-  // } catch (err) { 
+  // } catch (err) {
   //   return false;
   // }
 });
 
 exports.getLessonByCourseIDandTeacherID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.findOne({ teacher_id:req.body.teacher_id,course_id:req.body.course_id});
+  const data = await Lesson.findOne({
+    teacher_id: req.body.teacher_id,
+    course_id: req.body.course_id,
+  });
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
@@ -163,7 +177,6 @@ exports.getLessonByCourseIDandClassID = catchAsync(async (req, res, next) => {
   // if (!data) {
   //   return next(new AppError("该课不存在", 404));
   // }
-
   // res.status(200).json({
   //   status: "success",
   //   data: {
@@ -177,7 +190,6 @@ exports.getLessonByTeacherIDandClassID = catchAsync(async (req, res, next) => {
   // if (!data) {
   //   return next(new AppError("该课不存在", 404));
   // }
-
   // res.status(200).json({
   //   status: "success",
   //   data: {
@@ -213,7 +225,3 @@ exports.updateLesson = catchAsync(async (req, res, next) => {
     data,
   });
 });
-
-
-
-

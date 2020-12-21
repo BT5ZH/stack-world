@@ -1,10 +1,9 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3050";
-const options = {};
-let socket = null;
-const client = io(SOCKET_URL, options);
-const listeners = {
+const SOCKET_URL = "http://localhost:5000";
+const client = io(SOCKET_URL, {});
+
+let listeners = {
   // 投票
   vote: () => {},
   // 聊天室
@@ -23,31 +22,46 @@ const listeners = {
   ques: () => {},
 };
 
-function addListenersToScoket(socket) {
-  for (item in listeners) {
-    socket.on(item, listeners[item]);
-  }
+/**
+ * 添加回调函数到不同活动
+ *
+ * @param {Socket} socket socket 连接实例
+ * @param {String} roomId 房间号 等同于 lessonId
+ */
+function addListenersToScoket(socket, roomId) {
+  socket.on([roomId], (eventData) => {
+    const { actionType, data } = eventData;
+    if (!listeners[actionType]) {
+      console.error("unsupported action type");
+      return null;
+    }
+    listeners[actionType](data);
+  });
 }
 
-// TODO socket.io 是否有断线重连机制
-function initSocketConnection() {
+export function createInstance(that, callbacks) {
+  const { lessonId } = that.$route.query;
+  listeners = { ...listeners, ...callbacks };
   return new Promise((resolve, reject) => {
-    client.on("connect", (sk) => {
-      socket = sk;
-      console.log(`socket connection established, id is ${socket.id}`);
-      addListenersToScoket(socket);
-      resolve();
+    client.on("connect", () => {
+      console.info(`socket connection established, id is${client.id}`);
+      addListenersToScoket(client, lessonId);
+      resolve(client.id);
     });
     client.on("connect_error", () => reject());
   });
 }
 
-function createInstance(that, callbacks) {
-  console.log(that);
-  console.log(callbacks);
-  if (!socket) initSocketConnection();
+export function broadcastEvent(event) {
+  const { roomId, data } = event;
+  client.broadcast.emit(roomId, data);
 }
 
-function sendEvent(event) {
-  socket.emit(event.type, event.data);
+export function sendEvent(event) {
+  const { roomId, data } = event;
+  client.emit(roomId, data);
+}
+
+export function publicEvent(data) {
+  client.emit("public", data);
 }

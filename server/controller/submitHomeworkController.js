@@ -32,28 +32,68 @@ exports.getAllSubmitHomework = catchAsync(async (req, res, next) => {
 });
 
 exports.createSubmitHomewrok = catchAsync(async (req, res, next) => {
-  const newsubmitHomewrok = await SubmitHomeworks.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: newsubmitHomewrok,
+  const oldHomework = await SubmitHomeworks.findOne({
+    homework_id: req.body.homework_id,
+    student_id: req.body.student_id,
   });
+  if (!oldHomework) {
+    const newHomewrok = await SubmitHomeworks.create(req.body);
+    if (!newHomewrok) {
+      return next(new AppError("作业创建失败", 500));
+    }
+    res.status(201).json({
+      status: "success",
+      newHomewrok,
+    });
+  } else {
+    return next(new AppError("本节课作业布置已经存在", 500));
+  }
 });
 
 exports.getSubmitHomework = catchAsync(async (req, res, next) => {
-  const submitHomework = await SubmitHomeworks.findById(req.params.id);
+  const homework = await SubmitHomeworks.findById(req.params.id);
 
-  if (!submitHomework) {
+  if (!homework) {
     return next(new AppError("该作业不存在", 404));
   }
 
   res.status(200).json({
     status: "success",
-    data: {
-      submitHomework,
-    },
+      homework,
   });
 });
+exports.getSubmitHomeworkByIDandStudentID = catchAsync(
+  async (req, res, next) => {
+    const homework = await SubmitHomeworks.findOne({
+      homework_id: req.body.homework_id,
+      student_id: req.body.student_id,
+    })
+    .populate("student_id", "user_id name -_id")
+    .populate({
+      path: 'homework_id',
+      select: ['_id', 'lesson_id'],
 
+      populate:{
+        path: 'lesson_id',
+        select: ['_id', 'course_id'],
+ 
+        populate: {
+          path: 'course_id',
+          select: ['_id', 'name']
+        }
+      }
+    })
+
+    if (!homework) {
+      return next(new AppError("该作业不存在", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      homework,
+    });
+  }
+);
 exports.updateSubmitHomework = catchAsync(async (req, res, next) => {
   const submitHomework = await SubmitHomeworks.findByIdAndUpdate(
     req.params.id,

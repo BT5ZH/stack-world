@@ -8,28 +8,28 @@ const mutation = {
       state.courseList = params;
       return null;
     }
-    throw "[vuex-super-mutation] courseList type error!";
+    throw "[vuex-student-mutation] courseList type error!";
   },
   updateResList(state, params) {
     if (Array.isArray(params)) {
       state.resList = params;
       return null;
     }
-    throw "[vuex-super-mutation] resList type error!";
+    throw "[vuex-student-mutation] resList type error!";
   },
   updateHomeworkList(state, params) {
     if (Array.isArray(params)) {
       state.homeworkList = params;
       return null;
     }
-    throw "[vuex-super-mutation] homeworkList type error!";
+    throw "[vuex-student-mutation] homeworkList type error!";
   },
   updateFavResList(state, params) {
     if (Array.isArray(params)) {
       state.favResList = params;
       return null;
     }
-    throw "[vuex-super-mutation] favResList type error!";
+    throw "[vuex-student-mutation] favResList type error!";
   },
 };
 

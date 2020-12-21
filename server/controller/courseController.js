@@ -68,7 +68,7 @@ exports.batchAddCourses = catchAsync(async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(404).json({ status: false, message: err });
+    res.status(500).json({ status: false, message: err });
   }
 });
 // 传id删除
@@ -98,7 +98,6 @@ exports.deleteOneCourse = catchAsync(async (req, res) => {
  */
 exports.batchDeleteCourses = catchAsync(async (req, res) => {
   var ids = req.body.courses_id;
-  console.log(ids);
   try {
     await Course.deleteMany({ _id: { $in: ids } });
     res.status(200).json({
@@ -107,7 +106,7 @@ exports.batchDeleteCourses = catchAsync(async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(404).json({ status: false, message: err });
+    res.status(500).json({ status: false, message: err });
   }
 });
 
@@ -116,10 +115,11 @@ exports.updateCourse = catchAsync(async (req, res) => {
   try {
     await Course.findByIdAndUpdate(req.params._id, req.body);
     res.status(200).json({
+      status:true,
       message: "success"
     });
   } catch (err) {
-    res.status(404).json({
+    res.status(500).json({
       err
     });
   }
@@ -135,13 +135,13 @@ exports.getCourse = catchAsync(async (req, res) => {
         course
       });
     } else {
-      res.status(404).json({
+      res.status(200).json({
         status: false,
         message: "not found"
       });
     }
   } catch (err) {
-    res.status(404).json({
+    res.status(500).json({
       err
     });
   }
@@ -150,7 +150,7 @@ exports.getCourse = catchAsync(async (req, res) => {
 exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
   const data = await course.find({ subOrg_name: req.body.subOrg_name });
   if (!data) {
-    return next(new AppError("课程不存在", 404));
+    return next(new AppError("课程不存在", 200));
   }
 
   res.status(200).json({
@@ -164,7 +164,7 @@ exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
 exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
   const data = await course.find({ major_name: req.body.major_name });
   if (!data) {
-    return next(new AppError("课程不存在", 404));
+    return next(new AppError("课程不存在", 200));
   }
 
   res.status(200).json({

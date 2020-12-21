@@ -10,7 +10,6 @@ const multerStorage = multer.diskStorage({
     cb(null, "public/img/users");
   },
   filename: (req, file, cb) => {
-    // user-ididid-3333333.jpeg
     const ext = file.mimetype.split("/")[1];
     cb(null, `user-${req.userId}-${Date.now()}.${ext}`);
   },

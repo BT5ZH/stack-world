@@ -1,67 +1,31 @@
 <template>
     <div style="width: 95%; margin: 1.2rem auto;">
+        <div>
+            <p>作业内容:{{homeworkItem.content}}</p>
+            <p>截止日期:</p>
+            <a-button type="primary" icon="download">
+                下载
+            </a-button>
+        </div>
         <a-form-model ref="ruleForm" :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-model-item ref="name" label="Activity name" prop="name">
-                <a-input v-model="form.name" @blur="
-                () => {
-                  $refs.name.onFieldBlur();
-                }
-              " />
-            </a-form-model-item>
-            <a-form-model-item label="Activity zone" prop="region">
-                <a-select v-model="form.region" placeholder="please select your zone">
-                    <a-select-option value="shanghai">
-                        Zone one
-                    </a-select-option>
-                    <a-select-option value="beijing">
-                        Zone two
-                    </a-select-option>
-                </a-select>
-            </a-form-model-item>
-            <a-form-model-item label="Activity time" required prop="date1">
-                <a-date-picker v-model="form.date1" show-time type="date" placeholder="Pick a date" style="width: 100%;" />
-            </a-form-model-item>
-            <a-form-model-item label="Instant delivery" prop="delivery">
-                <a-switch v-model="form.delivery" />
-            </a-form-model-item>
-            <a-form-model-item label="Activity type" prop="type">
-                <a-checkbox-group v-model="form.type">
-                    <a-checkbox value="1" name="type">
-                        Online
-                    </a-checkbox>
-                    <a-checkbox value="2" name="type">
-                        Promotion
-                    </a-checkbox>
-                    <a-checkbox value="3" name="type">
-                        Offline
-                    </a-checkbox>
-                </a-checkbox-group>
-            </a-form-model-item>
-            <a-form-model-item label="Resources" prop="resource">
-                <a-radio-group v-model="form.resource">
-                    <a-radio value="1">
-                        Sponsor
-                    </a-radio>
-                    <a-radio value="2">
-                        Venue
-                    </a-radio>
-                </a-radio-group>
-            </a-form-model-item>
-            <a-form-model-item label="Activity form" prop="desc">
+            <a-form-model-item label="作业描述" prop="desc">
                 <a-input v-model="form.desc" type="textarea" />
             </a-form-model-item>
             <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-                <a-button type="primary" @click="onSubmit">
-                    Create
+                <a-button type="primary" @click="resetForm">
+                    保存
                 </a-button>
-                <a-button style="margin-left: 10px;" @click="resetForm">
-                    Reset
+                <a-button type="danger" style="margin-left: 10px;" @click="onSubmit">
+                    提交
                 </a-button>
             </a-form-model-item>
         </a-form-model>
     </div>
 </template>
 <script>
+  import { mapState } from "vuex";
+  import { mapGetters } from 'vuex'
+
     export default {
         data() {
             return {
@@ -114,5 +78,13 @@
                 this.$refs.ruleForm.resetFields();
             },
         },
+        created: function () {
+            // this.getCourse();
+        },
+        computed: {
+            ...mapGetters({
+                homeworkItem: 'getHomeworkInfo',
+            })
+        }
     };
 </script>
