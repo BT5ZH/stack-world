@@ -26,6 +26,19 @@ const action = {
       console.error(error);
     }
   },
+  async getPreCourseContent({ commit }, lesson_id) {
+    try {
+      const url = "pc/v1/";
+      const { data } = await axios.get();
+      errorHandler(data);
+      const preCourseContent = data.data.map((item) => {
+        return {};
+      });
+      commit("updatePreCourseContent", preCourseContent);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default action;

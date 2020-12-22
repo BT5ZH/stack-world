@@ -5,13 +5,18 @@
         :span="6"
         :key="item.id"
         v-for="item in classMenu"
-        style="display: flex;flex-direction: column;align-items: center;"
+        style="display: flex; flex-direction: column; align-items: center"
       >
         <a-button
           type="primary"
           :icon="item.icon"
           :style="item.style"
-          style="width: 8rem; height: 8rem; margin-bottom: 1.5rem; font-size: 3rem;"
+          style="
+            width: 8rem;
+            height: 8rem;
+            margin-bottom: 1.5rem;
+            font-size: 3rem;
+          "
           @click="socketChannel(item.action)"
         />
         <span>{{ item.name }}</span>
@@ -93,25 +98,7 @@ export default {
       ],
     };
   },
-  mounted() {
-    socketio.addEventListener({
-      type: "message",
-      callback: (message) => {
-        console.log(message);
-      },
-    });
-  },
-  methods: {
-    socketChannel(value) {
-      console.log(value);
-      socketio.sendEvent({
-        type: "message",
-        data: {
-          message: "this is a test",
-          sent: Date.now(),
-        },
-      });
-    },
-  },
+  mounted() {},
+  methods: {},
 };
 </script>

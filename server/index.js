@@ -57,6 +57,11 @@ const gameRooms = [];
 
 io.on("connection", (socket) => {
   console.log("server connected,socketId: " + socket.id);
+  socket.on("public", (data) => {
+    const { lessonId, teacherId } = data;
+    console.log("receive broadcast message：", lessonId, teacherId);
+    io.emit("public", data);
+  });
 
   socket.on("joinRoom", (data) => {
     console.log("joinRoom 进来啦");
@@ -92,7 +97,8 @@ io.on("connection", (socket) => {
           io.to(roomChannel).emit(res);
           break;
         case "sign":
-          io.to(roomChannel).emit(res);
+          console.log({ sign: data });
+          io.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
           io.to(roomChannel).emit(res);
@@ -107,8 +113,9 @@ io.on("connection", (socket) => {
       // 学生登录房间
       switch (data.actionType) {
         case "enter":
+          console.log("student join channel", roomChannel);
           socket.join(roomChannel);
-          io.to(roomChannel).emit(res);
+          io.to(roomChannel).emit(roomChannel, data);
           break;
         case "answer":
           // socket.join(roomChannel);

@@ -38,7 +38,6 @@
           }"
           :percent="100"
           :format="() => 'start'"
-          @click="joinRoom"
           style="transform:scale(2)"
         />
       </div>
@@ -86,10 +85,10 @@ export default {
     changeNav(value) {
       this.isClick = value;
     },
-    joinRoom() {
-      this.isJoinRoom = true;
-      socket.sendEvent({ roomId: this.courseId, data: {} });
-    },
+    // joinRoom() {
+    //   this.isJoinRoom = true;
+    //   socket.sendEvent({ roomId: this.courseId, data: {} });
+    // },
   },
   created: function() {
     this.courseId = this.$route.params.id;

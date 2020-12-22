@@ -8,7 +8,7 @@
           <div>
             <a-divider
               orientation="left"
-              style="padding: 2rem .8rem;margin: .8rem 0;"
+              style="padding: 2rem 0.8rem; margin: 0.8rem 0"
             >
               学习中心
             </a-divider>
@@ -17,7 +17,7 @@
           <div>
             <a-divider
               orientation="left"
-              style="padding: 2rem .8rem;margin: .8rem 0;"
+              style="padding: 2rem 0.8rem; margin: 0.8rem 0"
             >
               个人中心
             </a-divider>
@@ -65,7 +65,7 @@ export default {
       userMenu: (state) => state.student.userMenu,
     }),
     ...mapGetters({
-      lessonIdList: "lessonIdList",
+      lessonIdList: "student/lessonIdList",
     }),
   },
   watch: {
@@ -101,17 +101,24 @@ export default {
   mounted() {
     socket.createInstance(this, {
       public: (data) => {
+        console.log("student received broadcast message", data);
         const cb = (lesson) => (data.lessonId = lesson);
         const condition = this.lessonIdList.some(cb);
         if (!condition) return null;
         socket.sendEvent({
           roomId: "joinRoom",
-          data: { activityType: "enter", data: { studentId: this.uid } },
+          data: {
+            actionType: "enter",
+            role: "student",
+            roomId: "e72ccbd5-ec02-4fdd-b710-0a0393972001",
+            data: { studentId: this.uid },
+          },
         });
+        this.$store.commit("student/updateJoinRoom");
       },
       sign: (data) => {
         console.log("可以签到了", data);
-        this.$store.commit("updateCourseSignFlag");
+        this.$store.commit("student/updateCourseSignFlag");
       },
     });
   },

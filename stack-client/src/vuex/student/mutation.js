@@ -34,6 +34,9 @@ const mutation = {
   updateCourseSignFlag(state) {
     state.courseSign = !state.courseSign;
   },
+  updateJoinRoom(state) {
+    state.isJoinRoom = !state.isJoinRoom;
+  },
 };
 
 export default mutation;
