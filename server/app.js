@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: ["http://localhost:8080"],
-    methods: ["GET", "HEAD", "OPTIONS", "POST"],
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PATCH"],
   })
 );
 // 3) ROUTES

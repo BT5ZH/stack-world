@@ -31,11 +31,11 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
 });
 
 exports.createSetHomework = catchAsync(async (req, res, next) => {
-  const oldHomework = await SetHomework.findOne({
-    lesson_id: req.body.lesson_id,
-    number_of_time: req.body.number_of_time,
-  });
-  if (!oldHomework) {
+  // const oldHomework = await SetHomework.findOne({
+  //   lesson_id: req.body.lesson_id,
+  //   number_of_time: req.body.number_of_time,
+  // });
+  // if (!oldHomework) {
     const newSetHomework = await SetHomework.create(req.body);
     if (!newSetHomework) {
       return next(new AppError("作业创建失败", 500));
@@ -44,9 +44,9 @@ exports.createSetHomework = catchAsync(async (req, res, next) => {
       status: "success",
       data: newSetHomework,
     });
-  } else {
-    return next(new AppError("本节课作业布置已经存在", 500));
-  }
+  // } else {
+  //   return next(new AppError("本节课作业布置已经存在", 500));
+  // }
 });
 
 exports.getSetHomeworkByID = catchAsync(async (req, res, next) => {

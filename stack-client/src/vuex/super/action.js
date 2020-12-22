@@ -18,14 +18,11 @@ const action = {
     }));
     commit("updateSchoolList", schoolList);
   },
-  async getAdminList({ commit }) {
-    const { data } = await axios.get("/pc/v1/");
+  async getAdminList({ commit }, org_name) {
+    const params = { role: "orgAdmin", org_name };
+    const { data } = await axios.get("/pc/v1/users/allOrgAdmin", { params });
     errorHandler(data, "getAdminList");
-    const adminList = data.data.adminList.map((item) => {
-      console.log(item);
-    });
-    commit("updateAdminList", adminList);
-    // TODO updateAdminList
+    commit("updateAdminList", data.teachers);
   },
 };
 
