@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: ["http://localhost:8080"],
-    methods: ["GET", "HEAD", "OPTIONS", "POST"],
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PATCH"],
   })
 );
 // 3) ROUTES
@@ -38,6 +38,7 @@ const timeTableRouter = require("./routes/timeTableRoutes");
 const setHomeworkRouter = require("./routes/setHomeworkRoutes");
 const submitHomeworkRouter = require("./routes/submitHomeworkRoutes");
 
+
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
 app.use("/pc/v1/organizations", orgRouter);
@@ -52,14 +53,25 @@ app.use("/pc/v1/timetables", timeTableRouter);
 app.use("/pc/v1/sethomeworks", setHomeworkRouter);
 app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
 
+
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");
-const buildingRouter = require("./routes/buildingRouter");
+const buildingRouter = require("./routes/buildingRoutes");
 const roomRouter = require("./routes/roomRoutes");
+<<<<<<< HEAD
+//const testRouter = require("./routes/testRoutes");
+=======
+// const testRouter = require("./routes/testRoutes");
+>>>>>>> 13f4db990fb3aa25222e0a6ea896b36f1d5131bd
 
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/building", buildingRouter);
 app.use("/pc/v1/rooms", roomRouter);
+<<<<<<< HEAD
+//app.use("/pc/v1/tests", testRouter);
+=======
+// app.use("/pc/v1/tests", testRouter);
+>>>>>>> 13f4db990fb3aa25222e0a6ea896b36f1d5131bd
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

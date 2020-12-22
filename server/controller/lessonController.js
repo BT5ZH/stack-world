@@ -35,19 +35,19 @@ exports.getAllLessons = catchAsync(async (req, res, next) => {
 });
 
 exports.createLesson = catchAsync(async (req, res, next) => {
-  const data = await Lesson.findOne({
-    course_id: req.body.course_id,
-    teacher_id: req.body.teacher_id,
-  });
-  if (!data) {
+  // const data = await Lesson.findOne({
+  //   course_id: req.body.course_id,
+  //   teacher_id: req.body.teacher_id,
+  // });
+  // if (!data) {
     const onelesson = await Lesson.create(req.body);
     res.status(201).json({
       status: "success",
       data: onelesson,
     });
-  } else {
-    return next(new AppError("该课已存在", 500));
-  }
+  // } else {
+  //   return next(new AppError("该课已存在", 500));
+  // }
 });
 
 exports.getOneLessonByID = catchAsync(async (req, res, next) => {

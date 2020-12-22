@@ -18,9 +18,12 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = Room.find(JSON.parse(queryString)).select(
-    "room_number room_type campus building empty"
-  );
+  const query = Room.find(JSON.parse(queryString))
+    .select("room_number room_type campus building empty")
+    .populate({
+      path: "lesson_id",
+      select: ["course_id"],
+    });
   //   console.log(query);
   // EXECUTE QUERY
   const rooms = await query;
@@ -37,11 +40,22 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
 });
 
 exports.createRoom = catchAsync(async (req, res, next) => {
-  const newRoom = await Room.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: newRoom,
+  const oldRoom = await Room.findOne({
+    room_number: req.body.room_number,
+    building: req.body.building,
   });
+  if (!oldRoom) {
+    const newRoom = await Room.create(req.body);
+    if (!newRoom) {
+      return next(new AppError("空间创建失败", 500));
+    }
+    res.status(201).json({
+      status: "success",
+      data: newRoom,
+    });
+  } else {
+    return next(new AppError("本空间已经存在", 500));
+  }
 });
 
 exports.getRoom = catchAsync(async (req, res, next) => {
@@ -92,14 +106,15 @@ exports.batchAddRooms = catchAsync(async (req, res, next) => {
   var rooms = req.body;
   await Room.insertMany(rooms, { ordered: false });
   res.status(200).json({
-    status: true,
+    status: "success",
   });
 });
 
 exports.batchDeleteRooms = catchAsync(async (req, res, next) => {
   var rooms = req.body.rooms._id;
   await Room.deleteMany({ _id: { $in: rooms } }, { ordered: false });
-  res.status(200).json({
-    status: true,
+  res.status(204).json({
+    status: "success",
+    data: null,
   });
 });

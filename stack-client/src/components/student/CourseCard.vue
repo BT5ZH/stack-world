@@ -2,8 +2,8 @@
     <a-card :bordered="false" :style="item.style" class="course_card" @click='jmpRoute(item)'>
         <h2 style="color: #fff; white-space: nowrap; text-overflow: ellipsis ;overflow: hidden;">{{item.course_name}}</h2>
         <h3 style="color: #fff;">{{item.teacher}}</h3>
-        <p>{{item.time}}</p>
-        <p>{{item.classroom}}</p>
+        <p>{{item.curriculum[0].odd}}</p>
+        <p>{{item.curriculum[0].classroom}}</p>
     </a-card>
 </template>
 

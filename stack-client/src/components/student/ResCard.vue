@@ -4,7 +4,7 @@
             <a-tag :color="item.resType==0?'blue':(item.resType==1?'red':'purple')">
                 {{item.resType==0?'文件':(item.resType==1?'试卷':'视频')}}
             </a-tag>
-            <h4 style="margin-bottom: 0;">{{item.title}}</h4>
+            <h4 style="margin-bottom: 0;color: #4d4d4d;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.title}}</h4>
             <a-icon type="right-circle" />
         </div>
         <div class="card_rectangle--row">
@@ -46,7 +46,7 @@
                 this.$router.push({ path: '/student/course/'+ this.courseId + '/video/'+ item.id,query: { title: item.id } });
             },
             jmpHomework(item){
-                this.$router.push({ path: this.$route.path + '/homework',query: { title: item.title } });
+                this.$router.push({ path: this.$route.path + '/homework',query: { title: item.title,id: item.hid} });
             },
             download(){
                 window.open("https://tse1-mm.cn.bing.net/th?id=OIP.cbZhKMlh-W8pVvfypGmqJwAAAA&w=208&h=160&c=8&rs=1&qlt=90&dpr=2&pid=3.1&rm=2");

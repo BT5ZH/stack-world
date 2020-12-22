@@ -10,13 +10,14 @@
 export default {
   methods: {
     quitLogin() {
-      this.$store.replaceState({});
+      this.$store.commit("super/clearStorage");
+      this.$store.commit("admin/clearStorage");
       localStorage.clear();
       sessionStorage.clear();
       this.$router.push({ name: "index" });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

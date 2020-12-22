@@ -16,7 +16,19 @@
       </ul>
     </a-col>
     <a-col :span="6">
-      <span>{{ teacher_name }}（教师）</span>
+      <a-dropdown>
+        <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
+          {{ teacher_name }}（教师）<a-icon type="down" />
+        </a>
+        <a-menu slot="overlay">
+          <a-menu-item>
+            <a href="javascript:;">修改密码</a>
+          </a-menu-item>
+          <a-menu-item>
+            <a href="javascript:;" @click="quitLogin">退出登录</a>
+          </a-menu-item>
+        </a-menu>
+      </a-dropdown>
     </a-col>
   </a-row>
 </template>
@@ -43,6 +55,13 @@ export default {
         this.currentMenu = key;
         this.$router.push({ name: key });
       }
+    },
+    quitLogin() {
+      this.$store.commit("super/clearStorage");
+      this.$store.commit("teacher/clearStorage");
+      localStorage.clear();
+      sessionStorage.clear();
+      this.$router.push({ name: "index" });
     },
   },
 };

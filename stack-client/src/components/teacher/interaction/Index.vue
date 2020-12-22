@@ -19,6 +19,23 @@
           <img :src="baseUrl + 'abstract0' + item + '.jpg'" />
         </div>
       </a-carousel>
+      <a-row class="event-steps">
+        <a-col :span="20" :push="2">
+          <a-steps
+            size="small"
+            progress-dot
+            v-model="curEvent"
+            @change="eventChange"
+          >
+            <a-step
+              v-for="(step, index) in steps"
+              :key="index"
+              :title="step.title"
+              :description="step.description"
+            />
+          </a-steps>
+        </a-col>
+      </a-row>
     </a-row>
 
     <a-row type="flex" justify="start">
@@ -72,6 +89,10 @@
 </template>
 
 <script>
+import * as socket from "@/utils/socket";
+import axios from "@/utils/axios";
+import { mapState } from "vuex";
+
 export default {
   data() {
     const baseUrl =
@@ -97,6 +118,13 @@ export default {
       ],
       drawers: [false, false, false, false, false, false, false],
       baseUrl,
+      steps: [
+        { title: "讲课", description: "20分钟" },
+        { title: "提问", description: "5分钟" },
+        { title: "提问", description: "5分钟" },
+        { title: "提问", description: "5分钟" },
+      ],
+      curEvent: 0,
     };
   },
   methods: {
@@ -110,11 +138,29 @@ export default {
     getImgUrl(i) {
       return `${this.baseUrl}abstract0${i + 1}.jpg`;
     },
+    eventChange() {},
+  },
+  computed: {
+    ...mapState({
+      uid: (state) => state.public.uid,
+    }),
+    lessonId() {
+      return this.$route.query.lessonId;
+    },
+  },
+  mounted() {
+    socket.createInstance(this, {}).then((id) => {
+      console.log(id);
+      socket.publicEvent({
+        teacherId: this.uid,
+        lessonId: this.lessonId,
+      });
+    });
   },
 };
 </script>
 
-<style>
+<style scoped>
 .precourse {
   width: 5rem;
   height: 2rem;
@@ -142,5 +188,9 @@ export default {
   overflow: hidden;
   position: relative;
   margin-bottom: 1.5rem;
+}
+
+.event-steps {
+  padding: 50px 0 30px;
 }
 </style>

@@ -31,7 +31,8 @@ var lessonSchema = mongoose.Schema({
    
 },{_id:false})
 
+lessonSchema.index({ course_id: 1, teacher_id: 1 }, { unique: true });
 
-var Lesson = mongoose.model('Lesson',lessonSchema)
+const Lesson = mongoose.model('Lesson',lessonSchema)
 
 module.exports = Lesson;//暴露模块
