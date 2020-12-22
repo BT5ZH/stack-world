@@ -1,9 +1,8 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3050";
-const options = {};
-let socket = null;
-const client = io(SOCKET_URL, options);
+const SOCKET_URL = "http://localhost:5000";
+const client = io(SOCKET_URL, {});
+
 let listeners = {
   // 投票
   vote: () => {},
@@ -21,39 +20,48 @@ let listeners = {
   file: () => {},
   // 调查问卷 (questionnaire)
   ques: () => {},
-  //
-  joinRoom: () => {},
 };
 
-function addListenersToScoket() {
-  for (const item in listeners) {
-    client.on(item, listeners[item]);
-  }
+/**
+ * 添加回调函数到不同活动
+ *
+ * @param {Socket} socket socket 连接实例
+ * @param {String} roomId 房间号 等同于 lessonId
+ */
+function addListenersToScoket(socket, roomId) {
+  socket.on([roomId], (eventData) => {
+    const { actionType, data } = eventData;
+    if (!listeners[actionType]) {
+      console.error("unsupported action type");
+      return null;
+    }
+    listeners[actionType](data);
+  });
 }
 
-// TODO socket.io 是否有断线重连机制
-function initSocketConnection() {
+export function createInstance(that, callbacks) {
+  const { lessonId } = that.$route.query;
+  listeners = { ...listeners, ...callbacks };
   return new Promise((resolve, reject) => {
-    client.on("connect", (sk) => {
-      socket = sk;
-      console.log(`socket connection established, id is ${client.id}`);
-      console.log(listeners);
-      addListenersToScoket();
-      resolve();
+    client.on("connect", () => {
+      console.info(`socket connection established, id is${client.id}`);
+      addListenersToScoket(client, lessonId);
+      resolve(client.id);
     });
     client.on("connect_error", () => reject());
   });
 }
 
-export function createInstance(that, callbacks) {
-  listeners = { ...listeners, ...callbacks };
-  console.log(listeners);
-  if (!socket) initSocketConnection();
+export function broadcastEvent(event) {
+  const { roomId, data } = event;
+  client.broadcast.emit(roomId, data);
 }
 
 export function sendEvent(event) {
-  let data = { ...event.data, clientId: client.id };
-  console.log(data);
-  console.log(`socket connection established, id is ${client.id}`);
-  client.emit(event.type, data);
+  const { roomId, data } = event;
+  client.emit(roomId, data);
+}
+
+export function publicEvent(data) {
+  client.emit("public", data);
 }

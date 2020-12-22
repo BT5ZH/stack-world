@@ -57,10 +57,12 @@ app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
 const campusRouter = require("./routes/campusRoutes");
 const buildingRouter = require("./routes/buildingRoutes");
 const roomRouter = require("./routes/roomRoutes");
+const testRouter = require("./routes/testRoutes");
 
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/building", buildingRouter);
 app.use("/pc/v1/rooms", roomRouter);
+app.use("/pc/v1/tests", testRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
