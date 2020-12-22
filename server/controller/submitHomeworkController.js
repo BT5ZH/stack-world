@@ -32,11 +32,11 @@ exports.getAllSubmitHomework = catchAsync(async (req, res, next) => {
 });
 
 exports.createSubmitHomewrok = catchAsync(async (req, res, next) => {
-  const oldHomework = await SubmitHomeworks.findOne({
-    homework_id: req.body.homework_id,
-    student_id: req.body.student_id,
-  });
-  if (!oldHomework) {
+  // const oldHomework = await SubmitHomeworks.findOne({
+  //   homework_id: req.body.homework_id,
+  //   student_id: req.body.student_id,
+  // });
+  // if (!oldHomework) {
     const newHomewrok = await SubmitHomeworks.create(req.body);
     if (!newHomewrok) {
       return next(new AppError("作业创建失败", 500));
@@ -45,9 +45,9 @@ exports.createSubmitHomewrok = catchAsync(async (req, res, next) => {
       status: "success",
       newHomewrok,
     });
-  } else {
-    return next(new AppError("本节课作业布置已经存在", 500));
-  }
+  // } else {
+  //   return next(new AppError("本节课作业布置已经存在", 500));
+  // }
 });
 
 exports.getSubmitHomework = catchAsync(async (req, res, next) => {

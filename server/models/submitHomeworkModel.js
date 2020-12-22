@@ -28,6 +28,7 @@ const submitHomeworkSchema = new mongoose.Schema(
   },
   { _id: false }
 );
+submitHomeworkSchema.index({ homework_id: 1, student_id: 1 }, { unique: true });
 
 const SubmitHomework = mongoose.model("SubmitHomework", submitHomeworkSchema);
 
