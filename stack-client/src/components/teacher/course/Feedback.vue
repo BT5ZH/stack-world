@@ -1,61 +1,117 @@
 <template>
   <div>
-    <a-upload :before-upload="fileInput" :file-list="fileList">
-      <a-button type="primary">选择文件</a-button>
-    </a-upload>
-    <br />
-    <a-button type="primary" @click="uploadFile">开始上传</a-button>
-    <a-row type="flex" justify="center">
-      <a-pagination
-        class="pagination"
-        :total="50"
-        :show-size-changer="true"
-        :show-quick-jumper="true"
-      ></a-pagination>
+    <a-row type="flex" justify="start" :gutter="[0, 18]">
+      <a-col
+        :span="6"
+        :key="item.id"
+        v-for="item in classMenu"
+        style="display: flex;flex-direction: column;align-items: center;"
+      >
+        <a-button
+          type="primary"
+          :icon="item.icon"
+          :style="item.style"
+          style="width: 8rem; height: 8rem; margin-bottom: 1.5rem; font-size: 3rem;"
+          @click="socketChannel(item.action)"
+        />
+        <span>{{ item.name }}</span>
+      </a-col>
     </a-row>
   </div>
 </template>
 
 <script>
-import fileUploader from "@/utils/S3FileUploader";
-
+const colorItems = [
+  "blueviolet",
+  "#9FE6B8",
+  "#FFDB5C",
+  "#ff9f7f",
+  "#fb7293",
+  "#8378EA",
+  "#96BFFF",
+  "#e7bcf3",
+  "#9d96f5",
+  "#f56a00",
+  "#7265e6",
+  "#ffbf00",
+  "#00a2ae",
+];
 export default {
+  name: "GridView4",
   data() {
     return {
-      fileList: [],
+      classMenu: [
+        {
+          id: 1,
+          name: "签到",
+          icon: "carry-out",
+          action: "sign",
+          style: { backgroundColor: colorItems[1], borderColor: colorItems[1] },
+        },
+        {
+          id: 2,
+          name: "随堂测试",
+          icon: "bulb",
+          action: "quiz",
+          style: { backgroundColor: colorItems[2], borderColor: colorItems[2] },
+        },
+        {
+          id: 3,
+          name: "随机点名",
+          icon: "alert",
+          action: "random",
+          style: { backgroundColor: colorItems[3], borderColor: colorItems[3] },
+        },
+        {
+          id: 4,
+          name: "问卷",
+          icon: "solution",
+          action: "questionnaire",
+          style: { backgroundColor: colorItems[4], borderColor: colorItems[4] },
+        },
+        {
+          id: 5,
+          name: "投票",
+          icon: "tags",
+          action: "vote",
+          style: { backgroundColor: colorItems[5], borderColor: colorItems[5] },
+        },
+        // {
+        //     id: 6,
+        //     name: '随堂测试',
+        //     icon: 'bulb',
+        //     action: 'test',
+        //     style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+        // },
+        {
+          id: 7,
+          name: "文件下发",
+          icon: "container",
+          action: "file",
+          style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
+        },
+      ],
     };
   },
+  mounted() {
+    socketio.addEventListener({
+      type: "message",
+      callback: (message) => {
+        console.log(message);
+      },
+    });
+  },
   methods: {
-    fileInput(file) {
-      console.log(file);
-      this.fileList = [file];
-      return false;
-    },
-    uploadFile() {
-      const url = "/s3";
-      const config = {
-        that: this,
-        successCallback() {
-          this.$message.success("上传成功！");
+    socketChannel(value) {
+      console.log(value);
+      socketio.sendEvent({
+        type: "message",
+        data: {
+          message: "this is a test",
+          sent: Date.now(),
         },
-        failCallback(err) {
-          console.error(err);
-          this.$message.error("上传失败！");
-        },
-      };
-      const params = {
-        Metadata: { uploader: "Henrenx", star: "10" },
-      };
-      // fileList 是包含着文件的数组
-      fileUploader(this.fileList, url, "", config, params);
+      });
     },
   },
 };
 </script>
-
-<style scoped>
-.pagination {
-  position: absolute;
-  bottom: 10px;
-}
-</style>

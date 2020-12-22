@@ -1,10 +1,12 @@
 <template>
   <div>
     <v-chart :options="config" />
+    <button @click="sendMessage">投票</button>
   </div>
 </template>
 
 <script>
+import * as socket from "@/utils/socket";
 import ECharts from "vue-echarts";
 import "echarts/lib/chart/bar";
 import "echarts/lib/component/tooltip";
@@ -16,7 +18,22 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    voteActivity() {
+      socket.createInstance(this, {
+        vote: (eventData) => {
+          console.log(eventData.message);
+        },
+      });
+    },
+    sendMessage() {
+      socket.sendEvent({ type: "vote", data: { message: "vote" } });
+    },
+  },
+  mounted() {
+    this.voteActivity();
+    //
+  },
   computed: {
     config() {
       return {
@@ -45,5 +62,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

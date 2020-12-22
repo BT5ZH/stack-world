@@ -6,54 +6,102 @@
         <scheduleCard></scheduleCard>
         <main class="container__item">
           <div>
-            <a-divider orientation="left" style="padding: 2rem .8rem;margin: .8rem 0;">
+            <a-divider
+              orientation="left"
+              style="padding: 2rem .8rem;margin: .8rem 0;"
+            >
               学习中心
             </a-divider>
             <gridView4 :gridItems="courseMenu"></gridView4>
           </div>
           <div>
-            <a-divider orientation="left" style="padding: 2rem .8rem;margin: .8rem 0;">
+            <a-divider
+              orientation="left"
+              style="padding: 2rem .8rem;margin: .8rem 0;"
+            >
               个人中心
             </a-divider>
             <gridView4 :gridItems="userMenu"></gridView4>
           </div>
         </main>
+        <a-modal v-model="visible" title="Basic Modal" @ok="handleOk">
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </a-modal>
+        <button @click="sendMessage">投票</button>
       </div>
     </div>
   </body>
 </template>
 
 <script>
-  import Header from "../../layout/HeaderAvatar.vue";
-  import scheduleCard from "../../components/student/ScheduleCard.vue";
-  import gridView4 from "../../layout/GridView4.vue";
+import * as socket from "@/utils/socket";
+import Header from "../../layout/HeaderAvatar.vue";
+import scheduleCard from "../../components/student/ScheduleCard.vue";
+import gridView4 from "../../layout/GridView4.vue";
 
-  import { mapState } from "vuex";
+import { mapState } from "vuex";
 
-  export default {
-    name: "StudentHomePage",
-    components: {
-      Header,
-      scheduleCard,
-      // chart,
-      gridView4,
+export default {
+  name: "StudentHomePage",
+  components: {
+    Header,
+    scheduleCard,
+    // chart,
+    gridView4,
+  },
+  data() {
+    return {
+      voteSignal: "",
+      voteSwitch: false,
+      visible: false,
+    };
+  },
+  computed: {
+    ...mapState({
+      courseMenu: (state) => state.student.courseMenu,
+      userMenu: (state) => state.student.userMenu,
+    }),
+  },
+  watch: {
+    voteSignal(item1, item2) {
+      console.log("new" + item1);
+      console.log("old" + item2);
     },
-    data() {
-      return {
-      };
+  },
+  methods: {
+    joinRoomActivity() {
+      socket.createInstance(this, {
+        joinRoom: (eventData) => {
+          console.log(eventData.message);
+          // this.voteSignal = eventData.message;
+          // console.log("data" + this.voteSignal);
+          // if (this.voteSignal == "vote") {
+          //   this.visible = true;
+          // }
+        },
+      });
     },
-    
-    computed: {
-      ...mapState({
-        courseMenu: (state) => state.student.courseMenu,
-        userMenu: (state) => state.student.userMenu,
-      }),
+    sendMessage() {
+      socket.sendEvent({
+        type: "joinRoom",
+        data: { roomId: "12345678", activityType: "sign" },
+      });
     },
-  };
+    handleOk(e) {
+      console.log(e);
+      this.visible = false;
+    },
+  },
+  mounted() {
+    this.joinRoomActivity();
+  },
+};
 </script>
 
 <style lang="scss">
-  .headdd {
-    color: aliceblue;
-  }
+.headdd {
+  color: aliceblue;
+}
 </style>

@@ -106,12 +106,12 @@ io.on("connection", (socket) => {
     } else if (data.role == "student") {
       // 学生登录房间
       switch (data.actionType) {
-        case "answer":
+        case "enter":
           socket.join(roomChannel);
           io.to(roomChannel).emit(res);
           break;
         case "answer":
-          socket.join(roomChannel);
+          // socket.join(roomChannel);
           io.to(roomChannel).emit(res);
           break;
         default:
