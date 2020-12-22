@@ -1,6 +1,6 @@
 const mutation = {
   updateUserInfo(state, params) {
-    state.user = params; 
+    state.user = params;
   },
 
   updateCourseList(state, params) {
@@ -30,6 +30,9 @@ const mutation = {
       return null;
     }
     throw "[vuex-student-mutation] favResList type error!";
+  },
+  updateCourseSignFlag(state) {
+    state.courseSign = !state.courseSign;
   },
 };
 

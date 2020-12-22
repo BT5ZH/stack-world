@@ -16,6 +16,7 @@ const colorItems = [
 
 const state = {
   user: {},
+  isJoinRoom: false,
   //student
   //首页目录分区
   courseMenu: [
@@ -123,11 +124,12 @@ const state = {
       style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
     },
   ],
-
+  // essonId=e72ccbd5-ec02-4fdd-b710-0a0393972001
   classList: [],
   courseList: [
     {
-      course_id: "0d0f4130-3e88-11eb-8a47-415d1849b819",
+      lesson_id: "e72ccbd5-ec02-4fdd-b710-0a0393972001",
+      // course_id: "0d0f4130-3e88-11eb-8a47-415d1849b819",
       course_name: "C4D example",
       teacher: "Sam",
       curriculum: [

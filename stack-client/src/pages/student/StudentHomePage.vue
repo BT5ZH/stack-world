@@ -42,6 +42,7 @@ import scheduleCard from "../../components/student/ScheduleCard.vue";
 import gridView4 from "../../layout/GridView4.vue";
 
 import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "StudentHomePage",
@@ -62,6 +63,9 @@ export default {
     ...mapState({
       courseMenu: (state) => state.student.courseMenu,
       userMenu: (state) => state.student.userMenu,
+    }),
+    ...mapGetters({
+      lessonIdList: "lessonIdList",
     }),
   },
   watch: {
@@ -95,7 +99,21 @@ export default {
     },
   },
   mounted() {
-    this.joinRoomActivity();
+    socket.createInstance(this, {
+      public: (data) => {
+        const cb = (lesson) => (data.lessonId = lesson);
+        const condition = this.lessonIdList.some(cb);
+        if (!condition) return null;
+        socket.sendEvent({
+          roomId: "joinRoom",
+          data: { activityType: "enter", data: { studentId: this.uid } },
+        });
+      },
+      sign: (data) => {
+        console.log("可以签到了", data);
+        this.$store.commit("updateCourseSignFlag");
+      },
+    });
   },
 };
 </script>
