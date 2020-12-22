@@ -3,22 +3,24 @@ const prepareLessonController = require("../controller/prepareLessonController")
 const authController = require("../controller/authController");
 const router = express.Router({ mergeParams: true });
 
-// router
-// .route('/createOnePrepareLesson')
-// .post(prepareLessonController.createOnePrepareLesson);
 router
   .route("/")
-  .get(authController.protect, prepareLessonController.getAllPrepareLessons) // 获取某组织所有校区及建筑信息
-  //.post(authController.protect, prepareLessonController.createCampus); // 新建校区信息
+  .get(authController.protect, prepareLessonController.getAllPrepareLessons);
 
 router
   .route("/deleteOnePrepareLesson")
-  .delete(authController.protect,prepareLessonController.deleteOnePrepareLesson
-);
+  .delete(
+    authController.protect,
+    prepareLessonController.deleteOnePrepareLesson
+  );
 
 router
   .route("/getOnePrepareLesson")
   .post(authController.protect, prepareLessonController.getOnePrepareLesson);
+
+router
+  .route("/updateOnePrepareLesson")
+  .post(authController.protect, prepareLessonController.updateOnePrepareLesson);
 
 router
   .route("/addNewSection")

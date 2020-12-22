@@ -190,6 +190,15 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+/***
+ * 
+ */
+exports.updateOnePrepareLesson = catchAsync(async (req,res)=>{
+
+})
+
+
 ///////////////////////////////////////////////////
 //以下代码暂时不用
 ///////////////////////////////////////////////////

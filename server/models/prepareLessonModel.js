@@ -40,8 +40,8 @@ const prepareLessonSchema = new mongoose.Schema(
                               default: 'Teach',
                               enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework',],
                       },
-                      start: Number,
-                      end:Number,
+                      start: String,
+                      end:String,
                       content:String,
                       options:[{type:String,}],
                       attachment_url: { type: String },//use to save the attachment url of one homework
