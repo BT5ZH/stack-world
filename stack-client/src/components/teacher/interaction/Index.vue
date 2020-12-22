@@ -160,7 +160,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .precourse {
   width: 5rem;
   height: 2rem;

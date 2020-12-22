@@ -21,6 +21,9 @@ const mutation = {
       }
     });
   },
+  updateAdminList(state, params) {
+    state.adminList = params;
+  },
 };
 
 export default mutation;

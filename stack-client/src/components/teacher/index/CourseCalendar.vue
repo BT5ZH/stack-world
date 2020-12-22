@@ -31,7 +31,7 @@
         <a-col :span="3">
           <span style="font-weight: bold">{{ item.courseName }}</span>
         </a-col>
-        <a-col :span="4">
+        <a-col :span="6">
           <span>第{{ item.order }}节课 &nbsp;</span>
           <a-tag color="#87d068" v-if="item.oddEven === 0">全学期</a-tag>
           <a-tag color="#2db7f5" v-else-if="item.oddEven === 1">单周上</a-tag>
