@@ -23,7 +23,7 @@ const setHomeworkSchema = new mongoose.Schema(
   },
   { _id: false }
 );
-
+setHomeworkSchema.index({ lesson_id: 1, number_of_time: 1 }, { unique: true });
 const SetHomework = mongoose.model("SetHomework", setHomeworkSchema);
 
 module.exports = SetHomework;
