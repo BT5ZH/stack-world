@@ -43,10 +43,15 @@ exports.createClass = catchAsync(async (req, res, next) => {
 });
 
 exports.getClass = catchAsync(async (req, res, next) => {
-  //console.log("getClass 进来啦");
 
   const classEntity = await Class.findOne({_id:req.params.id})
-  .populate('students','user_id name -_id');
+  .populate({
+    path: 'studentList',
+    select: 'user_id name -_id'
+
+  });
+  //.populate('students','user_id name -_id');
+
   if (!classEntity) {
     return next(new AppError("该班级不存在", 404));
   }
