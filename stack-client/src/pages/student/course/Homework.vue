@@ -3,15 +3,21 @@
         <div>
             <p>作业内容:{{homeworkItem.content}}</p>
             <p>截止日期:</p>
-            <a-button type="primary" icon="download">
-                下载
+            <a-button type="primary" icon="download" v-if='homeworkItem.attachment_url'>
+                教师附件
             </a-button>
         </div>
         <a-form-model ref="ruleForm" :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-model-item label="作业描述" prop="desc">
                 <a-input v-model="form.desc" type="textarea" />
             </a-form-model-item>
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+            <a-upload name="file" :multiple="true" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                @change="handleChange">
+                <a-button>
+                    <a-icon type="upload" /> 点击提交附件
+                </a-button>
+            </a-upload>
+            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }" style="margin: 5rem 5rem 0;">
                 <a-button type="primary" @click="resetForm">
                     保存
                 </a-button>
@@ -23,8 +29,8 @@
     </div>
 </template>
 <script>
-  import { mapState } from "vuex";
-  import { mapGetters } from 'vuex'
+    import { mapState } from "vuex";
+    import { mapGetters } from 'vuex';
 
     export default {
         data() {
@@ -34,28 +40,10 @@
                 other: '',
                 form: {
                     name: '',
-                    region: undefined,
-                    date1: undefined,
-                    delivery: false,
-                    type: [],
                     resource: '',
                     desc: '',
                 },
                 rules: {
-                    name: [
-                        { required: true, message: 'Please input Activity name', trigger: 'blur' },
-                        { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-                    ],
-                    region: [{ required: true, message: 'Please select Activity zone', trigger: 'change' }],
-                    date1: [{ required: true, message: 'Please pick a date', trigger: 'change' }],
-                    type: [
-                        {
-                            type: 'array',
-                            required: true,
-                            message: 'Please select at least one activity type',
-                            trigger: 'change',
-                        },
-                    ],
                     resource: [
                         { required: true, message: 'Please select activity resource', trigger: 'change' },
                     ],
@@ -64,6 +52,16 @@
             };
         },
         methods: {
+            handleChange(info) {
+                if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    this.$message.success(`${info.file.name} file uploaded successfully`);
+                } else if (info.file.status === 'error') {
+                    this.$message.error(`${info.file.name} file upload failed.`);
+                }
+            },
             onSubmit() {
                 this.$refs.ruleForm.validate(valid => {
                     if (valid) {
@@ -78,13 +76,16 @@
                 this.$refs.ruleForm.resetFields();
             },
         },
-        created: function () {
-            // this.getCourse();
-        },
         computed: {
-            ...mapGetters({
-                homeworkItem: 'getHomeworkInfo',
-            })
+            ...mapState({
+                homeworkList: (state) => state.student.homeworkList,
+            }),
+            homeworkItem() {
+                let index = this.homeworkList.findIndex((item) => {
+                    return item.hid === this.$route.query.id;
+                });
+                return this.homeworkList[index];
+            },
         }
     };
 </script>

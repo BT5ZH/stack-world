@@ -46,7 +46,7 @@
                 this.$router.push({ path: '/student/course/'+ this.courseId + '/video/'+ item.id,query: { title: item.id } });
             },
             jmpHomework(item){
-                this.$router.push({ path: this.$route.path + '/homework',query: { title: item.title } });
+                this.$router.push({ path: this.$route.path + '/homework',query: { title: item.title,id: item.hid} });
             },
             download(){
                 window.open("https://tse1-mm.cn.bing.net/th?id=OIP.cbZhKMlh-W8pVvfypGmqJwAAAA&w=208&h=160&c=8&rs=1&qlt=90&dpr=2&pid=3.1&rm=2");
