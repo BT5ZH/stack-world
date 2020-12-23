@@ -1,6 +1,6 @@
 import XLSX from "xlsx";
 
-const DEFAULT_CONFIG = {
+let DEFAULT_CONFIG = {
   headerErrCallback: function() {
     console.error("excel sheet header is not corrected!");
   },
@@ -9,7 +9,7 @@ const DEFAULT_CONFIG = {
   },
 };
 
-const DEFAULT_REG_EXP = {
+let DEFAULT_REG_EXP = {
   // exp: 13152081827
   phone: /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/,
   // exp: 410725202009150001
@@ -54,7 +54,7 @@ function checkExcelItemNums(start, end, worksheet) {
  */
 function checkExcelCeilSpace(rowData, cols) {
   for (let i = 0; i < cols.length; i++) {
-    const ceilData = rowData[cols[i]];
+    let ceilData = rowData[cols[i]];
     ceilData = ceilData.replace(/\s+/g, "");
   }
 }
@@ -71,7 +71,7 @@ function checkExcelCeilSpace(rowData, cols) {
  */
 function checkExcelEmailFormat(rowData, rowIndex, cols, errCb) {
   for (let i = 0; i < cols.length; i++) {
-    const ceilData = rowData[cols[i]];
+    let ceilData = rowData[cols[i]];
     if (!DEFAULT_REG_EXP.email.test(ceilData)) {
       errCb(rowIndex + 1, i + 1);
       break;
@@ -108,7 +108,20 @@ function convert(xlsx_file, cbConfig, params) {
 
     // }
     // TODO 进行类型检查
-    callback(data);
+    const headerEn = data.shift();
+    console.log("English Header", headerEn);
+    const headerCn = data.shift();
+    console.log("Chinese Header", headerCn);
+
+    let convertedData = [];
+    data.forEach((row, index) => {
+      const user = new Object();
+      headerEn.forEach((item, index) => {
+        user[item] = row[index];
+      });
+      convertedData.push(user);
+    });
+    cbConfig.dataCb(convertedData);
   };
   reader.readAsBinaryString(xlsx_file);
 }
