@@ -50,8 +50,7 @@ const devOptions = {
 
 const prodOptions = {
   cors: {
-    origin:
-      "http://http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+    origin: "http//dajun.w-click.cn:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
