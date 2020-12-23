@@ -1,7 +1,9 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3050";
-const client = io(SOCKET_URL, {});
+const SOCKET_DEV_URL = "http://localhost:3050";
+const SOCKET_PROD_URL =
+  "http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn";
+const client = io(SOCKET_PROD_URL, {});
 
 let listeners = {};
 
@@ -13,7 +15,7 @@ let listeners = {};
  */
 function addListenersToScoket(socket, roomId) {
   socket.on(roomId, (eventData) => {
-    console.log('get channel data',eventData);
+    console.log("get channel data", eventData);
     const { actionType, data } = eventData;
     if (!listeners[actionType]) {
       console.error("unsupported action type");

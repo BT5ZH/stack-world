@@ -17,12 +17,11 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-app.use(
-  cors({
-    origin: ["http://localhost:8080"],
-    methods: ["GET", "HEAD", "OPTIONS", "POST", "PATCH"],
-  })
-);
+app.use(cors());
+// {
+//   origin: ["http://localhost:8080"],
+//   methods: ["GET", "HEAD", "OPTIONS", "POST", "PATCH"],
+// }
 // 3) ROUTES
 const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");

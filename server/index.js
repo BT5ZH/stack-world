@@ -41,14 +41,22 @@ redisClient.on("connect", function () {
 // Server Setup
 const mgPort = process.env.MGSPORT || 5001;
 const server = require("http").createServer(app);
-const options = {
+const devOptions = {
   cors: {
     origin: "http://localhost:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
 
-const io = require("socket.io")(server, options);
+const prodOptions = {
+  cors: {
+    origin:
+      "http://http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+  },
+};
+
+const io = require("socket.io")(server, prodOptions);
 
 // const nsp = io.of("/api");
 const gameRooms = [];
