@@ -59,8 +59,8 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 });
 
 exports.getUser = catchAsync(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  //course.findOne({_id:req.params.id});
+  //const user = await User.findById(req.params.id);
+  const user = await User.findOne({_id:req.params.id});
 
   res.status(200).json({
     status: "success",

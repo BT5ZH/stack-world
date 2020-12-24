@@ -58,20 +58,12 @@ app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
 const campusRouter = require("./routes/campusRoutes");
 const buildingRouter = require("./routes/buildingRoutes");
 const roomRouter = require("./routes/roomRoutes");
-<<<<<<< HEAD
 //const testRouter = require("./routes/testRoutes");
-=======
-// const testRouter = require("./routes/testRoutes");
->>>>>>> 13f4db990fb3aa25222e0a6ea896b36f1d5131bd
 
 app.use("/pc/v1/campus", campusRouter);
 app.use("/pc/v1/building", buildingRouter);
 app.use("/pc/v1/rooms", roomRouter);
-<<<<<<< HEAD
 //app.use("/pc/v1/tests", testRouter);
-=======
-// app.use("/pc/v1/tests", testRouter);
->>>>>>> 13f4db990fb3aa25222e0a6ea896b36f1d5131bd
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

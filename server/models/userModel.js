@@ -116,7 +116,25 @@ userSchema.pre("save", async function(next) {
   this.passwordConfirm = undefined;
   next();
 });
+userSchema.post('findOne', function(result) {
+  //console.log(this instanceof mongoose.Query); // true
+  ///// prints returned documents
+  //console.log('find() returned ' + JSON.stringify(result));
+  ///// prints number of milliseconds the query took
+  //console.log('find() took ' + (Date.now() - this.start) + ' millis');
+  if(result.role==='student') result.role = "学生"
+  else if(result.role==='teacher') result.role = "教师"
+  else if(result.role==='orgAdmin') result.role = "学校管理员"
+  else if(result.role==='patrol') result.role = "巡视督导"
+  else if(result.role==='superAdmin') result.role = "超级管理员"
 
+  if(result.title==='student') result.title = "学生"
+  else if(result.title==='lecturer') result.title = "教师"
+  else if(result.title==='vice-professor') result.title = "副教授"
+  else if(result.title==='professor') result.title = "教授"
+  
+
+});
 // userSchema.pre("save", function (next) {
 //   if (!this.isModified("password") || this.isNew()) return next();
 
