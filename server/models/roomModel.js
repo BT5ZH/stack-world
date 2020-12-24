@@ -37,6 +37,23 @@ const roomSchema = new mongoose.Schema(
   { _id: false }
 );
 
+roomSchema.post('findOne', function(result) {
+  if(result.room_type==='classroom')   result.room_type = "教室"
+  else if(result.room_type==='lab')    result.room_type = "实验室"
+  else if(result.room_type==='office') result.room_type = "办公室"
+  else if(result.room_type==='others') result.room_type = "其他"
+});
+roomSchema.post('find', function(result) {
+  if(result!=[] || result!= null ){
+    for(let i = 0;i<result.length;i++){
+      if(result[i].room_type==='classroom')   result[i].room_type = "教室"
+      else if(result[i].room_type==='lab')    result[i].room_type = "实验室"
+      else if(result[i].room_type==='office') result[i].room_type = "办公室"
+      else if(result[i].room_type==='others') result[i].room_type = "其他"
+    }
+  }
+});
+
 const Room = mongoose.model("Room", roomSchema);
 
 module.exports = Room;

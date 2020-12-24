@@ -132,8 +132,22 @@ userSchema.post('findOne', function(result) {
   else if(result.title==='lecturer') result.title = "教师"
   else if(result.title==='vice-professor') result.title = "副教授"
   else if(result.title==='professor') result.title = "教授"
-  
+});
+userSchema.post('find', function(result) {
+  if(result!=[] || result!= null ){
+    for(let i = 0;i<result.length;i++){
+      if(result[i].role==='student') result[i].role = "学生"
+      else if(result[i].role==='teacher') result[i].role = "教师"
+      else if(result[i].role==='orgAdmin') result[i].role = "学校管理员"
+      else if(result[i].role==='patrol') result[i].role = "巡视督导"
+      else if(result[i].role==='superAdmin') result[i].role = "超级管理员"
 
+      if(result[i].title==='student') result[i].title = "学生"
+      else if(result[i].title==='lecturer') result[i].title = "教师"
+      else if(result[i].title==='vice-professor') result[i].title = "副教授"
+      else if(result[i].title==='professor') result[i].title = "教授"
+    }
+  }
 });
 // userSchema.pre("save", function (next) {
 //   if (!this.isModified("password") || this.isNew()) return next();

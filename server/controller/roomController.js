@@ -59,7 +59,7 @@ exports.createRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.getRoom = catchAsync(async (req, res, next) => {
-  const room = await Room.findById(req.params.id);
+  const room = await Room.findOne({_id:req.params.id});
 
   if (!room) {
     return next(new AppError("该空间不存在", 404));

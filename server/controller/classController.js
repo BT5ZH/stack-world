@@ -268,7 +268,7 @@ exports.getCurriculum = catchAsync(async (req, res, next) => {
   }
   // validate students list null or length==0 TODO:
 
-  console.log(classEntity);
+  //console.log(classEntity);
   res.status(200).json({
     status: "success",
     data: {
