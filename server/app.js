@@ -17,12 +17,7 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-app.use(
-  cors({
-    origin: ["http://localhost:8080"],
-    methods: ["GET", "HEAD", "OPTIONS", "POST", "PATCH"],
-  })
-);
+app.use(cors());
 // 3) ROUTES
 const courseRouter = require("./routes/courseRoutes");
 const userRouter = require("./routes/userRoutes");
@@ -38,7 +33,6 @@ const timeTableRouter = require("./routes/timeTableRoutes");
 const setHomeworkRouter = require("./routes/setHomeworkRoutes");
 const submitHomeworkRouter = require("./routes/submitHomeworkRoutes");
 
-
 app.use("/pc/v1/courses", courseRouter);
 app.use("/pc/v1/users", userRouter);
 app.use("/pc/v1/organizations", orgRouter);
@@ -52,7 +46,6 @@ app.use("/pc/v1/schoolyears", schoolYearRouter);
 app.use("/pc/v1/timetables", timeTableRouter);
 app.use("/pc/v1/sethomeworks", setHomeworkRouter);
 app.use("/pc/v1/submithomeworks", submitHomeworkRouter);
-
 
 //ChengNuo
 const campusRouter = require("./routes/campusRoutes");

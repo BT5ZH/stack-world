@@ -41,14 +41,22 @@ redisClient.on("connect", function () {
 // Server Setup
 const mgPort = process.env.MGSPORT || 5001;
 const server = require("http").createServer(app);
-const options = {
+const devOptions = {
   cors: {
     origin: "http://localhost:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
 
-const io = require("socket.io")(server, options);
+const prodOptions = {
+  cors: {
+    origin:
+      "http://http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+  },
+};
+
+const io = require("socket.io")(server, prodOptions);
 
 // const nsp = io.of("/api");
 const gameRooms = [];
@@ -57,6 +65,11 @@ const gameRooms = [];
 
 io.on("connection", (socket) => {
   console.log("server connected,socketId: " + socket.id);
+  socket.on("public", (data) => {
+    const { lessonId, teacherId } = data;
+    console.log("receive broadcast message：", lessonId, teacherId);
+    io.emit("public", data);
+  });
 
   socket.on("joinRoom", (data) => {
     console.log("joinRoom 进来啦");
@@ -92,7 +105,8 @@ io.on("connection", (socket) => {
           io.to(roomChannel).emit(res);
           break;
         case "sign":
-          io.to(roomChannel).emit(res);
+          console.log({ sign: data });
+          io.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
           io.to(roomChannel).emit(res);
@@ -106,12 +120,13 @@ io.on("connection", (socket) => {
     } else if (data.role == "student") {
       // 学生登录房间
       switch (data.actionType) {
-        case "answer":
+        case "enter":
+          console.log("student join channel", roomChannel);
           socket.join(roomChannel);
-          io.to(roomChannel).emit(res);
+          io.to(roomChannel).emit(roomChannel, data);
           break;
         case "answer":
-          socket.join(roomChannel);
+          // socket.join(roomChannel);
           io.to(roomChannel).emit(res);
           break;
         default:

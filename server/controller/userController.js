@@ -89,11 +89,41 @@ exports.createUser = catchAsync(async (req, res) => {
 
 exports.createMultipleUsers = catchAsync(async (req, res) => {
   const multipleUsers = req.body;
-  const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
+  // const hashPassword = await bcrypt.hash(multipleUsers[0].password, 12);
+  const hashPassword = await bcrypt.hash("dajun1234", 12);
   multipleUsers.forEach((user) => {
     if (typeof user == "object") {
       user["password"] = hashPassword;
       user["passwordConfirm"] = hashPassword;
+      switch (user["role"]) {
+        case "老师":
+          user["role"] = "teacher";
+          break;
+        case "学生":
+          user["role"] = "student";
+          break;
+        case "督导":
+          user["role"] = "patrol";
+          break;
+        default:
+          break;
+      }
+      switch (user["title"]) {
+        case "讲师":
+          user["title"] = "lecturer";
+          break;
+        case "副教授":
+          user["title"] = "vice-professor";
+          break;
+        case "教授":
+          user["title"] = "professor";
+          break;
+        case "学生":
+          user["title"] = "student";
+          break;
+        default:
+          break;
+      }
     }
   });
   // console.log("++++++++");
@@ -126,7 +156,9 @@ exports.getOrgTeachers = catchAsync(async (req, res) => {
     (match) => `$${match}`
   );
 
-  const query = User.find(JSON.parse(queryString)).select("name email active");
+  const query = User.find(JSON.parse(queryString)).select(
+    "name email active user_id subOrg_name major_name title"
+  );
 
   // EXECUTE QUERY
   const users = await query;

@@ -11,7 +11,7 @@ const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: ms(process.env.JWT_EXPIRES_IN) / 1000,
   });
-};
+}
 
 exports.signup = catchAsync(async (req, res, next) => {
   console.log(req.body);
