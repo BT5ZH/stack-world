@@ -23,6 +23,7 @@
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           >
             <a-button type="primary"> 选择文件 </a-button>
+            <span>{{ fileName }}</span>
           </a-upload>
           <br />
           <br />
@@ -58,14 +59,15 @@
 </template>
 
 <script>
-// import xlsxParser from "@/utils/excelToJson";
+import xlsxParser from "@/utils/excelToJson";
+import axios from "@/utils/axios";
 
 export default {
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -74,7 +76,12 @@ export default {
       startEndForm: { start: 0, end: 0 },
       labelCol: { span: 5 },
       wrapperCol: { span: 5 },
-    }
+    };
+  },
+  computed: {
+    fileName() {
+      return this.fileList.length ? this.fileList[0].name : "请选择文件";
+    },
   },
   methods: {
     fileInput(file) {
@@ -85,15 +92,14 @@ export default {
     submitRequest() {
       //   xlsxParser();
     },
-    cancelRequest() {
-
-    },
+    cancelRequest() {},
     nextStep() {
       switch (this.curStep) {
         case 0:
           this.curStep++;
           break;
         case 1:
+          this.parseExcelData();
           this.curStep++;
           break;
         case 2:
@@ -103,11 +109,17 @@ export default {
           break;
       }
     },
-    checkFormat() {
-        
-    }
-  }
-}
+    checkFormat() {},
+    parseExcelData() {
+      xlsxParser(this.fileList[0], {
+        dataCb: (data) => {
+          console.log("extracted data: ", data);
+          axios.post("/pc/v1/users/multipleUsers", data);
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
