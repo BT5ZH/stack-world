@@ -22,7 +22,10 @@ router
 router
   .route("/batchDeleteRooms")
   .post(authController.protect, roomController.batchDeleteRooms); //批量删除房间
-
+router
+  .route("/getRoomByBuilding")
+  .post(authController.protect, roomController.getRoomByBuilding); 
+  
 router
   .route("/:id")
   .get(authController.protect, roomController.getRoom)

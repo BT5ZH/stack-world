@@ -73,6 +73,19 @@ exports.getRoom = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRoomByBuilding = catchAsync(async (req, res, next) => {
+  const rooms = await Room.find({builing:req.body.bulding_id});
+
+  if (rooms===[] || rooms=== null ) {
+    return next(new AppError("该楼无教室", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+      rooms,
+  });
+});
+
 exports.updateRoom = catchAsync(async (req, res, next) => {
   const room = await Room.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
