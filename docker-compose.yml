@@ -18,7 +18,7 @@ services:
   nginx:
     depends_on:
       - api
-      - client
+      # - client
     restart: always
     build:
       dockerfile: Dockerfile.dev
@@ -47,20 +47,20 @@ services:
       - MONGO_DATABASE=mongodb
       - MONGO_HOST=mongodb
       - MONGO_PORT=27017
-  client:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./stack-client
-    volumes:
-      - /app/node_modules
-      - ./stack-client:/app
-  worker:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./worker
-    volumes:
-      - /app/node_modules
-      - ./worker:/app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+  # client:
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #     context: ./stack-client
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./stack-client:/app
+  # worker:
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #     context: ./worker
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./worker:/app
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379

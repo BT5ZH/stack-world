@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "aws-sdk": "^2.811.0",
-    "wangeditor": "^4.5.3"
-  }
-}

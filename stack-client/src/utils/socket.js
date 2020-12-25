@@ -1,26 +1,11 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:5000";
-const client = io(SOCKET_URL, {});
+const SOCKET_DEV_URL = "http://localhost:3050";
+const SOCKET_PROD_URL =
+  "http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn";
+const client = io(SOCKET_PROD_URL, {});
 
-let listeners = {
-  // 投票
-  vote: () => {},
-  // 聊天室
-  chat: () => {},
-  // 随堂测验
-  test: () => {},
-  // 签到
-  sign: () => {},
-  // 随堂提问
-  quiz: () => {},
-  // 随机抽人
-  pick: () => {},
-  // 文件下发
-  file: () => {},
-  // 调查问卷 (questionnaire)
-  ques: () => {},
-};
+let listeners = {};
 
 /**
  * 添加回调函数到不同活动
@@ -29,7 +14,8 @@ let listeners = {
  * @param {String} roomId 房间号 等同于 lessonId
  */
 function addListenersToScoket(socket, roomId) {
-  socket.on([roomId], (eventData) => {
+  socket.on(roomId, (eventData) => {
+    console.log("get channel data", eventData);
     const { actionType, data } = eventData;
     if (!listeners[actionType]) {
       console.error("unsupported action type");
@@ -37,6 +23,12 @@ function addListenersToScoket(socket, roomId) {
     }
     listeners[actionType](data);
   });
+  if (listeners.public) {
+    socket.on("public", (eventData) => {
+      console.log(eventData);
+      listeners.public && listeners.public(eventData);
+    });
+  }
 }
 
 export function createInstance(that, callbacks) {

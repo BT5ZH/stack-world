@@ -11,7 +11,7 @@ const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: ms(process.env.JWT_EXPIRES_IN) / 1000,
   });
-}
+};
 
 exports.signup = catchAsync(async (req, res, next) => {
   console.log(req.body);
@@ -42,12 +42,12 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email })
     .select("+password")
     .populate({ path: "organization", select: "_id" }); //.select("+password")
+
   const orgEntity = await Organization.findOne({
     organizationName: user.org_name,
   }).select("_id");
   const orgId = orgEntity._id;
   user.org_id = orgId;
-  console.log(orgId);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
   }
@@ -57,8 +57,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const token = signToken(user._id);
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
-  console.log(decoded.exp);
   user["expiresIn"] = decoded.exp;
   res.status(200).json({
     status: "success",
