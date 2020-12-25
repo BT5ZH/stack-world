@@ -20,94 +20,10 @@
       </a-select>
       <a-input placeholder="教学楼名称" v-model="new_building" />
     </a-modal>
-
-    <a-tree
-      :load-data="onLoadData"
-      :tree-data="treeData"
-      @select="showRooms"
-      :show-line="true"
-      :defaultExpandedKeys="['1']"
-    />
-    <div class="btn-area">
-      <a-button-group>
-        <a-button type="primary" @click="campus_visible = true"
-          >+ 校区</a-button
-        >
-        <a-button type="primary" @click="building_visible = true"
-          >+ 教学楼</a-button
-        >
-        <a-button type="primary" @click="editContent(currentInfo)"
-          >编辑</a-button
-        >
-        <a-button type="primary" @click="deleteContent(currentInfo)"
-          >删除</a-button
-        >
-      </a-button-group>
-    </div>
   </div>
 </template>
 
 <script>
-let temp = [
-  {
-    title: "育人学校（61）",
-    key: "1",
-    children: [
-      {
-        title: "长安校区",
-        key: "0-1",
-        children: [
-          {
-            title: "图书馆（20）",
-            key: "0-1-0",
-            isLeaf: true,
-          },
-          {
-            title: "生化楼（22）",
-            key: "0-1-1",
-            isLeaf: true,
-          },
-          {
-            title: "多媒体微机室（12）",
-            key: "0-1-2",
-            isLeaf: true,
-          },
-          {
-            title: "三教（7）",
-            key: "0-1-3",
-            isLeaf: true,
-          },
-        ],
-      },
-      {
-        title: "雁塔校区",
-        key: "0-2",
-        children: [
-          {
-            title: "图书馆（20）",
-            key: "0-2-0",
-            isLeaf: true,
-          },
-          {
-            title: "生化楼（22）",
-            key: "0-2-1",
-            isLeaf: true,
-          },
-          {
-            title: "多媒体微机室（12）",
-            key: "0-2-2",
-            isLeaf: true,
-          },
-          {
-            title: "三教（7）",
-            key: "0-2-3",
-            isLeaf: true,
-          },
-        ],
-      },
-    ],
-  },
-];
 export default {
   data() {
     return {
@@ -191,11 +107,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.btn-area {
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-}
-</style>
+<style scoped></style>

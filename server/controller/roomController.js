@@ -33,13 +33,13 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     results: rooms.length,
-    data: {
-      rooms,
-    },
+
+    rooms,
   });
 });
 
 exports.createRoom = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const oldRoom = await Room.findOne({
     room_number: req.body.room_number,
     building: req.body.building,
@@ -59,7 +59,7 @@ exports.createRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.getRoom = catchAsync(async (req, res, next) => {
-  const room = await Room.findOne({_id:req.params.id});
+  const room = await Room.findOne({ _id: req.params.id });
 
   if (!room) {
     return next(new AppError("该空间不存在", 404));
