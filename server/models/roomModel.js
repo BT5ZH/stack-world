@@ -38,10 +38,12 @@ const roomSchema = new mongoose.Schema(
 );
 
 roomSchema.post('findOne', function(result) {
-  if(result.room_type==='classroom')   result.room_type = "教室"
-  else if(result.room_type==='lab')    result.room_type = "实验室"
-  else if(result.room_type==='office') result.room_type = "办公室"
-  else if(result.room_type==='others') result.room_type = "其他"
+  if(result!=null){
+    if(result.room_type==='classroom')   result.room_type = "教室"
+    else if(result.room_type==='lab')    result.room_type = "实验室"
+    else if(result.room_type==='office') result.room_type = "办公室"
+    else if(result.room_type==='others') result.room_type = "其他"
+  }
 });
 roomSchema.post('find', function(result) {
   if(result!=[] || result!= null ){
