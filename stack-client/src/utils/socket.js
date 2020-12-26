@@ -1,4 +1,7 @@
+console.log("start to load socket js");
 import { io } from "socket.io-client";
+import studentListeners from "./studentSocket";
+import teacherListeners from "./teacherSocket";
 
 const SOCKET_DEV_URL = "http://localhost:3050";
 const SOCKET_PROD_URL =
@@ -7,53 +10,86 @@ const client = io(SOCKET_PROD_URL, {});
 
 let listeners = {};
 
+function sendIntercepter(channel, data) {
+  console.log(`send message to channel ${channel} `, data);
+}
+
+function receiveIntercepter(channel, data) {
+  console.log(`receive message from channel ${channel}`, data);
+}
+
 /**
- * 添加回调函数到不同活动
+ * 创建 socket instance 实例
  *
- * @param {Socket} socket socket 连接实例
- * @param {String} roomId 房间号 等同于 lessonId
+ * @export
+ * @param {String} role student | teacher
+ * @param {Object} that vue this
+ * @param {String} lessonId 在某门课下的内容需要传此参数
+ * @returns {Promise}
  */
-function addListenersToScoket(socket, roomId) {
-  socket.on(roomId, (eventData) => {
-    console.log("get channel data", eventData);
-    const { actionType, data } = eventData;
-    if (!listeners[actionType]) {
-      console.error("unsupported action type");
-      return null;
-    }
-    listeners[actionType](data);
-  });
-  if (listeners.public) {
-    socket.on("public", (eventData) => {
-      console.log(eventData);
-      listeners.public && listeners.public(eventData);
+export function createInstance(role, that, lessonId) {
+  if (client.disconnected) {
+    return new Promise((resolve, reject) => {
+      client.on("connect", () => {
+        console.info(`socket connection established, id is${client.id}`);
+        loadListeners(role, that, lessonId);
+        resolve(client.id);
+      });
+      client.on("connect_error", () => reject("conntected error"));
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      console.info(`socket connection already established, id is${client.id}`);
+      loadListeners(role, that, lessonId);
+      resolve(client.id);
     });
   }
 }
 
-export function createInstance(that, callbacks) {
-  const { lessonId } = that.$route.query;
-  listeners = { ...listeners, ...callbacks };
-  return new Promise((resolve, reject) => {
-    client.on("connect", () => {
-      console.info(`socket connection established, id is${client.id}`);
-      addListenersToScoket(client, lessonId);
-      resolve(client.id);
+/**
+ * 加载监听函数
+ *
+ * @param {String} role student | teacher
+ * @param {Object} that vue this
+ * @param {String} lessonId 在某门课下的内容需要传此参数
+ */
+function loadListeners(role, that, lessonId) {
+  let listeners = {};
+  if (role === "student") {
+    listeners = studentListeners(lessonId);
+  } else if (role === "teacher") {
+    listeners = teacherListeners(lessonId);
+    console.log(listeners);
+  } else {
+    const msg =
+      `[utils-socket] invalid role, ${role}` +
+      " only support student and teacher";
+    console.error(msg);
+  }
+  Object.keys(listeners).forEach((channel) => {
+    client.off(channel);
+    client.on(channel, (eventData) => {
+      receiveIntercepter(channel, eventData);
+      const { actionType, data } = eventData;
+      if (!listeners[channel][actionType]) {
+        console.error("[utils-socket] unsupported action type" + actionType);
+        return null;
+      }
+      listeners[channel][actionType](data, that);
     });
-    client.on("connect_error", () => reject());
   });
 }
 
-export function broadcastEvent(event) {
-  const { roomId, data } = event;
-  client.broadcast.emit(roomId, data);
+/**
+ * 发送消息
+ *
+ * @export
+ * @param {String} channel joinRoom | public
+ * @param {Object} data
+ */
+export function sendEvent(channel, data) {
+  sendIntercepter(channel, data);
+  client.emit(channel, data);
 }
 
-export function sendEvent(event) {
-  const { roomId, data } = event;
-  client.emit(roomId, data);
-}
-
-export function publicEvent(data) {
-  client.emit("public", data);
-}
+console.log("load socket js successfully");

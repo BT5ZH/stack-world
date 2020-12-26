@@ -68,32 +68,20 @@ io.on("connection", (socket) => {
   socket.on("public", (data) => {
     const { lessonId, teacherId } = data;
     console.log("receive broadcast message：", lessonId, teacherId);
-    io.emit("public", data);
+    socket.broadcast.emit("public", data);
   });
 
   socket.on("joinRoom", (data) => {
-    console.log("joinRoom 进来啦");
-    console.log(data.roomId);
-    // res = {
-    //   enter:"",
-    //   vote:"",
-    //   // “select” 选择 “judge” 判断
-    //   ques:{
-    //     type:"select",//
-    //   },
-    //   test:{},
-    //   sign:"",
-    //   randomPick:"",
-    //   file:""
-    // };
-
     const roomChannel = data.roomId;
+    const { actionType, role } = data;
+    console.log(`${role} ${actionType}`, data);
+
     if (data.role == "teacher") {
       // 教师登录房间
       switch (data.actionType) {
         case "enter":
           socket.join(roomChannel);
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
           io.to(roomChannel).emit(res);
@@ -105,8 +93,7 @@ io.on("connection", (socket) => {
           io.to(roomChannel).emit(res);
           break;
         case "sign":
-          console.log({ sign: data });
-          io.to(roomChannel).emit(roomChannel, data);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
           io.to(roomChannel).emit(res);
@@ -121,13 +108,14 @@ io.on("connection", (socket) => {
       // 学生登录房间
       switch (data.actionType) {
         case "enter":
-          console.log("student join channel", roomChannel);
           socket.join(roomChannel);
           io.to(roomChannel).emit(roomChannel, data);
           break;
+        case "sign":
+          io.to(roomChannel).emit(roomChannel, data);
+          break;
         case "answer":
-          // socket.join(roomChannel);
-          io.to(roomChannel).emit(res);
+          io.to(roomChannel).emit(roomChannel, data);
           break;
         default:
           break;
@@ -165,14 +153,8 @@ io.on("connection", (socket) => {
     });
     */
   });
-
-  socket.on("sign", (eventData) => {
-    console.log(eventData);
-    eventData.processed = Date.now();
-    // send the message back to the client
-    socket.emit("sign", eventData);
-  });
 });
+
 server.listen(mgPort, (err) => {
   console.log(`App running on port ${mgPort}...`);
 });

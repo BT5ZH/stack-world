@@ -20,6 +20,13 @@ const mutation = {
       }
     });
   },
+  updateSocketListeners(state, { channel, actionType, callback }) {
+    let { listeners, channels } = state.socketData;
+    if (!channels.some((item) => item === channel)) {
+      channels.push(channel);
+    }
+    listeners[channel] = { ...listeners[channel], [actionType]: callback };
+  },
 };
 
 export default mutation;

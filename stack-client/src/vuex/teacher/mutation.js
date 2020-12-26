@@ -21,8 +21,10 @@ const mutation = {
     });
   },
   updateSignResult(state, params) {
-    state.signList.push(params);
-  }
+    if (params) {
+      state.signList.push(params);
+    }
+  },
 };
 
 export default mutation;

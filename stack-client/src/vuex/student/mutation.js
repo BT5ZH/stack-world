@@ -1,6 +1,6 @@
 const mutation = {
   updateUserInfo(state, params) {
-    state.user = params; 
+    state.user = params;
   },
 
   updateCourseList(state, params) {
@@ -30,6 +30,20 @@ const mutation = {
       return null;
     }
     throw "[vuex-student-mutation] favResList type error!";
+  },
+  updateOpenRooms(state, { action, roomId }) {
+    if (action === "add") {
+      state.openRooms.push(roomId);
+    } else {
+      state.openRooms.splice(state.openRooms.indexOf(roomId), 1);
+    }
+  },
+  updateInteraction(state, { name, params }) {
+    if (!state.interaction[name]) {
+      console.error("[vuex-student-mutation] invalid interaction name");
+      return null;
+    }
+    state.interaction[name] = { ...state.interaction[name], ...params };
   },
 };
 
