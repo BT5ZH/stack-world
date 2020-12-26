@@ -40,27 +40,29 @@
 
 <script>
 export default {
+  props: { courses: { type: Array } },
   data() {
     return {
+      courseList: [],
       columns: [
         {
           title: "课程编号",
-          dataIndex: "_id",
+          dataIndex: "course_id",
           align: "center",
         },
         {
           title: "课程名称",
-          dataIndex: "courseName",
+          dataIndex: "name",
           align: "center",
         },
         {
           title: "所属学院",
-          dataIndex: "college",
+          dataIndex: "subOrg_name",
           align: "center",
         },
         {
           title: "专业",
-          dataIndex: "major",
+          dataIndex: "major_name",
           align: "center",
         },
         {
@@ -70,27 +72,16 @@ export default {
         },
       ],
       selectedCourses: [],
-      courseList: [
-        {
-          _id: "1",
-          courseName: "数据结构",
-          college: "计算机科学学院",
-          major: "软件工程",
-        },
-        {
-          _id: "2",
-          courseName: "计算机体系结构",
-          college: "计算机科学学院",
-          major: "计算机科学与技术",
-        },
-        {
-          _id: "3",
-          courseName: "数据科学",
-          college: "计算机科学学院",
-          major: "软件工程",
-        },
-      ],
     };
+  },
+  watch: {
+    courses: {
+      immediate: true,
+      handler(value) {
+        console.log(value);
+        this.courseList = value;
+      },
+    },
   },
   methods: {
     onSelectChange(selectedKeys) {
