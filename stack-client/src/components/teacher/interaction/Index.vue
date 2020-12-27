@@ -11,14 +11,37 @@
     </a-row>
 
     <a-row>
-      <a-carousel arrows dots-class="slick-dots slick-thumb">
-        <a slot="customPaging" slot-scope="props">
-          <img :src="getImgUrl(props.i)" />
-        </a>
-        <div v-for="(item, n) in 4" :key="n">
-          <img :src="baseUrl + 'abstract0' + item + '.jpg'" />
-        </div>
-      </a-carousel>
+      <a-row type="flex" justify="center">
+        <a-col :span="22">
+          <a-carousel
+            arrows
+            dots-class="slick-dots slick-thumb"
+            ref="eventPanel"
+          >
+            <a-col :span="18" :push="2">
+              <div class="card-container">
+                <a-row>
+                  <span class="action-type">{{ eventNames[curEvent] }}</span>
+                </a-row>
+                <a-row :gutter="20" class="card-body">
+                  <a-col :span="18">
+                    <h2>{{ eventTitles[curEvent] }}</h2>
+                  </a-col>
+                  <a-col :span="2">
+                    <a-button
+                      shape="circle"
+                      size="large"
+                      @click="navigateToEvent(curEvent)"
+                    >
+                      <a-icon type="right-circle" style="font-size: 40px" />
+                    </a-button>
+                  </a-col>
+                </a-row>
+              </div>
+            </a-col>
+          </a-carousel>
+        </a-col>
+      </a-row>
       <a-row class="event-steps">
         <a-col :span="20" :push="2">
           <a-steps
@@ -95,8 +118,6 @@ import { mapState } from "vuex";
 
 export default {
   data() {
-    const baseUrl =
-      "https://raw.githubusercontent.com/vueComponent/ant-design-vue/master/components/vc-slick/assets/img/react-slick/";
     return {
       actions: [
         { icon: "carry-out", title: "签到", url: "interaction_sign" },
@@ -117,7 +138,6 @@ export default {
         "#96BFFF",
       ],
       drawers: [false, false, false, false, false, false, false],
-      baseUrl,
       steps: [
         { title: "讲课", description: "20分钟" },
         { title: "提问", description: "5分钟" },
@@ -125,20 +145,34 @@ export default {
         { title: "提问", description: "5分钟" },
       ],
       curEvent: 0,
+      eventNames: ["签到", "投票"],
+      eventTitles: ["请大家开始签到", "请大家开始投票"],
     };
   },
   methods: {
     actionClick(urlNamem, index) {
       this.drawers.splice(index, 1, true);
-      // this.$router.push({ name: urlName });
     },
     onClose(index) {
       this.drawers.splice(index, 1, false);
     },
-    getImgUrl(i) {
-      return `${this.baseUrl}abstract0${i + 1}.jpg`;
+    eventChange(value) {
+      this.curEvent = value;
+      this.$refs.eventPanel.next();
     },
-    eventChange() {},
+    navigateToEvent(eventIndex) {
+      socket.sendEvent("joinRoom", {
+        actionType: "sign",
+        role: "teacher",
+        roomId: this.lessonId,
+      });
+      this.$router.push({
+        name: "interaction_sign",
+        query: {
+          lessonId: this.lessonId,
+        },
+      });
+    },
   },
   computed: {
     ...mapState({
@@ -149,18 +183,51 @@ export default {
     },
   },
   mounted() {
-    socket.createInstance(this, {}).then((id) => {
-      console.log(id);
-      socket.publicEvent({
-        teacherId: this.uid,
-        lessonId: this.lessonId,
+    const callback = (id) => {
+      socket.sendEvent("joinRoom", {
+        actionType: "enter",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: { teacherId: this.uid },
       });
-    });
+      socket.sendEvent("public", {
+        actionType: "classBegin",
+        role: "teacher",
+        data: { lessonId: this.lessonId, teacherId: this.uid },
+      });
+    };
+    socket.createInstance("teacher", this, this.lessonId).then(callback);
   },
 };
 </script>
 
 <style scoped>
+.card-body h2 {
+  padding: 20px 0;
+  margin: 0 0 0 50px;
+}
+
+.card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-container {
+  margin: 10px 0;
+  border-radius: 10px;
+  width: 80%;
+  height: 120px;
+  box-shadow: 0 0 10px #ccc;
+  /* box-shadow: 10px 10px 5px #888888; */
+}
+
+.action-type {
+  padding: 5px 10px;
+  background-color: #409eff;
+  color: #fff;
+}
+
 .precourse {
   width: 5rem;
   height: 2rem;
@@ -168,7 +235,7 @@ export default {
   color: #fff;
 }
 
-.ant-btn:not(.precourse) {
+.drawer .ant-btn:not(.precourse) {
   width: 8rem;
   height: 8rem;
   font-size: 3rem;

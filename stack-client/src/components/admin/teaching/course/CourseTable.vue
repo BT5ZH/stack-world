@@ -1,5 +1,6 @@
 <template>
   <div>
+    <batchAddCourse :visible.sync="bulkImport_visible"></batchAddCourse>
     <a-row class="btn-area">
       <a-col :span="5">
         <a-input-search
@@ -10,7 +11,9 @@
       </a-col>
       <a-col :span="13"></a-col>
       <a-col :span="6" class="btn">
-        <a-button type="primary">批量添加课程</a-button>
+        <a-button type="primary" @click="bulkImport_visible = true"
+          >批量添加课程</a-button
+        >
         <a-button type="primary">添加课程</a-button>
         <a-button type="primary">批量删除</a-button>
       </a-col>
@@ -39,28 +42,67 @@
 </template>
 
 <script>
+import batchAddCourse from "./BatchAddCourse.vue";
 export default {
+  components: { batchAddCourse },
+  props: { courses: { type: Array } },
   data() {
     return {
+      courseList: [],
       columns: [
         {
           title: "课程编号",
-          dataIndex: "_id",
+          dataIndex: "course_id",
           align: "center",
         },
         {
           title: "课程名称",
-          dataIndex: "courseName",
+          dataIndex: "name",
           align: "center",
         },
         {
           title: "所属学院",
-          dataIndex: "college",
+          dataIndex: "subOrg_name",
           align: "center",
         },
         {
           title: "专业",
-          dataIndex: "major",
+          dataIndex: "major_name",
+          align: "center",
+        },
+        {
+          title: "学分",
+          dataIndex: "credit",
+          align: "center",
+        },
+        {
+          title: "开课学期",
+          dataIndex: "semester",
+          align: "center",
+        },
+        {
+          title: "周学时",
+          dataIndex: "weekly_hrs",
+          align: "center",
+        },
+        {
+          title: "实践/实验(学时)",
+          dataIndex: "experiment_or_traning_hrs",
+          align: "center",
+        },
+        {
+          title: "考试方式",
+          dataIndex: "evaluation",
+          align: "center",
+        },
+        {
+          title: "课程类型",
+          dataIndex: "course_type",
+          align: "center",
+        },
+        {
+          title: "开课年级",
+          dataIndex: "grade",
           align: "center",
         },
         {
@@ -70,27 +112,17 @@ export default {
         },
       ],
       selectedCourses: [],
-      courseList: [
-        {
-          _id: "1",
-          courseName: "数据结构",
-          college: "计算机科学学院",
-          major: "软件工程",
-        },
-        {
-          _id: "2",
-          courseName: "计算机体系结构",
-          college: "计算机科学学院",
-          major: "计算机科学与技术",
-        },
-        {
-          _id: "3",
-          courseName: "数据科学",
-          college: "计算机科学学院",
-          major: "软件工程",
-        },
-      ],
+      bulkImport_visible: false,
     };
+  },
+  watch: {
+    courses: {
+      immediate: true,
+      handler(value) {
+        console.log(value);
+        this.courseList = value;
+      },
+    },
   },
   methods: {
     onSelectChange(selectedKeys) {

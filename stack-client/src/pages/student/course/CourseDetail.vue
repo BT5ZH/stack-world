@@ -21,10 +21,28 @@
         :item="item"
         :isClick="isClick"
         :courseId="courseId"
-      ></leftSlider>
+      >
+      </leftSlider>
     </div>
     <div class="course_content" v-if="isClick == 1">
-      <gridView4 :gridItems="classMenu"></gridView4>
+      <gridView4 :gridItems="classMenu" v-if="courseStart"></gridView4>
+      <div
+        v-else
+        style="display: flex; justify-content: center; margin-top: 15rem"
+      >
+        <a-progress
+          type="circle"
+          :stroke-color="{
+            '0%': '#108ee9',
+            '100%': '#87d068',
+          }"
+          :percent="100"
+          :format="() => 'start'"
+          style="transform: scale(2)"
+        />
+      </div>
+
+      <!-- <a-button >开始上课</a-button> -->
     </div>
     <div class="course_content" v-if="isClick == 2">
       <a-empty v-if="homeworkList.length == 0" />
@@ -35,7 +53,8 @@
         :item="item"
         :isClick="isClick"
         :courseId="courseId"
-      ></resCard>
+      >
+      </resCard>
     </div>
   </div>
 </template>
@@ -46,6 +65,7 @@ import resCard from "../../../components/student/ResCard.vue";
 import gridView4 from "../../../layout/GridView4.vue";
 
 import { mapState } from "vuex";
+import * as socket from "@/utils/socket";
 
 export default {
   name: "CourseHome",
@@ -58,21 +78,23 @@ export default {
     return {
       isClick: 1,
       courseId: null,
+      lessonId: "",
     };
   },
   methods: {
     changeNav(value) {
       this.isClick = value;
-      // this.$router.push({ path: '/student/course/' + this.$route.params.id + item.route});
     },
   },
-  created: function() {
+  created: function () {
     this.courseId = this.$route.params.id;
     console.log(this.courseId);
+    this.lessonId = this.$route.query.lessonId;
   },
-  mounted(){
-    this.$store.dispatch("student/getResList", this.$route.params.id);
-    this.$store.dispatch("student/getHomeworkList", this.$route.params.id);
+  mounted() {
+    // this.$store.dispatch("student/getResList", this.$route.params.id);
+    // this.$store.dispatch("student/getHomeworkList", this.$route.params.id);
+    socket.createInstance("student", this, this.lessonId);
   },
   computed: {
     ...mapState({
@@ -81,7 +103,11 @@ export default {
       resList: (state) => state.student.resList,
       classList: (state) => state.student.classList,
       homeworkList: (state) => state.student.homeworkList,
+      openRooms: (state) => state.student.openRooms,
     }),
+    courseStart() {
+      return this.openRooms.some((item) => item === this.lessonId);
+    },
   },
 };
 </script>
@@ -90,6 +116,7 @@ export default {
 .course_menu {
   margin-bottom: 2rem;
 }
+
 .courseDetailMenu {
   width: 100%;
   height: 100%;

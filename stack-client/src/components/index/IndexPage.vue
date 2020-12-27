@@ -82,6 +82,7 @@ export default {
         .then(({ data }) => {
           const { status, token } = data;
           // TODO replce the word 'success' with 'success' whenever backend fixs the bug
+          console.log("333333");
           if (status !== "success") {
             this.errorTipShow = true;
             return;
@@ -89,7 +90,9 @@ export default {
           localStorage.setItem("tk", token);
           axios.defaults.headers["Authorization"] = "Bearer " + token;
           console.log(axios.defaults);
+          console.log("55555");
           const navigateUrl = this.updatePublicVuexData(data.data);
+          console.log("77777");
           setTimeout(() => {
             this.$router.push(navigateUrl);
           }, 1000);

@@ -1,63 +1,44 @@
 <template>
-  <div>
-    <a-tree
-      :load-data="onLoadData"
-      :tree-data="treeData"
-      :show-line="true"
-      @select="onSelect"
-      :defaultExpandedKeys="['1']"
-    />
-  </div>
+  <div id="courseDashboard" style="width: 600px;height:400px;"></div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      treeData: [
-        {
-          title: "陕西师范大学",
-          key: "1",
-          children: [
-            {
-              title: "计算机科学学院",
-              key: "1-1",
-              children: [
-                { title: "人工智能", key: "1-1-1", isLeaf: true },
-                { title: "软件工程", key: "1-1-2", isLeaf: true },
-              ],
-            },
-            { title: "材料科学与工程学院", key: "1-2", isLeaf: true },
-          ],
-        },
-      ],
-    };
-  },
   methods: {
-    onLoadData(treeNode) {
-      return new Promise((resolve) => {
-        if (treeNode.dataRef.children) {
-          resolve();
-          return;
-        }
-        // to request data
+    myEcharts() {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = this.$echarts.init(
+        document.getElementById("courseDashboard")
+      );
 
-        // setTimeout(() => {
-        //   treeNode.dataRef.children = [
-        //     { title: "Child Node", key: `${treeNode.eventKey}-0` },
-        //     { title: "Child Node", key: `${treeNode.eventKey}-1` },
-        //   ];
-        //   this.treeData = [...this.treeData];
-        //   resolve();
-        // }, 1000);
-      });
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+          text: "ECharts 入门示例",
+        },
+        tooltip: {},
+        legend: {
+          data: ["销量"],
+        },
+        xAxis: {
+          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "销量",
+            type: "bar",
+            data: [5, 20, 36, 10, 10, 20],
+          },
+        ],
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
     },
-    onSelect([selectedKey]) {
-      console.log(selectedKey);
-    },
+  },
+  mounted() {
+    this.myEcharts();
   },
 };
 </script>
-
-<style>
-</style>
