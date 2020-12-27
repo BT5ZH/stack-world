@@ -1,7 +1,7 @@
 <template>
   <a-row class="container">
     <a-row :span="20" style="margin: 10px 25px 20px 5px;">
-      <!-- <a-tree-select
+      <a-tree-select
         style="width: 100%"
         :value="value"
         :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -13,41 +13,72 @@
         @select="onSelect"
       >
         <a-tree-select-node
-          :key="campus.campus_name"
-          :value="campus.campus_name"
-          :title="campus.campus_name"
-          v-for="campus in campusList"
+          :key="item._id"
+          :value="item._id"
+          :title="item._id"
+          v-for="item in treeData"
         >
           <a-tree-select-node
-            :key="buildings.name"
-            :value="`${buildings._id}:${buildings.name}`"
-            :title="buildings.name"
-            v-for="buildings in campus.buildings"
+            :key="mName"
+            :value="`${mName}:${item.subOrg_name}`"
+            :title="mName"
+            v-for="mName in item.majors"
           >
           </a-tree-select-node>
         </a-tree-select-node>
-      </a-tree-select> -->
+      </a-tree-select>
     </a-row>
-    <a-col :span="20">
+    <a-row :span="20">
       <course-table class="class-table" :courses="courseList"></course-table>
-    </a-col>
+    </a-row>
+    <a-row :span="20">
+      <course-dashboard
+        class="class-dashboard"
+        :courses="courseList"
+      ></course-dashboard>
+    </a-row>
   </a-row>
 </template>
 
 <script>
-import CourseTable from "./CourseTable";
+import courseTable from "./CourseTable";
+import courseDashboard from "./CourseTree";
 import axiosInstance from "@/utils/axios";
+import { mapState } from "vuex";
+
 export default {
-  components: { CourseTable },
+  components: { courseTable, courseDashboard },
   data() {
     return {
+      value: undefined,
       courseList: [],
+      treeData: [],
     };
   },
+  computed: {
+    ...mapState({
+      uid: (state) => state.public.uid,
+      oid: (state) => state.public.oid,
+      orgName: (state) => state.public.org_name,
+    }),
+  },
   mounted() {
+    this.getTreeData();
     this.getCourses();
   },
   methods: {
+    async getTreeData() {
+      let queryString = this.orgName;
+      const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
+      console.log(url);
+      try {
+        const { data } = await axiosInstance.get(url);
+        console.log(data.data);
+        this.treeData = data.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async getCourses() {
       let queryString = "";
       const url = "/pc/v1/courses" + queryString;
@@ -58,6 +89,18 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    async onChange(data) {
+      console.log("onchange:   " + data);
+
+      // this.value = data;
+    },
+    onSearch() {
+      console.log(...arguments);
+    },
+    onSelect() {
+      console.log("selected:   ");
+      console.log(...arguments);
     },
   },
 };

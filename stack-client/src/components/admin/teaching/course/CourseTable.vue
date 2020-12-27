@@ -1,5 +1,6 @@
 <template>
   <div>
+    <batchAddCourse :visible.sync="bulkImport_visible"></batchAddCourse>
     <a-row class="btn-area">
       <a-col :span="5">
         <a-input-search
@@ -10,7 +11,9 @@
       </a-col>
       <a-col :span="13"></a-col>
       <a-col :span="6" class="btn">
-        <a-button type="primary">批量添加课程</a-button>
+        <a-button type="primary" @click="bulkImport_visible = true"
+          >批量添加课程</a-button
+        >
         <a-button type="primary">添加课程</a-button>
         <a-button type="primary">批量删除</a-button>
       </a-col>
@@ -39,7 +42,9 @@
 </template>
 
 <script>
+import batchAddCourse from "./BatchAddCourse.vue";
 export default {
+  components: { batchAddCourse },
   props: { courses: { type: Array } },
   data() {
     return {
@@ -66,12 +71,48 @@ export default {
           align: "center",
         },
         {
+          title: "学分",
+          dataIndex: "credit",
+          align: "center",
+        },
+        {
+          title: "开课学期",
+          dataIndex: "semester",
+          align: "center",
+        },
+        {
+          title: "周学时",
+          dataIndex: "weekly_hrs",
+          align: "center",
+        },
+        {
+          title: "实践/实验(学时)",
+          dataIndex: "experiment_or_traning_hrs",
+          align: "center",
+        },
+        {
+          title: "考试方式",
+          dataIndex: "evaluation",
+          align: "center",
+        },
+        {
+          title: "课程类型",
+          dataIndex: "course_type",
+          align: "center",
+        },
+        {
+          title: "开课年级",
+          dataIndex: "grade",
+          align: "center",
+        },
+        {
           title: "编辑",
           align: "center",
           scopedSlots: { customRender: "operation" },
         },
       ],
       selectedCourses: [],
+      bulkImport_visible: false,
     };
   },
   watch: {

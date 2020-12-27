@@ -25,10 +25,9 @@ exports.getAllCourses = catchAsync(async (req, res) => {
   // SEND RESPONSE
   res.status(200).json({
     status: "success",
-    resulrs: courses.length,
-    data: {
-      courses,
-    },
+    results: courses.length,
+
+    courses,
   });
 });
 
@@ -36,40 +35,48 @@ exports.getAllCourses = catchAsync(async (req, res) => {
  * 创建一门课程，首先根据课程号+学校名称判断数据库中是否已存在
  */
 exports.createCourse = catchAsync(async (req, res) => {
-  try {
-    var course = await Course.findOne({course_id:req.body.course_id,org_name:req.body.org_name });
-    if (course) {
-      res.status(200).json({
-        status: false,
-        message: "course already exists"
-      });
-    } else {
-      await Course.create(req.body);
-      res.status(200).json({
-        status: true,
-        message: "success"
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ status: false, message: err });
+  const newCourse = await Course.create(req.body);
+  res.status(200).json({
+    status: true,
+    message: "success",
+    newCourse,
+  });
+});
+
+exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
+  const data = await Course.aggregate([
+    { $match: { org_name: req.query.org_name } },
+    {
+      $group: {
+        _id: "$subOrg_name",
+        majors: { $addToSet: "$major_name" },
+      },
+    },
+  ]);
+  if (data === [] || data === null) {
+    return next(new AppError("课程不存在", 500));
   }
+
+  res.status(200).json({
+    status: "success",
+    data,
+  });
 });
 
 /**
  * 批量添加课程
  */
-exports.batchAddCourses = catchAsync(async (req, res) => {
-  try {
-    var courses = req.body.courses;
-    await Course.insertMany(courses, { ordered: false });
-    res.status(200).json({
-      status: true
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ status: false, message: err });
+exports.batchAddCourses = catchAsync(async (req, res, next) => {
+  const courses = req.body;
+  console.log(courses);
+  if (!courses || courses.length == 0) {
+    return next(new AppError("用户列表为空或无数据", 404));
   }
+  const result = await Course.insertMany(courses);
+  res.status(201).json({
+    status: "success",
+    courses,
+  });
 });
 // 传id删除
 exports.deleteOneCourse = catchAsync(async (req, res) => {
@@ -78,12 +85,12 @@ exports.deleteOneCourse = catchAsync(async (req, res) => {
     if ((del.deletedCount = 1)) {
       res.status(200).json({
         status: true,
-        message: "success"
+        message: "success",
       });
     } else {
       res.status(500).json({
         status: false,
-        message: "false"
+        message: "false",
       });
     }
   } catch (err) {
@@ -102,7 +109,7 @@ exports.batchDeleteCourses = catchAsync(async (req, res) => {
     await Course.deleteMany({ _id: { $in: ids } });
     res.status(200).json({
       status: true,
-      message: "success"
+      message: "success",
     });
   } catch (err) {
     console.log(err);
@@ -115,12 +122,12 @@ exports.updateCourse = catchAsync(async (req, res) => {
   try {
     await Course.findByIdAndUpdate(req.params._id, req.body);
     res.status(200).json({
-      status:true,
-      message: "success"
+      status: true,
+      message: "success",
     });
   } catch (err) {
     res.status(500).json({
-      err
+      err,
     });
   }
 });
@@ -132,17 +139,17 @@ exports.getCourse = catchAsync(async (req, res) => {
     if (course) {
       res.status(200).json({
         status: true,
-        course
+        course,
       });
     } else {
       res.status(200).json({
         status: false,
-        message: "not found"
+        message: "not found",
       });
     }
   } catch (err) {
     res.status(500).json({
-      err
+      err,
     });
   }
 });
@@ -156,8 +163,8 @@ exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      data
-    }
+      data,
+    },
   });
 });
 //edit by Chaos on 12-15
@@ -170,7 +177,7 @@ exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      data
-    }
+      data,
+    },
   });
 });
