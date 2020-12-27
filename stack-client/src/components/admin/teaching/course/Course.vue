@@ -14,13 +14,13 @@
       >
         <a-tree-select-node
           :key="item._id"
-          :value="item._id"
+          :value="`${item._id}#`"
           :title="item._id"
           v-for="item in treeData"
         >
           <a-tree-select-node
             :key="mName"
-            :value="`${mName}:${item.subOrg_name}`"
+            :value="`${mName}:${item._id}`"
             :title="mName"
             v-for="mName in item.majors"
           >
@@ -29,13 +29,20 @@
       </a-tree-select>
     </a-row>
     <a-row :span="20">
-      <course-table class="class-table" :courses="courseList"></course-table>
-    </a-row>
-    <a-row :span="20">
-      <course-dashboard
-        class="class-dashboard"
-        :courses="courseList"
-      ></course-dashboard>
+      <a-tabs :active-key="activeIndex" @change="callback">
+        <a-tab-pane key="1" tab="Tab 1" force-render>
+          <course-dashboard
+            class="class-dashboard"
+            :courses="courseList"
+          ></course-dashboard>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="Tab 2">
+          <course-table
+            class="class-table"
+            :courses="courseList"
+          ></course-table>
+        </a-tab-pane>
+      </a-tabs>
     </a-row>
   </a-row>
 </template>
@@ -53,6 +60,9 @@ export default {
       value: undefined,
       courseList: [],
       treeData: [],
+      collogeName: "",
+      activeIndex: "1",
+      flag: "",
     };
   },
   computed: {
@@ -64,7 +74,7 @@ export default {
   },
   mounted() {
     this.getTreeData();
-    this.getCourses();
+    // this.getCourses();
   },
   methods: {
     async getTreeData() {
@@ -90,10 +100,30 @@ export default {
         console.log(err);
       }
     },
-    async onChange(data) {
-      console.log("onchange:   " + data);
 
-      // this.value = data;
+    async getCoursesFromCondition(payload) {
+      let queryString = "";
+      Object.keys(payload).forEach((key) => {
+        queryString += key + "=" + payload[key] + "&";
+      });
+      queryString = "?" + queryString.slice(0, -1);
+      const url = "/pc/v1/courses" + queryString;
+      try {
+        const { data } = await axiosInstance.get(url);
+        this.courseList = data.courses;
+        console.log(this.courseList);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    onChange(data) {
+      console.log("onchange:   " + data);
+      this.activeIndex = "2";
+      this.collogeName = data;
+      this.flag = data;
+      this.callback("2");
+
+      this.value = data;
     },
     onSearch() {
       console.log(...arguments);
@@ -101,6 +131,24 @@ export default {
     onSelect() {
       console.log("selected:   ");
       console.log(...arguments);
+    },
+    callback(key) {
+      console.log(key);
+      if (key == "1") {
+        this.activeIndex = "1";
+      } else if (key == "2") {
+        let payload = {};
+        this.activeIndex = "2";
+        if (this.flag.slice(-1) == "#") {
+          let temp = this.flag.slice(0, -1);
+          payload = { subOrg_name: temp };
+          this.getCoursesFromCondition(payload);
+        } else {
+          let dataArray = this.flag.split(":");
+          payload = { subOrg_name: dataArray[1], major_name: dataArray[0] };
+          this.getCoursesFromCondition(payload);
+        }
+      }
     },
   },
 };
