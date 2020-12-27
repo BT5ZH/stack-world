@@ -13,10 +13,14 @@ router
   .route("/batchOptCourses")
   .delete(authController.protect,courseController.batchDeleteCourses)
   .post(authController.protect,courseController.batchAddCourses);
+
+router
+  .route("/getSubOrgMajor")
+  .get(authController.protect,courseController.putSubOrgAndMajorIntoTree)
+
 router
   .route("/:_id")
   .get(authController.protect,courseController.getCourse)
   .delete(authController.protect,courseController.deleteOneCourse)
-  .post(authController.protect,courseController.updateCourse);
-
+  .post(authController.protect,courseController.updateCourse);  
 module.exports = router;
