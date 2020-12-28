@@ -10,20 +10,6 @@ router
 
 router
   .route("/batchOptCourses")
-<<<<<<< HEAD
-  .delete(authController.protect,courseController.batchDeleteCourses)
-  .post(authController.protect,courseController.batchAddCourses);
-
-router
-  .route("/getSubOrgMajor")
-  .get(authController.protect,courseController.putSubOrgAndMajorIntoTree)
-
-router
-  .route("/:_id")
-  .get(authController.protect,courseController.getCourse)
-  .delete(authController.protect,courseController.deleteOneCourse)
-  .post(authController.protect,courseController.updateCourse);  
-=======
   .delete(authController.protect, courseController.batchDeleteCourses)
   .post(authController.protect, courseController.batchAddCourses);
 
@@ -37,5 +23,4 @@ router
   .delete(authController.protect, courseController.deleteOneCourse)
   .post(authController.protect, courseController.updateCourse);
 
->>>>>>> 6ea9dcd0a388f83e75fc2c690fdee3303666fc2b
 module.exports = router;

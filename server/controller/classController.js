@@ -18,7 +18,7 @@ exports.getAllClasses = catchAsync(async (req, res, next) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = Class.find(JSON.parse(queryString)).select("className subOrgs");
+  const query = Class.find(JSON.parse(queryString));
   //   console.log(query);
   // EXECUTE QUERY
   const classes = await query;
