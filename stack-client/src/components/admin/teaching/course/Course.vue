@@ -30,14 +30,16 @@
     </a-row>
     <a-row :span="20">
       <a-tabs :active-key="activeIndex" @change="callback">
-        <a-tab-pane key="1" tab="Tab 1" force-render>
+        <a-tab-pane key="1" tab="统计信息" force-render>
           <course-dashboard
             class="class-dashboard"
-            :TreeData="treeData"
-            
+            :courseProp="courseNumber"
+            :majorProp="majorNumber"
+            :collegeProp="collegeNumber"
+            :pieProp="pieArr"
           ></course-dashboard>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="Tab 2">
+        <a-tab-pane key="2" tab="详情">
           <course-table
             class="class-table"
             :courses="courseList"
@@ -64,7 +66,10 @@ export default {
       collogeName: "",
       activeIndex: "1",
       flag: "",
-
+      collegeNumber: 0,
+      majorNumber: 0,
+      courseNumber: 0,
+      pieArr: [],
     };
   },
   computed: {
@@ -87,23 +92,39 @@ export default {
         const { data } = await axiosInstance.get(url);
         console.log(data.data);
         this.treeData = data.data;
-        this.cNum=data.data.length;
+        this.collegeNumber = this.treeData.length;
+        let mNumber = 0;
+        let cNumber = 0;
+        let tempArr = [];
+        this.treeData.forEach((item, index) => {
+          let pieObj = {};
+          pieObj.name = item._id;
+
+          item.majors.forEach(() => {
+            mNumber++;
+          });
+          pieObj.value = mNumber;
+          tempArr.push(pieObj);
+          cNumber += item.course_number;
+        });
+        this.pieArr = tempArr;
+        this.majorNumber = mNumber;
+        this.courseNumber = cNumber;
       } catch (err) {
         console.log(err);
       }
     },
-    async getCourses() {
-      let queryString = "";
-      const url = "/pc/v1/courses" + queryString;
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.courseList = data.courses;
-        console.log(this.courseList);
-        console.log(data);
-      } catch (err) {
-        console.log(err);
-      }
-    },
+    // async getCourses() {
+    //   let queryString = "";
+    //   const url = "/pc/v1/courses" + queryString;
+    //   try {
+    //     const { data } = await axiosInstance.get(url);
+    //     this.courseList = data.courses;
+    //     console.log(data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // },
 
     async getCoursesFromCondition(payload) {
       let queryString = "";
@@ -154,7 +175,6 @@ export default {
         }
       }
     },
-
   },
 };
 </script>
