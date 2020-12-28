@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h2 style="text-align: center">教师上课主页</h2>
+    <h2 style="text-align: center; font-weight: bold">教师上课主页</h2>
 
     <a-row type="flex" justify="start">
       <a-col :span="6">
-        <h2 style="text-align: center; margin-right: 1.5rem">
+        <h2 style="text-align: center; margin-right: 1.5rem; font-weight: bold">
           <a href="#">正在进行 &gt;</a>
         </h2>
       </a-col>
@@ -21,11 +21,11 @@
             <a-col :span="18" :push="2">
               <div class="card-container">
                 <a-row>
-                  <span class="action-type">{{ eventNames[curEvent] }}</span>
+                  <span class="action-type">{{ events[curEvent].name }}</span>
                 </a-row>
                 <a-row :gutter="20" class="card-body">
                   <a-col :span="18">
-                    <h2>{{ eventTitles[curEvent] }}</h2>
+                    <h2>{{ events[curEvent].title }}</h2>
                   </a-col>
                   <a-col :span="2">
                     <a-button
@@ -63,7 +63,7 @@
 
     <a-row type="flex" justify="start">
       <a-col :span="6">
-        <h2 style="text-align: center; margin-right: 1.5rem">
+        <h2 style="text-align: center; margin-right: 1.5rem; font-weight: bold">
           <a href="#">全部活动 &gt;</a>
         </h2>
       </a-col>
@@ -145,8 +145,18 @@ export default {
         { title: "提问", description: "5分钟" },
       ],
       curEvent: 0,
-      eventNames: ["签到", "投票"],
-      eventTitles: ["请大家开始签到", "请大家开始投票"],
+      events: [
+        {
+          name: "签到",
+          title: "请大家开始签到",
+          type: "sign",
+        },
+        {
+          name: "随堂测试",
+          title: "中国传统佳节“中秋节”是那一天？",
+          type: "test",
+        },
+      ],
     };
   },
   methods: {
@@ -161,6 +171,16 @@ export default {
       this.$refs.eventPanel.next();
     },
     navigateToEvent(eventIndex) {
+      const event = this.events[eventIndex];
+      this[`send${event.type}Event`]();
+      this.$router.push({
+        name: `interaction_${event.type}`,
+        query: {
+          lessonId: this.lessonId,
+        },
+      });
+    },
+    sendsignEvent() {
       socket.sendEvent("joinRoom", {
         actionType: "sign",
         role: "teacher",
@@ -171,6 +191,34 @@ export default {
         query: {
           lessonId: this.lessonId,
         },
+      });
+    },
+    sendtestEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "test",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: [
+          {
+            id: "YH83CP",
+            stem: "中国传统佳节“中秋节”是那一天？",
+            type: "subject",
+            multiple: false,
+            options: [
+              "农历八月十五",
+              "一月一日",
+              "农历三月初七",
+              "和龙舟节是一天",
+            ],
+          },
+          {
+            id: "1U7GVC0",
+            stem: "操作系统的目标有哪些？",
+            type: "subject",
+            multiple: true,
+            options: ["有效性", "开放性", "可扩充性", "方便性"],
+          },
+        ],
       });
     },
   },

@@ -24,6 +24,6 @@ router
   .route("/:_id")
   .get(authController.protect, courseController.getCourse)
   .delete(authController.protect, courseController.deleteOneCourse)
-  .post(authController.protect, courseController.updateCourse);
+  .patch(authController.protect, courseController.updateCourse);
 
 module.exports = router;

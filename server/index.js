@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
           io.to(roomChannel).emit(res);
           break;
         case "test":
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":
           socket.to(roomChannel).emit(roomChannel, data);
@@ -109,10 +109,13 @@ io.on("connection", (socket) => {
       switch (data.actionType) {
         case "enter":
           socket.join(roomChannel);
-          io.to(roomChannel).emit(roomChannel, data);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":
           io.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "test":
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "answer":
           io.to(roomChannel).emit(roomChannel, data);

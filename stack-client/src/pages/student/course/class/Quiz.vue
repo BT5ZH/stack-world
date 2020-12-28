@@ -1,67 +1,50 @@
 <template>
-    <div style="padding: 2rem;">
-        <a-empty v-if='QuesData.length==0' />
-        <!-- <a-switch :checked="!loading" @change="onChange" /> -->
-        <a-list v-else item-layout="vertical" size="large">
-            <a-list-item v-for='(item,index) in QuesData' :key='index'>
-                <!-- <a-skeleton :loading="loading" active> -->
-                    <single-ques v-if='item.answer.length==1' :item='item'></single-ques>
-                    <multi-ques v-else :item='item'></multi-ques>
-                <!-- </a-skeleton> -->
-            </a-list-item>
-        </a-list>
-    </div>
+  <div style="padding: 2rem">
+    <a-empty v-if="testData.length" />
+    <a-list v-else item-layout="vertical" size="large">
+      <a-list-item v-for="(item, index) in testData.questions" :key="index">
+        <single-ques
+          @submit="submitAnswer"
+          v-if="item.multiple"
+          :item="item"
+        ></single-ques>
+        <multi-ques @submit="submitAnswer" v-else :item="item"></multi-ques>
+      </a-list-item>
+    </a-list>
+  </div>
 </template>
-<script>
-    import singleQues from '../../../../components/SingleQues.vue'
-    import multiQues from '../../../../components/MultiQues.vue'
 
-    const QuesData = [];
-    for (let i = 0; i < 3; i++) {
-        QuesData.push({
-            answer:['A','C'],
-            content:
-                'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-            options: [
-                {
-                    value: 'A',
-                    text: 'aaa'
-                },
-                {
-                    value: 'B',
-                    text: 'bbb'
-                },
-                {
-                    value: 'C',
-                    text: 'ccc'
-                },
-                {
-                    value: 'D',
-                    text: 'ddd'
-                },
-            ]
-        });
-    }
-    export default {
-        components: {
-            singleQues,
-            multiQues,
-        },
-        data() {
-            return {
-                loading: true,
-                QuesData,
-            };
-        },
-        methods: {
-            onChange(checked) {
-                this.loading = !checked;
-            },
-        },
-    };
+<script>
+import singleQues from "../../../../components/SingleQues.vue";
+import multiQues from "../../../../components/MultiQues.vue";
+import { mapState } from "vuex";
+import * as socket from "@/utils/socket";
+
+export default {
+  components: {
+    singleQues,
+    multiQues,
+  },
+  computed: {
+    ...mapState({
+      testData: (state) => state.student.interaction.test,
+    }),
+    lessonId() {
+      return this.$route.query.lessonId;
+    },
+  },
+  methods: {
+    submitAnswer(data) {
+      socket.sendEvent("joinRoom", {
+        actionType: "test",
+        role: "student",
+        roomId: this.lessonId,
+        data: data
+      });
+    },
+  },
+  mounted() {
+    socket.createInstance("student", this, this.lessonId);
+  },
+};
 </script>
-<style>
-    .skeleton-demo {
-        border: 1px solid #f4f4f4;
-    }
-</style>
