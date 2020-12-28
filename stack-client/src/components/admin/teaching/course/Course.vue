@@ -33,11 +33,8 @@
         <a-tab-pane key="1" tab="Tab 1" force-render>
           <course-dashboard
             class="class-dashboard"
-            :courses="courseList"
-            :activeIndex="activeIndex"
-            :cNum="cNum"
             :TreeData="treeData"
-            @countMajorNum="countMajorNum"
+            
           ></course-dashboard>
         </a-tab-pane>
         <a-tab-pane key="2" tab="Tab 2">
@@ -67,7 +64,6 @@ export default {
       collogeName: "",
       activeIndex: "1",
       flag: "",
-      cNum:1
 
     };
   },
@@ -158,11 +154,7 @@ export default {
         }
       }
     },
-    countMajorNum(){
-      for(let item in this.TreeData){
-        console.log(item);
-      }
-    },
+
   },
 };
 </script>
