@@ -34,6 +34,10 @@
           <course-dashboard
             class="class-dashboard"
             :courses="courseList"
+            :activeIndex="activeIndex"
+            :cNum="cNum"
+            :TreeData="treeData"
+            @countMajorNum="countMajorNum"
           ></course-dashboard>
         </a-tab-pane>
         <a-tab-pane key="2" tab="Tab 2">
@@ -63,6 +67,8 @@ export default {
       collogeName: "",
       activeIndex: "1",
       flag: "",
+      cNum:1
+
     };
   },
   computed: {
@@ -85,6 +91,7 @@ export default {
         const { data } = await axiosInstance.get(url);
         console.log(data.data);
         this.treeData = data.data;
+        this.cNum=data.data.length;
       } catch (err) {
         console.log(err);
       }
@@ -95,6 +102,7 @@ export default {
       try {
         const { data } = await axiosInstance.get(url);
         this.courseList = data.courses;
+        console.log(this.courseList);
         console.log(data);
       } catch (err) {
         console.log(err);
@@ -148,6 +156,11 @@ export default {
           payload = { subOrg_name: dataArray[1], major_name: dataArray[0] };
           this.getCoursesFromCondition(payload);
         }
+      }
+    },
+    countMajorNum(){
+      for(let item in this.TreeData){
+        console.log(item);
       }
     },
   },
