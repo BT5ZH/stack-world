@@ -139,11 +139,21 @@ exports.updateCourse = catchAsync(async (req, res) => {
       status: true,
       message: "success",
     });
+
   } catch (err) {
     res.status(500).json({
       err,
     });
   }
+  // const data = await Course.find()
+  // for(let i = 0;i<data.length;i++)
+  // {
+  //   let ss=[]
+  //   ss.push(data[i].semester)
+  //   console.log(data[i])
+  //   console.log("-------ss="+ss)
+  //   await Course.updateOne({_id:data[i]._id},{$set:{semesters:ss}})
+  // }
 });
 
 //通过id获取数据
