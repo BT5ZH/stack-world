@@ -31,11 +31,17 @@ const roomSchema = new mongoose.Schema(
       type: String,
       ref: "User",
     },
+    org_name: {  
+      type: String,
+      required: [true, "A room must belong to one university or school"],
+    },
     building_name: {
       type: mongoose.Schema.Types.String,
+      required: [true, "A room must belong to one building"],
     },
     campus_name: {
       type: mongoose.Schema.Types.String,
+      required: [true, "A room must belong to one campus"],
     },
     // 以下两个数据 插入数据时忽略
     ////////////////////////////////////////////////////

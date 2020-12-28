@@ -17,12 +17,19 @@ const buildingSchema = new mongoose.Schema(
       type: String,
       //required: [true, "building must have a type"],
     },
-    // org_name: {
-    //     type: String,
-    //   },
-    campus: {
+    rooms: [
+      {
+        type: mongoose.Schema.Types.String,
+        ref: 'Room',
+      },
+    ],
+    campus_name: {
       type: mongoose.Schema.Types.String,
-      ref: "Campus",
+      required: [true, "A building must belong to one campus"],
+    },
+    org_name: {  
+      type: String,
+      required: [true, "A building must belong to one university or school"],
     },
   },
   {

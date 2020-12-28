@@ -10,7 +10,7 @@ const campusSchema = new mongoose.Schema(
     },
     campus_name: {
       type: String,
-      default: "校区",
+      default: "主校区",
       required: [true, "campus must have a name"],
     },
     //organization: { type: String, required: true }, // 键 组织

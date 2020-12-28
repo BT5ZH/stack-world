@@ -1,4 +1,6 @@
 const Room = require("../models/roomModel");
+const Campus = require("../models/campusModel");
+const Building = require("../models/buildingModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
@@ -39,12 +41,11 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
 });
 
 exports.createRoom = catchAsync(async (req, res, next) => {
-  console.log(req.body);
-  const oldRoom = await Room.findOne({
-    room_number: req.body.room_number,
-    building: req.body.building,
-  });
-  if (!oldRoom) {
+  // const oldRoom = await Room.findOne({
+  //   room_number: req.body.room_number,
+  //   building: req.body.building,
+  // });
+  // if (!oldRoom) {
     const newRoom = await Room.create(req.body);
     if (!newRoom) {
       return next(new AppError("空间创建失败", 500));
@@ -53,9 +54,9 @@ exports.createRoom = catchAsync(async (req, res, next) => {
       status: "success",
       data: newRoom,
     });
-  } else {
-    return next(new AppError("本空间已经存在", 500));
-  }
+  // } else {
+  //   return next(new AppError("本空间已经存在", 500));
+  // }
 });
 
 exports.getRoom = catchAsync(async (req, res, next) => {
@@ -74,8 +75,8 @@ exports.getRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.getRoomByBuilding = catchAsync(async (req, res, next) => {
-  const rooms = await Room.find({builing:req.body.bulding_id});
-
+  const rooms = await Building.findOne({_id:req.query.building_id}).populate('rooms');
+  
   if (rooms===[] || rooms=== null ) {
     return next(new AppError("该楼无教室", 404));
   }
@@ -85,7 +86,54 @@ exports.getRoomByBuilding = catchAsync(async (req, res, next) => {
       rooms,
   });
 });
+exports.getRoomByCampusAndBuilding = catchAsync(async (req, res, next) => {
+  const rooms = await Campus.findOne({_id:req.query.campus_id})
+  .populate({
+    path: 'buildings',
+    select: ['_id', 'rooms'],
+    // model: 'College',
+    populate: {
+    path: 'rooms',
+    select: ['_id', 'room_number','room_name','room_type','room_charge_person','room_duty_person']
+    // model: 'Student'
+    }
+  })
+  if (rooms===[] || rooms=== null ) {
+    return next(new AppError("该楼无教室", 404));
+  }
 
+  res.status(200).json({
+    status: "success",
+      rooms,
+  });
+});
+exports.getRoomByCampusOrBuilding = catchAsync(async (req, res, next) => {
+  var rooms
+  if(req.query.building_id!=null)
+      rooms = await Building.findOne({_id:req.query.building_id}).populate('rooms');
+  else{
+    rooms = await Campus.findOne({_id:req.query.campus_id})
+    .populate({
+      path: 'buildings',
+      select: ['_id', 'rooms'],
+      // model: 'College',
+      populate: {
+      path: 'rooms',
+      select: ['_id', 'room_number','room_name','room_type','room_charge_person','room_duty_person']
+      // model: 'Student'
+      }
+    })
+  }
+  
+  if (rooms===[] || rooms=== null ) {
+    return next(new AppError("该楼无教室", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+      rooms,
+  });
+});
 exports.updateRoom = catchAsync(async (req, res, next) => {
   const room = await Room.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

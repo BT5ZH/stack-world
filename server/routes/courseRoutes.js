@@ -16,7 +16,10 @@ router
 router
   .route("/courseTree")
   .get(authController.protect, courseController.putSubOrgAndMajorIntoTree);
-
+router
+  .route("/getCourseTeacherClassByOrg")
+  .post(authController.protect, courseController.getCourseTeacherClassByOrg);
+  
 router
   .route("/:_id")
   .get(authController.protect, courseController.getCourse)

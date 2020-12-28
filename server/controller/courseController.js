@@ -1,4 +1,6 @@
 const Course = require("../models/courseModel");
+const Class = require("../models/classModel");
+const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -50,9 +52,20 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
       $group: {
         _id: "$subOrg_name",
         majors: { $addToSet: "$major_name" },
+        course_number: { $sum: 1 },
       },
     },
   ]);
+  const totalCourse = await Course.aggregate([
+    { $match: { org_name: req.query.org_name } },
+    {
+      $group: {
+        _id: null,
+        course_number: { $sum: 1 },
+      },
+    },
+  ]);
+  const totalCourseNumber = totalCourse[0].course_number;
   if (data === [] || data === null) {
     return next(new AppError("课程不存在", 500));
   }
@@ -60,6 +73,7 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data,
+    totalCourseNumber,
   });
 });
 
@@ -171,7 +185,7 @@ exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
 exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
   const data = await Course.find({ major_name: req.body.major_name });
   if (!data) {
-    return next(new AppError("课程不存在", 200));
+    return next(new AppError("课程不存在", 500));
   }
 
   res.status(200).json({
@@ -179,5 +193,27 @@ exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
     data: {
       data,
     },
+  });
+});
+exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
+  const courses = await Course.find({
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+    major_name: req.body.major_name,
+  }).select("course_id name ");
+  const teachers = await User.find({
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+    role: "teacher",
+  }).select("user_id name");
+  const classes = await Class.find({
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+  }).select("class_name");;
+  res.status(200).json({
+    status: "success",
+    courses,
+    teachers,
+    classes,
   });
 });
