@@ -31,6 +31,21 @@ let lesson_listeners = {
       params: { start: true, endTime: Date.now() + 60000 },
     });
   },
+  test(data, that) {
+    that.$store.commit("student/updateInteraction", {
+      name: "test",
+      params: {
+        questions: data.map((item) => {
+          item.content = item.stem;
+          item.options = item.options.map((option, index) => ({
+            value: String.fromCharCode(65 + index),
+            text: option,
+          }));
+          return item;
+        }),
+      },
+    });
+  },
   enter(data, that) {
     console.log("someone join class", data);
   },
