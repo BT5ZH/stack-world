@@ -12,18 +12,31 @@ const roomSchema = new mongoose.Schema(
       type: Number,
       required: [true, "room must have a number"],
     },
+    room_name: {
+      type: String,
+      default: "room name",
+    },
     room_type: {
       type: String,
       required: [true, "room bust have a type"],
       enum: {
-        values: ["classroom", "lab", "office", "others"],
+        values: ["教室", "实验室", "办公室", "会议室", "报告厅", "其他"],
       },
     },
-    building: {
-      type: mongoose.Schema.Types.String,
-      ref: "Building",
+    room_charge_person: {
+      type: String,
+      ref: "User",
     },
-
+    room_duty_person: {
+      type: String,
+      ref: "User",
+    },
+    building_name: {
+      type: mongoose.Schema.Types.String,
+    },
+    campus_name: {
+      type: mongoose.Schema.Types.String,
+    },
     // 以下两个数据 插入数据时忽略
     ////////////////////////////////////////////////////
     section: {
@@ -36,7 +49,7 @@ const roomSchema = new mongoose.Schema(
   },
   { _id: false }
 );
-
+/*
 roomSchema.post('findOne', function(result) {
   if(result!=null){
     if(result.room_type==='classroom')   result.room_type = "教室"
@@ -55,7 +68,7 @@ roomSchema.post('find', function(result) {
     }
   }
 });
-
+*/
 const Room = mongoose.model("Room", roomSchema);
 
 module.exports = Room;

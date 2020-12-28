@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 
 const buildingSchema = new mongoose.Schema(
-  { 
+  {
     _id: {
       type: String,
       required: [true, "you must tell us your building id"],
       default: uuid.v1,
     },
-    name: {
+    building_name: {
       type: String,
       default: "楼名",
       required: [true, "building must have a name"],
