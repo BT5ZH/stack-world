@@ -17,6 +17,10 @@ var courseSchema = mongoose.Schema(
       type: String,
       required: [true, "you must tell us your course_name"],
     },
+    orgnization:{
+      type: String,
+      ref: 'Orgnization',
+    },
     org_name: {
       type: String,
       //ref: 'Org',
@@ -35,10 +39,13 @@ var courseSchema = mongoose.Schema(
     },
     semester: {
       type: Number,
+    },
+    semesters: [{
+      type: Number,
       required: [true, "course credit is required"],
       min: 1,
       max: 8,
-    },
+    }],
     weekly_hrs: {
       type: Number,
       required: [true, "course weekly_hrs is required"],
@@ -62,8 +69,31 @@ var courseSchema = mongoose.Schema(
       default: 0,
     },
   },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+   },
   { _id: false }
 );
+courseSchema.virtual('org_name1', {
+  ref: 'Orgnization',
+  localField: 'orgnization',
+  foreignField: 'organizationName',
+  justOne: false,
+});
+courseSchema.virtual('subOrg_name1', {
+  ref: 'Orgnization',
+  localField: 'orgnization',
+  foreignField: 'organizationName',
+  justOne: false,
+});
+courseSchema.virtual('major_name1', {
+  ref: 'Orgnization',
+  localField: 'orgnization',
+  foreignField: 'organizationName',
+  justOne: false,
+});
+
 
 var Course = mongoose.model("Course", courseSchema);
 

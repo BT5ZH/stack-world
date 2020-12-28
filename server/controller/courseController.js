@@ -139,11 +139,21 @@ exports.updateCourse = catchAsync(async (req, res) => {
       status: true,
       message: "success",
     });
+
   } catch (err) {
     res.status(500).json({
       err,
     });
   }
+  // const data = await Course.find()
+  // for(let i = 0;i<data.length;i++)
+  // {
+  //   let ss=[]
+  //   ss.push(data[i].semester)
+  //   console.log(data[i])
+  //   console.log("-------ss="+ss)
+  //   await Course.updateOne({_id:data[i]._id},{$set:{semesters:ss}})
+  // }
 });
 
 //通过id获取数据
@@ -200,12 +210,14 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     major_name: req.body.major_name,
-  }).select("course_id name ");
+  }).select("course_id name semesters");
+
   const teachers = await User.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     role: "teacher",
   }).select("user_id name");
+
   const classes = await Class.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,

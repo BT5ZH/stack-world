@@ -13,13 +13,13 @@ const Class = require("../models/classModel");
 exports.getAllTimeTable = catchAsync(async (req, res, next) => {
   const queryObj = { ...req.query };
   const excludedFields = ["page", "sort", "limit", "fields"];
-  excludedFields.forEach(el => delete queryObj[el]);
+  excludedFields.forEach((el) => delete queryObj[el]);
 
   // 2) Advanced filtering
   let queryString = JSON.stringify(queryObj);
   queryString = queryString.replace(
     /\b(gte|gt|lte|le)\b/g,
-    match => `$${match}`
+    (match) => `$${match}`
   );
   // console.log(queryString);
   const query = TimeTable.find(JSON.parse(queryString));
@@ -36,8 +36,8 @@ exports.getAllTimeTable = catchAsync(async (req, res, next) => {
     status: "success",
     results: timeTables.length,
     data: {
-      timeTables
-    }
+      timeTables,
+    },
   });
 });
 
@@ -62,14 +62,14 @@ exports.createTimeTable = catchAsync(async (req, res, next) => {
   }
   res.status(201).json({
     status: "success",
-    data: NewTimeTable
+    data: NewTimeTable,
   });
 });
 
 exports.updateTimeTable = catchAsync(async (req, res, next) => {
   const timeTable = await TimeTable.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
   if (!timeTable) {
     return next(new AppError("该课表不存在", 404));
@@ -77,8 +77,8 @@ exports.updateTimeTable = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      timeTable
-    }
+      timeTable,
+    },
   });
 });
 
@@ -91,7 +91,7 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
 
   res.status(204).json({
     status: "success",
-    data: null
+    data: null,
   });
 });
 
@@ -108,7 +108,73 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    data
+    data,
+  });
+});
+
+exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
+  // const data = await TimeTable.find({
+  //   curriculum: { $elemMatch: { $eq: req.query.room_id } },
+  // }).populate("course_id", "name -_id");
+
+  const data = await TimeTable.aggregate([
+    { $unwind: "$curriculum" },
+    { $match: { "curriculum.room_id": req.query.room_id } },
+    // {
+    //   $lookup: {
+    //     from: "rooms",
+    //     localField: "curriculum.room_id",
+    //     foreignField: "_id",
+    //     as: "Room",
+    //   },
+    // },
+    {
+      $lookup: {
+        from: "users",
+        localField: "teacher_id",
+        foreignField: "_id",
+        as: "Teacher",
+      },
+    },
+    {
+      $lookup: {
+        from: "courses",
+        localField: "course_id",
+        foreignField: "_id",
+        as: "Course",
+      },
+    },
+    {
+      $project: {
+        "curriculum.date": 1,
+        "curriculum.order": 1,
+        "curriculum.odd_or_even": 1,
+        "Course._id": 1,
+        "Course.name": 1,
+        //"Room.room_number": 1,
+        "Teacher.name": 1,
+        "Teacher.user_id": 1,
+      },
+    },
+  ]);
+
+  if (!data || data[0] == null) {
+    return next(new AppError("该课表不存在", 404));
+  }
+ 
+  let result=data.map((item)=>{
+    return{
+        date:item.curriculum.date,
+        order:item.curriculum.order,
+        odd_or_even:item.curriculum.odd_or_even,
+        teacher_name:item.Teacher[0].name,
+        teacher_number:item.Teacher[0].user_id,
+        course_name:item.Course[0].name
+    }
+  })
+  res.status(200).json({
+    status: "success",
+    result,
   });
 });
 
@@ -122,8 +188,8 @@ exports.getTimeTableFromCourseID = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      data
-    }
+      data,
+    },
   });
 });
 //////edit by Chaos on 12-15
@@ -136,17 +202,17 @@ async function belongedToWhichClass(student_id) {
           from: "classes",
           localField: "_id",
           foreignField: "students",
-          as: "belongedToClass"
-        }
+          as: "belongedToClass",
+        },
       },
       {
-        $match: { _id: student_id }
+        $match: { _id: student_id },
       },
       {
         $project: {
-          "belongedToClass._id": 1
-        }
-      }
+          "belongedToClass._id": 1,
+        },
+      },
     ]);
 
     return classObj;
@@ -163,10 +229,10 @@ async function belongedToWhichLesson(class_id) {
           from: "lessons",
           localField: "_id",
           foreignField: "classes",
-          as: "belongedToLesson"
-        }
+          as: "belongedToLesson",
+        },
       },
-      { $match: { _id: class_id } }
+      { $match: { _id: class_id } },
     ]);
 
     return lessonObj;
@@ -204,12 +270,15 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
 
     for (let i = 0; i < lessonIdList.length; i++) {
       const data = await TimeTable.findOne({
-        lesson_id: lessonIdList[i]
+        lesson_id: lessonIdList[i],
       })
         .populate("course_id", "name")
         .populate("teacher_id", "name")
-        .populate({path:'curriculum.room_id',populate:{path:'building'}})
-        .populate("curriculum.class_id", "class_name -_id")
+        .populate({
+          path: "curriculum.room_id",
+          populate: { path: "building" },
+        })
+        .populate("curriculum.class_id", "class_name -_id");
       if (!data) {
         return next(new AppError("该课不存在", 200));
       }
@@ -218,16 +287,16 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: "success",
       data: {
-        result
-      }
+        result,
+      },
     });
   } else {
     //the student have not in any class,so he isn't any lesson
     res.status(200).json({
       status: "success",
       data: {
-        result
-      }
+        result,
+      },
     });
   }
 });

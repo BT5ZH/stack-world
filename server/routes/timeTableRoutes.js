@@ -17,7 +17,11 @@ router
 router
   .route("/getTimeTableFromCourseID")
   .post(authController.protect, timeTableController.getTimeTableFromCourseID); 
- 
+
+router
+  .route("/getTimeTableFromRoomID")
+  .get(authController.protect, timeTableController.getTimeTableFromRoomID); 
+
 router
   .route("/getTimeTableFromStudentID")
   // .post(authController.protect, timeTableController.getTimeTableFromStudentID); 
