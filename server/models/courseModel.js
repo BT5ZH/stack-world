@@ -68,6 +68,9 @@ var courseSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    total_study_hours:{
+      type: Number,
+      default: 0,}
   },
   {
     toJSON: { virtuals: true },

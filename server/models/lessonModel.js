@@ -27,10 +27,26 @@ var lessonSchema = mongoose.Schema({
     semester:{
         type:Number,//eg.1 means the 1th semester; 2 means 2nd semester.
     },
-    photo: { type: String, default: "default_lesson.jpg" },
-    teaching_program: { type: String,  },
+    abstract:{ type: String,  },
+    cover: { type: String, default: "default_lesson.jpg" },
+    teaching_program: { 
+        type: String,  
+    },
+  },
+  {
+      toJSON: { virtuals: true },
+      toObject: { virtuals: true },
+  },
+  {_id: false,}
+);
    
-},{_id:false})
+lessonSchema.virtual('prepareLesson', {
+    ref: 'PrepareLesson',
+    localField: '_id',
+    //foreignField: 'bookId',
+    foreignField: 'lesson_id',
+    justOne: false,
+});
 
 lessonSchema.index({ course_id: 1, teacher_id: 1 }, { unique: true });
 
