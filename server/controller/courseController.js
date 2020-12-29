@@ -210,7 +210,7 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     major_name: req.body.major_name,
-  }).select("course_id name semesters");
+  }).select("course_id name semester");
 
   const teachers = await User.find({
     org_name: req.body.org_name,
