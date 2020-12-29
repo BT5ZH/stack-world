@@ -20,6 +20,7 @@ const state = {
   interaction: {
     sign: { start: false, endTime: 0 },
     vote: { start: false },
+    test: { questions: [] },
   },
   //student
   //首页目录分区

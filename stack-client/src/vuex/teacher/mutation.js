@@ -25,6 +25,19 @@ const mutation = {
       state.signList.push(params);
     }
   },
+  updateTestResult(state, params) {
+    const { id, answer } = params;
+    if (!state.testAnswerList[id]) {
+      state.testAnswerList[id] = { [answer]: 1 };
+      return null;
+    }
+    let corrAnswer = state.testAnswerList[id][answer];
+    if (typeof corrAnswer === "number") {
+      corrAnswer += 1;
+    } else {
+      corrAnswer = 1;
+    }
+  },
 };
 
 export default mutation;

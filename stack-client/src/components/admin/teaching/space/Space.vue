@@ -15,14 +15,14 @@
         >
           <a-tree-select-node
             :key="campus.campus_name"
-            :value="`${campus.campus_name}#`"
+            :value="`${campus._id}#`"
             :title="campus.campus_name"
             v-for="campus in campusList"
           >
             <a-tree-select-node
-              :key="buildings.name"
-              :value="`${buildings.name}:${campus.campus_name}`"
-              :title="buildings.name"
+              :key="buildings.building_name"
+              :value="`${buildings._id}`"
+              :title="buildings.building_name"
               v-for="buildings in campus.buildings"
             >
             </a-tree-select-node>
@@ -30,11 +30,16 @@
         </a-tree-select>
       </a-row>
       <a-row>
-        <a-col> </a-col>
-
-        <a-col>
+        <a-col :span="5">
+          <a-input></a-input>
+        </a-col>
+        <a-col :span="5">
+          <a-button type="primary">添加校区</a-button>
+        </a-col>
+        <a-col :span="5"> 你好</a-col>
+        <a-col :span="5">
           <a-button type="primary" @click="bulkImport_visible = true"
-            >批量添加教室</a-button
+            >批量添加{{ spaceName }}</a-button
           >
           <!-- <a-button type="primary">添加教室</a-button> -->
           <a-button type="primary" @click="showDeleteConfirm(checkedList)"
@@ -92,6 +97,7 @@ export default {
       currentBuilding: "",
       upload_url: "",
       bulkImport_visible: false,
+      spaceName: "",
       colors: [
         "#9FE6B8",
         "#FFDb5C",
@@ -101,7 +107,8 @@ export default {
         "#E7bCF3",
         "#96BFFF",
       ],
-      campusName: "",
+      // campusName: "",
+      // campusId: "",
       activeIndex: "1",
       flag: "",
     };
@@ -114,35 +121,15 @@ export default {
     }),
   },
   methods: {
-    async onChange(data) {
-      console.log("onchange:   " + data);
+    async onChange(value, label) {
+      console.log("onchange:  value " + value);
+      console.log("onchange:   label" + label);
       this.activeIndex = "2";
-      this.campusName = data;
-      this.flag = data;
+      // this.campusId = value;
+      this.flag = value;
       this.callback("2");
 
-      // const value = data.split(":")[0];
-      // this.currentBuilding = data.split(":")[1];
-      // const queryObject = {
-      //   building: value,
-      // };
-      // let queryString = "";
-      // Object.keys(queryObject).forEach((key) => {
-      //   queryString += key + "=" + queryObject[key] + "&";
-      // });
-      // queryString = "?" + queryString.slice(0, -1);
-      // const url = "/pc/v1/rooms" + queryString;
-
-      // try {
-      //   const { data } = await axiosInstance.get(url);
-      //   console.log(data);
-      //   this.roomList = data.rooms;
-      //   console.log(this.roomList);
-      // } catch (err) {
-      //   console.log(err);
-      // }
-
-      this.value = this.data;
+      this.value = this.label;
     },
     onSearch() {
       console.log(...arguments);
@@ -173,17 +160,32 @@ export default {
         if (this.flag.slice(-1) == "#") {
           console.log("****");
           let temp = this.flag.slice(0, -1);
-          payload = { subOrg_name: temp };
-          // this.getCoursesFromCondition(payload);
+          payload = { campus_id: temp };
+          this.getSpaceFromCondition(payload);
         } else {
           console.log("1111");
-          let dataArray = this.flag.split(":");
-          payload = { subOrg_name: dataArray[1], major_name: dataArray[0] };
-          // this.getCoursesFromCondition(payload);
+          // let dataArray = this.flag.split(":");
+          payload = { building_id: this.flag };
+          this.getSpaceFromCondition(payload);
         }
       }
     },
-
+    async getSpaceFromCondition(payload) {
+      let queryString = "";
+      Object.keys(payload).forEach((key) => {
+        queryString += key + "=" + payload[key] + "&";
+      });
+      queryString = "?" + queryString.slice(0, -1);
+      const url = "/pc/v1/rooms/getRoomByCampusOrBuilding" + queryString;
+      console.log(url);
+      try {
+        const { data } = await axiosInstance.get(url);
+        this.courseList = data.courses;
+        console.log(this.courseList);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     showDeleteConfirm(deleteList) {
       console.log(deleteList);
       deleteList.length == 0
