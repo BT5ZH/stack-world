@@ -95,23 +95,20 @@ roomSchema.post('save', async function (doc) {
   }
 });
 roomSchema.pre('remove', {  query: true } ,async function (doc) {
-  console.log("post remove---------------")
-  console.log(this)
-  console.log("=====================")
+
   const building = await Building.findOne({ 
-    org_name: doc.org_name, 
-    campus_name: doc.campus_name,
-    building_name: doc.building_name }
+    org_name: this.org_name, 
+    campus_name: this.campus_name,
+    building_name: this.building_name }
   )
   if(building != null){
-    let room = building.rooms
-    let idx= room.indexOf(doc._id)
-    console.log("------------------")
-    console.log(room)
-    if(idx!=-1)
-      room = room.slice(idx,idx+1)
-    console.log("================-")
-    console.log(room)
+    let room = []
+
+    for(let i=0;i<building.rooms.length;i++){
+       if(building.rooms[i]!=this._id)
+          room.push(building.rooms[i])
+    }
+  
     await Building.updateOne(
       { _id: building._id },
       { $set: { rooms: room }

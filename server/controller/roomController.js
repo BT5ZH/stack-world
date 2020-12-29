@@ -108,30 +108,29 @@ exports.getRoomByCampusAndBuilding = catchAsync(async (req, res, next) => {
   });
 });
 exports.getRoomByCampusOrBuilding = catchAsync(async (req, res, next) => {
-  var rooms
+  var data;
   if(req.query.building_id!=null)
-      rooms = await Building.findOne({_id:req.query.building_id}).populate('rooms');
+      data = await Building.findOne({_id:req.query.building_id}).populate('rooms');
   else{
-    rooms = await Campus.findOne({_id:req.query.campus_id})
+    data = await Campus.findOne({_id:req.query.campus_id})
     .populate({
       path: 'buildings',
-      select: ['_id', 'rooms'],
-      // model: 'College',
+      select: ['_id', 'building_name','rooms'],
+   
       populate: {
       path: 'rooms',
       select: ['_id', 'room_number','room_name','room_type','room_charge_person','room_duty_person']
-      // model: 'Student'
       }
     })
   }
   
-  if (rooms===[] || rooms=== null ) {
+  if (data===[] || data=== null ) {
     return next(new AppError("该楼无教室", 404));
   }
 
   res.status(200).json({
     status: "success",
-      rooms,
+      data,
   });
 });
 exports.updateRoom = catchAsync(async (req, res, next) => {
@@ -152,14 +151,16 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
 
 exports.deleteRoom = catchAsync(async (req, res, next) => {
   //const room = await Room.findByIdAndDelete(req.params.id);
-  const room = await Room.remove({_id:req.params.id});
+  const room = await Room.findById(req.params.id);
+  
+  //const room = await Room.remove({_id:req.params.id});
   if (!room) {
     return next(new AppError("该空间不存在", 404));
   }
-
+  await room.remove();
   res.status(204).json({
     status: "success",
-    data: null,
+    room,
   });
 });
 
