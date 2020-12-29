@@ -56,7 +56,7 @@ const prodOptions = {
   },
 };
 
-const io = require("socket.io")(server, prodOptions);
+const io = require("socket.io")(server, devOptions);
 
 // const nsp = io.of("/api");
 const gameRooms = [];
@@ -154,7 +154,6 @@ io.on("connection", (socket) => {
     */
   });
 });
-
 server.listen(mgPort, (err) => {
   console.log(`App running on port ${mgPort}...`);
 });
