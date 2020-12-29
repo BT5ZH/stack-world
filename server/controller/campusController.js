@@ -25,7 +25,8 @@ exports.getAllCampus = catchAsync(async (req, res, next) => {
   // console.log(queryString);
   const query = Campus.find(JSON.parse(queryString))
     .populate({ path: "buildings", select: "name" })
-    .select("campus_name buildings");
+    .select("campus_name buildings")
+    .populate({ path: "buildings", select: "building_name" });
   //   console.log(query);
   // EXECUTE QUERY
   const campus = await query;
