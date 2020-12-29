@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const Building = require("./buildingModel");
 
 const roomSchema = new mongoose.Schema(
   {
@@ -31,7 +32,7 @@ const roomSchema = new mongoose.Schema(
       type: String,
       ref: "User",
     },
-    org_name: {  
+    org_name: {
       type: String,
       required: [true, "A room must belong to one university or school"],
     },
@@ -75,6 +76,48 @@ roomSchema.post('find', function(result) {
   }
 });
 */
+roomSchema.post('save', async function (doc) {
+  const building = await Building.findOne({ 
+    org_name: doc.org_name, 
+    campus_name: doc.campus_name,
+    building_name: doc.building_name }
+  )
+  if(building != null){
+    let room = building.rooms
+  
+    if(room.indexOf(doc._id)===-1)
+      room.push(doc._id)
+    
+    await Building.updateOne(
+      { _id: building._id },
+      { $set: { rooms: room }
+    })
+  }
+});
+roomSchema.pre('remove', {  query: true } ,async function (doc) {
+  console.log("post remove---------------")
+  console.log(this)
+  console.log("=====================")
+  const building = await Building.findOne({ 
+    org_name: doc.org_name, 
+    campus_name: doc.campus_name,
+    building_name: doc.building_name }
+  )
+  if(building != null){
+    let room = building.rooms
+    let idx= room.indexOf(doc._id)
+    console.log("------------------")
+    console.log(room)
+    if(idx!=-1)
+      room = room.slice(idx,idx+1)
+    console.log("================-")
+    console.log(room)
+    await Building.updateOne(
+      { _id: building._id },
+      { $set: { rooms: room }
+    })
+  }
+});
 const Room = mongoose.model("Room", roomSchema);
 
 module.exports = Room;

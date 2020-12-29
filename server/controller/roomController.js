@@ -21,11 +21,11 @@ exports.getAllRooms = catchAsync(async (req, res, next) => {
   );
   // console.log(queryString);
   const query = Room.find(JSON.parse(queryString))
-    .select("room_number room_type campus building empty")
-    .populate({
-      path: "lesson_id",
-      select: ["course_id"],
-    });
+    // .select("room_number room_type campus building empty")
+    // .populate({
+    //   path: "lesson_id",
+    //   select: ["course_id"],
+    // });
   //   console.log(query);
   // EXECUTE QUERY
   const rooms = await query;
@@ -151,8 +151,8 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteRoom = catchAsync(async (req, res, next) => {
-  const room = await Room.findByIdAndDelete(req.params.id);
-
+  //const room = await Room.findByIdAndDelete(req.params.id);
+  const room = await Room.remove({_id:req.params.id});
   if (!room) {
     return next(new AppError("该空间不存在", 404));
   }
@@ -179,3 +179,4 @@ exports.batchDeleteRooms = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
