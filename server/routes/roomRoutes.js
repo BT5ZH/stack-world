@@ -36,6 +36,6 @@ router
   .route("/:id")
   .get(authController.protect, roomController.getRoom)
   .patch(authController.protect, roomController.updateRoom)
-  .delete(roomController.deleteRoom);
+  .delete(authController.protect,roomController.deleteRoom);
 
 module.exports = router;

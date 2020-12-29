@@ -24,7 +24,7 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
   //   console.log(query);
   // EXECUTE QUERY
   const organizations = await query;
-  console.log(organizations);
+ 
 
   // SEND RESPONSE
   res.status(200).json({

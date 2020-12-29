@@ -27,7 +27,8 @@ var lessonSchema = mongoose.Schema({
     semester:{
         type:Number,//eg.1 means the 1th semester; 2 means 2nd semester.
     },
-
+    photo: { type: String, default: "default_lesson.jpg" },
+    teaching_program: { type: String,  },
    
 },{_id:false})
 
