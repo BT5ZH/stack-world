@@ -1,4 +1,5 @@
 const Lesson = require("../models/lessonModel");
+const PrepareLesson = require("../models/prepareLessonModel");
 const Class = require("../models/classModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -70,19 +71,35 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
 });
 
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
-  const data = await Lesson.find({ teacher_id: req.body.teacher_id }).populate(
+  const fullInfo = await Lesson.find({ teacher_id: req.body.teacher_id })
+  .populate(
     "teacher_id",
     "user_id name -_id"
-  );
-  if (!data) {
+  )
+  .populate(
+    "course_id",
+    "total_study_hours name -_id"
+  )
+  .populate(
+    "prepareLesson",
+    "one_class -_id"
+  )
+  if (!fullInfo) {
     return next(new AppError("该课不存在", 404));
   }
-
+  let abstractInfo=fullInfo.map((item)=>{
+    return{
+        _id:item._id,
+        cover:item.cover,
+        lesson_name:item.course_id.name,
+        total_study_hours:item.course_id.total_study_hours,
+        prepareNumber:item.prepareLesson[0].one_class.length,
+    }
+  })
   res.status(200).json({
     status: "success",
-    data: {
-      data,
-    },
+    abstractInfo,
+    fullInfo
   });
 });
 

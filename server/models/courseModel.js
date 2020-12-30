@@ -39,13 +39,16 @@ var courseSchema = mongoose.Schema(
     },
     semester: {
       type: Number,
-    },
-    semesters: [{
-      type: Number,
       required: [true, "course credit is required"],
       min: 1,
       max: 8,
-    }],
+    },
+    // semesters: [{
+    //   type: Number,
+    //   required: [true, "course credit is required"],
+    //   min: 1,
+    //   max: 8,
+    // }],
     weekly_hrs: {
       type: Number,
       required: [true, "course weekly_hrs is required"],
@@ -68,6 +71,9 @@ var courseSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    total_study_hours:{
+      type: Number,
+      default: 0,}
   },
   {
     toJSON: { virtuals: true },
