@@ -81,24 +81,30 @@ var courseSchema = mongoose.Schema(
    },
   { _id: false }
 );
-courseSchema.virtual('org_name1', {
-  ref: 'Orgnization',
-  localField: 'orgnization',
-  foreignField: 'organizationName',
+courseSchema.virtual('lessons', {
+  ref: 'Lesson',
+  localField: '_id',
+  foreignField: 'course_id',
   justOne: false,
 });
-courseSchema.virtual('subOrg_name1', {
-  ref: 'Orgnization',
-  localField: 'orgnization',
-  foreignField: 'organizationName',
-  justOne: false,
-});
-courseSchema.virtual('major_name1', {
-  ref: 'Orgnization',
-  localField: 'orgnization',
-  foreignField: 'organizationName',
-  justOne: false,
-});
+// courseSchema.virtual('org_name1', {
+//   ref: 'Orgnization',
+//   localField: 'orgnization',
+//   foreignField: 'organizationName',
+//   justOne: false,
+// });
+// courseSchema.virtual('subOrg_name1', {
+//   ref: 'Orgnization',
+//   localField: 'orgnization',
+//   foreignField: 'organizationName',
+//   justOne: false,
+// });
+// courseSchema.virtual('major_name1', {
+//   ref: 'Orgnization',
+//   localField: 'orgnization',
+//   foreignField: 'organizationName',
+//   justOne: false,
+// });
 
 
 var Course = mongoose.model("Course", courseSchema);

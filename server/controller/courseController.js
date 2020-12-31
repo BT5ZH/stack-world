@@ -1,6 +1,7 @@
 const Course = require("../models/courseModel");
 const Class = require("../models/classModel");
 const User = require("./../models/userModel");
+const Lesson = require("../models/lessonModel");      
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -210,22 +211,93 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     major_name: req.body.major_name,
-  }).select("course_id name semester");
+  })
+  .select("course_id name semester")
 
   const teachers = await User.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     role: "teacher",
-  }).select("user_id name");
+  })
+  .select("user_id name");
 
   const classes = await Class.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
-  }).select("class_name");;
+  })
+  .select("class_name");;
+
+  const lessonss = await Course.find({
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+    major_name: req.body.major_name,
+  }).select("course_id name")
+  .populate({
+    path: 'lessons',
+    select: ['_id'],
+
+    populate:{
+      path: '_id',
+      select: ['teacher_id', 'classes','year','semester'],
+
+      populate: {
+        path: 'teacher_id',
+        select: ['name']
+      },
+    }
+  })
+  .populate({
+    path: 'lessons',
+    select: ['_id'],
+
+    populate:{
+      path: '_id',
+      select: ['teacher_id', 'classes','year','semester'],
+      populate: {
+        path: 'classes',
+        select: ['class_name']
+      }
+    }
+  })
+  let result=[]
+
+  for(let i=0;i<lessonss.length;i++){
+      if(lessonss[i].lessons.length!=0){
+        
+        result.push(lessonss[i])
+      }
+  }
+   let lessons =result.map((item)=>{
+    return{
+        course_id:item.course_id,
+        course_name:item.name,
+        lessons:item.lessons.map(n=>{
+          return{
+            classes:n._id.classes,
+            year:n._id.year,
+            semester:n._id.semester,
+            teacher_name:n._id.teacher_id.name
+          }
+        }),
+       
+    }
+  })
+  let lessonlist =lessons.map((item)=>{
+    return{
+        course_id:item.course_id,
+        course_name:item.course_name,
+        classes:item.lessons[0].classes,
+        year:item.lessons[0].year,
+        semester:item.lessons[0].semester,
+        teacher_name:item.lessons[0].teacher_name
+       
+    }
+  })
   res.status(200).json({
     status: "success",
     courses,
     teachers,
     classes,
+    lessonlist
   });
 });
