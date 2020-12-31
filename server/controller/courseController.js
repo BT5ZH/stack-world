@@ -95,23 +95,38 @@ exports.batchAddCourses = catchAsync(async (req, res, next) => {
 });
 // 传id删除
 exports.deleteOneCourse = catchAsync(async (req, res) => {
-  try {
-    var del = await Course.deleteOne({ _id: req.params._id });
-    if ((del.deletedCount = 1)) {
-      res.status(200).json({
-        status: true,
-        message: "success",
-      });
-    } else {
-      res.status(500).json({
-        status: false,
-        message: "false",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ status: false, message: err });
+  // try {
+  //   var del = await Course.deleteOne({ _id: req.params._id });
+  //   if ((del.deletedCount = 1)) {
+  //     res.status(200).json({
+  //       status: true,
+  //       message: "success",
+  //     });
+  //   } else {
+  //     res.status(500).json({
+  //       status: false,
+  //       message: "false",
+  //     });
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  //   res.status(404).json({ status: false, message: err });
+  // }
+
+  const result = await Lesson.findOne({course_id:req.params._id})
+  if(result){
+    return next(new AppError("该课程已经被分配，不能删除", 500));
   }
+  const data = await Course.findByIdAndDelete(req.params._id);
+
+  if (!data) {
+    return next(new AppError("该课程不存在", 404));
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
 });
 
 /**
