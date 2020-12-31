@@ -30,8 +30,10 @@
       <a-row :span="20">
         <a-tabs :active-key="activeIndex" @change="callback">
           <a-tab-pane key="1" tab="统计信息">
-            <space-card class="class-card" :roomsProp="roomNum" :buildingNum="currentBuilding" :typeProp="typeNum"
-              :buildingProp="buildingNum"></space-card>
+            <space-card class="class-card" 
+            :roomsProp="roomNum" 
+            :typeProp="TypeList"
+            :buildingProp="BuildingList"></space-card>
           </a-tab-pane>
           <a-tab-pane key="2" tab="建筑房间列表" force-render>
 
@@ -64,9 +66,8 @@
         value: undefined,
         campusList: [],
         roomNum: 0,
-        buildingNum: 0,
-        typeNum: 0,
-        currentBuilding: "",
+        TypeList:[],
+        BuildingList:[],
         upload_url: "",
         bulkImport_visible: false,
         spaceName: "",
@@ -172,15 +173,17 @@
           Room.forEach((item, index) => {
             roomtypeList.push(item.room_type)
             buildingList.push(item.building_name)
-            // console.log(item.room_type);
+            console.log(item.room_type);
             // console.log(item.building_name);
           })
           let x = new Set(roomtypeList);
-          console.log([...x]);
-          this.typeNum = [...x].length;
+          this.TypeList=[...x];
+          console.log(this.TypeList);
+          // this.typeNum = [...x].length;
           let y = new Set(buildingList);
+          this.BuildingList=[...y];
           console.log([...y]);
-          this.buildingNum = [...y].length;
+          // this.buildingNum = [...y].length;
           console.log(Room);
         } catch (error) {
           console.log(error);
