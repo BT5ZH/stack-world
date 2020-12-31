@@ -273,6 +273,7 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
         course_name:item.name,
         lessons:item.lessons.map(n=>{
           return{
+            lesson_id:n._id._id,
             classes:n._id.classes,
             year:n._id.year,
             semester:n._id.semester,
@@ -286,6 +287,7 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
     return{
         course_id:item.course_id,
         course_name:item.course_name,
+        lesson_id:item.lessons[0].lesson_id,
         classes:item.lessons[0].classes,
         year:item.lessons[0].year,
         semester:item.lessons[0].semester,
