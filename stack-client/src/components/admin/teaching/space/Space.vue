@@ -55,13 +55,13 @@
       </a-row>
       <a-row :span="20">
         <a-tabs :active-key="activeIndex" @change="callback">
-          <a-tab-pane key="1" tab="统计信息">
+          <a-tab-pane key="1" tab="建筑列表">
             <space-tree
               class="class-card"
               :buildingProp="buildingList"
             ></space-tree>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="建筑房间列表" force-render>
+          <a-tab-pane key="2" tab="房间列表" force-render>
             <space-card class="class-card" :roomsProp="roomList"></space-card>
           </a-tab-pane>
         </a-tabs>
@@ -152,9 +152,6 @@ export default {
 
         console.log("代码出差");
       }
-
-      // this.callback("2");
-
       this.value = this.label;
     },
     onSearch() {

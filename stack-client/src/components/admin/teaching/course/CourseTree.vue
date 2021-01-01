@@ -1,129 +1,127 @@
 <template>
-  <!-- <div id="courseDashboard" style="width: 600px;height:400px;"></div> -->
   <div>
-    <a-row :gutter="40">
-      <a-col :span="8" v-for="(item, index) in sumList" :key="index">
-        <a-card @click:="ifClick(item.title)" :style="{ borderRadius: '6px', overflow: 'hidden' }"
-          :bodyStyle="{ backgroundColor: `${item.color}`, borderRadius: '6px' }">
-          <a-icon :type="item.icon" class="room_icon" />
-          <a-statistic :value="item.number" suffix="个" :value-style="{ color: '#fff' }">
-            <template #title>
-              <p class="my-statistic-title">{{ item.title }}</p>
-            </template>
-            <template #prefix>
-              <a-icon :type="item.icon" :style="{
-                  color: '#fff',
-                  marginRight: '20px',
-                  fontSize: '30px',
-                }" />
-            </template>
-          </a-statistic>
+    <a-empty v-if="!courseProp.length"></a-empty>
+    <a-row :gutter="8" v-else>
+      <a-col
+        v-for="(course, index) in courseProp"
+        :key="index"
+        :span="6"
+        class="card-container"
+      >
+        <a-card
+          class="space"
+          :style="{
+            backgroundColor: `${courseMap[course.course_type]['color']}`,
+          }"
+        >
+          <a-icon
+            :type="courseMap[course.course_type]['icon']"
+            class="room_icon"
+          />
+          <div
+            style="display: flex;justify-content: space-between;align-items: flex-start;"
+          >
+            <a-checkbox @change="onChange($event, course.name)"></a-checkbox>
+            <p>{{ course.course_name }}</p>
+            <a-tag color="#2db7f5">文津楼</a-tag>
+            <a-tag color="#ffb900">{{
+              courseMap[course.course_type]["name"]
+            }}</a-tag>
+            <a-icon type="right-circle" style="font-size: 20px;" />
+          </div>
+          <div>
+            <p>负责人：{{ course.name }}</p>
+            <p>安全员：{{ course.name }}</p>
+          </div>
         </a-card>
       </a-col>
     </a-row>
-    <a-row class="Card_Info" style="padding-top:20px;">
-      <a-col>
-        <a-card title="学院">
-          <a-card-grid v-for="(i,index) in collegeProp" :key="index" style="width:25%;text-align:center">
-            {{i}}
-          </a-card-grid>
-        </a-card>
-      </a-col>
-    </a-row>
-    <a-row class="Card_Info2">
-      <a-col>
-        <a-card title="专业">
-          <a-card-grid v-for="(i,index) in majorProp" :key="index" style="width:25%;text-align:center">
-            {{i}}
-          </a-card-grid>
-        </a-card>
-      </a-col>
-    </a-row>
-
-
-    <a-divider style="border-color: rgb(183, 186, 187);" />
   </div>
 </template>
 
 <script>
-  import axios from "@/utils/axios";
-
-  export default {
-    data() {
-      return {
-        ifClickMajor: false,
-        ifClickCollege: false,
-        collegeList: [],
-        style: { icon: "trophy", color: "#50b8ee" },
-        sumList: [],
-      };
-    },
-
-    props: ["courseProp", "majorProp", "collegeProp", "pieProp"],
-    methods: {
-      ifClick(cardName) {
-        if (cardName == "专业") {
-          this.ifClickMajor = true;
-          this.ifClickCollege = false;
-          this.clickName = cardName;
-          console.log(cardName)
-        } else if (cardName == "学院") {
-          this.ifClickCollege = true;
-          this.ifClickMajor = false;
-          this.clickName = cardName;
-          console.log(this.clickName + this.ifClickRoomType);
-        }
-      },
-      statisticInfo() {
-        let colNumber = {
-          title: "学院",
-          number: this.collegeProp.length,
-          icon: "bank",
-          color: "#ffbf35",
-        };
-        let majNumber = {
-          title: "专业",
-          number: this.majorProp.length,
-          icon: "bank",
-          color: "#50b8ee",
-        };
-        let couNumber = {
-          title: "课程",
-          number: this.courseProp,
-          icon: "bank",
-          color: "#fb7293",
-        };
-        let tempList = [];
-        tempList.push(couNumber);
-        tempList.push(majNumber);
-        tempList.push(colNumber);
-        this.sumList = tempList;
-        console.log(majNumber);
-        console.log(this.sumList);
-        console.log(this.majorProp);
-        // console.log(this.pieProp);
+export default {
+  props: ["courseProp"],
+  data() {
+    return {
+      courseMap: {
+        专业核心课程: { name: "教室", color: "#96BFFF", icon: "home" },
+        基础课: { name: "实验室", color: "#FFDB5C", icon: "experiment" },
+        专业方向课课程: { name: "办公室", color: "#9FE6B8", icon: "bank" },
+        专业必修课: { name: "其他", color: "#ff9f7f", icon: "question" },
+        其他: { name: "办公室", color: "#9FE6B8", icon: "bank" },
       },
 
-      /**/
+      checkedList: [],
+      courses: [],
+    };
+  },
+  watch: {
+    courses: {
+      immediate: true,
+      handler(value) {
+        console.log(value);
+        this.courses = value;
+      },
     },
-
-    mounted() {
-      this.statisticInfo();
-      this.d1 = this.pieProp;
+  },
+  methods: {
+    onChange(e, value) {
+      if (e.target.checked) {
+        this.checkedList.push(value);
+      } else {
+        let index = this.checkedList.findIndex((item) => {
+          return item === value;
+        });
+        //删除元素
+        this.checkedList.splice(index, 1);
+      }
+      console.log(this.checkedList);
     },
-  };
+  },
+  mounted() {
+    this.courses = this.courseProp;
+  },
+};
 </script>
-<style>
-  .card_area {
-    padding: 10px;
-    height: 10px;
-  }
 
-  .Card_Info {
-    padding-top: 20px;
-  }
+<style scoped>
+.my-statistic-title {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
 
-  .Card_Info2 {
-    padding-top: 20px;
-  }
+.btn-area {
+  padding: 20px 0 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-container {
+  padding-top: 20px;
+}
+
+.Card_Info {
+  padding-top: 20px;
+}
+
+.space {
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+.room_icon {
+  min-height: 100%;
+  font-size: 80px;
+  position: absolute;
+  top: 35%;
+  right: -5%;
+  color: #fff;
+  opacity: 0.4;
+}
 </style>
