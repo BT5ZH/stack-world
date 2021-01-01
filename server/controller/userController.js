@@ -42,7 +42,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = User.find(JSON.parse(queryString)).select(" email orgId ");
+  const query = User.find(JSON.parse(queryString)).select("_id user_id  name email");
   //   console.log(query);
   // EXECUTE QUERY
   const users = await query;
@@ -52,9 +52,8 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   res.status(200).json({
     status: "success",
     results: users.length,
-    data: {
-      users,
-    },
+    users,
+
   });
 });
 

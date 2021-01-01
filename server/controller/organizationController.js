@@ -234,11 +234,10 @@ exports.addSubMajor = catchAsync(async (req, res, next) => {
 
 exports.getMajors = catchAsync(async (req, res, next) => {
   console.log("getMajors 进来啦");
-  const sName = req.params.sid;
   // const organization = await Organization.findOne(
   //   {
   //     organizationName: req.params.id,
-  //     subOrgs: { $elemMatch: { subOrgName: { $eq: sName } } },
+  //     subOrgs: { $elemMatch: { subOrgName: { $eq: req.params.sid } } },
   //   },
   //   {
   //     "subOrgs.$": 1,

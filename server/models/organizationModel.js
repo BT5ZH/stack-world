@@ -67,7 +67,27 @@ organizationSchema.virtual("reviews", {
   foreignField: "organization",
   localField: "_id",
 });
+// organizationSchema.pre('remove', {  query: true } ,async function (doc) {
 
+//   const building = await Building.findOne({ 
+//     org_name: this.org_name, 
+//     campus_name: this.campus_name,
+//     building_name: this.building_name }
+//   )
+//   if(building != null){
+//     let room = []
+
+//     for(let i=0;i<building.rooms.length;i++){
+//        if(building.rooms[i]!=this._id)
+//           room.push(building.rooms[i])
+//     }
+  
+//     await Building.updateOne(
+//       { _id: building._id },
+//       { $set: { rooms: room }
+//     })
+//   }
+// });
 const Organization = mongoose.model("Organization", organizationSchema);
 
 module.exports = Organization;

@@ -15,7 +15,10 @@ router
 router
   .route("/classTree")
   .get(authController.protect, classController.putSubOrgAndMajorIntoTree)
-
+router
+  .route("/getStudentsNotInOneClass")
+  .get(authController.protect, classController.getStudentsNotInOneClass)
+  
 router
   .route("/:id")
   .get(authController.protect, classController.getClass)
