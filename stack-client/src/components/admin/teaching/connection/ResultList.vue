@@ -14,12 +14,12 @@
       >
         <template #classes="classList">
           <div v-for="(item, index) in classList" :key="index">
-            <span>{{item.class_name}}</span>
+            <span>{{ item.class_name }}</span>
             <br />
           </div>
         </template>
         <template #operation="record">
-          <a @click="relieve(record)">解除关联</a>
+          <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
         </template>
       </a-table>
     </a-row>
@@ -89,18 +89,15 @@ export default {
           console.log(data);
           const { status } = data;
           if (status) throw "relieve course success";
-          this.$message.error("解除关联成功");
-
+          this.$message.success("解除关联成功");
         })
         .catch((err) => {
-            console.error(err);
+          console.error(err);
           this.$message.error("解除关联失败！");
-
         });
     },
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
