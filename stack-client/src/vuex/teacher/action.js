@@ -26,6 +26,16 @@ const action = {
       console.error(error);
     }
   },
+  async getTeacherCourses({ commit }, teacher_id) {
+    try {
+      const url = "pc/v1/lessons/getLessonsByTeacherID";
+      const requestData = { teacher_id };
+      const { data } = await axios.post(url, requestData);
+      commit("updateTeacherCourses", data.abstractInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default action;

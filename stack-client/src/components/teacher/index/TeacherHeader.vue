@@ -34,11 +34,11 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       currentMenu: "teacher_index",
-      teacher_name: "李师",
       menus: [
         { name: "首页", id: "teacher_index" },
         { name: "课程中心", id: "teacher_course" },
@@ -47,6 +47,11 @@ export default {
         // { name: "金课工具", id: "teacher_tools" },
       ],
     };
+  },
+  computed: {
+    ...mapState({
+      teacher_name: (state) => state.public.name,
+    }),
   },
   methods: {
     tabChange({ target }) {
