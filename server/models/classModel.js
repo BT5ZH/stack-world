@@ -34,7 +34,6 @@ const classSchema = new mongoose.Schema(
   classSchema.virtual('studentList', {
     ref: 'User',
     localField: 'students',
-    //foreignField: 'bookId',
     foreignField: '_id',
     justOne: false,
 });

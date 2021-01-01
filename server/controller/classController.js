@@ -1,4 +1,5 @@
 const Class = require("../models/classModel");
+const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -43,12 +44,9 @@ exports.createClass = catchAsync(async (req, res, next) => {
 });
 
 exports.getClass = catchAsync(async (req, res, next) => {
-
-  const classEntity = await Class.findOne({_id:req.params.id})
-  .populate({
-    path: 'studentList',
-    select: 'user_id name -_id'
-
+  const classEntity = await Class.findOne({ _id: req.params.id }).populate({
+    path: "studentList",
+    select: "user_id name phone -_id",
   });
   //.populate('students','user_id name -_id');
 
@@ -62,6 +60,44 @@ exports.getClass = catchAsync(async (req, res, next) => {
     data: {
       classEntity,
     },
+  });
+});
+
+exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
+  const studentss = await User.find({
+    org_name: req.query.org_name,
+    subOrg_name: req.query.subOrg_name,
+    major_name: req.query.major_name,
+    role:'student'
+  });
+  let students=[]
+  for(let i=0;i<studentss.length;i++){
+     students.push(studentss[i]._id)
+  }
+
+  const studentsInClass = await Class.findById(req.query.class_id).select("students");
+
+  console.log('---studentsInClass.length-----')
+console.log(studentsInClass)
+  for (let i = 0; i < studentsInClass.students.length; i++) {
+    let index = students.indexOf(studentsInClass.students[i]);
+    if (index > -1) {
+      students.splice(index, 1);
+    }
+  }
+  console.log('---students-----')
+  console.log(students)
+  let result = [];
+  for (let i = 0; i < students.length; i++) {
+    let student = await User.findById(students[i]).select("_id user_id name");
+    console.log('--------')
+    console.log(student)
+    result.push(student);
+  }
+
+  res.status(200).json({
+    status: "success",
+    result,
   });
 });
 
@@ -278,7 +314,7 @@ exports.getCurriculum = catchAsync(async (req, res, next) => {
 });
 //edit by Chaos on 12-15
 exports.getClassesBySubOrgName = catchAsync(async (req, res, next) => {
-  const data = await Class.find({ subOrg_name:req.body.subOrg_name});
+  const data = await Class.find({ subOrg_name: req.body.subOrg_name });
   if (!data) {
     return next(new AppError("班级不存在", 404));
   }
@@ -292,7 +328,7 @@ exports.getClassesBySubOrgName = catchAsync(async (req, res, next) => {
 });
 //edit by Chaos on 12-15
 exports.getClassesByMajorName = catchAsync(async (req, res, next) => {
-  const data = await Class.find({ major_name:req.body.major_name});
+  const data = await Class.find({ major_name: req.body.major_name });
   if (!data) {
     return next(new AppError("班级不存在", 404));
   }
@@ -316,10 +352,10 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
       },
     },
   ]);
-  if (data.length == 0|| data === [] || data === null) {
+  if (data.length == 0 || data === [] || data === null) {
     return next(new AppError("课程不存在", 500));
   }
-  console.log(data)
+  console.log(data);
   res.status(200).json({
     status: "success",
     data,
@@ -328,7 +364,7 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
 // 按前端所给条件(学院，专业)获取数据
 exports.get_fromcondition_Class = catchAsync(async (req, res, next) => {
   // console.log(req.body)
-  const classes = await Class.find(req.body)
+  const classes = await Class.find(req.body);
   if (!classes) {
     return next(new AppError("班级不存在", 404));
   }
