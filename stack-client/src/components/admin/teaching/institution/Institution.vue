@@ -1,20 +1,14 @@
 <template>
-  <a-row class="container">
-    <a-col :span="4" class="tree">
-      <tree></tree>      
-    </a-col>
-    <a-col :span="19">
+  <div class="container">
       <institution-table class="class-table"></institution-table>
-    </a-col>
-  </a-row>
+  </div>
 </template>
 
 <script>
-import Tree from "./InstitutionTree";
 import InstitutionTable from "./InstitutionTable";
 
 export default {
-  components: { Tree, InstitutionTable },
+  components: { InstitutionTable },
 };
 </script>
 
