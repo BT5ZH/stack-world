@@ -1,110 +1,128 @@
 <template>
   <div>
-    <a-modal v-model="edit_visible" title="编辑" @ok="editItem">
-      <a-input placeholder="名称" v-model="new_edit" />
-    </a-modal>
-
-    <a-modal v-model="campus_visible" title="添加校区" @ok="addCampus">
-      <a-input placeholder="校区名称" v-model="new_campus" />
-    </a-modal>
-
-    <a-modal v-model="building_visible" title="添加教学楼" @ok="addBuilding">
-      <a-select
-        placeholder="请选择校区"
-        @change="handleSelectChange"
-        style="width: 100%;margin-bottom: 20px;"
+    <a-empty v-if="!buildingProp.length"></a-empty>
+    <a-row :gutter="8" v-else>
+      <a-col
+        v-for="(building, index) in buildingProp"
+        :key="index"
+        :span="6"
+        class="card-container"
       >
-        <a-select-option v-for="item in campusList" :key="item" :value="item">
-          {{ item }}
-        </a-select-option>
-      </a-select>
-      <a-input placeholder="教学楼名称" v-model="new_building" />
-    </a-modal>
+        <a-card
+          class="space"
+          :style="{
+            backgroundColor: `${buildingMap[building.building_type]['color']}`,
+          }"
+        >
+          <a-icon
+            :type="buildingMap[building.building_type]['icon']"
+            class="room_icon"
+          />
+          <div
+            style="display: flex;justify-content: space-between;align-items: flex-start;"
+          >
+            <a-checkbox
+              @change="onChange($event, building.building_name)"
+            ></a-checkbox>
+            <p>{{ building.building_name }}</p>
+            <a-tag color="#2db7f5">文津楼</a-tag>
+            <a-tag color="#ffb900">{{
+              buildingMap[building.building_type]["name"]
+            }}</a-tag>
+            <a-icon type="right-circle" style="font-size: 20px;" />
+          </div>
+          <div>
+            <p>负责人：{{ building.building_name }}</p>
+            <p>安全员：{{ building.building_name }}</p>
+          </div>
+        </a-card>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script>
 export default {
+  props: ["buildingProp"],
   data() {
     return {
-      edit_visible: false,
-      campus_visible: false,
-      building_visible: false,
-      new_edit: "",
-      new_campus: "",
-      new_building: "",
-      currentNode: 1,
-      currentInfo: {},
+      buildingMap: {
+        classroom: { name: "教室", color: "#96BFFF", icon: "home" },
+        lab: { name: "实验室", color: "#FFDB5C", icon: "experiment" },
+        office: { name: "办公室", color: "#9FE6B8", icon: "bank" },
+        others: { name: "其他", color: "#ff9f7f", icon: "question" },
+      },
 
-      campusList: ["雁塔校区", "长安校区"],
-      treeData: [],
+      checkedList: [],
+      buildings: [],
     };
   },
-  mounted() {},
+  watch: {
+    buildings: {
+      immediate: true,
+      handler(value) {
+        console.log(value);
+        this.buildings = value;
+      },
+    },
+  },
   methods: {
-    onLoadData(treeNode) {
-      return new Promise((resolve) => {
-        if (treeNode.dataRef.children) {
-          resolve();
-          return;
-        }
-      });
+    onChange(e, value) {
+      if (e.target.checked) {
+        this.checkedList.push(value);
+      } else {
+        let index = this.checkedList.findIndex((item) => {
+          return item === value;
+        });
+        //删除元素
+        this.checkedList.splice(index, 1);
+      }
+      console.log(this.checkedList);
     },
-
-    //点击，右边显示不一样的教室数据
-    showRooms(selectedKeys, info) {
-      console.log(info);
-      this.currentNode = selectedKeys;
-      this.currentInfo = info.selectedNodes[0].data.props.dataRef;
-      //post selectedKeys，获取新的数据，存储到store，在spaceCard处渲染
-    },
-    //左下角四个模态框
-    handleSelectChange(value) {
-      console.log(value);
-    },
-    addCampus() {
-      console.log(this.new_campus);
-      //post this.new_campus
-    },
-    addBuilding() {
-      console.log(this.new_building);
-      //post this.new_building
-    },
-    editContent(editItem) {
-      console.log(editItem);
-      !editItem.title
-        ? this.$message.info("请选中要编辑的项")
-        : ((this.new_edit = this.currentInfo.title),
-          (this.edit_visible = true));
-    },
-    editItem() {
-      this.new_edit
-        ? this.$message.info("编辑内容不可为空")
-        : (console.log(this.new_edit),
-          //post this.new_edit
-          (this.edit_visible = false));
-    },
-    deleteContent(deleteItem) {
-      console.log(deleteItem);
-      !deleteItem.title
-        ? this.$message.info("请选中要删除的项")
-        : this.$confirm({
-            title: "确认删除吗",
-            content: "数据删除后不可恢复",
-            okText: "确定",
-            okType: "danger",
-            cancelText: "取消",
-            onOk() {
-              console.log(deleteItem);
-              //post deleteItem
-            },
-            onCancel() {
-              console.log("Cancel");
-            },
-          });
-    },
+  },
+  mounted() {
+    this.buildings = this.buildingProp;
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.my-statistic-title {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+.btn-area {
+  padding: 20px 0 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-container {
+  padding-top: 20px;
+}
+
+.Card_Info {
+  padding-top: 20px;
+}
+
+.space {
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 500;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+.room_icon {
+  min-height: 100%;
+  font-size: 80px;
+  position: absolute;
+  top: 35%;
+  right: -5%;
+  color: #fff;
+  opacity: 0.4;
+}
+</style>

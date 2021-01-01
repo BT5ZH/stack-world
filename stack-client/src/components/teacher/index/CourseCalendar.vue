@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     initOneWeek() {
-      let instance = moment().day(-6);
+      let instance = moment().weekday(0);
       this.oneWeek.forEach((item, index) => {
         item.day = instance.date();
         instance.add(1, "d");

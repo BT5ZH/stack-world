@@ -4,7 +4,7 @@ const devURL = "http://localhost:3050/api";
 const proURL =
   "http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn/api";
 export default axios.create({
-  baseURL: proURL,
+  baseURL: devURL,
   headers: { Authorization: "Bearer " + token },
   timeout: 5000,
 });

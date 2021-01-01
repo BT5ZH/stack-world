@@ -9,9 +9,9 @@
         />
       </a-col>
       <a-col :span="16"></a-col>
-      <a-col :span="3">
+      <!-- <a-col :span="3">
         <a-button type="primary" @click="addVisible = true">新建课程</a-button>
-      </a-col>
+      </a-col> -->
     </a-row>
     <a-row class="cards-area" :gutter="30">
       <a-col :span="6" v-for="(course, index) in courses" :key="index">
@@ -21,15 +21,23 @@
             alt="example"
             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           />
-          <h3>{{ course.courseName }}</h3>
-          <span style="float: left; color: #bbb">{{ course.progress }}</span>
-          <span style="float: right; color: #bbb">{{ course.editTime }}</span>
+          <a-row type="flex" justify="space-between">
+            <a-col :span="10">
+              <h3>{{ course.lesson_name }}</h3>
+            </a-col>
+            <a-col :span="8">
+              <span style="float: left; color: #bbb">
+                {{ course | progressFilter }}
+              </span>
+            </a-col>
+          </a-row>
           <template slot="actions" class="ant-card-actions">
-            <a-button type="primary" @click="ViewCourseInfo(index)"
-              >详情</a-button
+            <a-button type="link" size="small" @click="ViewCourseInfo(index)">
+              详情
+            </a-button>
+            <a-button type="link" size="small" @click="prepareCourse(index)"
+              >备课</a-button
             >
-            <a-button type="primary">编辑</a-button>
-            <a-button type="primary">备课</a-button>
           </template>
         </a-card>
       </a-col>
@@ -42,93 +50,30 @@
         :show-quick-jumper="true"
       ></a-pagination>
     </a-row>
-
-    <a-modal v-model="addVisible" title="添加课程" centered @ok="addCourse">
-      <a-form-model
-        :model="addForm"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-        :rules="formRules"
-      >
-        <a-form-model-item label="课程名称" prop="courseName">
-          <a-input
-            v-model="addForm.courseName"
-            placeholder="请输入课程名称"
-          ></a-input>
-        </a-form-model-item>
-        <a-form-model-item
-          label="课时数量"
-          prop="courseHours"
-          placeholder="请输入课时数量"
-        >
-          <a-input-number v-model="addForm.courseHours" :min="1" :max="100" />
-        </a-form-model-item>
-      </a-form-model>
-    </a-modal>
   </a-row>
 </template>
 
 <script>
+import axios from "@/utils/axios";
+import { mapState } from "vuex";
+
 export default {
   data() {
-    return {
-      courses: [
-        {
-          courseId: "1",
-          courseName: "线性代数",
-          progress: "9备课/10课次",
-          courseCover: "",
-          editTime: "2020/10/11",
-        },
-        {
-          courseId: "2",
-          courseName: "线性代数",
-          progress: "9备课/10课次",
-          courseCover: "",
-          editTime: "2020/10/11",
-        },
-        {
-          courseId: "3",
-          courseName: "线性代数",
-          progress: "9备课/10课次",
-          courseCover: "",
-          editTime: "2020/10/11",
-        },
-        {
-          courseId: "4",
-          courseName: "线性代数",
-          progress: "9备课/10课次",
-          courseCover: "",
-          editTime: "2020/10/11",
-        },
-        {
-          courseId: "5",
-          courseName: "线性代数",
-          progress: "9备课/10课次",
-          courseCover: "",
-          editTime: "2020/10/11",
-        },
-      ],
-      addVisible: false,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
-      addForm: {
-        courseName: "",
-        courseHours: 0,
-      },
-      formRules: {
-        courseName: [{ required: true, min: 1, message: "课程名称不能为空！" }],
-        courseHours: [{ required: true, message: "课时数量不能为空！" }],
-      },
-    };
+    return {};
   },
   methods: {
-    addCourse() {},
     onSearch() {},
     ViewCourseInfo(courseIndex) {
-      const courseId = this.courses[courseIndex].courseId;
+      const courseId = this.courses[courseIndex]._id;
       this.$router.push({
         name: "teacher_coursedetail",
+        query: { courseId },
+      });
+    },
+    prepareCourse(courseIndex) {
+      const courseId = this.courses[courseIndex]._id;
+      this.$router.push({
+        name: "teacher_precourse",
         query: { courseId },
       });
     },
@@ -138,6 +83,18 @@ export default {
       const height = window.innerHeight;
       return `${height - 220}px`;
     },
+    ...mapState({
+      uid: (state) => state.public.uid,
+      courses: (state) => state.teacher.courses,
+    }),
+  },
+  filters: {
+    progressFilter({ prepareNumber, total_study_hours }) {
+      return `${prepareNumber}备课/${total_study_hours}课时`;
+    },
+  },
+  mounted() {
+    this.$store.dispatch("teacher/getTeacherCourses", this.uid);
   },
 };
 </script>

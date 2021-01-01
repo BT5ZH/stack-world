@@ -28,7 +28,8 @@ const AdminTeacher = () =>
 const AdminCourse = () => import("@/components/admin/teaching/course/Course");
 const AdminSchedule = () =>
   import("@/components/admin/teaching/schedule/Schedule");
-
+const AdminConnection = () =>
+  import("@/components/admin/teaching/connection/connect");
 // 设备管理
 const AdminInstallation = () =>
   import("@/components/admin/device/installation/Installation");
@@ -149,6 +150,11 @@ export const routes = [
         path: "upgrade",
         name: "admin_upgrade",
         component: AdminUpgrade,
+      },
+      {
+        path: "connection",
+        name: "admin_connection",
+        component: AdminConnection,
       },
     ],
   },
