@@ -1,6 +1,7 @@
 const Course = require("../models/courseModel");
 const Class = require("../models/classModel");
 const User = require("./../models/userModel");
+const Lesson = require("../models/lessonModel");      
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
@@ -94,23 +95,38 @@ exports.batchAddCourses = catchAsync(async (req, res, next) => {
 });
 // 传id删除
 exports.deleteOneCourse = catchAsync(async (req, res) => {
-  try {
-    var del = await Course.deleteOne({ _id: req.params._id });
-    if ((del.deletedCount = 1)) {
-      res.status(200).json({
-        status: true,
-        message: "success",
-      });
-    } else {
-      res.status(500).json({
-        status: false,
-        message: "false",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ status: false, message: err });
+  // try {
+  //   var del = await Course.deleteOne({ _id: req.params._id });
+  //   if ((del.deletedCount = 1)) {
+  //     res.status(200).json({
+  //       status: true,
+  //       message: "success",
+  //     });
+  //   } else {
+  //     res.status(500).json({
+  //       status: false,
+  //       message: "false",
+  //     });
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  //   res.status(404).json({ status: false, message: err });
+  // }
+
+  const result = await Lesson.findOne({course_id:req.params._id})
+  if(result){
+    return next(new AppError("该课程已经被分配，不能删除", 500));
   }
+  const data = await Course.findByIdAndDelete(req.params._id);
+
+  if (!data) {
+    return next(new AppError("该课程不存在", 404));
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
 });
 
 /**
@@ -210,22 +226,95 @@ exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     major_name: req.body.major_name,
-  }).select("course_id name semester");
+  })
+  .select("course_id name semester")
 
   const teachers = await User.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
     role: "teacher",
-  }).select("user_id name");
+  })
+  .select("user_id name");
 
   const classes = await Class.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
-  }).select("class_name");;
+  })
+  .select("class_name");;
+
+  const lessonss = await Course.find({
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+    major_name: req.body.major_name,
+  }).select("course_id name")
+  .populate({
+    path: 'lessons',
+    select: ['_id'],
+
+    populate:{
+      path: '_id',
+      select: ['teacher_id', 'classes','year','semester'],
+
+      populate: {
+        path: 'teacher_id',
+        select: ['name']
+      },
+    }
+  })
+  .populate({
+    path: 'lessons',
+    select: ['_id'],
+
+    populate:{
+      path: '_id',
+      select: ['teacher_id', 'classes','year','semester'],
+      populate: {
+        path: 'classes',
+        select: ['class_name']
+      }
+    }
+  })
+  let result=[]
+
+  for(let i=0;i<lessonss.length;i++){
+      if(lessonss[i].lessons.length!=0){
+        
+        result.push(lessonss[i])
+      }
+  }
+   let lessons =result.map((item)=>{
+    return{
+        course_id:item.course_id,
+        course_name:item.name,
+        lessons:item.lessons.map(n=>{
+          return{
+            lesson_id:n._id._id,
+            classes:n._id.classes,
+            year:n._id.year,
+            semester:n._id.semester,
+            teacher_name:n._id.teacher_id.name
+          }
+        }),
+       
+    }
+  })
+  let lessonlist =lessons.map((item)=>{
+    return{
+        course_id:item.course_id,
+        course_name:item.course_name,
+        lesson_id:item.lessons[0].lesson_id,
+        classes:item.lessons[0].classes,
+        year:item.lessons[0].year,
+        semester:item.lessons[0].semester,
+        teacher_name:item.lessons[0].teacher_name
+       
+    }
+  })
   res.status(200).json({
     status: "success",
     courses,
     teachers,
     classes,
+    lessonlist
   });
 });

@@ -8,6 +8,14 @@ router
   .route("/")
   .get(authController.protect, classController.getAllClasses)
   .post(authController.protect, classController.createClass);
+  
+router
+  .route("/search")
+  .post(authController.protect, classController.get_fromcondition_Class)
+router
+  .route("/classTree")
+  .get(authController.protect, classController.putSubOrgAndMajorIntoTree)
+
 router
   .route("/:id")
   .get(authController.protect, classController.getClass)

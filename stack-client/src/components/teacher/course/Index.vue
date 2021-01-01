@@ -1,17 +1,19 @@
 <template>
   <a-row class="container">
-    <a-row type="flex" justify="center" align="middle" class="profile">
-      <a-col :span="1">
-        <a-icon type="tags" style="font-size: 40px; color: #5c6bc0" />
+    <a-row type="flex" align="middle" class="profile">
+      <a-col :span="1" :push="1">
+        <div>
+          <a-icon type="tags" style="font-size: 40px; color: #5c6bc0" />
+        </div>
       </a-col>
-      <a-col :span="18">
+      <a-col :span="21" :push="1">
         <h2>{{ teacherName }}</h2>
         <span class="account">账号：{{ uid }}</span>
         <span>工号：{{ workNumber }}</span>
       </a-col>
-      <a-col :span="3">
+      <!-- <a-col :span="3">
         <a-button icon="calendar" size="large">我的课表</a-button>
-      </a-col>
+      </a-col> -->
     </a-row>
     <a-row class="content">
       <a-row>
@@ -30,49 +32,28 @@
 </template>
 
 <script>
-// import fileUploader from "@/utils/expressFileUploader";
 import Feedback from "./Feedback";
 import Course from "./Course";
+import { mapState } from "vuex";
 
 export default {
   components: { Feedback, Course },
   data() {
     return {
-      teacherName: "李师",
-      uid: "201501245789",
-      workNumber: "201501245789",
-      fileList: [],
       curMenus: ["Course"],
     };
   },
+  computed: {
+    ...mapState({
+      workNumber: (state) => state.public.user_id,
+      teacherName: (state) => state.public.name,
+      uid: (state) => state.public.email,
+    }),
+  },
   methods: {
-    fileInput(file) {
-      console.log(file);
-      this.fileList = [file];
-      return false;
-    },
-    uploadFile() {
-      // const url = "/s3";
-      // const config = {
-      //   that: this,
-      //   successCallback() {
-      //     this.$message.success("上传成功！");
-      //   },
-      //   failCallback(err) {
-      //     console.error(err);
-      //     this.$message.error("上传失败！");
-      //   },
-      // };
-      // const params = {
-      //   Metadata: { uploader: "Henrenx", star: "10" },
-      // };
-      // fileUploader(this.fileList, url, "", config, params);
-    },
     handleClick() {},
   },
-  created() {
-    
-  }
+  created() {},
 };
 </script>
 

@@ -38,6 +38,9 @@ const mutation = {
       corrAnswer = 1;
     }
   },
+  updateTeacherCourses(state, params) {
+    state.courses = params;
+  },
 };
 
 export default mutation;
