@@ -216,7 +216,7 @@ exports.getLessonByTeacherIDandClassID = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteLesson = catchAsync(async (req, res, next) => {
-  const result = await prepareLesson.findOne({lesson_id:req.params.lesson_id})
+  const result = await PrepareLesson.findOne({lesson_id:req.params.lesson_id})
   if(result){
     return next(new AppError("该课已经存在备课内容，不能删除", 500));
   }

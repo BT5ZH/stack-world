@@ -304,3 +304,38 @@ exports.getClassesByMajorName = catchAsync(async (req, res, next) => {
     },
   });
 });
+//edit by gongheng 12-31
+// 得到班级查找树的数据
+exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
+  const data = await Class.aggregate([
+    { $match: { org_name: req.query.org_name } },
+    {
+      $group: {
+        _id: "$subOrg_name",
+        majors: { $addToSet: "$major_name" },
+      },
+    },
+  ]);
+  if (data.length == 0|| data === [] || data === null) {
+    return next(new AppError("课程不存在", 500));
+  }
+  console.log(data)
+  res.status(200).json({
+    status: "success",
+    data,
+  });
+});
+// 按前端所给条件(学院，专业)获取数据
+exports.get_fromcondition_Class = catchAsync(async (req, res, next) => {
+  // console.log(req.body)
+  const classes = await Class.find(req.body)
+  if (!classes) {
+    return next(new AppError("班级不存在", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      classes,
+    },
+  });
+});

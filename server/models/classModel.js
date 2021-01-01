@@ -14,9 +14,9 @@ const classSchema = new mongoose.Schema(
       required: [true, "class must have an className"],
       unique: true,
     },
-    org_name: {  type: String,},
-    subOrg_name:{  type: String,},
-    major_name: {  type: String,},
+    org_name: {  type: String,required: [true, "class must have an org_name"],},
+    subOrg_name:{  type: String,required: [true, "class must have an subOrg_name"],},
+    major_name: {  type: String,required: [true, "class must have an major_name"],},
     students: [
         {
           type: String,

@@ -234,27 +234,36 @@ exports.addSubMajor = catchAsync(async (req, res, next) => {
 
 exports.getMajors = catchAsync(async (req, res, next) => {
   console.log("getMajors 进来啦");
-  const sName = req.body.subOrgName;
-  const organization = await Organization.findOne(
-    {
-      _id: req.params.id,
-      subOrgs: { $elemMatch: { subOrgName: { $eq: sName } } },
-    },
-    {
-      "subOrgs.$": 1,
-    }
-  ); //.select("subOrgs.subOrgName")
-  console.log("%%%%%%");
+  const sName = req.params.sid;
+  // const organization = await Organization.findOne(
+  //   {
+  //     organizationName: req.params.id,
+  //     subOrgs: { $elemMatch: { subOrgName: { $eq: sName } } },
+  //   },
+  //   {
+  //     "subOrgs.$": 1,
+  //   }
+  // ); 
 
+  const organization = await Organization.aggregate([
+    { $unwind: "$subOrgs" },
+    { $match: { organizationName: req.params.id}},
+    { $match: { "subOrgs.subOrgName": req.params.sid } },
+    {
+      $project: {
+        "subOrgs.majors": 1,
+      },
+    },
+  ]);
   if (!organization) {
     return next(new AppError("该院/系不存在", 404));
   }
 
   res.status(200).json({
     status: "success",
-    data: {
-      majors: organization.subOrgs[0].majors,
-    },
+    majors:organization[0].subOrgs.majors,
+    //majors: organization.subOrgs[0].majors,
+ 
   });
 });
 

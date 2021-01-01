@@ -7,7 +7,7 @@ const router = express.Router();
 router
   .route("/")
   .get(authController.protect,organizationController.getAllOrganizations)
-  .post(authController.protect, organizationController.createOrganization);
+  .post(organizationController.createOrganization);
 
 router
   .route("/:id")
