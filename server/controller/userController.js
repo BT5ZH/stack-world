@@ -42,7 +42,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = User.find(JSON.parse(queryString)).select("_id user_id  name email");
+  const query = User.find(JSON.parse(queryString)).select("_id user_id  subOrg_name major_name title name email");
   //   console.log(query);
   // EXECUTE QUERY
   const users = await query;
