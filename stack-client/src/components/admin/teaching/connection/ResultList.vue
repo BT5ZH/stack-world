@@ -14,12 +14,21 @@
       >
         <template #classes="classList">
           <div v-for="(item, index) in classList" :key="index">
-            <span>{{item.class_name}}</span>
+            <span>{{ item.class_name }}</span>
             <br />
           </div>
         </template>
         <template #operation="record">
-          <a @click="relieve(record)">解除关联</a>
+          <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
+        </template>
+        <template #location="record">
+          <a @click="openLocationSelect(record)">地点</a>
+        </template>
+        <template #day="record">
+          <a @click="openDaySelect(record)">周几</a>
+        </template>
+        <template #order="record">
+          <a @click="openOrderSelect(record)">时间</a>
         </template>
       </a-table>
     </a-row>
@@ -66,6 +75,21 @@ const columns = [
     align: "center",
     scopedSlots: { customRender: "operation" },
   },
+  {
+    title: "地点",
+    align: "center",
+    scopedSlots: { customRender: "location" },
+  },
+  {
+    title: "日期",
+    align: "center",
+    scopedSlots: { customRender: "day" },
+  },
+  {
+    title: "节次",
+    align: "center",
+    scopedSlots: { customRender: "order" },
+  },
 ];
 export default {
   props: {
@@ -89,18 +113,15 @@ export default {
           console.log(data);
           const { status } = data;
           if (status) throw "relieve course success";
-          this.$message.error("解除关联成功");
-
+          this.$message.success("解除关联成功");
         })
         .catch((err) => {
-            console.error(err);
+          console.error(err);
           this.$message.error("解除关联失败！");
-
         });
     },
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

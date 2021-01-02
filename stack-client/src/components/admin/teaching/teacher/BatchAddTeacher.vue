@@ -104,6 +104,7 @@ export default {
           break;
         case 2:
           this.submitRequest();
+          this.$emit("update:visible", false);
           break;
         default:
           break;
@@ -112,9 +113,16 @@ export default {
     checkFormat() {},
     parseExcelData() {
       xlsxParser(this.fileList[0], {
-        dataCb: (data) => {
+        dataCb: async (data) => {
           console.log("extracted data: ", data);
-          axios.post("/pc/v1/users/multipleUsers", data);
+          try {
+            const result = await axios.post("/pc/v1/users/multipleUsers", data);
+            console.log(result);
+            this.$message.success("批量导入成功");
+          } catch (error) {
+            console.log(error);
+            this.$message.error("批量导入失败");
+          }
         },
       });
     },

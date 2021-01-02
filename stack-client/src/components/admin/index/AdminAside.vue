@@ -37,7 +37,7 @@
       </a-menu-item>
       <a-menu-item key="admin_course">
         <a-icon type="deployment-unit" />
-        <span>课程管理</span>
+        <span>教学计划</span>
       </a-menu-item>
       <a-menu-item key="admin_schedule">
         <a-icon type="deployment-unit" />
@@ -45,7 +45,7 @@
       </a-menu-item>
       <a-menu-item key="admin_connection">
         <a-icon type="deployment-unit" />
-        <span>课表关联</span>
+        <span>课程管理</span>
       </a-menu-item>
     </a-sub-menu>
 

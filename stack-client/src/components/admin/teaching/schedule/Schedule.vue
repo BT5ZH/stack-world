@@ -1,8 +1,5 @@
 <template>
   <a-row class="container">
-    <a-col :span="3" class="tree">
-      <tree></tree>
-    </a-col>
     <a-col :span="16" class="class-card">
       <schedule-table></schedule-table>
     </a-col>
@@ -13,12 +10,11 @@
 </template>
 
 <script>
-import Tree from "./ScheduleTree";
 import ScheduleTable from "./ScheduleTable";
 import ScheduleInfo from "./ScheduleInfo";
 
 export default {
-  components: { Tree, ScheduleTable, ScheduleInfo },
+  components: { ScheduleTable, ScheduleInfo },
 };
 </script>
 

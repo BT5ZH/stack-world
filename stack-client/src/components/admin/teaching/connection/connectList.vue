@@ -1,58 +1,82 @@
 <template>
   <div id="components-form-demo-advanced-search">
-    <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
+    <a-form
+      class="ant-advanced-search-form"
+      :form="form"
+      @submit="handleSearch"
+    >
       <a-row :gutter="24">
         <a-col :span="8" label="Fields">
           <p>课程：</p>
           <a-select v-model="lesson" style="width: 100%" @change="lessonchange">
             <a-select-option
-              v-for="(item,index) in courseList"
+              v-for="(item, index) in courseList"
               :key="index"
               :value="item._id"
-            >{{item.name}}</a-select-option>
+              >{{ item.name }}</a-select-option
+            >
           </a-select>
         </a-col>
         <a-col :span="8">
           <p>教师：</p>
           <a-select v-model="teacher" style="width: 100%">
             <a-select-option
-              v-for="(item,index) in teacherList"
+              v-for="(item, index) in teacherList"
               :key="index"
               :value="item._id"
-            >{{item.name}}</a-select-option>
+              >{{ item.name }}</a-select-option
+            >
           </a-select>
         </a-col>
         <a-col :span="8">
           <p>班级：</p>
           <a-select v-model="classes" mode="multiple" style="width: 100%">
             <a-select-option
-              v-for="(item,index) in classList"
+              v-for="(item, index) in classList"
               :key="index"
               :value="item._id"
-            >{{item.class_name}}</a-select-option>
+              >{{ item.class_name }}</a-select-option
+            >
           </a-select>
         </a-col>
         <a-col :span="8" style="marginTop:20px">
           <p>学年：</p>
           <a-select v-model="year" style="width: 100%">
-            <a-select-option v-for="(item,index) in yearList" :key="index" :value="item">{{item}}</a-select-option>
+            <a-select-option
+              v-for="(item, index) in yearList"
+              :key="index"
+              :value="item"
+              >{{ item }}</a-select-option
+            >
           </a-select>
         </a-col>
         <a-col :span="8" style="marginTop:20px">
           <p>学期：</p>
           <a-select v-model="term" style="width: 100%">
-            <a-select-option v-for="(item,index) in termList" :key="index" :value="item">{{item}}</a-select-option>
+            <a-select-option
+              v-for="(item, index) in termList"
+              :key="index"
+              :value="item"
+              >{{ item }}</a-select-option
+            >
           </a-select>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="24" :style="{ textAlign: 'right' }">
-          <a-button type="primary" @click="submit">提交</a-button>
+          <a-button
+            type="primary"
+            @click="
+              submit;
+              freshen();
+            "
+            >提交</a-button
+          >
         </a-col>
       </a-row>
     </a-form>
     <div class="result-list">
-      <result-list :lessonList="lessonList"></result-list>
+      <result-list :lessonList="lessonList" v-on:click="freshen"></result-list>
     </div>
   </div>
 </template>
@@ -148,7 +172,7 @@ export default {
           console.log(data);
           const { status } = data;
           if (!status) throw "connect course fail";
-          this.$message.error("关联课程成功");
+          this.$message.success("关联课程成功");
         })
         .catch((err) => {
           console.error(err);
@@ -176,6 +200,10 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
+    },
+    freshen() {
+      this.getOrgInfo();
+      this.submit();
     },
   },
   watch: {
@@ -205,7 +233,7 @@ export default {
   max-width: none;
 }
 #components-form-demo-advanced-search .result-list {
-  margin-top:16px;
+  margin-top: 16px;
   border: 1px dashed #e9e9e9;
   border-radius: 6px;
   background-color: #fafafa;
