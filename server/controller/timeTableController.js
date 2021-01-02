@@ -102,7 +102,7 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     .populate("curriculum.class_id", "class_name -_id")
     .populate("curriculum.room_id", "room_number -_id");
 
-  if (!data || data[0] == null) {
+  if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
 
@@ -158,7 +158,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
     },
   ]);
 
-  if (!data || data[0] == null) {
+  if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
  
@@ -181,7 +181,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
 exports.getTimeTableFromCourseID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ course_id: req.body.course_id });
 
-  if (!data || data[0] == null) {
+  if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
 
@@ -299,4 +299,20 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       },
     });
   }
+});
+exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
+  const data = await TimeTable.find({ lesson_id: req.body.lesson_id })
+    //.populate("course_id", "name -_id")
+    //.populate("teacher_id", "user_id name -_id")
+    .populate("curriculum.class_id", "class_name -_id")
+    .populate("curriculum.room_id", "room_number campus_name building_name -_id");
+
+  if (!data || data.length===0) {
+    return next(new AppError("该课表不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data,
+  });
 });

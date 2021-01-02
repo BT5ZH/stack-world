@@ -118,9 +118,8 @@ exports.getRoomByCampusAndBuilding = catchAsync(async (req, res, next) => {
 exports.getRoomByCampusOrBuilding = catchAsync(async (req, res, next) => {
   var data;
   if (req.query.building_id != null)
-    data = await Building.findOne({ _id: req.query.building_id }).populate(
-      "rooms"
-    );
+    data = await Building.findOne({ _id: req.query.building_id })
+    .populate("rooms");
   else {
     data = await Campus.findOne({ _id: req.query.campus_id }).populate({
       path: "buildings",

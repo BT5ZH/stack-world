@@ -223,8 +223,6 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
   const multiStudents = req.body.students;
-  console.log(multiStudents)
-  console.log(req.params.id)
   const classEntity = await Class.findOneAndUpdate(
     {
       _id: req.params.id,
