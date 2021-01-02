@@ -65,7 +65,7 @@ export default {
       userMap: {
         superAdmin: { name: "super", index: "/supervisor/school" },
         student: { name: "user", index: "/student/home" },
-        orgAdmin: { name: "admin", index: "/admin/semester" },
+        orgAdmin: { name: "admin", index: "/admin/teacher" },
         teacher: { name: "teacher", index: "/teacher/index" },
         patrol: { name: "patrol", index: "/patrol" },
       },

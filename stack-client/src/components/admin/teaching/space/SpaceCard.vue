@@ -18,8 +18,8 @@
           <div
             style="display: flex;justify-content: space-between;align-items: flex-start;"
           >
-            <p>{{ room.room_number }}</p>
-            <a-tag color="#2db7f5">文津楼</a-tag>
+            <p>房号：{{ room.room_number }}</p>
+            <a-tag color="#2db7f5">{{ buildingName[0] }}</a-tag>
             <a-tag color="#ffb900">{{ roomMap[room.room_type]["name"] }}</a-tag>
             <a-icon type="right-circle" style="font-size: 20px;" />
           </div>
@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  props: ["roomsProp"],
+  props: ["roomsProp", "buildingName"],
   data() {
     return {
       roomMap: {
@@ -52,7 +52,6 @@ export default {
     test: {
       immediate: true,
       handler(value) {
-        console.log("wathc:   ====" + value);
         this.test = value;
       },
     },
@@ -72,8 +71,6 @@ export default {
     },
   },
   mounted() {
-    console.log("+++");
-    console.log(this.roomsProp);
     this.test = this.roomsProp;
   },
 };
