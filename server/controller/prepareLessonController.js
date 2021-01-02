@@ -192,7 +192,7 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
 });
 
 /***
- * 更新课时的备课内容
+ * 更新课时的备课内容(需要修改)
  * 需要传入的参数：{lesson_id,teacher_id,section_index(从1开始),section_name}
  */
 exports.updateOnePrepareLesson = catchAsync(async (req,res)=>{
