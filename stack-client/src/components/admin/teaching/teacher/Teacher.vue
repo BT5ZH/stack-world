@@ -11,9 +11,14 @@
       <a-button @click='download'>下载模板</a-button>
     </a-modal> -->
     <batchAddTeacher :visible.sync="bulkImport_visible"></batchAddTeacher>
-    <a-modal v-model="editModal_visible" title="编辑教师" @ok="handleSubmit">
+    <a-modal
+      v-model="editModal_visible"
+      title="编辑教师"
+      @ok="handleSubmit"
+      @cancel="handleCancel"
+    >
       <a-form
-        :modal="form"
+        :model="form"
         :label-col="{ span: 5 }"
         :wrapper-col="{ span: 12 }"
       >
@@ -36,9 +41,8 @@
         </a-form-model-item>
         <a-form-model-item label="职称">
           <!-- <a-input v-model="form.title" /> -->
-          <a-select @change="handleSelectChange">
+          <a-select @change="handleSelectChange" v-model="form.title">
             <a-select-option
-              v-model="form.title"
               v-for="item in titles"
               :key="item._id"
               :value="item.title"
@@ -48,9 +52,8 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="学院">
-          <a-select @change="handleSelectChange">
+          <a-select @change="handleSelectChange" v-model="form.subOrg_name">
             <a-select-option
-              v-model="form.college"
               v-for="item in colleges"
               :key="item._id"
               :value="item.subOrgName"
@@ -72,10 +75,10 @@
         />
       </a-col>
       <a-col class="btn">
-        <a-button type="primary" @click="changeStatus(selectedTeachers)"
+        <a-button type="primary" @click="changeStatus(selectedTeachers, 0)"
           >启用</a-button
         >
-        <a-button type="danger" @click="changeStatus(selectedTeachers)"
+        <a-button type="danger" @click="changeStatus(selectedTeachers, 1)"
           >禁用</a-button
         >
         <!-- <a-button type="primary">注册</a-button> -->
@@ -90,11 +93,15 @@
 
     <a-row>
       <a-table
+        :key="tableIndex"
         rowKey="_id"
         :pagination="{
-          total: 50,
+          total: teacherList.length,
+          pageSizeOptions: pageSize,
+          'show-less-items': true,
           'show-size-changer': true,
           'show-quick-jumper': true,
+          'hide-on-single-page': true,
         }"
         :bordered="true"
         :row-selection="{
@@ -172,15 +179,17 @@ export default {
       bulkImport_visible: false,
       searchContent: null,
       upload_url: "",
-
+      tableIndex: 0,
+      pageSize: ["10", "20", "30", "50", "100"],
       form: {
         user_id: "",
         name: "",
-        org_name: "",
+        subOrg_name: "",
         major_name: "",
         title: "",
         active: undefined,
       },
+      user_id: "",
       columns,
       selectedTeachers: [],
 
@@ -204,11 +213,17 @@ export default {
     this.getTeacherList();
     this.getSubOrgsName();
   },
-
+  watch: {
+    tableIndex() {
+      this.getTeacherList();
+    },
+  },
   methods: {
     //连接后台获取成功之后记得更改前台数据
     //操作成功或失败弹出提示
-
+    handleUpdateClick() {
+      this.tableIndex += 1;
+    },
     async getTeacherList() {
       // const orgId="5facabb2cf3bb2002b4b3f38"
       const queryObject = {
@@ -252,13 +267,34 @@ export default {
     //header options
     onSearch(value) {
       console.log(value);
-      //调后台接口传value
+      let that = this;
+      // this.handleUpdateClick();
+      let url = `pc/v1/users/multipleUsers`;
+      axiosInstance
+        .get(url, {
+          params: {
+            name: value,
+          },
+        })
+        .then(
+          function(res) {
+            // console.log(res);
+            const { data } = res;
+            // console.log(data.teachers);
+            that.teacherList = data.teachers;
+            that.$message.success("查询成功");
+          },
+          function(err) {
+            console.log(err);
+          }
+        );
     },
 
     //row options
     editTeacher(record) {
       this.editModal_visible = true;
       this.form = record;
+      this.user_id = record._id;
       console.log(this.form);
     },
     resetPassword(record) {
@@ -275,22 +311,41 @@ export default {
     handleOk(e) {
       console.log(e);
       this.editModal_visible = false;
+      this.handleUpdateClick();
     },
     handleSubmit(e) {
       console.log(e);
       e.preventDefault();
-      console.log(this.form);
+      let url = `pc/v1/users/${this.user_id}`;
+      let that = this;
+      // console.log(url);
+      axiosInstance.patch(url, this.form).then(
+        function(res) {
+          console.log(res);
+          that.$message.success("编辑成功");
+        },
+        function(err) {
+          console.log(err);
+          that.$message.error("编辑失败");
+        }
+      );
       //post form
       this.editModal_visible = false;
+      this.handleUpdateClick();
     },
+
     handleSelectChange(value) {
       console.log(value);
+    },
+    handleCancel(e) {
+      this.$message.warning("取消修改");
+      this.handleUpdateClick();
     },
     onChange(checked) {
       console.log(`a-switch to ${checked}`);
     },
-    changeStatus(changeList) {
-      console.log(changeList);
+    changeStatus(changeList, e) {
+      let that = this;
       changeList.length == 0
         ? this.$message.info("请选中要操作的项")
         : this.$confirm({
@@ -299,11 +354,43 @@ export default {
             okType: "danger",
             cancelText: "取消",
             onOk() {
-              console.log(changeList);
-              //post changeList
+              if (e === 0) {
+                changeList.forEach(async (item) => {
+                  let url = `pc/v1/users/${item}`;
+                  // that.$store.commit("admin/getUserState", item);
+                  let data = {
+                    active: true,
+                  };
+                  try {
+                    await axiosInstance.patch(url, data);
+                    that.$message.success("启用成功");
+                  } catch (err) {
+                    console.log(err);
+                    that.$message.error("启用失败");
+                  }
+                });
+              } else if (e === 1) {
+                changeList.forEach(async (item) => {
+                  let url = `pc/v1/users/${item}`;
+                  // that.$store.commit("admin/getUserState", item);
+                  let data = {
+                    active: false,
+                  };
+                  try {
+                    await axiosInstance.patch(url, data);
+                    that.$message.success("禁用成功");
+                  } catch (err) {
+                    console.log(err);
+                    that.$message.error("禁用失败");
+                  }
+                });
+              }
+              that.handleUpdateClick();
+              that.getTeacherList();
             },
             onCancel() {
               console.log("Cancel");
+              that.$message.warning("操作取消");
             },
           });
     },
@@ -318,8 +405,8 @@ export default {
             okType: "danger",
             cancelText: "取消",
             onOk() {
-              console.log(deleteList);
-              //post deleteList
+              console.log("changeList[0]");
+              //post changeList
             },
             onCancel() {
               console.log("Cancel");
