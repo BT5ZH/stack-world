@@ -279,3 +279,28 @@ exports.deleteUser = (req, res) => {
     message: "This route is not defined!",
   });
 };
+//edit by chaos
+exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
+  const data = await User.aggregate([
+    { $match: { org_name: req.query.org_name } },
+    //{ $match: { subOrg_name: req.query.subOrg_name } },
+    { $match: { role: 'teacher' } },
+    {
+      $group: {
+        _id: "$subOrg_name",
+        title: { $addToSet: "$title" },
+        course_number: { $sum: 1 },
+      },
+    },
+  ]);
+ 
+
+  if (data === [] || data === null) {
+    return next(new AppError("课程不存在", 500));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data,
+  });
+});
