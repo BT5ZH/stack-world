@@ -62,7 +62,11 @@
             ></space-tree>
           </a-tab-pane>
           <a-tab-pane key="2" tab="房间列表" force-render>
-            <space-card class="class-card" :roomsProp="roomList"></space-card>
+            <space-card
+              class="class-card"
+              :roomsProp="roomList"
+              :buildingName="value"
+            ></space-card>
           </a-tab-pane>
         </a-tabs>
       </a-row>
@@ -152,7 +156,7 @@ export default {
 
         console.log("代码出差");
       }
-      this.value = this.label;
+      this.value = label;
     },
     onSearch() {
       console.log(...arguments);

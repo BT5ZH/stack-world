@@ -15,13 +15,13 @@
       <template #title>
         <span><a-icon type="mail" /><span>教学信息管理</span></span>
       </template>
-      <a-menu-item key="admin_semester">
+      <!-- <a-menu-item key="admin_semester">
         <a-icon type="deployment-unit" />
         <span>学年学期</span>
-      </a-menu-item>
+      </a-menu-item> -->
       <a-menu-item key="admin_timetable">
         <a-icon type="deployment-unit" />
-        <span>上课时间表</span>
+        <span>上课时间</span>
       </a-menu-item>
       <a-menu-item key="admin_space">
         <a-icon type="deployment-unit" />

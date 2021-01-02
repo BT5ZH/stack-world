@@ -34,6 +34,7 @@
           <course-dashboard
             class="class-dashboard"
             :courseProp="courseList"
+            :collegeName="value"
           ></course-dashboard>
         </a-tab-pane>
 
@@ -112,17 +113,6 @@ export default {
         console.log(err);
       }
     },
-    // async getCourses() {
-    //   let queryString = "";
-    //   const url = "/pc/v1/courses" + queryString;
-    //   try {
-    //     const { data } = await axiosInstance.get(url);
-    //     this.courseList = data.courses;
-    //     console.log(data);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // },
 
     async getCoursesFromCondition(payload, type) {
       let queryString = "";
@@ -166,7 +156,8 @@ export default {
 
         console.log("代码出差");
       }
-      this.value = this.label;
+      console.log(label);
+      this.value = label;
     },
 
     onSearch() {
@@ -178,21 +169,6 @@ export default {
     },
     callback(key) {
       console.log(key);
-      // if (key == "1") {
-      //   this.activeIndex = "1";
-      // } else if (key == "2") {
-      //   let payload = {};
-      //   this.activeIndex = "2";
-      //   if (this.flag.slice(-1) == "#") {
-      //     let temp = this.flag.slice(0, -1);
-      //     payload = { subOrg_name: temp };
-      //     this.getCoursesFromCondition(payload);
-      //   } else {
-      //     let dataArray = this.flag.split(":");
-      //     payload = { subOrg_name: dataArray[1], major_name: dataArray[0] };
-      //     this.getCoursesFromCondition(payload);
-      //   }
-      // }
     },
   },
 };
