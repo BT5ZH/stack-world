@@ -37,7 +37,13 @@ router
 router
   .route("/allOrgAdmin")
   .get(authController.protect, userController.getOrgTeachers);
-
+router 
+  .route("/getTeachersBySubOrgName")
+  .post(authController.protect, userController.getTeachersBySubOrgName);
+router 
+  .route("/getUsersBySubOrgAndSortByTitle")
+  .get(authController.protect, userController.getUsersBySubOrgAndSortByTitle);
+  
 router
   .route("/:id")
   .get(userController.getUser)
@@ -45,8 +51,5 @@ router
   .delete(userController.deleteUser)
   .post(authController.protect, userController.updateUserRecords);
 
-router //edit by Chaos on 12-15
-  .route("/getTeachersBySubOrgName")
-  .post(authController.protect, userController.getTeachersBySubOrgName);
 
 module.exports = router;
