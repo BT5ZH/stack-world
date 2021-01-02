@@ -134,8 +134,6 @@ export default {
   },
   methods: {
     async onChange(value, label) {
-      console.log("onchange:  value " + value);
-      console.log("onchange:   label" + label);
       this.flag = value;
       if (this.flag.slice(-1) == "#") {
         let payload = {};
@@ -147,14 +145,11 @@ export default {
         let payload = {};
         this.activeIndex = "2";
         let dataArray = this.flag.split(":");
-        console.log(dataArray);
         payload = {
           campus_id: dataArray[0],
           building_id: dataArray[1],
         };
         this.getSpaceFromCondition(payload, 2);
-
-        console.log("代码出差");
       }
       this.value = label;
     },
@@ -162,7 +157,6 @@ export default {
       console.log(...arguments);
     },
     onSelect() {
-      console.log("selected:   ");
       console.log(...arguments);
     },
     async spaceList() {
@@ -171,7 +165,6 @@ export default {
       try {
         const { data } = await axiosInstance.get(url);
         this.campusList = data.data.campus;
-        console.log(this.campusList);
       } catch (err) {
         console.log(err);
       }
@@ -186,11 +179,7 @@ export default {
       });
 
       queryString = "?" + queryString.slice(0, -1);
-
-      console.log(queryString);
-
       const url = "/pc/v1/rooms/getRoomByCampusOrBuilding" + queryString;
-      console.log(url);
       try {
         const { data } = await axiosInstance.get(url);
         if (type == 1) {

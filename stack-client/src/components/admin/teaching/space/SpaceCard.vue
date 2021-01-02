@@ -52,7 +52,6 @@ export default {
     test: {
       immediate: true,
       handler(value) {
-        console.log("wathc:   ====" + value);
         this.test = value;
       },
     },
@@ -72,8 +71,6 @@ export default {
     },
   },
   mounted() {
-    console.log("+++");
-    console.log(this.roomsProp);
     this.test = this.roomsProp;
   },
 };
