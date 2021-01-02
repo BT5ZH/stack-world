@@ -77,21 +77,16 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
 
   const studentsInClass = await Class.findById(req.query.class_id).select("students");
 
-  console.log('---studentsInClass.length-----')
-console.log(studentsInClass)
   for (let i = 0; i < studentsInClass.students.length; i++) {
     let index = students.indexOf(studentsInClass.students[i]);
     if (index > -1) {
       students.splice(index, 1);
     }
   }
-  console.log('---students-----')
-  console.log(students)
+
   let result = [];
   for (let i = 0; i < students.length; i++) {
     let student = await User.findById(students[i]).select("_id user_id name");
-    console.log('--------')
-    console.log(student)
     result.push(student);
   }
 
@@ -154,31 +149,61 @@ exports.addStudents = catchAsync(async (req, res, next) => {
   });
 });
 
+// exports.updateStudents = catchAsync(async (req, res, next) => {
+//   const leftStudents = req.body.students;
+//   const classEntity = await Class.find({ _id: req.params.id });
+//   classEntity.forEach((item) => {
+//     leftStudents.forEach((stu, i) => {
+//       item.students.forEach((arr, index) => {
+//         console.log(arr._id + "%%%%%%%" + stu._id);
+//         console.log(arr._id == stu._id);
+//         if (arr._id == stu._id) {
+//           arr.studentID = stu.studentID;
+//           arr.studentName = stu.studentName;
+//           arr.remark = stu.remark;
+//         }
+//       });
+//     });
+//   });
+
+//   console.log(classEntity);
+
+//   const result = await Class.findOneAndUpdate(
+//     { _id: req.params.id },
+//     {
+//       $set: {
+//         students: classEntity[0].students,
+//       },
+//     },
+//     {
+//       new: true,
+//       upsert: true,
+//     }
+//   );
+
+//   if (!result) {
+//     return next(new AppError("更新班级学生列表信息出错", 404));
+//   }
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       students: result.students,
+//     },
+//   });
+// });
+
+//edit by chaos
 exports.updateStudents = catchAsync(async (req, res, next) => {
-  const leftStudents = req.body.students;
-  const classEntity = await Class.find({ _id: req.params.id });
-  classEntity.forEach((item) => {
-    leftStudents.forEach((stu, i) => {
-      item.students.forEach((arr, index) => {
-        console.log(arr._id + "%%%%%%%" + stu._id);
-        console.log(arr._id == stu._id);
-        if (arr._id == stu._id) {
-          arr.studentID = stu.studentID;
-          arr.studentName = stu.studentName;
-          arr.remark = stu.remark;
-        }
-      });
-    });
-  });
+  const newStudents = req.body.students;
 
-  console.log(classEntity);
-
-  const result = await Class.findOneAndUpdate(
-    { _id: req.params.id },
+  const classEntity = await Class.findOneAndUpdate(
     {
-      $set: {
-        students: classEntity[0].students,
-      },
+      _id: req.body.class_id,
+    },
+    {
+      $addToSet: {
+        students: newStudents,//check the item which is in the newStudents and not in the students
+      },                      //and add it into students
     },
     {
       new: true,
@@ -186,16 +211,15 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
     }
   );
 
-  if (!result) {
-    return next(new AppError("更新班级学生列表信息出错", 404));
+  if (!classEntity) {
+    return next(new AppError("该班级不存在", 404));
   }
-  res.status(200).json({
+
+  res.status(204).json({
     status: "success",
-    data: {
-      students: result.students,
-    },
+
   });
-});
+})
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
   const multiStudents = req.body;
@@ -225,8 +249,6 @@ exports.deleteStudents = catchAsync(async (req, res, next) => {
 });
 
 exports.getStudents = catchAsync(async (req, res, next) => {
-  console.log("getStudents 进来啦");
-
   const classEntity = await Class.findById(req.params.id);
 
   if (!classEntity) {
@@ -243,93 +265,92 @@ exports.getStudents = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.addCurriculum = catchAsync(async (req, res, next) => {
-  const mCurriculum = req.body.curriculum;
+// exports.addCurriculum = catchAsync(async (req, res, next) => {
+//   const mCurriculum = req.body.curriculum;
 
-  const ClassEntity = await Class.findByIdAndUpdate(
-    {
-      _id: req.params.id,
-    },
-    {
-      $addToSet: {
-        curriculum: mCurriculum,
-      },
-    },
-    {
-      new: true,
-      upsert: true,
-    }
-  );
+//   const ClassEntity = await Class.findByIdAndUpdate(
+//     {
+//       _id: req.params.id,
+//     },
+//     {
+//       $addToSet: {
+//         curriculum: mCurriculum,
+//       },
+//     },
+//     {
+//       new: true,
+//       upsert: true,
+//     }
+//   );
 
-  res.status(201).json({
-    status: "success",
-    data: ClassEntity.curriculum,
-  });
-});
+//   res.status(201).json({
+//     status: "success",
+//     data: ClassEntity.curriculum,
+//   });
+// });
 
-exports.deleteMultipleCourseTimeTable = catchAsync(async (req, res, next) => {
-  const multiCourses = req.body;
-  const classEntity = await Class.findOneAndUpdate(
-    {
-      _id: req.params.id,
-    },
-    {
-      $pull: {
-        curriculum: { _id: { $in: multiCourses } },
-      },
-    },
-    {
-      new: true,
-      upsert: true,
-    }
-  );
+// exports.deleteMultipleCourseTimeTable = catchAsync(async (req, res, next) => {
+//   const multiCourses = req.body;
+//   const classEntity = await Class.findOneAndUpdate(
+//     {
+//       _id: req.params.id,
+//     },
+//     {
+//       $pull: {
+//         curriculum: { _id: { $in: multiCourses } },
+//       },
+//     },
+//     {
+//       new: true,
+//       upsert: true,
+//     }
+//   );
 
-  if (!classEntity) {
-    return next(new AppError("该班级不存在", 404));
-  }
+//   if (!classEntity) {
+//     return next(new AppError("该班级不存在", 404));
+//   }
 
-  res.status(204).json({
-    status: "success",
-    data: classEntity.curriculum,
-  });
-});
+//   res.status(204).json({
+//     status: "success",
+//     data: classEntity.curriculum,
+//   });
+// });
 
-exports.getCurriculum = catchAsync(async (req, res, next) => {
-  console.log("getCurriculum 进来啦");
+// exports.getCurriculum = catchAsync(async (req, res, next) => {
+//   console.log("getCurriculum 进来啦");
 
-  const classEntity = await Class.findById(req.params.id);
+//   const classEntity = await Class.findById(req.params.id);
 
-  if (!classEntity) {
-    return next(new AppError("该班级不存在", 404));
-  }
-  // validate students list null or length==0 TODO:
+//   if (!classEntity) {
+//     return next(new AppError("该班级不存在", 404));
+//   }
+//   // validate students list null or length==0 TODO:
 
-  //console.log(classEntity);
-  res.status(200).json({
-    status: "success",
-    data: {
-      curriculum: classEntity.curriculum,
-    },
-  });
-});
+//   //console.log(classEntity);
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       curriculum: classEntity.curriculum,
+//     },
+//   });
+// });
 //edit by Chaos on 12-15
 exports.getClassesBySubOrgName = catchAsync(async (req, res, next) => {
   const data = await Class.find({ subOrg_name: req.body.subOrg_name });
-  if (!data) {
+  if (!data||data.length===0) {
     return next(new AppError("班级不存在", 404));
   }
 
   res.status(200).json({
     status: "success",
-    data: {
-      data,
-    },
+    data,
+
   });
 });
 //edit by Chaos on 12-15
 exports.getClassesByMajorName = catchAsync(async (req, res, next) => {
   const data = await Class.find({ major_name: req.body.major_name });
-  if (!data) {
+  if (data.length === 0 ||  !data){
     return next(new AppError("班级不存在", 404));
   }
 
@@ -352,7 +373,7 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
       },
     },
   ]);
-  if (data.length == 0 || data === [] || data === null) {
+  if (data.length === 0 ||  !data) {
     return next(new AppError("课程不存在", 500));
   }
   console.log(data);

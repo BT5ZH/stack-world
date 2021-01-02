@@ -18,7 +18,10 @@ router
 router
   .route("/getStudentsNotInOneClass")
   .get(authController.protect, classController.getStudentsNotInOneClass)
-  
+router
+  .route("/updateStudents")
+  .post(authController.protect, classController.updateStudents)
+
 router
   .route("/:id")
   .get(authController.protect, classController.getClass)
@@ -27,17 +30,14 @@ router
 router
   .route("/:id/students")
   .get(authController.protect, classController.getStudents)
-  .patch(authController.protect, classController.updateStudents)
+  //.patch(authController.protect, classController.updateStudents)
   .post(authController.protect, classController.addStudents)
   .delete(authController.protect, classController.deleteStudents);
 router
   .route("/:id/curriculum")
-  .get(authController.protect, classController.getCurriculum)
+  //.get(authController.protect, classController.getCurriculum)
   //   .patch(authController.protect, classController.updateStudent)
-  .post(authController.protect, classController.addCurriculum)
-  .delete(
-    authController.protect,
-    classController.deleteMultipleCourseTimeTable
-  );
+ // .post(authController.protect, classController.addCurriculum)
+  //.delete(authController.protect,classController.deleteMultipleCourseTimeTable);
 
 module.exports = router;
