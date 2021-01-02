@@ -33,7 +33,7 @@ const questionSchema = new mongoose.Schema({
     stem_type:{//题干的类型（如果题干是文件类的，stem存的是文件的地址，如果是文字类的直接存文字
         type:String,
     },
-    question_type:{//题型（danxuan\duoxuan\panduan)
+    question_type:{//题型（danxuan\duoxuan\panduan\zhuguan)
         type:String,
     },
     analysis: {

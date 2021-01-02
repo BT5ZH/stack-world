@@ -192,10 +192,27 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
 });
 
 /***
- * 
+ * 更新课时的备课内容
+ * 需要传入的参数：{lesson_id,teacher_id,section_index(从1开始),section_name}
  */
 exports.updateOnePrepareLesson = catchAsync(async (req,res)=>{
-
+  var newLessonInfo = req.body;
+  var lesson_id = newLessonInfo.lesson_id;
+  var teacher_id = newLessonInfo.teacher_id;
+  var section_index = newLessonInfo.section_index;
+  var section_name = newLessonInfo.section_name;
+  try {
+    var lesson = await PrepareLesson.findOne({
+      lesson_id: lesson_id,
+      teacher_id: teacher_id
+    });
+    lesson.one_class[section_index - 1].name = section_name;
+    lesson.save();
+    res.status(200).json({ status: true, message: lesson });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ status: false, message: err });
+  }
 })
 
 

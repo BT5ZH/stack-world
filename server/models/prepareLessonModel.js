@@ -38,13 +38,18 @@ const prepareLessonSchema = new mongoose.Schema(
                       tag: {
                               type: String,
                               default: 'Teach',
-                              enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework',],
+                              enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework'],
                       },
-                      start: String,
-                      end:String,
-                      content:String,
-                      options:[{type:String,}],
-                      attachment_url: { type: String },//use to save the attachment url of one homework
+                      // start: String,
+                      // end:String,
+                      time:String,
+                      people_num:Number,
+                      // content:String,
+                      // options:[{type:String,}],
+                      // right_answer:String,
+                      // question_type:String,
+                      vote:[{title:String,options:[String],right_answer:String,question_type:String,}],
+                      //attachment_url: { type: String },//use to save the attachment url of one homework
                   }
           ],
         }
