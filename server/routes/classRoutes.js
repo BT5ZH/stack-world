@@ -20,7 +20,7 @@ router
   .get(authController.protect, classController.getStudentsNotInOneClass)
 router
   .route("/updateStudents")
-  .post(authController.protect, classController.updateStudents)
+  .patch(authController.protect, classController.updateStudents)
 
 router
   .route("/:id")

@@ -222,15 +222,23 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
-  const multiStudents = req.body;
+  const multiStudents = req.body.students;
+  console.log(multiStudents)
+  console.log(req.params.id)
   const classEntity = await Class.findOneAndUpdate(
     {
       _id: req.params.id,
     },
+    // {
+    //   $pull: {
+    //     students: { _id: { $in: multiStudents } },
+        
+    //   },
+    // },
     {
-      $pull: {
-        students: { _id: { $in: multiStudents } },
-      },
+        $pull: { 
+          students: { $in: multiStudents }
+        } , 
     },
     {
       new: true,
@@ -244,7 +252,6 @@ exports.deleteStudents = catchAsync(async (req, res, next) => {
 
   res.status(204).json({
     status: "success",
-    data: classEntity,
   });
 });
 
