@@ -3,27 +3,20 @@
     <a-row class="btn-area">
       <a-col :span="2">
         <a-button type="link" @click="backward">
-          <a-icon type="left" />Backward
+          <a-icon type="left" />返回
         </a-button>
       </a-col>
       <a-col :span="6"> </a-col>
       <a-col :span="6">
-        <b>班级详情</b>
+        <b>{{ class_name }}</b>
       </a-col>
     </a-row>
     <a-row class="btn-area">
       <a-col :span="2"> </a-col>
-      <a-col :span="6">
-        <a-input-search
-          placeholder="学生名称"
-          enter-button
-          @search="onSearch"
-        />
-      </a-col>
-      <a-col :span="6"></a-col>
+      <a-col :span="12"></a-col>
       <a-col :span="9" class="btn">
-        <a-button type="primary">添加学生</a-button>
-        <a-button type="primary">批量删除学生</a-button>
+        <a-button type="primary" @click="add_student">添加学生</a-button>
+        <a-button type="primary" disabled>批量删除学生</a-button>
       </a-col>
     </a-row>
     <a-table
@@ -31,6 +24,10 @@
       :columns="columns"
       :data-source="data"
       bordered
+      :row-selection="{
+        selectedRowKeys: selectedClasses,
+        onChange: onSelectChange,
+      }"
       :pagination="{
         total: 50,
         'show-size-changer': true,
@@ -38,53 +35,26 @@
       }"
       class="table_set"
     >
-      <template
-        v-for="col in ['name', 'student_id', 'class_id', 'sex']"
-        :slot="col"
-        slot-scope="text, record"
-      >
-        <div :key="col">
-          <a-input
-            v-if="record.editable"
-            style="margin: -5px 0"
-            :value="text"
-            @change="(e) => handleChange(e.target.value, record.key, col)"
-          />
-          <template v-else>
-            {{ text }}
-          </template>
-        </div>
+      <template v-for="col in ['name', 'user_id', 'phone']" :slot="col">
       </template>
-      <template slot="operation" slot-scope="text, record">
-        <div class="editable-row-operations">
-          <span v-if="record.editable">
-            <a @click="() => save(record.key)">保存</a>
-            <a-popconfirm
-              title="确定取消吗?"
-              @confirm="() => cancel(record.key)"
-            >
-              <a>取消</a>
-            </a-popconfirm>
-          </span>
-          <span v-else>
-            <a :disabled="editingKey !== ''" @click="() => edit(record.key)">
-              <a href="javascript:;">编辑</a>
-            </a>
-            <a-popconfirm
-              v-if="data.length"
-              title="确定删除吗?"
-              @confirm="() => onDelete(record.key)"
-            >
-              <a href="javascript:;">删除</a>
-            </a-popconfirm>
-          </span>
-        </div>
+      <template #operation="record">
+        <a-button type="link" @click="deleteStudent(record)">删除</a-button>
       </template>
     </a-table>
+    <!-- 添加学生对话框 -->
+    <a-modal
+      v-model="visible"
+      title="添加"
+      @ok="addstudent_ok"
+      :maskClosable="false"
+    >
+      <add_students></add_students>
+    </a-modal>
   </div>
 </template>
 
 <script>
+import add_students from "./add_students";
 import axios from "@/utils/axios";
 
 const columns = [
@@ -96,21 +66,15 @@ const columns = [
   },
   {
     title: "学号",
-    dataIndex: "student_id",
+    dataIndex: "user_id",
     align: "center",
-    scopedSlots: { customRender: "student_id" },
+    scopedSlots: { customRender: "user_id" },
   },
   {
-    title: "班级",
-    dataIndex: "class_id",
+    title: "电话",
+    dataIndex: "phone",
     align: "center",
-    scopedSlots: { customRender: "class_id" },
-  },
-  {
-    title: "性别",
-    dataIndex: "sex",
-    align: "center",
-    scopedSlots: { customRender: "sex" },
+    scopedSlots: { customRender: "phone" },
   },
   {
     title: "操作",
@@ -119,100 +83,42 @@ const columns = [
     scopedSlots: { customRender: "operation" },
   },
 ];
-const data = [
-  {
-    key: "1",
-    name: "张三",
-    student_id: "172001",
-    class_id: "软工1702",
-    sex: "男",
-  },
-  {
-    key: "2",
-    name: "李四",
-    student_id: "172002",
-    class_id: "软工1702",
-    sex: "男",
-  },
-  {
-    key: "3",
-    name: "王五",
-    student_id: "172003",
-    class_id: "软工1702",
-    sex: "男",
-  },
-  {
-    key: "4",
-    name: "李莉",
-    student_id: "172004",
-    class_id: "软工1702",
-    sex: "女",
-  },
-];
+const data = [];
 export default {
+  components: { add_students },
   data() {
     this.cacheData = data.map((item) => ({ ...item }));
     return {
+      // 初始数据
       data,
       columns,
       editingKey: "",
+      class_name: "",
+      // 添加学生
+      visible: false,
+      // 多选键
+      selectedClasses: [],
     };
   },
   mounted() {
+    // 显示班名
+    this.class_name = this.$route.query.class_name;
     this.getStudents();
   },
   methods: {
     async getStudents() {
       // 获取所有学生名
-      // 通过id得到班级
       const class_id = this.$route.query.classId;
-      let class_result = this.getClass(class_id);
-      class_result.then((res) => {
-        // 通过班级得到所有学生id，并组装成对象
-        let students = [];
-        for (let i = 0; i < res.length; i++) {
-          students.push({ _id: res[i] });
-        }
-        let user_result = this.getUsers(students);
-        user_result.then(res => {
-          console.log(res)
-        })
-        // console.log(students);
-      });
-
-      // 发送给后端，查询出所有user学生
-      // const url = "/pc/v1/organizations/" + orgId + "/suborgs";
-      // try {
-      //   const { data } = await axios.get(url);
-      //   this.colleges = data.subOrgs;
-      // } catch (err) {
-      //   console.log(err);
-      // }
-    },
-    async getClass(class_id) {
-      // 获取id对应班级信息
-      // console.log(class_id)
       const url = "/pc/v1/classes/" + class_id;
       try {
         const { data } = await axios.get(url);
-        return data.data.classEntity.students;
-        // console.log(data.data.classEntity.students);
+        this.data = data.data.classEntity.studentList;
+        // console.log(data.data.classEntity.studentList);
       } catch (err) {
         console.log(err);
       }
     },
-    async getUsers(payload) {
-      // 获取id对应班级信息
-      console.log(payload);
-      const url = "/pc/v1/users/getstudents";
-      try {
-        const { data } = await axios.post(url, payload);
-        // return data.data.classEntity.students;
-        console.log(data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    },
+
     backward() {
       // 返回
       this.$router.push({
@@ -232,40 +138,19 @@ export default {
       const data = [...this.data];
       this.data = data.filter((item) => item.key !== key);
     },
-    edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter((item) => key === item.key)[0];
-      this.editingKey = key;
-      if (target) {
-        target.editable = true;
-        this.data = newData;
-      }
+    // 多选键
+    onSelectChange(selectedKeys) {
+      // 表格信息的选中
+      this.selectedClasses = selectedKeys;
     },
-    save(key) {
-      const newData = [...this.data];
-      const newCacheData = [...this.cacheData];
-      const target = newData.filter((item) => key === item.key)[0];
-      const targetCache = newCacheData.filter((item) => key === item.key)[0];
-      if (target && targetCache) {
-        delete target.editable;
-        this.data = newData;
-        Object.assign(targetCache, target);
-        this.cacheData = newCacheData;
-      }
-      this.editingKey = "";
+    // 添加学生
+    add_student() {
+      this.visible = true;
     },
-    cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter((item) => key === item.key)[0];
-      this.editingKey = "";
-      if (target) {
-        Object.assign(
-          target,
-          this.cacheData.filter((item) => key === item.key)[0]
-        );
-        delete target.editable;
-        this.data = newData;
-      }
+    addstudent_ok() {},
+    // 删除学生
+    deleteStudent(record) {
+      console.log(record);
     },
   },
 };

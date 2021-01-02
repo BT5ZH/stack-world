@@ -29,17 +29,11 @@
 
     <a-row class="btn-area">
       <a-col :span="5">
-        <a-input-search
-          placeholder="班级名称"
-          enter-button
-          @search="onSearch"
-        />
       </a-col>
       <a-col :span="10"></a-col>
       <a-col :span="9" class="btn">
-        <a-button type="primary">批量添加班级</a-button>
         <a-button type="primary" @click="addClasses">添加班级</a-button>
-        <a-button type="primary">批量删除</a-button>
+        <a-button type="primary" disabled>批量删除</a-button>
       </a-col>
     </a-row>
     <a-table
@@ -58,7 +52,7 @@
       :data-source="classList"
     >
       <template #operation="record">
-        <a-button type="link" @click="viewClassInfo(record._id)">详情</a-button>
+        <a-button type="link" @click="viewClassInfo(record)">详情</a-button>
         <a-button type="link" @click="editclass(record)">编辑</a-button>
         <a-button type="link" @click="deleteclass(record)">删除</a-button>
       </template>
@@ -245,9 +239,6 @@ export default {
       this.getmajors(val);
     },
   },
-  // updated() {
-  //   this.getclassdata();
-  // },
   methods: {
     async getTreeData() {
       let queryString = this.orgName;
@@ -269,7 +260,8 @@ export default {
         "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
       try {
         const { data } = await axiosInstance.get(url);
-        this.major_names = data.data.majors;
+        // console.log(data)
+        this.major_names = data.majors;
         // console.log(data.data.majors);
       } catch (err) {
         console.log(err);
@@ -338,10 +330,11 @@ export default {
     handle() {
       this.$store.commit("changeState", true);
     },
-    viewClassInfo(classId) {
+    viewClassInfo(record) {
+      // console.log(record)
       this.$router.push({
         name: "admin_classinfo",
-        query: { classId: classId },
+        query: { classId: record.id,orgName:this.orgName,subOrg_name:record.subOrg_name,major_name:record.major_name,class_name:record.class_name },
       });
     },
     // 删除班级
