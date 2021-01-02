@@ -10,10 +10,10 @@ router
 
 router
   .route("/collect")
-  .post(authController.protect, resourceController.collectResourse);
+  .post(authController.protect, resourceController.collectResource);
 router
   .route("/deleteCollect")
-  .post(authController.protect, resourceController.deleteCollectResourse);
+  .post(authController.protect, resourceController.deleteCollectResource);
 
 router
   .route("/getLessonResourceOfTeacher")

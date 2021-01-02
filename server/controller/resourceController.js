@@ -64,19 +64,19 @@ exports.getAllResources = catchAsync(async (req, res, next) => {
 /**
  * 传入参数{user_id,res_url,collect_time,res_type,res_name}
  */
-exports.collectResourse = catchAsync(async (req, res) => {
+exports.collectResource = catchAsync(async (req, res) => {
   try {
-    var collect_resourse = req.body;
-    var resourse = {
-      res_name: collect_resourse.res_name,
-      res_url: collect_resourse.res_url,
-      collect_time: collect_resourse.collect_time,
-      res_type: collect_resourse.res_type
+    var collect_resource = req.body;
+    var resource = {
+      res_name: collect_resource.res_name,
+      res_url: collect_resource.res_url,
+      collect_time: collect_resource.collect_time,
+      res_type: collect_resource.res_type
     };
-    var user_id = collect_resourse.user_id;
+    var user_id = collect_resource.user_id;
 
     var user = await User.findOne({ user_id: user_id });
-    user.resources.push(resourse);
+    user.resources.push(resource);
     user.save();
 
     res.status(200).json({
@@ -99,7 +99,7 @@ exports.getLessonResourceOfTeacher = catchAsync(async (req, res) => {
   try {
     var authorId = req.body.teacher_id;
     var lessonId = req.body.lesson_id;
-    var resource = await Resource.find({ authorId: authorId ,lesson_d:lessonId});
+    var resource = await Resource.find({ authorId: authorId ,lesson_id:lessonId});
  
     res.status(200).json({
       status: true,
@@ -114,23 +114,23 @@ exports.getLessonResourceOfTeacher = catchAsync(async (req, res) => {
   }
 });
 /**
- * 删除用户收藏的资源
+ * 删除用户收藏的资源(操作的是user表)
  * 传入参数{user_id,res_url}
  */
-exports.deleteCollectResourse = catchAsync(async (req, res) => {
+exports.deleteCollectResource = catchAsync(async (req, res) => {
   try {
     var user_id = req.body.user_id;
     var user = await User.findOne({ user_id: user_id });
-    for (var i = 0; i < user.resourses.length; i++) {
-      if (user.resourses[i].res_rul == req.body.res_url) {
-        user.resourses.splice(i, 1);
+    for (var i = 0; i < user.resources.length; i++) {
+      if (user.resources[i].res_rul == req.body.res_url) {
+        user.resources.splice(i, 1);
         break;
       }
     }
     user.save();
     res.status(200).json({
       status: true,
-      collect_resourse:user.resourses,
+      collect_resource:user.resources,
       message: "取消收藏成功"
     });
   } catch (err) {
