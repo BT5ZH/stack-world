@@ -14,8 +14,9 @@ const AdminResource = () =>
   import("@/components/admin/resource/ResourceManagement");
 
 // 教学信息管理
-const AdminSemester = () =>
-  import("@/components/admin/teaching/semester/Semester");
+// const AdminSemester = () =>
+//   import("@/components/admin/teaching/semester/Semester");
+
 const AdminTimetable = () =>
   import("@/components/admin/teaching/timetable/Timetable");
 const AdminSpace = () => import("@/components/admin/teaching/space/Space");
@@ -136,11 +137,11 @@ export const routes = [
         name: "admin_timetable",
         component: AdminTimetable,
       },
-      {
-        path: "semester",
-        name: "admin_semester",
-        component: AdminSemester,
-      },
+      // {
+      //   path: "semester",
+      //   name: "admin_semester",
+      //   component: AdminSemester,
+      // },
       {
         path: "installation",
         name: "admin_installation",
