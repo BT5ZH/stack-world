@@ -15,6 +15,10 @@ router
   .route("/deleteCollect")
   .post(authController.protect, resourceController.deleteCollectResourse);
 
+router
+  .route("/getLessonResourseOfTeacher")
+  .post(authController.protect, resourceController.getLessonResourseOfTeacher);
+
 // // 测试
 router
   .route("/")

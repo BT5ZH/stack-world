@@ -92,6 +92,27 @@ exports.collectResourse = catchAsync(async (req, res) => {
   }
 });
 
+/***
+ * 根据teacher_id、lesson_id获取该教师的某门课的资源
+ */
+exports.getLessonResourseOfTeacher = catchAsync(async (req, res) => {
+  try {
+    var authorId = req.body.teacher_id;
+    var lessonId = req.body.lesson_id;
+    var resourses = await Resource.find({ authorId: authorId ,lesson_d:lessonId});
+ 
+    res.status(200).json({
+      status: true,
+      resourse:resourses
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: false,
+      message: err
+    });
+  }
+});
 /**
  * 删除用户收藏的资源
  * 传入参数{user_id,res_url}
