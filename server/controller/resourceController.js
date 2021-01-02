@@ -95,15 +95,15 @@ exports.collectResourse = catchAsync(async (req, res) => {
 /***
  * 根据teacher_id、lesson_id获取该教师的某门课的资源
  */
-exports.getLessonResourseOfTeacher = catchAsync(async (req, res) => {
+exports.getLessonResourceOfTeacher = catchAsync(async (req, res) => {
   try {
     var authorId = req.body.teacher_id;
     var lessonId = req.body.lesson_id;
-    var resourses = await Resource.find({ authorId: authorId ,lesson_d:lessonId});
+    var resource = await Resource.find({ authorId: authorId ,lesson_d:lessonId});
  
     res.status(200).json({
       status: true,
-      resourse:resourses
+      resource:resource
     });
   } catch (err) {
     console.log(err);

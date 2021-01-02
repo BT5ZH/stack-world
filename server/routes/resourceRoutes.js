@@ -16,8 +16,8 @@ router
   .post(authController.protect, resourceController.deleteCollectResourse);
 
 router
-  .route("/getLessonResourseOfTeacher")
-  .post(authController.protect, resourceController.getLessonResourseOfTeacher);
+  .route("/getLessonResourceOfTeacher")
+  .post(authController.protect, resourceController.getLessonResourceOfTeacher);
 
 // // 测试
 router
