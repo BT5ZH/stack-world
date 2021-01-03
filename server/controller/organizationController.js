@@ -62,14 +62,10 @@ exports.createOrganization = catchAsync(async (req, res, next) => {
 });
 
 exports.updateOrganization = catchAsync(async (req, res, next) => {
-  const organization = await Organization.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+    const organization = await Organization.findOneAndUpdate(
+      {_id:req.params.id},
+      req.body      
+    );
   if (!organization) {
     return next(new AppError("该机构不存在", 404));
   }
@@ -80,6 +76,8 @@ exports.updateOrganization = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+
 
 exports.deleteOrganization = catchAsync(async (req, res, next) => {
   const organization = await Organization.findByIdAndDelete(req.params.id);

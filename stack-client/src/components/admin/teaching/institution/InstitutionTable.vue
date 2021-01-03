@@ -152,6 +152,8 @@ import axiosInstance from "@/utils/axios";
 export default {
   data() {
     return {
+      // 刷新
+      refresh: 0,
       // 选择树
       value: undefined,
       pageSize: ["10", "20", "30", "50", "100"],
@@ -230,6 +232,9 @@ export default {
     this.getTreeData();
   },
   watch: {
+    refresh(val) {
+      this.getclassdata();
+    },
     subOrg_name(val) {
       // 根据学院找到专业赋值
       this.addclass.add_subOrg_name = val;
@@ -292,6 +297,8 @@ export default {
         this.classList.map((item) => {
           item.studentNum = item.students.length;
         });
+        // console.log("-----classList-----")
+        // console.log(this.classList)
       } catch (err) {
         console.log(err);
       }
@@ -318,6 +325,7 @@ export default {
         .then(({ data }) => {
           // console.log(data);
           this.$message.info("添加成功！");
+          this.refresh += 1;
         })
         .catch(() => {
           this.$message.error("添加失败，请重试！");
@@ -347,13 +355,15 @@ export default {
       });
     },
     // 删除班级
-    deleteclass(record) {
-      this.showDeleteConfirm(record._id);
+    async deleteclass(record) {
+      await this.showDeleteConfirm(record._id);
+      this.refresh += 1;
       // console.log(record);
       //post record._id
     },
     showDeleteConfirm(deleteList) {
       // console.log(deleteList);
+      var that = this
       deleteList.length == 0
         ? this.$message.info("请选中要删除的项")
         : this.$confirm({
@@ -362,22 +372,17 @@ export default {
             okText: "确定",
             okType: "danger",
             cancelText: "取消",
-            onOk() {
+            async onOk() {
               // console.log(deleteList);
               //post deleteList
               const url = "/pc/v1/classes/" + deleteList;
               try {
-                axiosInstance
-                  .delete(url)
-                  .then(({ data }) => {
-                    this.$message.info("删除成功！");
-                    // console.log(data.message);
-                  })
-                  .catch(() => {
-                    this.$message.error("删除失败，请重试！");
-                  });
+                const result = await axiosInstance.delete(url);
+                console.log(result);
+                that.$message.info("删除成功！");
               } catch (err) {
                 console.log(err);
+                that.$message.error("删除失败，请重试！");
               }
             },
             onCancel() {
@@ -404,13 +409,14 @@ export default {
         major_name: this.edit_class.major_name,
         class_name: this.edit_class.class_name,
       };
-      console.log(requestData);
+      // console.log(requestData);
       const url = `pc/v1/classes/` + this.edit_record;
       axiosInstance
         .patch(url, requestData)
         .then(({ data }) => {
           // console.log(data.status);
           this.$message.info("修改成功");
+          this.refresh += 1;
         })
         .catch(() => {
           this.$message.error("修改失败，请重试！");
@@ -439,7 +445,8 @@ export default {
       const url = "/pc/v1/classes/search";
       try {
         const { data } = await axiosInstance.post(url, payload);
-        // console.log(data.data.classes);
+        console.log("--classes----");
+        console.log(data.data.classes);
         this.classList = data.data.classes;
         this.classList.map((item) => {
           item.studentNum = item.students.length;
