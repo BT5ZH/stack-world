@@ -122,7 +122,9 @@ export default {
       return [year - 1, year, year + 1];
     },
   },
-  mounted() {},
+  mounted() {
+    // console.log(this.lessonList)
+  },
   methods: {
     handleSearch(e) {
       e.preventDefault();
@@ -148,11 +150,13 @@ export default {
           major_name,
         })
         .then(({ data }) => {
-          console.log(data);
+          // console.log("-----getOrgInfo------")
+          // console.log(data);
           this.courseList = data.courses;
           this.teacherList = data.teachers;
           this.classList = data.classes;
           this.lessonList = data.lessonlist;
+          console.log( this.lessonList)
         })
         .catch((err) => {
           console.error(err);
@@ -169,7 +173,7 @@ export default {
       axios
         .post("pc/v1/lessons/", postData)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           const { status } = data;
           if (!status) throw "connect course fail";
           this.$message.success("关联课程成功");

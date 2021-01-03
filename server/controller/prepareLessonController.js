@@ -193,21 +193,45 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
 
 /***
  * 更新课时的备课内容(需要修改)
- * 需要传入的参数：{lesson_id,teacher_id,section_index(从1开始),section_name}
+ * 需要传入的参数：
+ * {lesson_id,
+ * teacher_id,
+ * section_index(从1开始),
+ * PPT,
+ * duration,
+ * description: 
+ * nodes: [
+ *         {
+ *           tag: {
+ *                  type: String,
+ *                  default: 'Teach',
+ *                  enum: ['Teach', 'Sign','Ask','Race','Vote','Dispatch','Test','Homework'],
+ *                },
+ *                time:String,
+ *                people_num:Number,
+ *                vote:[{title:String,options:[String],right_answer:String,question_type:String,}]
+ *         }
+ *        ],
+ * }
+ *         
  */
-exports.updateOnePrepareLesson = catchAsync(async (req,res)=>{
+exports.updateOnePrepareLesson = catchAsync(async (req, res) => {
   var newLessonInfo = req.body;
   var lesson_id = newLessonInfo.lesson_id;
   var teacher_id = newLessonInfo.teacher_id;
   var section_index = newLessonInfo.section_index;
-  var section_name = newLessonInfo.section_name;
+  var PPT = newLessonInfo.PPT;
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
       teacher_id: teacher_id
     });
-    lesson.one_class[section_index - 1].name = section_name;
+    lesson.one_class[section_index - 1].PPT = PPT;
+    lesson.one_class[section_index - 1].duration = duration;
+    lesson.one_class[section_index - 1].description = description;
+    lesson.one_class[section_index - 1].nodes = nodes;
     lesson.save();
+
     res.status(200).json({ status: true, message: lesson });
   } catch (err) {
     console.log(err)
