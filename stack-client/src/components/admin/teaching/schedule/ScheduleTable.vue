@@ -1,18 +1,5 @@
 <template>
   <div>
-    <a-row class="btn-area">
-      <a-col :span="5">
-        <a-select @change="onSelect" style="width: 100%">
-          <a-select-option
-            :value="index"
-            v-for="(sem, index) in semesters"
-            :key="index"
-          >
-            {{ sem.name }}
-          </a-select-option>
-        </a-select>
-      </a-col>
-    </a-row>
     <a-row>
       <h2 style="text-align: center">{{ "图书馆-1-1001" }}</h2>
     </a-row>
@@ -43,7 +30,7 @@ export default {
           title: " ",
           dataIndex: "scheduleTitle",
           align: "center",
-          width: "9%"
+          width: "9%",
         },
         {
           title: "星期一",
@@ -136,7 +123,9 @@ export default {
     };
   },
   methods: {
-    onSelect() {},
+    handleChange(value) {
+      console.log(`selected ${value}`);
+    },
   },
 };
 </script>
