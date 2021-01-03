@@ -306,9 +306,7 @@ export default {
       axios
         .post(url, requestData)
         .then(({ data }) => {
-          console.log(data);
           const { status, message } = data;
-          console.log(message);
           if (!status) {
             that.$message.error(message);
             return;

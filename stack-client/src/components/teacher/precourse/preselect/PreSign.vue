@@ -1,13 +1,33 @@
 <template>
   <a-card title="签到" class="setcard">
-    <a-row>
-      <a-textarea placeholder="Something Input" :rows="10" />
-    </a-row>
+    <!-- <a-row>
+      <a-textarea
+        placeholder="Something Input"
+        :rows="10"
+        :value="context"
+        :disabled="true"
+        style="height: 320px"
+      />
+    </a-row> -->
+    <!-- <a-row type="flex" justify="end">
+      <a-col>
+        <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+      </a-col>
+    </a-row> -->
   </a-card>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      // context: "请大家开始签到",
+    };
+  },
+  // methods: {
+  //   to_vuex() {},
+  // },
+};
 </script>
 <style>
 </style>

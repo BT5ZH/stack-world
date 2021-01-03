@@ -32,22 +32,16 @@ let lesson_listeners = {
   sign(data, that) {
     that.$store.commit("teacher/updateSignResult", data);
   },
-  enter(data, that) {
-    console.log("someone join class", data);
+  enter(data, that, rawData) {
+    if (data.role === "teacher") return null;
+    that.$store.dispatch("teacher/getOnlineStudents", rawData.roomId);
+  },
+  leave(data, that, rawData) {
+    if (data.role === "teacher") return null;
+    that.$store.dispatch("teacher/getOnlineStudents", rawData.roomId);
   },
   test(data, that) {
-    const { id, answer } = data;
-    if (!that.testAnswerList[id]) {
-      that.testAnswerList[id] = { [answer]: 0 };
-    }
-    let corrAnswer = that.testAnswerList[id][answer];
-    if (typeof corrAnswer === "number") {
-      that.testAnswerList[id][answer]++;
-    } else {
-      that.testAnswerList[id][answer] = 1;
-    }
-    that.testAnswer();
-    // that.$store.commit("teacher/updateTestResult", data);
+    that.$store.commit("teacher/updateTestResult", data);
   },
 };
 

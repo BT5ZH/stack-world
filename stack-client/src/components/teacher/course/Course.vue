@@ -64,17 +64,17 @@ export default {
   methods: {
     onSearch() {},
     ViewCourseInfo(courseIndex) {
-      const courseId = this.courses[courseIndex]._id;
+      const lessonId = this.courses[courseIndex]._id;
       this.$router.push({
         name: "teacher_coursedetail",
-        query: { courseId },
+        query: { lessonId },
       });
     },
     prepareCourse(courseIndex) {
-      const courseId = this.courses[courseIndex]._id;
+      const lessonId = this.courses[courseIndex]._id;
       this.$router.push({
         name: "teacher_precourse",
-        query: { courseId },
+        query: { lessonId },
       });
     },
   },

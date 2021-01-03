@@ -23,6 +23,7 @@
 
 <script>
 import * as socket from "@/utils/socket";
+import { mapState } from "vuex";
 
 export default {
   name: "CourseCard",
@@ -31,6 +32,12 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    ...mapState({
+      studentId: (state) => state.public.user_id,
+      studentName: (state) => state.public.name,
+    }),
   },
   mounted() {
     socket.createInstance("student", this);
@@ -41,7 +48,7 @@ export default {
         actionType: "enter",
         role: "student",
         roomId: item.lesson_id,
-        data: { studentId: this.uid },
+        data: { studentId: this.studentId, studentName: this.studentName },
       });
       this.$router.push({
         path: "/student/course/" + item.course_id,

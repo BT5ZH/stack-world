@@ -220,7 +220,10 @@ exports.updateOnePrepareLesson = catchAsync(async (req, res) => {
   var lesson_id = newLessonInfo.lesson_id;
   var teacher_id = newLessonInfo.teacher_id;
   var section_index = newLessonInfo.section_index;
+  var duration = newLessonInfo.duration;
+  var nodes = newLessonInfo.nodes;
   var PPT = newLessonInfo.PPT;
+  var description = newLessonInfo.description;
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,

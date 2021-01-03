@@ -57,7 +57,7 @@ const prodOptions = {
 };
 
 const io = require("socket.io")(server, devOptions);
-
+const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
 
@@ -84,10 +84,10 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(res);
           break;
         case "ques":
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(res);
           break;
         case "test":
           socket.to(roomChannel).emit(roomChannel, data);
@@ -96,10 +96,10 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(res);
           break;
         case "file":
-          io.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(res);
           break;
         default:
           break;
@@ -109,6 +109,7 @@ io.on("connection", (socket) => {
       switch (data.actionType) {
         case "enter":
           socket.join(roomChannel);
+          socketOP.enterHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":

@@ -3,6 +3,8 @@ const catchAsync = require("./../utils/catchAsync");
 const redis = require("redis");
 const { redisClient } = require("../dbsSetup");
 const AppError = require("./../utils/appError");
+// 腾讯云直播信息加密包
+const TLSSigAPIv2 = require("tls-sig-api-v2");
 
 exports.createActivity = catchAsync(async (req, res, next) => {
   // BUILD QUERY
@@ -43,4 +45,12 @@ exports.createActivity = catchAsync(async (req, res, next) => {
     status: "success",
     data,
   });
+});
+
+exports.genUserSig = catchAsync(async (req, res, next) => {
+  const appid = process.env.LIVE_APP_ID;
+  const secret = process.env.LIVE_SECRET_KEY;
+  const api = new TLSSigAPIv2.Api(appid, secret);
+  const sig = api.genSig(req.body.user_id, 3600 * 24);
+  res.send({ sdkAppId: appid, userSig: sig });
 });

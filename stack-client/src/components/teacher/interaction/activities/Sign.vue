@@ -1,15 +1,23 @@
 <template>
   <a-row>
-    <a-col :span="12" :push="6">
+    <a-col :span="18" :push="3">
       <h1 class="sign-title">签到结果</h1>
-      <a-table :columns="columns" :data-source="signList" rowKey="studentId">
+      <a-table
+        :columns="columns"
+        :data-source="signList"
+        rowKey="studentId"
+        :pagination="{
+          total: 50,
+          'show-size-changer': true,
+          'show-quick-jumper': true,
+        }"
+      >
       </a-table>
     </a-col>
   </a-row>
 </template>
 
 <script>
-import * as socket from "@/utils/socket";
 import { mapState } from "vuex";
 
 export default {
@@ -35,13 +43,6 @@ export default {
     ...mapState({
       signList: (state) => state.teacher.signList,
     }),
-    lessonId() {
-      return this.$route.query.lessonId;
-    },
-  },
-  methods: {},
-  mounted() {
-    socket.createInstance("teacher", this, this.lessonId);
   },
 };
 </script>

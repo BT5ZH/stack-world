@@ -9,9 +9,6 @@
       <pre-collapse></pre-collapse>
     </a-col>
     <a-col :span="20" style="background: #f0f2f5; padding: 10px">
-      <a-row style="background: #fff">
-        <pre-header></pre-header>
-      </a-row>
       <pre-context></pre-context>
     </a-col>
   </a-row>
@@ -20,9 +17,8 @@
 <script>
 import PreCollapse from "./PreCollapse";
 import PreContext from "./PreContext";
-import PreHeader from "./PreHeader";
 export default {
-  components: { PreCollapse, PreContext, PreHeader },
+  components: { PreCollapse, PreContext },
   data() {
     return {};
   },

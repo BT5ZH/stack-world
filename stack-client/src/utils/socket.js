@@ -75,7 +75,7 @@ function loadListeners(role, that, lessonId) {
         console.error("[utils-socket] unsupported action type" + actionType);
         return null;
       }
-      listeners[channel][actionType](data, that);
+      listeners[channel][actionType](data, that, eventData);
     });
   });
 }
