@@ -26,7 +26,10 @@ router
   .route("/getTimeTableFromStudentID")
   // .post(authController.protect, timeTableController.getTimeTableFromStudentID); 
   .post(timeTableController.getTimeTableFromStudentID); 
-
+router
+  .route("/getTimeTableFromLessonID")
+  .post(timeTableController.getTimeTableFromLessonID); 
+  
   
 
 // 改删

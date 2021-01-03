@@ -28,8 +28,7 @@
     </a-row>
 
     <a-row class="btn-area">
-      <a-col :span="5">
-      </a-col>
+      <a-col :span="5"> </a-col>
       <a-col :span="10"></a-col>
       <a-col :span="9" class="btn">
         <a-button type="primary" @click="addClasses">添加班级</a-button>
@@ -39,9 +38,12 @@
     <a-table
       rowKey="_id"
       :pagination="{
-        total: 50,
+        total: classList.length,
+        pageSizeOptions: pageSize,
+        'show-less-items': true,
         'show-size-changer': true,
         'show-quick-jumper': true,
+        'hide-on-single-page': true,
       }"
       :bordered="true"
       :row-selection="{
@@ -152,6 +154,7 @@ export default {
     return {
       // 选择树
       value: undefined,
+      pageSize: ["10", "20", "30", "50", "100"],
       treeData: [],
       // 编辑对话框
       edit_record_id: "",
@@ -283,7 +286,7 @@ export default {
       const url = "/pc/v1/classes";
       try {
         const { data } = await axiosInstance.get(url);
-       
+
         // console.log(...data.data.classes[0].students);
         this.classList = data.data.classes;
         this.classList.map((item) => {
@@ -334,7 +337,13 @@ export default {
       // console.log(record)
       this.$router.push({
         name: "admin_classinfo",
-        query: { classId: record.id,orgName:this.orgName,subOrg_name:record.subOrg_name,major_name:record.major_name,class_name:record.class_name },
+        query: {
+          classId: record.id,
+          orgName: this.orgName,
+          subOrg_name: record.subOrg_name,
+          major_name: record.major_name,
+          class_name: record.class_name,
+        },
       });
     },
     // 删除班级

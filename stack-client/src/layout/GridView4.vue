@@ -38,10 +38,7 @@ export default {
   methods: {
     jmpRoute(item) {
       if (this.$route.params.id != null) {
-        this.$router.push({
-          path: this.$route.path + "/" + item.route,
-          query: { title: item.name, lessonId: this.$route.query.lessonId },
-        });
+        this.$emit(`update:itemFlag`, item.id);
       } else {
         this.$router.push({ path: item.route, query: { title: item.name } });
       }

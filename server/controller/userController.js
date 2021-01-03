@@ -294,7 +294,19 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
     },
   ]);
  
+  let result=data.map(item=>{
+    let title=[]
+    for(let i=0;i<item.title.length;i++){
+      if(item.title[i]==='professor') title.push('教授')
+      else if(item.title[i]==='vice-professor') title.push('副教授')
+      else if(item.title[i]==='lecturer') title.push('讲师')
+    }
+    return{
+        _id:item._id,
+        title:title,
 
+    }
+  })
   if (data === [] || data === null) {
     return next(new AppError("课程不存在", 500));
   }
@@ -302,5 +314,6 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data,
+    result
   });
 });
