@@ -13,15 +13,15 @@
         @select="onSelect"
       >
         <a-tree-select-node
-          :key="item._id"
-          :value="item._id"
-          :title="item._id"
+          :key="item.subOrgName"
+          :value="item.subOrgName"
+          :title="item.subOrgName"
           v-for="item in treeData"
         >
           <a-tree-select-node
-            :key="mName"
-            :value="`${mName}:${item._id}`"
-            :title="mName"
+            :key="mName.majorName"
+            :value="`${mName.majorName}:${item.subOrgName}`"
+            :title="mName.majorName"
             v-for="mName in item.majors"
           >
           </a-tree-select-node>
@@ -65,13 +65,15 @@ export default {
   },
   methods: {
     async getTreeData() {
-      let queryString = this.orgName;
-      const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
+      let queryString = this.oid;
+      const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
       try {
         const { data } = await axiosInstance.get(url);
         // console.log(data.data);
-        this.treeData = data.data;
+        console.log("----treedata-----")
+        console.log(data.tree)
+        this.treeData = data.tree;
       } catch (err) {
         console.log(err);
       }
