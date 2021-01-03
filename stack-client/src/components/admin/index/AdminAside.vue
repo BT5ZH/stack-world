@@ -33,7 +33,7 @@
       </a-menu-item>
       <a-menu-item key="admin_teacher">
         <a-icon type="deployment-unit" />
-        <span>教师管理</span>
+        <span>人员管理</span>
       </a-menu-item>
       <a-menu-item key="admin_course">
         <a-icon type="deployment-unit" />

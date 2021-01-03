@@ -8,19 +8,19 @@ router
   .route("/")
   .get(authController.protect, classController.getAllClasses)
   .post(authController.protect, classController.createClass);
-  
+
 router
   .route("/search")
-  .post(authController.protect, classController.get_fromcondition_Class)
+  .post(authController.protect, classController.get_fromcondition_Class);
 router
   .route("/classTree")
-  .get(authController.protect, classController.putSubOrgAndMajorIntoTree)
+  .get(authController.protect, classController.putSubOrgAndMajorIntoTree);
 router
   .route("/getStudentsNotInOneClass")
-  .get(authController.protect, classController.getStudentsNotInOneClass)
+  .get(authController.protect, classController.getStudentsNotInOneClass);
 router
   .route("/updateStudents")
-  .patch(authController.protect, classController.updateStudents)
+  .patch(authController.protect, classController.updateStudents);
 
 router
   .route("/:id")
@@ -33,11 +33,10 @@ router
   //.patch(authController.protect, classController.updateStudents)
   .post(authController.protect, classController.addStudents)
   .delete(authController.protect, classController.deleteStudents);
-router
-  .route("/:id/curriculum")
-  //.get(authController.protect, classController.getCurriculum)
-  //   .patch(authController.protect, classController.updateStudent)
- // .post(authController.protect, classController.addCurriculum)
-  //.delete(authController.protect,classController.deleteMultipleCourseTimeTable);
+router.route("/:id/curriculum");
+//.get(authController.protect, classController.getCurriculum)
+//   .patch(authController.protect, classController.updateStudent)
+// .post(authController.protect, classController.addCurriculum)
+//.delete(authController.protect,classController.deleteMultipleCourseTimeTable);
 
 module.exports = router;
