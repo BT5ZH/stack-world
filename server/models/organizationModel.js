@@ -1,5 +1,18 @@
 const mongoose = require("mongoose");
 
+const Building = require("./buildingModel");
+const Activity = require("./liveActivityModel");
+const Campus = require("./campusModel");
+const Class = require("./classModel");
+const Course = require("./courseModel");
+const Resource = require("./resourceModel");
+const Room = require("./roomModel");
+const User = require("./userModel");
+
+
+
+
+
 const organizationSchema = new mongoose.Schema(
   {
     organizationName: {
@@ -61,33 +74,29 @@ const organizationSchema = new mongoose.Schema(
   }
 );
 
+organizationSchema.post('findOneAndUpdate', async function (doc) {
+  var oldOrganizationName = doc.organizationName;
+  var newOrganizationName = this._update.$set.organizationName
+
+  await Building.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Activity.updateMany({ org: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Campus.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Class.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Course.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Resource.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await Room.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+  await User.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+
+
+ 
+});
 // virtual populate
 organizationSchema.virtual("reviews", {
   ref: "Review",
   foreignField: "organization",
   localField: "_id",
 });
-// organizationSchema.pre('remove', {  query: true } ,async function (doc) {
 
-//   const building = await Building.findOne({ 
-//     org_name: this.org_name, 
-//     campus_name: this.campus_name,
-//     building_name: this.building_name }
-//   )
-//   if(building != null){
-//     let room = []
-
-//     for(let i=0;i<building.rooms.length;i++){
-//        if(building.rooms[i]!=this._id)
-//           room.push(building.rooms[i])
-//     }
-  
-//     await Building.updateOne(
-//       { _id: building._id },
-//       { $set: { rooms: room }
-//     })
-//   }
-// });
 const Organization = mongoose.model("Organization", organizationSchema);
 
 module.exports = Organization;
