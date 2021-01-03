@@ -25,8 +25,25 @@
       </leftSlider>
     </div>
     <div class="course_content" v-if="isClick == 1">
-      <gridView4 :gridItems="classMenu" v-if="courseStart"></gridView4>
-      <div
+      <!-- <div v-if="courseStart"> -->
+      <div class="">
+        <!-- <video /> -->
+        <div style="width:100%;height: 200px;background-color: #ffbf35;"></div>
+
+        <a-divider></a-divider>
+        <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
+
+        <a-divider style="margin-bottom: 0;"></a-divider>
+        <div>
+          <sign v-if="flag == 1"></sign>
+          <quiz v-if="flag == 2"></quiz>
+          <random v-if="flag == 3"></random>
+          <ques v-if="flag == 4"></ques>
+          <vote v-if="flag == 5"></vote>
+          <test v-if="flag == 6"></test>
+        </div>
+      </div>
+      <!-- <div
         v-else
         style="display: flex; justify-content: center; margin-top: 15rem"
       >
@@ -40,7 +57,7 @@
           :format="() => 'start'"
           style="transform: scale(2)"
         />
-      </div>
+      </div> -->
 
       <!-- <a-button >开始上课</a-button> -->
     </div>
@@ -64,6 +81,13 @@ import leftSlider from "../../../components/LeftSlider.vue";
 import resCard from "../../../components/student/ResCard.vue";
 import gridView4 from "../../../layout/GridView4.vue";
 
+import sign from "./class/Sign.vue";
+import random from "./class/Random.vue";
+import vote from "./class/Vote.vue";
+import test from "./class/Test.vue";
+import quiz from "./class/Quiz.vue";
+import ques from "./class/Questionnaire.vue";
+
 import { mapState } from "vuex";
 import * as socket from "@/utils/socket";
 
@@ -73,12 +97,19 @@ export default {
     leftSlider,
     resCard,
     gridView4,
+    sign,
+    random,
+    vote,
+    test,
+    quiz,
+    ques,
   },
   data() {
     return {
       isClick: 1,
       courseId: null,
       lessonId: "",
+      flag: 0,
     };
   },
   methods: {
@@ -86,7 +117,7 @@ export default {
       this.isClick = value;
     },
   },
-  created: function () {
+  created: function() {
     this.courseId = this.$route.params.id;
     console.log(this.courseId);
     this.lessonId = this.$route.query.lessonId;

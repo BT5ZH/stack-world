@@ -1,15 +1,33 @@
 <template>
   <div class="container">
-    <!-- <a-modal v-model="bulkImport_visible" title="批量导入" @ok="bulkimportSubmit">
-      <a-upload name="file" :multiple="true" :action="upload_url" @change="handleChange">
-        <a-button type='primary'>
-          <a-icon type="upload" /> 上传文件
-        </a-button>
-      </a-upload>
-      <br />
-      <br />
-      <a-button @click='download'>下载模板</a-button>
-    </a-modal> -->
+    <a-row :span="20" style="margin: 10px 25px 20px 5px">
+      <a-tree-select
+        style="width: 100%"
+        :value="value"
+        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+        :placeholder="orgName"
+        allow-clear
+        tree-default-expand-all
+        @change="onTreeChange"
+        @search="onTreeSearch"
+        @select="onTreeSelect"
+      >
+        <a-tree-select-node
+          :key="item._id"
+          :value="`${item._id}#`"
+          :title="item._id"
+          v-for="item in treeList"
+        >
+          <a-tree-select-node
+            :key="title"
+            :value="`${item._id}:${title}`"
+            :title="title"
+            v-for="title in item.title"
+          >
+          </a-tree-select-node>
+        </a-tree-select-node>
+      </a-tree-select>
+    </a-row>
     <batchAddTeacher :visible.sync="bulkImport_visible"></batchAddTeacher>
     <a-modal
       v-model="editModal_visible"
@@ -65,64 +83,69 @@
       </a-form>
     </a-modal>
 
-    <div class="btn-area">
-      <a-col>
-        <a-input-search
-          placeholder="姓名"
-          enter-button
-          v-model="searchContent"
-          @search="onSearch(searchContent)"
-        />
-      </a-col>
-      <a-col class="btn">
-        <a-button type="primary" @click="changeStatus(selectedTeachers, 0)"
-          >启用</a-button
-        >
-        <a-button type="danger" @click="changeStatus(selectedTeachers, 1)"
-          >禁用</a-button
-        >
-        <!-- <a-button type="primary">注册</a-button> -->
-        <a-button type="primary" @click="bulkImport_visible = true"
-          >批量导入</a-button
-        >
-        <a-button type="danger" @click="showDeleteConfirm(selectedTeachers)"
-          >批量删除</a-button
-        >
-      </a-col>
-    </div>
-
     <a-row>
-      <a-table
-        :key="tableIndex"
-        rowKey="_id"
-        :pagination="{
-          total: teacherList.length,
-          pageSizeOptions: pageSize,
-          'show-less-items': true,
-          'show-size-changer': true,
-          'show-quick-jumper': true,
-          'hide-on-single-page': true,
-        }"
-        :bordered="true"
-        :row-selection="{
-          selectedRowKeys: selectedTeachers,
-          onChange: onSelectChange,
-        }"
-        :columns="columns"
-        :data-source="teacherList"
-      >
-        <template #operation="record">
-          <a-button type="link" @click="editTeacher(record)">编辑</a-button>
-          <a-button type="link" @click="resetPassword(record)"
-            >重置密码</a-button
+      <a-empty v-if="!teacherList.length"></a-empty>
+      <div v-else>
+        <a-row>
+          <div class="btn-area">
+            <a-col> </a-col>
+            <a-col class="btn">
+              <a-button
+                type="primary"
+                @click="changeStatus(selectedTeachers, 0)"
+                >启用</a-button
+              >
+              <a-button type="danger" @click="changeStatus(selectedTeachers, 1)"
+                >禁用</a-button
+              >
+
+              <a-button type="primary" @click="bulkImport_visible = true"
+                >批量导入</a-button
+              >
+              <a-button
+                type="danger"
+                @click="showDeleteConfirm(selectedTeachers)"
+                >批量删除</a-button
+              >
+            </a-col>
+          </div>
+        </a-row>
+        <a-row>
+          <a-table
+            :key="tableIndex"
+            rowKey="_id"
+            :pagination="{
+              total: teacherList.length,
+              pageSizeOptions: pageSize,
+              'show-less-items': true,
+              'show-size-changer': true,
+              'show-quick-jumper': true,
+              'hide-on-single-page': true,
+            }"
+            :bordered="true"
+            :row-selection="{
+              selectedRowKeys: selectedTeachers,
+              onChange: onRowChange,
+            }"
+            :columns="columns"
+            :data-source="teacherList"
           >
-          <a-button type="link" @click="deleteTeacher(record)">删除</a-button>
-        </template>
-        <template #state="text">
-          <a-tag color="#388e3c" v-if="text"> 已启用</a-tag>
-          <a-tag color="#ff5252" v-else> 已禁用</a-tag>
-        </template>
-      </a-table>
+            <template #operation="record">
+              <a-button type="link" @click="editTeacher(record)">编辑</a-button>
+              <a-button type="link" @click="resetPassword(record)"
+                >重置密码</a-button
+              >
+              <a-button type="link" @click="deleteTeacher(record)"
+                >删除</a-button
+              >
+            </template>
+            <template #state="text">
+              <a-tag color="#388e3c" v-if="text"> 已启用</a-tag>
+              <a-tag color="#ff5252" v-else> 已禁用</a-tag>
+            </template>
+          </a-table>
+        </a-row>
+      </div>
     </a-row>
   </div>
 </template>
@@ -175,6 +198,7 @@ export default {
       },
     ];
     return {
+      value: "",
       editModal_visible: false,
       bulkImport_visible: false,
       searchContent: null,
@@ -201,6 +225,7 @@ export default {
       ],
       colleges: [],
       teacherList: [],
+      treeList: [],
     };
   },
   computed: {
@@ -210,8 +235,9 @@ export default {
     }),
   },
   mounted() {
-    this.getTeacherList();
-    this.getSubOrgsName();
+    // this.getTeacherList();
+    // this.getSubOrgsName();
+    this.getTreeList();
   },
   watch: {
     tableIndex() {
@@ -224,13 +250,25 @@ export default {
     handleUpdateClick() {
       this.tableIndex += 1;
     },
-    async getTeacherList() {
-      // const orgId="5facabb2cf3bb2002b4b3f38"
-      const queryObject = {
-        org_name: this.orgName,
-        // subOrg_name: value,
-        role: "teacher",
-      };
+    async getTreeList() {
+      try {
+        console.log(this.orgName);
+        const url =
+          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" +
+          this.orgName;
+        const { data } = await axiosInstance(url);
+        this.treeList = data.result;
+        console.log(data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getTeacherList(payload) {
+      // const queryObject = {
+      //   org_name: this.orgName,
+      //   role: "teacher",
+      // };
+      let queryObject = payload;
       let queryString = "";
       Object.keys(queryObject).forEach((key) => {
         queryString += key + "=" + queryObject[key] + "&";
@@ -247,47 +285,10 @@ export default {
       }
     },
 
-    async getSubOrgsName() {
-      const orgId = "5facabb2cf3bb2002b4b3f38";
-      const url = "/pc/v1/organizations/" + orgId + "/suborgs";
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.colleges = data.subOrgs;
-        console.log(this.colleges);
-      } catch (err) {
-        console.log(err);
-      }
-    },
-
     //table options
-    onSelectChange(keys) {
+    onRowChange(keys) {
       this.selectedTeachers = keys;
       console.log(this.selectedTeachers);
-    },
-    //header options
-    onSearch(value) {
-      console.log(value);
-      let that = this;
-      // this.handleUpdateClick();
-      let url = `pc/v1/users/multipleUsers`;
-      axiosInstance
-        .get(url, {
-          params: {
-            name: value,
-          },
-        })
-        .then(
-          function(res) {
-            // console.log(res);
-            const { data } = res;
-            // console.log(data.teachers);
-            that.teacherList = data.teachers;
-            that.$message.success("查询成功");
-          },
-          function(err) {
-            console.log(err);
-          }
-        );
     },
 
     //row options
@@ -299,12 +300,10 @@ export default {
     },
     resetPassword(record) {
       console.log(record);
-      //post record._id
     },
     deleteTeacher(record) {
       this.showDeleteConfirm(record._id);
       console.log(record);
-      //post record._id
     },
 
     //modal options
@@ -433,7 +432,71 @@ export default {
     },
     //点击上传文件
     bulkimportSubmit() {},
+    async onTreeChange(value, label) {
+      console.log("onchange:  value " + value);
+      console.log("onchange:   label" + label);
+      this.flag = value;
+      if (this.flag.slice(-1) == "#") {
+        let payload = {};
+        let temp = this.flag.slice(0, -1);
+        payload = { subOrg_name: temp };
+        this.getTeacherList(payload);
+      } else {
+        let payload = {};
+        let dataArray = this.flag.split(":");
+        console.log(dataArray);
+        let secString = "";
+        switch (dataArray[1]) {
+          case "教授":
+            secString = "professor";
+            break;
+          case "副教授":
+            secString = "vice-professor";
+            break;
+          case "讲师":
+            secString = "lecturer";
+            break;
+          case "学生":
+            secString = "student";
+            break;
+          default:
+            break;
+        }
+        payload = {
+          subOrg_name: dataArray[0],
+          title: secString,
+        };
+        console.log(payload);
+        this.getTeacherList(payload);
+      }
+      this.value = this.label;
+    },
+    onTreeSearch() {
+      console.log(...arguments);
+    },
+    onTreeSelect() {
+      console.log("selected:   ");
+      console.log(...arguments);
+    },
   },
+
+  // async getNewTeacherList(value) {
+  //   let queryString = "";
+  //   if (value.title == null) {
+  //     queryString = "&subOrg_name=" + value.subOrg_name;
+  //     console.log(queryString);
+  //   } else {
+  //     queryString =
+  //       "&subOrg_name=" + value.subOrg_name + "&title=" + value.title;
+  //   }
+  //   console.log("value====?" + queryString);
+  //   const url =
+  //     "/pc/v1/users?role=teacher&org_name=" + this.orgName + queryString;
+  //   const { data } = await axiosInstance.get(url);
+  //   this.teacherList = data.users;
+  //   console.log(data);
+  //   console.log(this.teacherList);
+  // },
 };
 </script>
 

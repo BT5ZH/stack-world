@@ -61,7 +61,6 @@ export default {
     buildings: {
       immediate: true,
       handler(value) {
-        console.log(value);
         this.buildings = value;
       },
     },
