@@ -6,14 +6,17 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authController.protect,organizationController.getAllOrganizations)
-  .post(authController.protect,organizationController.createOrganization);
+  .get(authController.protect, organizationController.getAllOrganizations)
+  .post(authController.protect, organizationController.createOrganization);
 
 router
   .route("/:id")
   .get(authController.protect, organizationController.getOrganization)
   .patch(authController.protect, organizationController.updateOrganization)
   .delete(authController.protect, organizationController.deleteOrganization);
+router
+  .route("/:id/tree")
+  .get(authController.protect, organizationController.getOrgTree);
 
 router
   .route("/:id/suborgs/")

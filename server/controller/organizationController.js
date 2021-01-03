@@ -24,7 +24,6 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
   //   console.log(query);
   // EXECUTE QUERY
   const organizations = await query;
- 
 
   // SEND RESPONSE
   res.status(200).json({
@@ -242,11 +241,11 @@ exports.getMajors = catchAsync(async (req, res, next) => {
   //   {
   //     "subOrgs.$": 1,
   //   }
-  // ); 
+  // );
 
   const organization = await Organization.aggregate([
     { $unwind: "$subOrgs" },
-    { $match: { organizationName: req.params.id}},
+    { $match: { organizationName: req.params.id } },
     { $match: { "subOrgs.subOrgName": req.params.sid } },
     {
       $project: {
@@ -260,9 +259,8 @@ exports.getMajors = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    majors:organization[0].subOrgs.majors,
+    majors: organization[0].subOrgs.majors,
     //majors: organization.subOrgs[0].majors,
- 
   });
 });
 
@@ -341,5 +339,23 @@ exports.deleteMajor = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: "success",
     data: organization,
+  });
+});
+
+exports.getOrgTree = catchAsync(async (req, res, next) => {
+  console.log("getOrganization 进来啦");
+
+  const orgTree = await Organization.findById(req.params.id).select(
+    "organizationName subOrgs.subOrgName subOrgs.majors.majorName"
+  );
+
+  if (!orgTree) {
+    return next(new AppError("该课程不存在", 404));
+  }
+
+  console.log(orgTree);
+  res.status(200).json({
+    status: "success",
+    tree: orgTree.subOrgs,
   });
 });
