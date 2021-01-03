@@ -16,6 +16,7 @@
       </span>
     </div>
     <a-table
+      rowKey="user_id"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,
         onChange: onSelectChange,
@@ -65,22 +66,28 @@ export default {
       let students = [];
       this.selectedRowKeys.map((item) => {
         // console.log(item)
-        // console.log(this.data[item]._id)
-        students.push(this.data[item]._id);
+        console.log("----_id------");
+        console.log(this.data);
+        // students.push(this.data[item]._id);
       });
       // console.log(students);
       // this.loading = true;
       setTimeout(() => {
         // 开始
-        const url =
-          "/pc/v1/classes/updateStudents";
-        const requestdata = {class_id:this.$route.query.classId,students:students}
-        console.log(requestdata)
-        axiosInstance.post(url,requestdata).then((res) => {
-          console.log(res)
-        }).catch(err=> {
-          console.log(err)
-        })
+        const url = "/pc/v1/classes/updateStudents";
+        const requestdata = {
+          class_id: this.$route.query.classId,
+          students: students,
+        };
+        console.log(requestdata);
+        axiosInstance
+          .patch(url, requestdata)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         // 结束
         this.loading = false;
         this.selectedRowKeys = [];
