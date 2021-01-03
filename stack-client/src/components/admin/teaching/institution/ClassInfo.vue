@@ -20,7 +20,7 @@
       </a-col>
     </a-row>
     <a-table
-      rowKey="_id"
+      rowKey="user_id"
       :columns="columns"
       :data-source="data"
       bordered
