@@ -7,7 +7,7 @@
         :data-source="lessonList"
         bordered
         :pagination="{
-          total: lessonList.length,
+          total: 20,
           'show-size-changer': true,
           'show-quick-jumper': true,
         }"
@@ -19,24 +19,128 @@
           </div>
         </template>
         <template #operation="record">
+          <a @click="edit(record)">编辑</a>
+          &nbsp;&nbsp;
           <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
-        </template>
-        <template #location="record">
-          <a @click="openLocationSelect(record)">地点</a>
-        </template>
-        <template #day="record">
-          <a @click="openDaySelect(record)">周几</a>
-        </template>
-        <template #order="record">
-          <a @click="openOrderSelect(record)">时间</a>
         </template>
       </a-table>
     </a-row>
+    <a-modal v-model="editModal_visible" title="课程管理" @ok="edit_submit">
+      <!--  -->
+      <div>
+        <a-table
+          bordered
+          :data-source="dataSource.curriculum"
+          :columns="courseMan_column"
+        >
+          <template slot="operation" slot-scope="text, record">
+            <a-popconfirm
+              v-if="dataSource.curriculum.length"
+              title="Sure to delete?"
+              @confirm="() => onDelete(record.key)"
+            >
+              <a href="#">删除</a>
+            </a-popconfirm>
+          </template>
+        </a-table>
+        <a-button class="editable-add-btn" @click="handleAdd"> 添加 </a-button>
+      </div>
+      <a-form
+        :modal="edit_message"
+        :label-col="{ span: 5 }"
+        :wrapper-col="{ span: 12 }"
+      >
+        <a-form-model-item label="班级">
+          <a-select
+            style="width: 100%"
+            v-model="edit_message.class_id._id"
+            @change="Class_change"
+          >
+            <a-select-option v-for="class_item in classes" :key="class_item.id">
+              {{ class_item.class_name }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <!-- 校区与楼 -->
+        <a-form-model-item label="校区楼">
+          <a-tree-select
+            v-model="edit_message.address_text"
+            :value="value"
+            allow-clear
+            tree-default-expand-all
+            @change="onChange"
+          >
+            <a-tree-select-node
+              :selectable="false"
+              :key="campus.campus_name"
+              :value="`${campus._id}#`"
+              :title="campus.campus_name"
+              v-for="campus in campusList"
+            >
+              <a-tree-select-node
+                :key="buildings.building_name"
+                :value="`${campus._id}:${buildings._id}`"
+                :title="buildings.building_name"
+                v-for="buildings in campus.buildings"
+              >
+              </a-tree-select-node>
+            </a-tree-select-node>
+          </a-tree-select>
+        </a-form-model-item>
+        <a-form-model-item label="教室">
+          <a-select
+            v-model="edit_message.room_id._id"
+            style="width: 100%"
+            @change="room_change"
+          >
+            <a-select-option v-for="room in rooms" :key="room._id">
+              编号：{{ room.room_number }} -- 类型： {{ room.room_type }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="单双周">
+          <a-radio-group
+            name="radioGroup"
+            :default-value="0"
+            v-model="edit_message.odd_or_even"
+          >
+            <a-radio :value="0"> 全周 </a-radio>
+            <a-radio :value="1"> 单周 </a-radio>
+            <a-radio :value="2"> 双周 </a-radio>
+          </a-radio-group>
+          <!-- @change="onChange1" -->
+        </a-form-model-item>
+        <a-form-model-item label="周几">
+          <!-- <a-input v-model="form.title" /> -->
+          <a-select v-model="edit_message.date">
+            <a-select-option v-for="course_date in dateData" :key="course_date">
+              {{ course_date }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="时间">
+          <a-select
+            v-model="edit_message.order"
+            mode="multiple"
+            style="width: 100%"
+            placeholder="选择第几节上课"
+          >
+            <a-select-option v-for="i in 10" :key="i">
+              {{ i }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+      </a-form>
+    </a-modal>
   </a-row>
 </template>
 
 <script>
-import axios from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
+import { mapState } from "vuex";
+
+// 编辑信息
+const dateData = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const columns = [
   {
@@ -75,21 +179,6 @@ const columns = [
     align: "center",
     scopedSlots: { customRender: "operation" },
   },
-  {
-    title: "地点",
-    align: "center",
-    scopedSlots: { customRender: "location" },
-  },
-  {
-    title: "日期",
-    align: "center",
-    scopedSlots: { customRender: "day" },
-  },
-  {
-    title: "节次",
-    align: "center",
-    scopedSlots: { customRender: "order" },
-  },
 ];
 export default {
   props: {
@@ -101,16 +190,301 @@ export default {
   data() {
     return {
       columns,
+      // 编辑信息
+      dataSource: {
+        // {
+        //   key: "0",
+        //   Campus: "长安",
+        //   building: "文津楼",
+        //   room: "1518",
+        //   class: "软工1901",
+        //   odd_or_even: "单周",
+        //   date: "Mon",
+        //   order: "12",
+        // },
+      },
+      courseMan_column: [
+        {
+          title: "校区",
+          dataIndex: "room_id.campus_name",
+          scopedSlots: { customRender: "room_id.campus_name" },
+        },
+        {
+          title: "楼",
+          dataIndex: "room_id.building_name",
+        },
+        {
+          title: "教室",
+          dataIndex: "room_id.room_number",
+        },
+        {
+          title: "班级",
+          dataIndex: "class_id.class_name",
+        },
+        {
+          title: "单双周",
+          dataIndex: "week",
+        },
+        {
+          title: "周几",
+          dataIndex: "date",
+        },
+        {
+          title: "时间",
+          dataIndex: "order",
+        },
+        {
+          title: "operation",
+          dataIndex: "operation",
+          scopedSlots: { customRender: "operation" },
+        },
+      ],
+      refresh: 1,
+      classes: {},
+      value: undefined,
+      campusList: [],
+      dateData,
+      rooms: [],
+      value1: "单周",
+      flag: "",
+      // 编辑
+      editModal_visible: false,
+      edit_message: {
+        // 显示
+        // room_number: "",
+        week: "",
+        room_id: {
+          room_number: "",
+          _id: "",
+          building_name: "",
+          campus_name: "",
+        },
+        class_id: { _id: "", class_name: "" },
+        address_text: this.orgName,
+        // 传入后端
+        lesson_id: "",
+        odd_or_even: "",
+        date: "",
+        order: [],
+      },
     };
   },
-  mounted() {},
+  computed: {
+    ...mapState({
+      orgName: (state) => state.public.org_name,
+    }),
+  },
+  mounted() {
+    //获取下拉列表数据
+    this.spaceList();
+    // this.getSpace();
+  },
+  watch: {
+    refresh(val) {
+      this.get_lessonManages();
+    },
+  },
   methods: {
+    // 编辑表格
+    async get_lessonManages() {
+      // 寻找
+      const url = "/pc/v1/timetables/getTimeTableFromLessonID";
+      const lesson_id = this.edit_message.lesson_id;
+      const request = { lesson_id: this.edit_message.lesson_id };
+      try {
+        const { data } = await axiosInstance.post(url, request);
+        // console.log("---data.data[0].curriculum---");
+        // console.log(data.data[0]);
+        this.dataSource = data.data[0];
+        let i = 0;
+        this.dataSource.curriculum = data.data[0].curriculum.map((item) => {
+          let oddoreven = "全周";
+          if (item.odd_or_even === 1) oddoreven = "单周";
+          else if (item.odd_or_even === 2) oddoreven = "双周";
+          i++;
+          return {
+            week: oddoreven,
+            key: i,
+            ...item,
+          };
+        });
+        // console.log(this.dataSource)
+      } catch (err) {
+        console.log(err);
+      }
+      // console.log(lesson_id)
+    },
+    // onCellChange(key, dataIndex, value) {
+    //   const dataSource = [...this.dataSource.curriculum];
+    //   const target = dataSource.find((item) => item.key === key);
+    //   if (target) {
+    //     target[dataIndex] = value;
+    //     this.dataSource.curriculum = dataSource;
+    //   }
+    // },
+    onDelete(key) {
+      // console.log("----key----");
+      // console.log(this.dataSource.curriculum);
+      // this.dataSource.curriculum.splice(key-1,1)
+      let temp = this.dataSource.curriculum;
+      this.dataSource.curriculum = temp.filter((item) => item.key !== key);
+    },
+    handleAdd() {
+      // console.log("edit_message-----");
+      // console.log(this.edit_message);
+      let temp = this.dataSource.curriculum;
+      // console.log("----dataSource-----")
+      // console.log(this.dataSource.curriculum)
+      // let newData = Object.assign({}, this.edit_message);
+
+      // console.log("-----newData-----")
+      // console.log(newData)
+      // 拼单双周
+      this.edit_message.week = "全周";
+      if (this.edit_message.odd_or_even === 1) this.edit_message.week = "单周";
+      else if (this.edit_message.odd_or_even === 2)
+        this.edit_message.week = "双周";
+      // 拼楼层
+      this.edit_message.room_id.building_name = this.edit_message.address_text;
+      // 添加
+      let newData = {
+        class_id: {
+          class_name: this.edit_message.class_id.class_name,
+          _id: this.edit_message.class_id._id,
+        },
+        date: this.edit_message.date,
+        key: 0,
+        odd_or_even: this.edit_message.odd_or_even,
+        order: this.edit_message.order,
+        room_id: {
+          building_name: this.edit_message.room_id.building_name,
+          campus_name: this.edit_message.room_id.campus_name,
+          room_number: this.edit_message.room_id.room_number,
+          _id: this.edit_message.room_id._id,
+        },
+        week: this.edit_message.week,
+      };
+      newData.key = this.dataSource.curriculum.length + 1;
+      this.dataSource.curriculum = [...temp, Object.assign({}, newData)];
+      // console.log("----dataSource.curriculum----")
+      // console.log(this.dataSource.curriculum)
+    },
+    // 编辑
+    room_change(record) {
+      let change_room = this.rooms.map((item) => {
+        if (item._id === record) {
+          this.edit_message.room_id.room_number = item.room_number;
+        }
+      });
+      // console.log(this.edit_message.room_id);
+    },
+    Class_change(record) {
+      // console.log(record);
+      // console.log(this.classes);
+      let change_room = this.classes.map((item) => {
+        if (item._id === record) {
+          this.edit_message.class_id.class_name = item.class_name;
+        }
+      });
+    },
+    onChange(value, label) {
+      // 拼接校区
+      this.edit_message.address_text = label;
+      this.flag = value;
+      // if (this.flag.slice(-1) == "#") {
+      //   let payload = {};
+      //   this.activeIndex = "1";
+      //   let temp = this.flag.slice(0, -1);
+      //   payload = { campus_id: temp };
+      //   // this.getSpaceFromCondition(payload, 1);
+      //   // console.log(payload);
+      //   this.getRooms(payload);
+      // } else {
+      let payload = {};
+      let dataArray = this.flag.split(":");
+      this.campusList.map((item) => {
+        if (item._id === dataArray[0]) {
+          this.edit_message.room_id.campus_name = item.campus_name;
+        }
+      });
+      // console.log(dataArray);
+      payload = {
+        campus_id: dataArray[0],
+        building_id: dataArray[1],
+      };
+      // console.log(payload);
+      this.getRooms(payload);
+      // }
+    },
+    async getRooms(payload) {
+      const url =
+        "/pc/v1/rooms/getRoomByCampusOrBuilding" +
+        "?building_id=" +
+        payload.building_id;
+      const { data } = await axiosInstance.get(url);
+      this.rooms = data.data.rooms;
+      // console.log("data rooms------")
+      // console.log(data.data.rooms)
+    },
+    async spaceList() {
+      let queryString = "";
+      const url = "/pc/v1/campus" + queryString;
+      try {
+        const { data } = await axiosInstance.get(url);
+        this.campusList = data.data.campus;
+        // console.log("-----campusList-----")
+        // console.log(this.campusList);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    edit(record) {
+      // console.log(record)
+      this.refresh += 1;
+      this.edit_message.lesson_id = record.lesson_id;
+      this.classes = record.classes;
+      this.editModal_visible = true;
+      // 编辑
+    },
+    edit_submit() {
+      // console.log("-----dataSource-----");
+      // console.log(this.dataSource);
+      let request = {
+        _id: this.dataSource._id,
+        curriculum: this.dataSource.curriculum,
+      };
+      let temp = request.curriculum;
+      request.curriculum = temp.map((item) => {
+        return {
+          class_id: item.class_id._id,
+          room_id: item.room_id._id,
+          odd_or_even: item.odd_or_even,
+          order: item.order,
+          date: item.date,
+        };
+      });
+      const url = "/pc/v1/timetables/" + request._id;
+
+      const { data } = axiosInstance
+        .patch(url, { curriculum: request.curriculum })
+        .then((res) => {
+          // console.log("----upateData----")
+          // console.log(data);
+          this.$message.info("提交成功");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      (this.dataSource = []),
+        // this.updateTimetable(request);
+        (this.editModal_visible = false);
+    },
     relieve({ lesson_id }) {
       const url = `/pc/v1/lessons/${lesson_id}`;
-      axios
+      axiosInstance
         .delete(url)
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           const { status } = data;
           if (status) throw "relieve course success";
           this.$message.success("解除关联成功");

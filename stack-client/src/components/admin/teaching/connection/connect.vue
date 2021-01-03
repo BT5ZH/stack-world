@@ -1,6 +1,6 @@
 <template>
   <a-row class="container">
-    <a-row :span="20" style="margin: 10px 25px 20px 5px;">
+    <a-row :span="20" style="margin: 10px 25px 20px 5px">
       <a-tree-select
         style="width: 100%"
         :value="value"
@@ -30,21 +30,24 @@
     </a-row>
     <a-col :span="2"></a-col>
     <a-col :span="19">
-      <connect-list class="connect-list" :orginfo="value" :orgname="orgName"></connect-list>
+      <connect-list
+        class="connect-list"
+        :orginfo="value"
+        :orgname="orgName"
+      ></connect-list>
     </a-col>
   </a-row>
 </template>
 
 <script>
-
 import ConnectList from "./connectList";
 import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 export default {
-  components: {  ConnectList },
-  data(){
-    return{
+  components: { ConnectList },
+  data() {
+    return {
       value: undefined,
       treeData: [],
     };
@@ -60,37 +63,35 @@ export default {
     this.getTreeData();
     // this.getCourses();
   },
-    methods: {
+  methods: {
     async getTreeData() {
       let queryString = this.orgName;
       const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
-      console.log(url);
+      // console.log(url);
       try {
         const { data } = await axiosInstance.get(url);
-        console.log(data.data);
+        // console.log(data.data);
         this.treeData = data.data;
       } catch (err) {
         console.log(err);
       }
     },
-  
-       onChange(data) {
-      console.log("onchange:   " + data);
+    onChange(data) {
+      // console.log("onchange:   " + data);
       this.value = data;
     },
     onSearch() {
-      console.log(...arguments);
+      // console.log(...arguments);
     },
     onSelect() {
-      console.log("selected:   ");
-      console.log(...arguments);
+      // console.log("selected:   ");
+      // console.log(...arguments);
     },
-    },
+  },
 };
 </script>
 
 <style scoped>
-
 .class-table {
   padding-left: 20px;
 }
