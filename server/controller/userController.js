@@ -284,7 +284,7 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
   const data = await User.aggregate([
     { $match: { org_name: req.query.org_name } },
     //{ $match: { subOrg_name: req.query.subOrg_name } },
-    { $match: { role: 'teacher' } },
+    //{ $match: { role: 'teacher' } },
     {
       $group: {
         _id: "$subOrg_name",
@@ -300,11 +300,12 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
       if(item.title[i]==='professor') title.push('教授')
       else if(item.title[i]==='vice-professor') title.push('副教授')
       else if(item.title[i]==='lecturer') title.push('讲师')
+      else if(item.title[i]==='student') title.push('学生')
     }
     return{
         _id:item._id,
         title:title,
-
+        number:item.course_number
     }
   })
   if (data === [] || data === null) {
