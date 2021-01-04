@@ -71,8 +71,8 @@ export default {
       try {
         const { data } = await axiosInstance.get(url);
         // console.log(data.data);
-        console.log("----treedata-----")
-        console.log(data.tree)
+        // console.log("----treedata-----")
+        // console.log(data.tree)
         this.treeData = data.tree;
       } catch (err) {
         console.log(err);

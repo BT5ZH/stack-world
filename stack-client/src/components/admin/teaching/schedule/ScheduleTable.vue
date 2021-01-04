@@ -1,7 +1,8 @@
 <template>
   <div>
     <a-row>
-      <h2 style="text-align: center">{{ "图书馆-1-1001" }}</h2>
+      <h2 style="text-align: center">{{ tableTitle }}</h2>
+      <h3 style="text-align: center">{{ tableSemester }}</h3>
     </a-row>
     <a-row>
       <a-table
@@ -18,13 +19,149 @@
 
 <script>
 export default {
+  props: {
+    courseTableData: {
+      type: Array,
+    },
+  },
+  //
+  watch: {
+    courseTableData(val) {
+      // console.log("---val---");
+      // console.log(val);
+      this.tableTitle = val[0].show.building_name + "-" + val[0].show.room_name;
+      this.scheduleData = [
+        {
+          scheduleTitle: "第1节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第2节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第3节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第4节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第5节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第6节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第7节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第8节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第9节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第10节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+      ]
+      val.map((item) => {
+        for (let i = 0; i <= item.match.order.length; i++) {
+          let courseTime = Number(item.match.order.pop()) - 1;
+          if (item.match.date === "Mon") {
+            this.scheduleData[courseTime].monday = item.show.course_name + "(" + item.show.week + ")";
+          } else if (item.match.date === "Tue") {
+            this.scheduleData[courseTime].tuesday = item.show.course_name + "(" + item.show.week + ")";
+          } else if (item.match.date === "Wed") {
+            this.scheduleData[courseTime].wednesday = item.show.course_name + "(" + item.show.week + ")";
+          } else if (item.match.date === "Thu") {
+            this.scheduleData[courseTime].thursday = item.show.course_name + "(" + item.show.week + ")";
+          } else if (item.match.date === "Fri") {
+            this.scheduleData[courseTime].friday = item.show.course_name + "(" + item.show.week + ")";
+          } else if (item.match.date === "Sat") {
+            this.scheduleData[courseTime].saturday = item.show.course_name + "(" + item.show.week + ")";
+          } else {
+            this.scheduleData[courseTime].sunday = item.show.course_name + "(" + item.show.week + ")";
+          }
+          // console.log(courseTime)
+        }
+        // item.match.order.pop()
+        // console.log(item.match.order);
+      });
+    },
+  },
   data() {
     return {
-      semesters: [
-        { name: "2020-2021第一学期" },
-        { name: "2020-2021第二学期" },
-        { name: "2021-2022第一学期" },
-      ],
+      // 显示标题
+      tableTitle: "图书馆-1011",
+      tableSemester: "2020-2021第一学期",
       columns: [
         {
           title: " ",
@@ -70,7 +207,7 @@ export default {
       ],
       scheduleData: [
         {
-          scheduleTitle: "第1-2节",
+          scheduleTitle: "第1节",
           monday: "",
           tuesday: "",
           wednesday: "",
@@ -80,7 +217,7 @@ export default {
           sunday: "",
         },
         {
-          scheduleTitle: "第3-4节",
+          scheduleTitle: "第2节",
           monday: "",
           tuesday: "",
           wednesday: "",
@@ -90,7 +227,7 @@ export default {
           sunday: "",
         },
         {
-          scheduleTitle: "第5-6节",
+          scheduleTitle: "第3节",
           monday: "",
           tuesday: "",
           wednesday: "",
@@ -100,7 +237,7 @@ export default {
           sunday: "",
         },
         {
-          scheduleTitle: "第7-8节",
+          scheduleTitle: "第4节",
           monday: "",
           tuesday: "",
           wednesday: "",
@@ -110,7 +247,57 @@ export default {
           sunday: "",
         },
         {
-          scheduleTitle: "第9-10节",
+          scheduleTitle: "第5节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第6节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第7节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第8节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第9节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第10节",
           monday: "",
           tuesday: "",
           wednesday: "",
@@ -122,11 +309,7 @@ export default {
       ],
     };
   },
-  methods: {
-    handleChange(value) {
-      console.log(`selected ${value}`);
-    },
-  },
+  methods: {},
 };
 </script>
 
