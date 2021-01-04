@@ -10,7 +10,13 @@ const action = {
   async getCourseCalendar({ commit }, teacher_id) {
     try {
       const url = "pc/v1/timetables/getTimeTableFromTeacherID";
-      const { data } = await axios.post(url, { teacher_id });
+      let date = new Date();
+      let month = date.getMonth() + 1;
+      const { data } = await axios.post(url, {
+        teacher_id,
+        year: date.getFullYear().toString(),
+        semester: (month >= 3 && month <= 8 ? 2 : 1).toString(),
+      });
       errorHandler(data);
       const courseCalendar = data.data.map((item) => {
         return {
@@ -63,7 +69,7 @@ const action = {
       const requestData = { teacher_id, lesson_id };
       const url = "pc/v1/prepares/getOnePrepareLesson";
       const { data } = await axios.post(url, requestData);
-      commit("updateCourseHours", data.message);
+      commit("updateCourseHours", data.lesson);
     } catch (error) {
       console.error(error);
     }
@@ -88,6 +94,16 @@ const action = {
       const url = "pc/v1/resources/getLessonResourceOfTeacher";
       const { data } = await axios.post(url, requestData);
       commit("updateSources", data.resource);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getLessonNames({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/prepares/getOnePrepareLesson";
+      const { data } = await axios.post(url, requestData);
+      commit("updateLessonNames", data.names);
     } catch (error) {
       console.error(error);
     }

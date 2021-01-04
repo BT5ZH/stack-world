@@ -91,6 +91,9 @@ const mutation = {
   updateSources(state, params) {
     state.sources = params;
   },
+  updateLessonNames(state, params) {
+    state.lessonNames = params;
+  },
 };
 
 export default mutation;

@@ -2,6 +2,7 @@ const state = {
   courseCalendar: [],
   today: { title: "", day: "" },
   weekTable: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  lessonNames: [],
   // interaction data
   signList: [],
   testAnswerList: [],
