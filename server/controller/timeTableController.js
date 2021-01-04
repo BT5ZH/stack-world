@@ -1,4 +1,5 @@
 const TimeTable = require("../models/timeTableModel");
+const Lesson = require("../models/lessonModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const User = require("./../models/userModel");
@@ -106,9 +107,17 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     return next(new AppError("该课表不存在", 404));
   }
 
+  let result=[]
+  for(let i=0;i<data.length;i++){
+     let oneLesson = await Lesson.findById(data[i].lessonID)
+     if(oneLesson.year===req.body.year && oneLesson.semester===Number(req.body.semester))
+        result.push(data[i])
+  }
+
   res.status(200).json({
     status: "success",
-    data,
+    data,//get all the timetable data of the teacher selected without regard to the year and sememser
+    result,//according to the given year and semester, return the suitable timetable of the teacher selected
   });
 });
 
@@ -146,6 +155,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
     },
     {
       $project: {
+        lesson_id:1,
         "curriculum.date": 1,
         "curriculum.order": 1,
         "curriculum.odd_or_even": 1,
@@ -162,8 +172,9 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
     return next(new AppError("该课表不存在", 404));
   }
  
-  let result=data.map((item)=>{
+  let temp=data.map((item)=>{ 
     return{
+        lessonID:item.lesson_id,
         date:item.curriculum.date,
         order:item.curriculum.order,
         odd_or_even:item.curriculum.odd_or_even,
@@ -172,9 +183,17 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
         course_name:item.Course[0].name
     }
   })
+  
+  let result=[]
+  for(let i=0;i<temp.length;i++){
+     let oneLesson = await Lesson.findById(temp[i].lessonID)
+     if(oneLesson.year===req.query.year && oneLesson.semester===Number(req.query.semester))
+        result.push(temp[i])
+  }
   res.status(200).json({
     status: "success",
-    result,
+    temp, //the temp array saves all the timetable data of the room selected without regard to the year and sememser
+    result,//according to the given year and semester, return the suitable timetable of the room selected
   });
 });
 

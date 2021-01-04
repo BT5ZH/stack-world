@@ -65,7 +65,6 @@ exports.getAllResources = catchAsync(async (req, res, next) => {
  * 传入参数{user_id,res_url,collect_time,res_type,res_name}
  */
 exports.collectResource = catchAsync(async (req, res) => {
-  try {
     var collect_resource = req.body;
     var resource = {
       res_name: collect_resource.res_name,
@@ -75,7 +74,12 @@ exports.collectResource = catchAsync(async (req, res) => {
     };
     var user_id = collect_resource.user_id;
 
-    var user = await User.findOne({ user_id: user_id });
+    var user = await User.findOne({ _id: user_id });
+
+    if ( !user ){
+      return next(new AppError("用户不存在", 404));
+    }
+
     user.resources.push(resource);
     user.save();
 
@@ -83,44 +87,38 @@ exports.collectResource = catchAsync(async (req, res) => {
       status: true,
       message: "收藏成功"
     });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      status: false,
-      message: err
-    });
-  }
+ 
 });
 
 /***
  * 根据teacher_id、lesson_id获取该教师的某门课的资源
  */
 exports.getLessonResourceOfTeacher = catchAsync(async (req, res) => {
-  try {
+  
     var authorId = req.body.teacher_id;
     var lessonId = req.body.lesson_id;
     var resource = await Resource.find({ authorId: authorId ,lesson_id:lessonId});
- 
+
+    if (resource.length === 0 ||  !resource){
+      return next(new AppError("资源不存在", 404));
+    }
     res.status(200).json({
       status: true,
       resource:resource
     });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      status: false,
-      message: err
-    });
-  }
+ 
 });
 /**
  * 删除用户收藏的资源(操作的是user表)
- * 传入参数{user_id,res_url}
+ * 传入参数{_id,res_url}
  */
 exports.deleteCollectResource = catchAsync(async (req, res) => {
-  try {
+ 
     var user_id = req.body.user_id;
-    var user = await User.findOne({ user_id: user_id });
+    var user = await User.findOne({ _id: user_id });
+    if ( !user ){
+      return next(new AppError("用户不存在", 404));
+    }
     for (var i = 0; i < user.resources.length; i++) {
       if (user.resources[i].res_rul == req.body.res_url) {
         user.resources.splice(i, 1);
@@ -133,11 +131,5 @@ exports.deleteCollectResource = catchAsync(async (req, res) => {
       collect_resource:user.resources,
       message: "取消收藏成功"
     });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      status: false,
-      message: err
-    });
-  }
+  
 });

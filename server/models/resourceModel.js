@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
+const uuid = require("uuid");
 const resourceSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    required: [true, "you must tell us your id"],
+    default: uuid.v1,
+  },
   name: {
     type: String,
     required: [true, "A resource must have a name"],
@@ -15,7 +21,7 @@ const resourceSchema = new mongoose.Schema({
   },
   duration: {
     type: Number,
-    required: [true, "A resource must have a rul"],
+    required: [true, "A resource must have a duration"],
   },
   size: {
     type: Number,
@@ -45,8 +51,8 @@ const resourceSchema = new mongoose.Schema({
   lesson_id: {
     type: String,
     ref: "Lesson",
-  },
-});
+  }
+},{ _id: false });
 
 const Resource = mongoose.model("Resource", resourceSchema);
 
