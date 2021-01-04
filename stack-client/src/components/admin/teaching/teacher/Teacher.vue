@@ -16,7 +16,7 @@
           :key="item._id"
           :value="`${item._id}#`"
           :title="item._id"
-          v-for="item in treeList"
+          v-for="item in peopleTreeList"
         >
           <a-tree-select-node
             :key="title"
@@ -225,7 +225,7 @@ export default {
       ],
       colleges: [],
       teacherList: [],
-      treeList: [],
+      peopleTreeList: [],
     };
   },
   computed: {
@@ -252,13 +252,13 @@ export default {
     },
     async getTreeList() {
       try {
-        console.log(this.orgName);
+        // console.log(this.orgName);
         const url =
           "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" +
           this.orgName;
         const { data } = await axiosInstance(url);
-        this.treeList = data.result;
-        console.log(data);
+        this.peopleTreeList = data.result;
+        // console.log(data);
       } catch (err) {
         console.log(err);
       }

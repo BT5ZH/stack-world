@@ -67,9 +67,10 @@ export default {
         "recent-courses",
         JSON.stringify(Array.from(new Set(recentCourses)).slice(0, 4))
       );
+      const lessonName = this.courses[courseIndex].lesson_name;
       this.$router.push({
         name: "teacher_precourse",
-        query: { lessonId },
+        query: { lessonId, lessonName },
       });
     },
   },

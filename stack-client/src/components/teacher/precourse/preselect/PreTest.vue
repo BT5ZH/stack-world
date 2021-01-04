@@ -153,7 +153,6 @@ export default {
       course.selected = !course.selected;
     },
     showit(item) {
-      console.log(item);
       this.showvisible = true;
       this.question = item;
     },

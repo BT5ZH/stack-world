@@ -9,7 +9,10 @@ router
   .route("/")
   .get(authController.protect, timeTableController.getAllTimeTable)
   .post(authController.protect, timeTableController.createTimeTable);
-
+router
+  .route("/generateTimeTable")
+  .post(authController.protect, timeTableController.generateTimeTable);
+  
 router
   .route("/getTimeTableFromTeacherID")
   .post(authController.protect, timeTableController.getTimeTableFromTeacherID); 

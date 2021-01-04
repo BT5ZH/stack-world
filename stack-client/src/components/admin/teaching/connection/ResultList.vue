@@ -281,6 +281,8 @@ export default {
   },
   watch: {
     refresh(val) {
+      console.log("---refresh---");
+      // this.dataSource = {};
       this.get_lessonManages();
     },
   },
@@ -292,12 +294,14 @@ export default {
       const lesson_id = this.edit_message.lesson_id;
       const request = { lesson_id: this.edit_message.lesson_id };
       try {
+        // console.log(request);
         const { data } = await axiosInstance.post(url, request);
         // console.log("---data.data[0].curriculum---");
         // console.log(data.data[0]);
         this.dataSource = data.data[0];
         let i = 0;
-        this.dataSource.curriculum = data.data[0].curriculum.map((item) => {
+        let middle;
+        middle = data.data[0].curriculum.map((item) => {
           let oddoreven = "全周";
           if (item.odd_or_even === 1) oddoreven = "单周";
           else if (item.odd_or_even === 2) oddoreven = "双周";
@@ -308,8 +312,11 @@ export default {
             ...item,
           };
         });
-        // console.log(this.dataSource)
+        this.dataSource.curriculum = middle;
+        // console.log("---dataSource---")
+        // console.log(this.dataSource.curriculum)
       } catch (err) {
+        this.dataSource = {};
         console.log(err);
       }
       // console.log(lesson_id)
@@ -334,11 +341,7 @@ export default {
       // console.log(this.edit_message);
       let temp = this.dataSource.curriculum;
       // console.log("----dataSource-----")
-      // console.log(this.dataSource.curriculum)
-      // let newData = Object.assign({}, this.edit_message);
-
-      // console.log("-----newData-----")
-      // console.log(newData)
+      // console.log(this.dataSource)
       // 拼单双周
       this.edit_message.week = "全周";
       if (this.edit_message.odd_or_even === 1) this.edit_message.week = "单周";
@@ -364,8 +367,17 @@ export default {
         },
         week: this.edit_message.week,
       };
-      newData.key = this.dataSource.curriculum.length + 1;
-      this.dataSource.curriculum = [...temp, Object.assign({}, newData)];
+      // console.log("-----newData-----")
+      // console.log(newData)
+      // console.log(this.dataSource.curriculum != null);
+      if (this.dataSource.curriculum != null) {
+        newData.key = this.dataSource.curriculum.length + 1;
+        this.dataSource.curriculum = [...temp, Object.assign({}, newData)];
+      } else {
+        newData.key = 1;
+        this.dataSource = { curriculum: [Object.assign({}, newData)] };
+      }
+      // console.log(Object.assign({}, newData));
       // console.log("----dataSource.curriculum----")
       // console.log(this.dataSource.curriculum)
     },
@@ -439,7 +451,8 @@ export default {
       }
     },
     edit(record) {
-      // console.log(record)
+      console.log("---record---");
+      console.log(record);
       this.refresh += 1;
       this.edit_message.lesson_id = record.lesson_id;
       this.classes = record.classes;
@@ -449,35 +462,66 @@ export default {
     edit_submit() {
       // console.log("-----dataSource-----");
       // console.log(this.dataSource);
-      let request = {
-        _id: this.dataSource._id,
-        curriculum: this.dataSource.curriculum,
-      };
-      let temp = request.curriculum;
-      request.curriculum = temp.map((item) => {
-        return {
-          class_id: item.class_id._id,
-          room_id: item.room_id._id,
-          odd_or_even: item.odd_or_even,
-          order: item.order,
-          date: item.date,
+      if (this.dataSource._id == null) {
+        // 无timetable，创建一个
+        let request = {
+          lesson_id: this.edit_message.lesson_id,
+          curriculum: this.dataSource.curriculum,
         };
-      });
-      const url = "/pc/v1/timetables/" + request._id;
-
-      const { data } = axiosInstance
-        .patch(url, { curriculum: request.curriculum })
-        .then((res) => {
-          // console.log("----upateData----")
-          // console.log(data);
-          this.$message.info("提交成功");
-        })
-        .catch((err) => {
-          console.log(err);
+        let temp = request.curriculum;
+        const url = "/pc/v1/timetables";
+        request.curriculum = temp.map((item) => {
+          return {
+            class_id: item.class_id._id,
+            room_id: item.room_id._id,
+            odd_or_even: item.odd_or_even,
+            order: item.order,
+            date: item.date,
+          };
         });
-      (this.dataSource = []),
-        // this.updateTimetable(request);
-        (this.editModal_visible = false);
+        // console.log("---request---");
+        // console.log(request);
+        axiosInstance
+          .post(url, request)
+          .then((res) => {
+            this.$message.info("提交成功");
+          })
+          .catch((err) => {
+            this.$message.error("提交失败");
+            console.log(err);
+          });
+        this.dataSource = [];
+        this.editModal_visible = false;
+      } else {
+        let request = {
+          _id: this.dataSource._id,
+          curriculum: this.dataSource.curriculum,
+        };
+        let temp = request.curriculum;
+        request.curriculum = temp.map((item) => {
+          return {
+            class_id: item.class_id._id,
+            room_id: item.room_id._id,
+            odd_or_even: item.odd_or_even,
+            order: item.order,
+            date: item.date,
+          };
+        });
+        const url = "/pc/v1/timetables/" + request._id;
+        // console.log("---request---");
+        // console.log(request);
+        const { data } = axiosInstance
+          .patch(url, { curriculum: request.curriculum })
+          .then((res) => {
+            // console.log("----upateData----")
+            // console.log(data);
+            this.$message.info("提交成功");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        (this.dataSource = []), (this.editModal_visible = false);
+      }
     },
     relieve({ lesson_id }) {
       const url = `/pc/v1/lessons/${lesson_id}`;

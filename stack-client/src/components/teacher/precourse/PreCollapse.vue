@@ -63,15 +63,12 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      courseId: "1",
-      coursename: "软件工程",
       coursehours: [],
     };
   },
-  watch: {},
   methods: {
     courseclick(index) {
-      this.$store.commit("teacher/updateCurCourseHour",index);
+      this.$store.commit("teacher/updateCurCourseHour", index);
     },
     editcourse(index) {
       this.coursehours[index].editable = true;
@@ -152,6 +149,9 @@ export default {
     }),
     lesson_id() {
       return this.$route.query.lessonId;
+    },
+    coursename() {
+      return this.$route.query.lessonName;
     },
   },
   mounted() {
