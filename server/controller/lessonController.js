@@ -88,12 +88,16 @@ exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
     return next(new AppError("该课不存在", 404));
   }
   let abstractInfo=fullInfo.map((item)=>{
+    let classlength=0
+    if(item.prepareLesson.length>0)
+        classlength=item.prepareLesson[0].one_class.length
+        
     return{
         _id:item._id,
         cover:item.cover,
         lesson_name:item.course_id.name,
         total_study_hours:item.course_id.total_study_hours,
-        prepareNumber:item.prepareLesson[0].one_class.length,
+        prepareNumber:classlength,
     }
   })
   res.status(200).json({
