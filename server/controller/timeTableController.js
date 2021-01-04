@@ -109,7 +109,7 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
 
   let result=[]
   for(let i=0;i<data.length;i++){
-     let oneLesson = await Lesson.findById(data[i].lessonID)
+     let oneLesson = await Lesson.findById(data[i].lesson_id)
      if(oneLesson.year===req.body.year && oneLesson.semester===Number(req.body.semester))
         result.push(data[i])
   }
