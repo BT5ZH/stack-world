@@ -71,11 +71,21 @@ const mutation = {
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   updateNode(state, params) {
-    state.nodes[state.nodeindex] = params;
+    state.nodes.splice(state.nodeindex, 1, params);
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   deleteNode(state, params) {
     state.nodes.splice(params, 1);
+    state.courseHours[state.curCourseHour].nodes = state.nodes;
+  },
+  updateNodevote(state, params) {
+    const node = state.nodes[state.nodeindex];
+    node.vote = params;
+    state.nodes.splice(state.nodeindex, 1, node);
+    state.courseHours[state.curCourseHour].nodes = state.nodes;
+  },
+  updatepeople_num(state, params) {
+    state.nodes[state.nodeindex].people_num = params;
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   updateSources(state, params) {

@@ -285,6 +285,15 @@ export default {
         PreDocument: "文件下发",
         // PreHomework: "布置作业",
       },
+      eventname: {
+        PreVote: "Vote",
+        PreSign: "Sign",
+        PreCompete: "Race",
+        PreQuestion: "Ask",
+        PreTeaching: "Teach",
+        PreTest: "Test",
+        PreDocument: "Dispatch",
+      },
       slidervalue: 5,
       modalvisible: false,
       changevisible: false,
@@ -372,7 +381,17 @@ export default {
           title: this.event[this.componentId],
           description: steptime,
         });
+        const node = {
+          people_num: 0,
+          tag: this.eventname[this.componentId],
+          time: steptime,
+          vote: [
+            { options: [], question_type: null, right_answer: "", title: "" },
+          ],
+        };
         this.current = this.steps.length - 1;
+        this.$store.commit("teacher/updateNodeIndex", this.current);
+        this.$store.commit("teacher/addNode", node);
         this.modalvisible = false;
       } else {
         this.sumtime -= this.time;
@@ -402,6 +421,16 @@ export default {
           title: this.event[this.componentId],
           description: steptime,
         });
+        const node = {
+          people_num: 0,
+          tag: this.eventname[this.componentId],
+          time: steptime,
+          vote: [
+            { options: [], question_type: null, right_answer: "", title: "" },
+          ],
+        };
+        this.$store.commit("teacher/updateNodeIndex", this.current);
+        this.$store.commit("teacher/updateNode", node);
         this.changevisible = false;
       } else {
         this.sumtime -= this.time;
@@ -424,6 +453,7 @@ export default {
           let time = that.steps[that.current].description.split("分钟")[0];
           that.sumtime -= time;
           that.steps.splice(that.current, 1);
+          that.$store.commit("teacher/deleteNode", that.current);
           that.current = that.steps.length - 1;
           that.onChange(that.current);
         },
