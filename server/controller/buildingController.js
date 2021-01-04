@@ -80,14 +80,26 @@ exports.updateBuilding = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteBuilding = catchAsync(async (req, res, next) => {
-  const building = await Building.findByIdAndDelete(req.params.id);
+  // const building = await Building.findByIdAndDelete(req.params.id);
 
+  // if (!building) {
+  //   return next(new AppError("该校区不存在", 404));
+  // }
+
+  // res.status(204).json({
+  //   status: "success",
+  //   data: "success deleted!",
+  // });
+
+  const building = await Building.findById(req.params.id);
+
+  //const room = await Room.remove({_id:req.params.id});
   if (!building) {
-    return next(new AppError("该校区不存在", 404));
+    return next(new AppError("该空间不存在", 404));
   }
-
+  await building.remove();
   res.status(204).json({
     status: "success",
-    data: "success deleted!",
+    building,
   });
 });

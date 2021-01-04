@@ -6,33 +6,26 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .get(authController.protect, prepareLessonController.getAllPrepareLessons);
-
-router
-  .route("/deleteOnePrepareLesson")
-  .delete(
-    authController.protect,
-    prepareLessonController.deleteOnePrepareLesson
-  );
-
 router
   .route("/getOnePrepareLesson")
   .post(authController.protect, prepareLessonController.getOnePrepareLesson);
-
-router
-  .route("/updateOnePrepareLesson")
-  .post(authController.protect, prepareLessonController.updateOnePrepareLesson);
-
 router
   .route("/addNewSection")
   .post(authController.protect, prepareLessonController.addNewSection);
-
 router
   .route("/deleteSection")
   .post(authController.protect, prepareLessonController.deleteSection);
-
+router
+  .route("/deleteOnePrepareLesson")
+  .delete(authController.protect, prepareLessonController.deleteOnePrepareLesson);
+router
+  .route("/updateOnePrepareLesson")
+  .post(authController.protect, prepareLessonController.updateOnePrepareLesson);
 router
   .route("/updateSectionName")
   .post(authController.protect, prepareLessonController.updateSectionName);
+
+
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

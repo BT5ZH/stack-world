@@ -103,7 +103,7 @@ exports.getSetHomeworkByLessonIDandNumber = catchAsync(async (req, res, next) =>
     // model: 'Student'
     }
   })
-  if (!Homework) {
+  if (!Homework ||Homework.length===0) {
     return next(new AppError("该作业布置不存在", 404));
   }
 

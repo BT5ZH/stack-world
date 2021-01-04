@@ -51,10 +51,6 @@ const userSchema = new mongoose.Schema(
     major_name: {
       type: mongoose.Schema.Types.String,
     },
-    //     organization:{
-    // type:String,
-    // ref: 'Organization'
-    //     },
     resources: [
       {
         res_name: { type: String },
@@ -62,7 +58,7 @@ const userSchema = new mongoose.Schema(
         collect_time: { type: String },
         res_type: { type: String },
       },
-    ], //
+    ], 
     password: {
       type: String,
       required: [true, "Please provide a password"],
@@ -89,11 +85,11 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  // { _id: false }
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
+  { _id: false }
 );
 //userSchema.index({ user_id: 1}, { unique: true });
 // virtual populate

@@ -24,6 +24,15 @@ const roomSchema = new mongoose.Schema(
         values: ["教室", "实验室", "办公室", "会议室", "报告厅", "其他"],
       },
     },
+    room_users: {
+      type: [
+        { room_user: { type: mongoose.Schema.Types.String, ref: "User" } },
+      ],
+    },
+    room_size: {
+      type: Number,
+      default: 0,
+    },
     room_charge_person: {
       type: String,
       ref: "User",
@@ -76,43 +85,34 @@ roomSchema.post('find', function(result) {
   }
 });
 */
-roomSchema.post('save', async function (doc) {
-  const building = await Building.findOne({ 
-    org_name: doc.org_name, 
+roomSchema.post("save", async function (doc) {
+  const building = await Building.findOne({
+    org_name: doc.org_name,
     campus_name: doc.campus_name,
-    building_name: doc.building_name }
-  )
-  if(building != null){
-    let room = building.rooms
-  
-    if(room.indexOf(doc._id)===-1)
-      room.push(doc._id)
-    
-    await Building.updateOne(
-      { _id: building._id },
-      { $set: { rooms: room }
-    })
+    building_name: doc.building_name,
+  });
+  if (building != null) {
+    let room = building.rooms;
+
+    if (room.indexOf(doc._id) === -1) room.push(doc._id);
+
+    await Building.updateOne({ _id: building._id }, { $set: { rooms: room } });
   }
 });
-roomSchema.pre('remove', {  query: true } ,async function (doc) {
-
-  const building = await Building.findOne({ 
-    org_name: this.org_name, 
+roomSchema.pre("remove", { query: true }, async function (doc) {
+  const building = await Building.findOne({
+    org_name: this.org_name,
     campus_name: this.campus_name,
-    building_name: this.building_name }
-  )
-  if(building != null){
-    let room = []
+    building_name: this.building_name,
+  });
+  if (building != null) {
+    let room = [];
 
-    for(let i=0;i<building.rooms.length;i++){
-       if(building.rooms[i]!=this._id)
-          room.push(building.rooms[i])
+    for (let i = 0; i < building.rooms.length; i++) {
+      if (building.rooms[i] != this._id) room.push(building.rooms[i]);
     }
-  
-    await Building.updateOne(
-      { _id: building._id },
-      { $set: { rooms: room }
-    })
+
+    await Building.updateOne({ _id: building._id }, { $set: { rooms: room } });
   }
 });
 const Room = mongoose.model("Room", roomSchema);
