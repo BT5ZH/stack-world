@@ -91,6 +91,9 @@ const mutation = {
   updateSources(state, params) {
     state.sources = params;
   },
+  updatePPT(state, params) {
+    state.courseHours[state.curCourseHour].ppt = params;
+  },
 };
 
 export default mutation;

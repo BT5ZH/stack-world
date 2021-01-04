@@ -32,7 +32,7 @@
                 />
                 <h3>{{ course.courseName }}</h3>
                 <br />
-                <div>
+                <!-- <div>
                   <template v-for="tag in course.tags">
                     <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
                       <a-tag :key="tag">
@@ -43,7 +43,7 @@
                       {{ tag }}
                     </a-tag>
                   </template>
-                </div>
+                </div> -->
               </a-card>
             </a-col>
           </a-row>
@@ -55,58 +55,10 @@
               :show-quick-jumper="true"
             ></a-pagination>
           </a-row>
+          <template #footer>
+            <a-button type="primary" @click="selectppt"> 确定 </a-button>
+          </template>
         </a-modal>
-        <!-- <a-col>
-          <a-button @click="visible = true"
-            ><a-icon type="plus" />本地上传</a-button
-          >
-        </a-col>
-        <a-modal
-          @cancel="visible = false"
-          @ok="uploadFile"
-          :maskClosable="false"
-          :confirm-loading="confirmLoading"
-          centered
-          width="40%"
-          :closable="false"
-          :destroyOnClose="true"
-          v-model="visible"
-        >
-          <a-form-model
-            :model="fileForm"
-            ref="fileForm"
-            labelAlign="left"
-            :rules="formRules"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
-            <a-form-model-item label="资源名称" prop="name">
-              <a-input
-                placeholder="请输入资源名称"
-                v-model="fileForm.name"
-              ></a-input>
-            </a-form-model-item>
-            <a-form-model-item label="资源标签" prop="tags">
-              <a-input
-                placeholder="请输入标签名，用 - 隔开"
-                v-model="fileForm.tags"
-              ></a-input>
-            </a-form-model-item>
-          </a-form-model>
-          <a-upload-dragger
-            :multiple="true"
-            :before-upload="fileInput"
-            :file-list="fileList"
-          >
-            <p class="ant-upload-drag-icon">
-              <a-icon type="inbox" />
-            </p>
-            <p class="ant-upload-text">点击或拖拽以上传资源文件</p>
-            <p class="ant-upload-hint">
-              支持 docx、xlsx、ppt 等文档类型，音视频资源。
-            </p>
-          </a-upload-dragger>
-        </a-modal> -->
         <a-col>
           <p>可上传视频,word,pdf,excel,图片等</p>
         </a-col>
@@ -146,81 +98,37 @@
 </template>
 
 <script>
-// import fileUploader from "@/utils/S3FileUploader";
-// import { mapState } from "vuex";
-const sources = [
-  {
-    courseId: "1",
-    courseName: "线性代数习题.doc",
-    tags: ["1章", "知识点", "练习题", "线代", "习题"],
-    selected: false,
-    src: require("../../../../../src/assets/img/SVGS/word.svg"),
-  },
-  {
-    courseId: "2",
-    courseName: "计算机构成说明书.jpg",
-    tags: ["2章", "知识点2", "练习题2", "线代2", "习题2"],
-    selected: false,
-    src: require("../../../../../src/assets/img/SVGS/jpg.svg"),
-  },
-  {
-    courseId: "3",
-    courseName: "高等数学.xls",
-    tags: ["3章", "知识点3", "练习题3", "线代3", "习题3"],
-    selected: false,
-    src: require("../../../../../src/assets/img/SVGS/excel.svg"),
-  },
-  {
-    courseId: "4",
-    courseName: "概率论与数理统计.ppt",
-    tags: ["4章", "知识点4", "练习题4", "线代4", "习题4"],
-    selected: false,
-    src: require("../../../../../src/assets/img/SVGS/ppt.svg"),
-  },
-  {
-    courseId: "5",
-    courseName: "软件工程.pdf",
-    tags: ["5章", "知识点5", "练习题5", "线代5", "习题5"],
-    selected: false,
-    src: require("../../../../../src/assets/img/SVGS/pdf.svg"),
-  },
-];
+import { mapState } from "vuex";
+const sources = [];
 export default {
   data() {
     return {
       sources,
-      // visible: false,
       selectvisible: false,
-      // fileList: [],
-      // labelCol: { span: 3 },
-      // wrapperCol: { span: 14 },
-      // fileForm: { name: "", tags: "" },
-      // confirmLoading: false,
-      // formRules: {
-      //   name: [{ required: true, message: "资源名称不能为空" }],
-      // },
     };
   },
   computed: {
     selectedsource() {
       return this.sources.filter((item) => item.selected);
     },
-    // ...mapState({
-    //   uid: (state) => state.public.uid,
-    //   oid: (state) => state.public.oid,
-    // }),
+    ...mapState({
+      uid: (state) => state.public.uid,
+    }),
+    lesson_id() {
+      return this.$route.query.lessonId;
+    },
   },
   methods: {
     node_vote() {
-      // const vote = [
-      //   {
-      //     options: this.cards.options,
-      //     question_type: this.ifshow,
-      //     right_answer: this.rightanswer,
-      //     title: this.cards.title,
-      //   },
-      // ];
-      // this.$store.commit("teacher/updateNodevote", vote);
+      const vote = this.selectedsource.map((item, index) => {
+        return {
+          options: item.courseId,
+          question_type: null,
+          right_answer: "",
+          title: "",
+        };
+      });
+      this.$store.commit("teacher/updateNodevote", vote);
     },
     selectsource() {
       this.selectvisible = false;
@@ -231,54 +139,50 @@ export default {
     deleteit(item) {
       item.selected = !item.selected;
     },
-    // fileInput(file) {
-    //   this.fileList = [file];
-    //   return false;
-    // },
-    // uploadFile() {
-    //   this.confirmLoading = true;
-    //   const that = this;
-    //   const config = {
-    //     that,
-    //     apiUrl: "/pc/v1/resources/upload",
-    //     filePath: `${this.oid}/teacher/`,
-    //     body: that.createResource(),
-    //     successCallback() {
-    //       that.$message.success("上传成功！");
-    //       that.confirmLoading = false;
-    //     },
-    //     failCallback(err) {
-    //       console.error(err);
-    //       that.confirmLoading = false;
-    //       that.$message.error("上传失败！");
-    //     },
-    //     progressCallback(...args) {
-    //       console.log({ args });
-    //     },
-    //   };
-    //   const params = { Metadata: { star: "10" } };
-    //   fileUploader(this.fileList, config, params);
-    // },
-    // createResource() {
-    //   return {
-    //     ...this.fileForm,
-    //     authorId: this.uid,
-    //     url: this.resourceUrl,
-    //     tags: this.fileForm.tags.split("-"),
-    //   };
-    // },
+    getResourceIconUrl(rsType) {
+      let iconMap = new Map([
+        [["mp4"], "video"],
+        [["zip", "rar", "7z", "tar", "gz"], "zip"],
+        [["doc", "docx"], "word"],
+        [["txt"], "txt"],
+        [["psd"], "psd"],
+        [["ppt", "pptx"], "ppt"],
+        [["png"], "png"],
+        [["pdf"], "pdf"],
+        [["mp3", "wma", "aac", "wav"], "mp3"],
+        [["jpeg", "jpg"], "jpg"],
+        [["html"], "html"],
+        [["gif"], "gif"],
+        [["xlsx", "xls"], "excel"],
+      ]);
+      for (let [suffix, iconName] of iconMap.entries()) {
+        console.log(suffix);
+        if (suffix.some((item) => item === rsType)) {
+          return iconName;
+        }
+      }
+      return "white";
+    },
   },
-  // mounted() {
-  // this.$store
-  //   .dispatch("teacher/getSources", {
-  //     lesson_id: this.lesson_id,
-  //     teacher_id: this.uid,
-  //   })
-  //   .then(() => {
-  //     this.sources = this.$store.getters["teacher/sources"];
-  //     console.log(this.$store.getters["teacher/sources"]);
-  //   });
-  // },
+  mounted() {
+    this.$store
+      .dispatch("teacher/getSources", {
+        lesson_id: this.lesson_id,
+        teacher_id: this.uid,
+      })
+      .then(() => {
+        this.sources = this.$store.getters["teacher/getSources"].map((item) => {
+          let src = this.getResourceIconUrl(item.type);
+          return {
+            courseId: item.courseId,
+            courseName: item.courseName + "." + item.type,
+            selected: false,
+            url: item.url,
+            src: require("@/assets/img/SVGS/" + src + ".svg"),
+          };
+        });
+      });
+  },
 };
 </script>
 <style>

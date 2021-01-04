@@ -69,6 +69,28 @@ const getter = {
       rightanswer: vote.right_answer,
     };
   },
+  getSources(state) {
+    return state.sources.map((item) => {
+      return {
+        courseId: item._id,
+        courseName: item.name,
+        type: item.rsType,
+        url: item.url,
+      };
+    });
+  },
+  getPPTSource(state) {
+    return state.sources
+      .filter((item) => {
+        return item.rsType === "ppt" || item.rsType === "pptx";
+      })
+      .map((item) => ({
+        id: item._id,
+        url: item.url,
+        name: item.name,
+        selected: false,
+      }));
+  },
 };
 
 export default getter;

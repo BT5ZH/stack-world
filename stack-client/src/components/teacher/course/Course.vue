@@ -72,9 +72,10 @@ export default {
     },
     prepareCourse(courseIndex) {
       const lessonId = this.courses[courseIndex]._id;
+      const lessonName = this.courses[courseIndex].lesson_name;
       this.$router.push({
         name: "teacher_precourse",
-        query: { lessonId },
+        query: { lessonId, lessonName },
       });
     },
   },
