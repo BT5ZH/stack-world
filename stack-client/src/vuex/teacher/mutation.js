@@ -47,6 +47,9 @@ const mutation = {
       return info;
     });
   },
+  updateCurActivity(state, params) {
+    state.curActivity = params;
+  },
   updateCourseHours(state, { _id, one_class }) {
     state.courseHours = one_class;
     state.curLessonId = _id;

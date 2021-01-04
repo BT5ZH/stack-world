@@ -132,10 +132,8 @@ export default {
         "#96BFFF",
       ],
       steps: [
-        { title: "讲课", description: "20分钟" },
-        { title: "提问", description: "5分钟" },
-        { title: "提问", description: "5分钟" },
-        { title: "提问", description: "5分钟" },
+        { title: "签到", description: "2分钟" },
+        { title: "随堂测试", description: "5分钟" },
       ],
       curEvent: 0,
       events: [
@@ -156,6 +154,10 @@ export default {
     eventChange(value) {
       this.curEvent = value;
       this.$refs.eventPanel.next();
+      this.$store.commit(
+        "teacher/updateCurActivity",
+        this.events[this.curEvent].type
+      );
     },
     navigateToEvent(eventIndex) {
       const event = this.events[eventIndex];
@@ -166,12 +168,6 @@ export default {
         actionType: "sign",
         role: "teacher",
         roomId: this.lessonId,
-      });
-      this.$router.push({
-        name: "interaction_sign",
-        query: {
-          lessonId: this.lessonId,
-        },
       });
     },
     sendtestEvent() {
@@ -225,7 +221,7 @@ export default {
         data: { lessonId: this.lessonId, teacherId: this.uid },
       });
     };
-    socket.createInstance("teacher", this, this.lessonId).then(callback);    
+    socket.createInstance("teacher", this, this.lessonId).then(callback);
   },
 };
 </script>

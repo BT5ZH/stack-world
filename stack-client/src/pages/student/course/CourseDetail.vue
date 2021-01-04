@@ -28,19 +28,22 @@
       <!-- <div v-if="courseStart"> -->
       <div class="">
         <!-- <video /> -->
-        <div style="width:100%;height: 200px;background-color: #ffbf35;"></div>
+        <div
+          style="width: 100%; height: 200px; background-color: #ffbf35"
+          id="remote_stream"
+        ></div>
 
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
 
-        <a-divider style="margin-bottom: 0;"></a-divider>
+        <a-divider style="margin-bottom: 0"></a-divider>
         <div>
-          <sign v-if="flag == 1"></sign>
-          <quiz v-if="flag == 2"></quiz>
-          <random v-if="flag == 3"></random>
-          <ques v-if="flag == 4"></ques>
-          <vote v-if="flag == 5"></vote>
-          <test v-if="flag == 6"></test>
+          <sign v-if="flag == 1" :socket="socket"></sign>
+          <quiz v-if="flag == 2" :socket="socket"></quiz>
+          <random v-if="flag == 3" :socket="socket"></random>
+          <ques v-if="flag == 4" :socket="socket"></ques>
+          <vote v-if="flag == 5" :socket="socket"></vote>
+          <test v-if="flag == 6" :socket="socket"></test>
         </div>
       </div>
       <!-- <div
@@ -90,6 +93,8 @@ import ques from "./class/Questionnaire.vue";
 
 import { mapState } from "vuex";
 import * as socket from "@/utils/socket";
+import TRTC from "trtc-js-sdk";
+import axios from "@/utils/axios";
 
 export default {
   name: "CourseHome",
@@ -110,14 +115,65 @@ export default {
       courseId: null,
       lessonId: "",
       flag: 0,
+      socket,
     };
   },
   methods: {
     changeNav(value) {
       this.isClick = value;
     },
+    initLiveClient() {
+      axios
+        .post("/pc/v1/activities/user_sig", {
+          user_id: this.uid,
+        })
+        .then(({ data }) => {
+          if (!data.userSig) throw "no sig in response";
+          this.client = TRTC.createClient({
+            mode: "live",
+            sdkAppId: data.sdkAppId,
+            userId: this.uid,
+            userSig: data.userSig,
+            useStringRoomId: true,
+          });
+          this.joinRoom();
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error("获取直播Token失败");
+        });
+    },
+    joinRoom() {
+      this.client
+        .join({ roomId: this.lessonId, role: "audience" })
+        .catch((error) => {
+          console.error(error);
+          this.$message.success("进入教室失败，请刷新后重试");
+        })
+        .then(() => {
+          this.$message.success("成功进入教室");
+          this.client.on("stream-added", (event) => {
+            this.client.subscribe(event.stream);
+          });
+          this.client.on("stream-subscribed", (event) => {
+            event.stream.play("remote_stream");
+          });
+        });
+    },
+    closeLive() {
+      this.client
+        .leave()
+        .then(() => {
+          console.error("退房成功 ");
+          // 退房成功，可再次调用client.join重新进房开启新的通话。
+        })
+        .catch((error) => {
+          console.error("退房失败 " + error);
+          // 错误不可恢复，需要刷新页面。
+        });
+    },
   },
-  created: function() {
+  created() {
     this.courseId = this.$route.params.id;
     console.log(this.courseId);
     this.lessonId = this.$route.query.lessonId;
@@ -126,6 +182,7 @@ export default {
     // this.$store.dispatch("student/getResList", this.$route.params.id);
     // this.$store.dispatch("student/getHomeworkList", this.$route.params.id);
     socket.createInstance("student", this, this.lessonId);
+    this.initLiveClient();
   },
   computed: {
     ...mapState({
