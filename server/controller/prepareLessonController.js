@@ -55,19 +55,26 @@ exports.getOnePrepareLesson = catchAsync(async (req, res) => {
   var lessonInfo = req.body;
   var teacher_id = lessonInfo.teacher_id;
   var lesson_id = lessonInfo.lesson_id;
-  try {
+ 
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
       teacher_id: teacher_id
     });
+    if(!lesson){
+      return next(new AppError("该备课不存在", 404));
+    }
+    var names=lesson.one_class.map(n=>{
+          return{
+            name:n.name
+          }
+        })
+
     res.status(200).json({
       status: true,
-      message: lesson
+      lesson,
+      names
     });
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ status: false, message: err });
-  }
+ 
 });
 
 /**

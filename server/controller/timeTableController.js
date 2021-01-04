@@ -171,7 +171,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
-  //the temp array saves all the timetable data of the room selected without regard to the year and sememser
+ 
   let temp=data.map((item)=>{ 
     return{
         lessonID:item.lesson_id,
@@ -192,6 +192,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
+    temp, //the temp array saves all the timetable data of the room selected without regard to the year and sememser
     result,//according to the given year and semester, return the suitable timetable of the room selected
   });
 });
