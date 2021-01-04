@@ -1,10 +1,10 @@
 <template>
   <a-row class="container">
     <a-col :span="16" class="class-card">
-      <schedule-table></schedule-table>
+      <schedule-table :courseTableData="courseTableData"></schedule-table>
     </a-col>
     <a-col :span="8">
-      <schedule-info></schedule-info>
+      <schedule-info @courseTableData="getCourseTableData"></schedule-info>
     </a-col>
   </a-row>
 </template>
@@ -15,6 +15,20 @@ import ScheduleInfo from "./ScheduleInfo";
 
 export default {
   components: { ScheduleTable, ScheduleInfo },
+  data() {
+    return {
+      courseTableData: [],
+    }
+  },
+  methods: {
+    getCourseTableData(TableData) {
+      this.courseTableData = TableData
+      // console.log("---message---")
+      // console.log(TableData)
+      // console.log("---courseTableData---")
+      // console.log(this.courseTableData)
+    }
+  }
 };
 </script>
 

@@ -377,8 +377,7 @@ export default {
               //post deleteList
               const url = "/pc/v1/classes/" + deleteList;
               try {
-                const result = await axiosInstance.delete(url);
-                console.log(result);
+                await axiosInstance.delete(url);
                 that.$message.info("删除成功！");
               } catch (err) {
                 console.log(err);
