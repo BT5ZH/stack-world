@@ -107,9 +107,17 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     return next(new AppError("该课表不存在", 404));
   }
 
+  let result=[]
+  for(let i=0;i<data.length;i++){
+     let oneLesson = await Lesson.findById(data[i].lessonID)
+     if(oneLesson.year===req.body.year && oneLesson.semester===Number(req.body.semester))
+        result.push(data[i])
+  }
+
   res.status(200).json({
     status: "success",
-    data,
+    data,//get all the timetable data of the teacher selected without regard to the year and sememser
+    result,//according to the given year and semester, return the suitable timetable of the teacher selected
   });
 });
 
@@ -163,8 +171,8 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
-
-  let temp=data.map((item)=>{
+  //the temp array saves all the timetable data of the room selected without regard to the year and sememser
+  let temp=data.map((item)=>{ 
     return{
         lessonID:item.lesson_id,
         date:item.curriculum.date,
@@ -175,6 +183,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
         course_name:item.Course[0].name
     }
   })
+  
   let result=[]
   for(let i=0;i<temp.length;i++){
      let oneLesson = await Lesson.findById(temp[i].lessonID)
@@ -183,7 +192,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    result,
+    result,//according to the given year and semester, return the suitable timetable of the room selected
   });
 });
 
