@@ -71,12 +71,12 @@
           </a-row>
         </a-col>
       </a-row>
-      <a-row type="flex" justify="end">
-        <a-col>
-          <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
-        </a-col>
-      </a-row>
     </a-card>
+    <a-row type="flex" justify="end">
+      <a-col>
+        <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
@@ -95,7 +95,17 @@ export default {
     };
   },
   methods: {
-    to_vuex() {},
+    node_vote() {
+      const vote = this.cards.map((item, index) => {
+        return {
+          options: item.options,
+          question_type: null,
+          right_answer: "",
+          title: this["editor" + index].txt.text(),
+        };
+      });
+      this.$store.commit("teacher/updateNodevote", vote);
+    },
     closeOption(idx, index) {
       if (this.optionlength[idx] <= 2) {
         this.$message.info("选项不能少于两个！");
@@ -124,7 +134,7 @@ export default {
       const length = this.cards.length - 1;
       this.$nextTick(() => {
         const selector = "#editor" + length;
-        this.createEditor(selector);
+        this.createEditor(selector, length, "");
       });
     },
     createEditor(selector, index, content) {

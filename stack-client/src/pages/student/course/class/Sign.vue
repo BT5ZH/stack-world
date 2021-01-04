@@ -10,9 +10,13 @@
 </template>
 
 <script>
-import * as socket from "@/utils/socket";
 import { mapState } from "vuex";
 export default {
+  props: {
+    socket: {
+      required: true,
+    },
+  },
   data() {
     return {
       studentId: "2020000222",
@@ -30,9 +34,7 @@ export default {
       return this.$route.query.lessonId;
     },
   },
-  mounted() {
-    socket.createInstance("student", this, this.lessonId);
-  },
+  mounted() {},
   methods: {
     signin() {
       if (!this.signState.start) {
@@ -40,7 +42,7 @@ export default {
         return null;
       }
       const channel = this.openRooms[0];
-      socket.sendEvent("joinRoom", {
+      this.socket.sendEvent("joinRoom", {
         role: "student",
         actionType: "sign",
         roomId: channel,

@@ -139,7 +139,7 @@
     <br />
     <a-row type="flex" justify="end">
       <a-col>
-        <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+        <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
       </a-col>
     </a-row>
   </a-card>
@@ -211,7 +211,17 @@ export default {
     // }),
   },
   methods: {
-    to_vuex() {},
+    node_vote() {
+      // const vote = [
+      //   {
+      //     options: this.cards.options,
+      //     question_type: this.ifshow,
+      //     right_answer: this.rightanswer,
+      //     title: this.cards.title,
+      //   },
+      // ];
+      // this.$store.commit("teacher/updateNodevote", vote);
+    },
     selectsource() {
       this.selectvisible = false;
     },

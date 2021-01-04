@@ -62,10 +62,8 @@ exports.createOrganization = catchAsync(async (req, res, next) => {
 });
 
 exports.updateOrganization = catchAsync(async (req, res, next) => {
-    const organization = await Organization.findOneAndUpdate(
-      {_id:req.params.id},
-      req.body      
-    );
+  await Organization.findOneAndUpdate({ _id: req.params.id }, req.body);
+  const organization = Organization.findById({_id: req.params.id});
   if (!organization) {
     return next(new AppError("该机构不存在", 404));
   }
@@ -140,6 +138,7 @@ exports.getSubOrganizations = catchAsync(async (req, res, next) => {
 });
 
 exports.updateSubOrganization = catchAsync(async (req, res, next) => {
+  console.log("req:",req)
   const sName = req.body.subOrgName;
   const organization = await Organization.findOneAndUpdate(
     {
@@ -149,7 +148,7 @@ exports.updateSubOrganization = catchAsync(async (req, res, next) => {
     {
       $set: {
         "subOrgs.$.subOrgIntro": req.body.subOrgIntro,
-        "subOrgs.$.majors": req.body.majors,
+        "subOrgs.$.majors": req.body.majors,  
       },
     },
     {

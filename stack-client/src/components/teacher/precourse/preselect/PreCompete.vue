@@ -16,7 +16,7 @@
             <a-col :span="3">
               <h3>题目</h3>
             </a-col>
-            <a-col :span="5">
+            <a-col :span="ifshow !== 1 ? 7 : 4">
               抢答人数：<a-input-number v-model="value" :min="1" :max="100" />
             </a-col>
           </a-row>
@@ -55,7 +55,6 @@
             <a-select
               placeholder="请输入正确答案"
               style="width: 200px"
-              @change="handleChange"
               v-if="ifshow === 2"
               v-model="rightanswer"
             >
@@ -79,7 +78,7 @@
       </a-row>
       <a-row type="flex" justify="end">
         <a-col>
-          <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+          <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
         </a-col>
       </a-row>
     </a-card>
@@ -119,9 +118,17 @@ export default {
     };
   },
   methods: {
-    to_vuex() {
-      const node = { attachment_url: "", content: "" };
-      this.$store.commit("teacher/updateNodes");
+    node_vote() {
+      const vote = [
+        {
+          options: this.cards.options,
+          question_type: this.ifshow,
+          right_answer: this.rightanswer,
+          title: this.cards.title,
+        },
+      ];
+      this.$store.commit("teacher/updateNodevote", vote);
+      this.$store.commit("teacher/updatepeople_num", this.value);
     },
     closeOption(index) {
       if (this.optionlength <= 2) {

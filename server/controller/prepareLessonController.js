@@ -168,6 +168,8 @@ exports.updateSectionName = catchAsync(async (req, res) => {
     res.status(500).json({ status: false, message: err });
   }
 });
+
+
 exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
   // BUILD QUERY
   // 1) Filtering

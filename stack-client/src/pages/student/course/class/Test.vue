@@ -14,7 +14,6 @@
 import singleQues from "../../../../components/SingleQues.vue";
 import multiQues from "../../../../components/MultiQues.vue";
 import { mapState } from "vuex";
-import * as socket from "@/utils/socket";
 
 export default {
   components: {
@@ -25,13 +24,8 @@ export default {
     ...mapState({
       testData: (state) => state.student.interaction.test,
     }),
-    lessonId() {
-      return this.$route.query.lessonId;
-    },
   },
   methods: {},
-  mounted() {
-    socket.createInstance("student", this, this.lessonId);
-  },
+  mounted() {},
 };
 </script>
