@@ -41,8 +41,7 @@ exports.getAllTimeTable = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-exports.createTimeTable = catchAsync(async (req, res, next) => {
+exports.generateTimeTable = catchAsync(async (req, res, next) => {
   // const data = await TimeTable.findOne({
   //   teacher_id: req.body.teacher_id,
   //   lesson_id: req.body.lesson_id,
@@ -56,14 +55,35 @@ exports.createTimeTable = catchAsync(async (req, res, next) => {
   // } else {
   //   return next(new AppError("该课已存在", 500));
   // }
-
-  const NewTimeTable = await TimeTable.create(req.body);
+  
+  let NewTimeTable = await TimeTable.create(req.body);
   if (!NewTimeTable) {
     return next(new AppError("新课表创建失败", 500));
   }
   res.status(201).json({
     status: "success",
     data: NewTimeTable,
+  });
+})
+exports.createTimeTable = catchAsync(async (req, res, next) => {
+  const lesson = await Lesson.findById(req.body.lesson_id).select("_id teacher_id course_id")
+  if (!lesson) {
+    return next(new AppError("该课程不存在", 404));
+  }
+  console.log("-------------");
+  console.log(lesson);
+  let NewTimeTable = await TimeTable.create({
+    course_id: lesson.course_id,
+    lesson_id: lesson._id,
+    teacher_id: lesson.teacher_id,
+    curriculum: req.body.curriculum
+  })
+  if (!NewTimeTable) {
+    return next(new AppError("新课表创建失败", 500));
+  }
+  res.status(201).json({
+    status: "success",
+    NewTimeTable,
   });
 });
 
