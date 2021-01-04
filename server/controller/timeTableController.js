@@ -1,4 +1,5 @@
 const TimeTable = require("../models/timeTableModel");
+const Lesson = require("../models/lessonModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const User = require("./../models/userModel");
@@ -146,6 +147,7 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
     },
     {
       $project: {
+        lesson_id:1,
         "curriculum.date": 1,
         "curriculum.order": 1,
         "curriculum.odd_or_even": 1,
@@ -161,9 +163,10 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   if (!data || data.length===0) {
     return next(new AppError("该课表不存在", 404));
   }
- 
-  let result=data.map((item)=>{
+
+  let temp=data.map((item)=>{
     return{
+        lessonID:item.lesson_id,
         date:item.curriculum.date,
         order:item.curriculum.order,
         odd_or_even:item.curriculum.odd_or_even,
@@ -172,6 +175,12 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
         course_name:item.Course[0].name
     }
   })
+  let result=[]
+  for(let i=0;i<temp.length;i++){
+     let oneLesson = await Lesson.findById(temp[i].lessonID)
+     if(oneLesson.year===req.query.year && oneLesson.semester===Number(req.query.semester))
+        result.push(temp[i])
+  }
   res.status(200).json({
     status: "success",
     result,
