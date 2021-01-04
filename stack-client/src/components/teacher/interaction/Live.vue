@@ -149,6 +149,7 @@ export default {
         .publish(this.localStream)
         .catch((error) => {
           console.error("本地流发布失败 " + error);
+          this.$message.error("找不到可用直播设备");
         })
         .then(() => {
           console.log("本地流发布成功");
@@ -157,8 +158,8 @@ export default {
     },
   },
   mounted() {
-    // this.createStream();
-    // this.getUserSig();
+    this.createStream();
+    this.getUserSig();
     this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
   },
 };

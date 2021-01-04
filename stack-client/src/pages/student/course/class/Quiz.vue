@@ -21,6 +21,11 @@ import { mapState } from "vuex";
 import * as socket from "@/utils/socket";
 
 export default {
+  props: {
+    socket: {
+      required: true,
+    },
+  },
   components: {
     singleQues,
     multiQues,
@@ -35,11 +40,11 @@ export default {
   },
   methods: {
     submitAnswer(data) {
-      socket.sendEvent("joinRoom", {
+      this.socket.sendEvent("joinRoom", {
         actionType: "test",
         role: "student",
         roomId: this.lessonId,
-        data: data
+        data: data,
       });
     },
   },
