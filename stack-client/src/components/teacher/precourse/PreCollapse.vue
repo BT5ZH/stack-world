@@ -1,31 +1,29 @@
 <template>
   <a-collapse default-active-key="1" :bordered="false">
-    <a-collapse-panel
-      v-for="(course, idex) in courses"
-      :header="course.coursename"
-      :key="idex"
-    >
-      <a-row v-if="!course.coursehours.length" type="flex" justify="center">
+    <a-collapse-panel :header="coursename" key="1">
+      <a-row v-if="!coursehours.length" type="flex" justify="center">
         <a-button
           size="small"
           type="link"
-          @click="addcourse(idex, 0)"
+          @click="addcourse(0)"
           style="text-align: center"
           >添加课时</a-button
         >
       </a-row>
-      <a-list :data-source="course.coursehours" @click="courseclick">
+      <a-list :data-source="coursehours">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
           <a-input
-            v-if="course.coursehours[index].editable"
+            v-if="coursehours[index].editable"
             style="margin: -5px 0"
             :value="item.name"
             ref="courseinput"
-            @keyup.enter="(e) => handleChange(idex, index, e.target.value)"
-            @blur="(e) => handleChange(idex, index, e.target.value)"
+            @keyup.enter="(e) => handleChange(index, e.target.value)"
+            @blur="(e) => handleChange(index, e.target.value)"
           />
-          <span v-else>{{ item.name }}</span>
-          <template #extra v-if="!course.coursehours[index].editable">
+          <span v-else class="coursename" @click="courseclick(index)">{{
+            item.name
+          }}</span>
+          <template #extra v-if="!coursehours[index].editable">
             <a-button-group>
               <a-tooltip placement="top">
                 <template slot="title">
@@ -35,20 +33,20 @@
                   icon="edit"
                   size="small"
                   type="link"
-                  @click="editcourse(idex, index)"
+                  @click="editcourse(index)"
                 ></a-button>
               </a-tooltip>
               <a-button
                 icon="plus"
                 size="small"
                 type="link"
-                @click="addcourse(idex, index)"
+                @click="addcourse(index)"
               ></a-button>
               <a-button
                 icon="minus"
                 size="small"
                 type="link"
-                @click="deletecourse(idex, index)"
+                @click="deletecourse(index)"
               ></a-button>
             </a-button-group>
           </template>
@@ -60,102 +58,125 @@
 
 <script>
 import axios from "@/utils/axios";
-let courses = [
-  {
-    courseId: "1",
-    coursename: "软件工程",
-    coursehours: [
-      { name: "课时", editable: false },
-      { name: "课时", editable: false },
-    ],
-  },
-  {
-    courseId: "2",
-    coursename: "高等数学",
-    coursehours: [
-      { name: "课时", editable: false },
-      { name: "课时", editable: false },
-    ],
-  },
-  {
-    courseId: "3",
-    coursename: "计算机网络",
-    coursehours: [
-      { name: "课时", editable: false },
-      { name: "课时", editable: false },
-    ],
-  },
-];
+import { mapState, mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      courses,
+      courseId: "1",
+      coursename: "软件工程",
+      coursehours: [],
     };
   },
   watch: {},
   methods: {
-    courseclick({ target }) {
-      console.log(target.id);
+    courseclick(index) {
+      this.$store.commit("teacher/updateCurCourseHour",index);
     },
-    editcourse(idex, index) {
-      this.courses[idex].coursehours[index].editable = true;
+    editcourse(index) {
+      this.coursehours[index].editable = true;
       this.$nextTick(() => {
-        this.$refs.courseinput[0].focus();
+        this.$refs.courseinput.focus();
       });
     },
-    addcourse(idex, index) {
-      this.courses[idex].coursehours.splice(index + 1, 0, {
+    addcourse(index) {
+      this.coursehours.splice(index + 1, 0, {
         name: "新增课时",
-        editable: false,
+        editable: true,
+        isNew: true,
       });
+      this.$nextTick(() => {
+        this.$refs.courseinput.focus();
+      });
+    },
+    deletecourse(index) {
+      axios
+        .post("pc/v1/prepares/deleteSection", {
+          lesson_id: this.lesson_id,
+          teacher_id: this.uid,
+          section_index: index + 1,
+        })
+        .then(({ data }) => {
+          if (!data.status) throw "delete coursehour fail";
+          this.coursehours.splice(index, 1);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    handleChange(index, value) {
+      const cb = (item, idx) => item.name === value && index !== idx;
+      if (this.coursehours.some(cb)) {
+        this.$message.info("课时名称重复");
+        return null;
+      }
+      let url = "";
+      let tips = "";
+      let errtips = "";
 
+      if (this.coursehours[index].isNew) {
+        url = "pc/v1/prepares/addNewSection";
+        tips = "新增课时失败";
+        errtips = "new courseHour fail";
+      } else {
+        url = "pc/v1/prepares/updateSectionName";
+        tips = "编辑课时失败";
+        errtips = "update coursehour fail";
+      }
       axios
-        .post("pc/v1/prepare/createPrepareCourse", this.courses)
+        .post(url, {
+          lesson_id: this.lesson_id,
+          teacher_id: this.uid,
+          section_index: index + 1,
+          section_name: value,
+        })
         .then(({ data }) => {
-          const { status } = data;
-          if (status !== "ok") {
-            this.errorTipShow = true;
-            return;
-          }
+          if (!data.status) throw errtips;
+          let coursehour = this.coursehours[index];
+          coursehour.name = value;
+          coursehour.editable = false;
+          delete coursehour.isNew;
         })
         .catch((err) => {
-          console.error(err);
+          console.log(err);
+          this.$message.error(tips);
         });
-    },
-    deletecourse(idex, index) {
-      this.courses[idex].coursehours.splice(index, 1);
-      axios
-        .post("pc/v1/prepare/createPrepareCourse", this.courses)
-        .then(({ data }) => {
-          const { status } = data;
-          if (status !== "ok") {
-            this.errorTipShow = true;
-            return;
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
-    handleChange(idex, index, value) {
-      let coursehour = this.courses[idex].coursehours[index];
-      coursehour.name = value;
-      coursehour.editable = false;
     },
   },
   computed: {
     ispublished() {
       return true;
     },
-    // ...mapState({
-    //   groupList: (state) => state.settings.MATERIAL.IMAGE_GROUP,
-    //   haveAuth: "permission",
-    // }),
+    ...mapState({
+      uid: (state) => state.public.uid,
+    }),
+    lesson_id() {
+      return this.$route.query.lessonId;
+    },
+  },
+  mounted() {
+    this.$store
+      .dispatch("teacher/getCourseHours", {
+        lesson_id: this.lesson_id,
+        teacher_id: this.uid,
+      })
+      .then(() => {
+        this.coursehours = this.$store.getters["teacher/courseHours"].map(
+          (item) => ({
+            editable: false,
+            name: item,
+          })
+        );
+      });
   },
 };
 </script>
 
 <style scoped>
+.coursename {
+  cursor: pointer;
+}
+
 .btn-area {
   position: absolute;
   bottom: 0;
@@ -171,7 +192,11 @@ export default {
 .ant-btn {
   color: #ffffff;
 }
+.ant-list {
+  color: #ffffff;
+}
 </style>
+
 <style>
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   color: #ffffff;
@@ -181,9 +206,5 @@ export default {
 }
 .ant-collapse-content {
   background-color: black;
-}
-
-.ant-list {
-  color: #ffffff;
 }
 </style>

@@ -73,18 +73,20 @@ const questionnaire = () =>
 const vote = () => import("@/pages/student/course/class/Vote.vue");
 const test = () => import("@/pages/student/course/class/Test.vue");
 const file = () => import("@/pages/student/course/class/File.vue");
+const live = () => import("@/pages/student/course/Live");
 
 // ----------------  interaction router --------------------------
 const Interaction = () =>
   import("@/components/teacher/interaction/InteractionRouter");
 const InteractionIndex = () => import("@/components/teacher/interaction/Index");
-const InteractionVote = () => import("@/components/teacher/interaction/Vote");
-const InteractionPick = () => import("@/components/teacher/interaction/Pick");
-const InteractionRace = () => import("@/components/teacher/interaction/Race");
-const InteractionSign = () => import("@/components/teacher/interaction/Sign");
-const InteractionTest = () => import("@/components/teacher/interaction/Test");
-const InteractionFile = () => import("@/components/teacher/interaction/File");
-const InteractionQues = () => import("@/components/teacher/interaction/Ques");
+// const InteractionLive = () => import("@/components/teacher/interaction/Live");
+// const InteractionVote = () => import("@/components/teacher/interaction/Vote");
+// const InteractionPick = () => import("@/components/teacher/interaction/Pick");
+// const InteractionRace = () => import("@/components/teacher/interaction/Race");
+// const InteractionSign = () => import("@/components/teacher/interaction/Sign");
+// const InteractionTest = () => import("@/components/teacher/interaction/Test");
+// const InteractionFile = () => import("@/components/teacher/interaction/File");
+// const InteractionQues = () => import("@/components/teacher/interaction/Ques");
 
 export const routes = [
   {
@@ -286,6 +288,10 @@ export const routes = [
         path: "message",
         component: message,
       },
+      {
+        path: "live",
+        component: live
+      }
     ],
   },
   {
@@ -294,13 +300,14 @@ export const routes = [
     component: Interaction,
     children: [
       { path: "index", component: InteractionIndex, name: "interaction_index" },
-      { path: "vote", component: InteractionVote, name: "interaction_vote" },
-      { path: "pick", component: InteractionPick, name: "interaction_pick" },
-      { path: "race", component: InteractionRace, name: "interaction_race" },
-      { path: "sign", component: InteractionSign, name: "interaction_sign" },
-      { path: "test", component: InteractionTest, name: "interaction_test" },
-      { path: "file", component: InteractionFile, name: "interaction_file" },
-      { path: "ques", component: InteractionQues, name: "interaction_ques" },
+      // { path: "live", component: InteractionLive, name: "interaction_live" },
+      // { path: "vote", component: InteractionVote, name: "interaction_vote" },
+      // { path: "pick", component: InteractionPick, name: "interaction_pick" },
+      // { path: "race", component: InteractionRace, name: "interaction_race" },
+      // { path: "sign", component: InteractionSign, name: "interaction_sign" },
+      // { path: "test", component: InteractionTest, name: "interaction_test" },
+      // { path: "file", component: InteractionFile, name: "interaction_file" },
+      // { path: "ques", component: InteractionQues, name: "interaction_ques" },
     ],
   },
 ];

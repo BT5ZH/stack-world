@@ -45,6 +45,30 @@ const getter = {
     }
     return weekBadages;
   },
+  courseHours(state) {
+    return state.courseHours.map((item) => item.name);
+  },
+  curCourseHour(state) {
+    return state.courseHours[state.curCourseHour];
+  },
+  curNode(state) {
+    return state.nodes[state.nodeindex];
+  },
+  getVote(state) {
+    return state.nodes[state.nodeindex].vote.map((item) => {
+      return { title: item.title, options: item.options };
+    });
+  },
+  getCompete(state) {
+    const vote = state.nodes[state.nodeindex].vote[0];
+    return {
+      value: state.nodes[state.nodeindex].people_num,
+      title: vote.title,
+      options: vote.options,
+      ifshow: vote.question_type,
+      rightanswer: vote.right_answer,
+    };
+  },
 };
 
 export default getter;

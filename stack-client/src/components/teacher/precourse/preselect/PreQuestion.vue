@@ -15,7 +15,7 @@
           <a-row class="title">
             <h3>题目</h3>
           </a-row>
-          <a-row style="height: 350px">
+          <a-row style="height: 320px">
             <div id="editor"></div>
           </a-row>
         </a-col>
@@ -52,6 +52,7 @@
               style="width: 200px"
               @change="handleChange"
               v-if="ifshow === 2"
+              v-model="rightanswer"
             >
               <a-select-option v-for="index in optionlength" :key="index + ''">
                 {{ ENG_CHARS[index - 1] }}
@@ -63,6 +64,7 @@
               style="width: 200px"
               @change="handleChange"
               v-else
+              v-model="rightanswer"
             >
               <a-select-option v-for="index in optionlength" :key="index + ''">
                 {{ ENG_CHARS[index - 1] }}
@@ -71,13 +73,18 @@
           </a-row>
         </a-col>
       </a-row>
+      <a-row type="flex" justify="end">
+        <a-col>
+          <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+        </a-col>
+      </a-row>
     </a-card>
   </div>
 </template>
 
 <script>
 import E from "wangeditor";
-
+import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     const ENG_CHARS = [
@@ -103,9 +110,17 @@ export default {
       MAX_OPTIONS,
       cards: { title: "", options: [] },
       optionlength: 2,
+      editor: null,
+      rightanswer: "",
     };
   },
+  computed: {
+    ...mapGetters({
+      getCompete: "teacher/getCompete",
+    }),
+  },
   methods: {
+    to_vuex() {},
     handleChange(value) {
       console.log(`Selected: ${value}`);
     },
@@ -117,31 +132,43 @@ export default {
       this.cards.options.splice(index, 1);
       this.optionlength--;
     },
-    createEditor(selector) {
+    createEditor(selector, content) {
       const editor = new E(selector);
       editor.config.showFullScreen = false;
       editor.config.menus = [
-        "head",
-        "bold",
-        "fontSize",
-        "italic",
-        "underline",
-        "strikeThrough",
-        "lineHeight",
-        "foreColor",
-        "backColor",
-        "link",
-        "list",
-        "justify",
-        "image",
-        "video",
-        "code",
+        // "head",
+        // "bold",
+        // "fontSize",
+        // "italic",
+        // "underline",
+        // "strikeThrough",
+        // "lineHeight",
+        // "foreColor",
+        // "backColor",
+        // "link",
+        // "list",
+        // "justify",
+        // "image",
+        // "video",
+        // "code",
       ];
       editor.create();
+      if (content) {
+        editor.txt.html("<p>" + content + "</p>");
+      }
     },
   },
   mounted() {
-    this.createEditor("#editor");
+    this.cards = {
+      title: this.getCompete.title,
+      options: this.getCompete.options,
+    };
+    this.rightanswer = this.getCompete.rightanswer;
+    this.ifshow = this.getCompete.ifshow;
+    this.optionlength = this.getCompete.options.length;
+    this.$nextTick(() => {
+      this.createEditor("#editor", this.cards.title);
+    });
   },
 };
 </script>

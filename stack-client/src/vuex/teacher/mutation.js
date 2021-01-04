@@ -27,19 +27,56 @@ const mutation = {
   },
   updateTestResult(state, params) {
     const { id, answer } = params;
-    if (!state.testAnswerList[id]) {
-      state.testAnswerList[id] = { [answer]: 1 };
+    let quesIndex = state.testAnswerList.findIndex((item) => item.id === id);
+    if (quesIndex < 0) {
+      state.testAnswerList.push({ id: id, [answer]: 1 });
       return null;
     }
-    let corrAnswer = state.testAnswerList[id][answer];
-    if (typeof corrAnswer === "number") {
-      corrAnswer += 1;
-    } else {
-      corrAnswer = 1;
-    }
+    let ques = state.testAnswerList[quesIndex];
+    state.testAnswerList.splice(quesIndex, 1, {
+      ...ques,
+      [answer]: ques[answer] ? ques[answer] + 1 : 1,
+    });
   },
   updateTeacherCourses(state, params) {
     state.courses = params;
+  },
+  updateOnlineList(state, params) {
+    state.onlineList = Object.keys(params).map((key) => {
+      let info = JSON.parse(params[key]);
+      return info;
+    });
+  },
+  updateCourseHours(state, { _id, one_class }) {
+    state.courseHours = one_class;
+    state.curLessonId = _id;
+    state.nodes = state.courseHours[state.curCourseHour].nodes;
+  },
+  updateCurCourseHour(state, params) {
+    state.curCourseHour = params;
+    state.nodes = state.courseHours[params].nodes;
+  },
+  updateCourseHour(state, params) {
+    console.log(params);
+    state.courseHours[state.curCourseHour] = params;
+  },
+  updateNodeIndex(state, params) {
+    state.nodeindex = params;
+  },
+  addNode(state, params) {
+    state.nodes.push(params);
+    state.courseHours[state.curCourseHour].nodes = state.nodes;
+  },
+  updateNode(state, params) {
+    state.nodes[state.nodeindex] = params;
+    state.courseHours[state.curCourseHour].nodes = state.nodes;
+  },
+  deleteNode(state, params) {
+    state.nodes.splice(params, 1);
+    state.courseHours[state.curCourseHour].nodes = state.nodes;
+  },
+  updateSources(state, params) {
+    state.sources = params;
   },
 };
 

@@ -36,6 +36,62 @@ const action = {
       console.error(error);
     }
   },
+  async getTeacherPrepare({ commit }, teacher_id) {
+    try {
+      // TODO 完善教师备课获取函数
+      const url = "/pc/v1/prepares/";
+      const requestData = { teacher_id };
+      const { data } = await axios.post(url, requestData);
+      commit("updateTeacherPrepare", data);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getOnlineStudents({ commit }, lesson_id) {
+    try {
+      const url = "/pc/v1/activities/online_list";
+      const { data } = await axios.get(`${url}/${lesson_id}`);
+      if (data.status) {
+        commit("updateOnlineList", data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getCourseHours({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/prepares/getOnePrepareLesson";
+      const { data } = await axios.post(url, requestData);
+      commit("updateCourseHours", data.message);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async updateCourseHour({ commit, state }, params) {
+    try {
+      const url = "pc/v1/prepares/updateOnePrepareLesson";
+      let requestData = {
+        ...state.courseHours[state.curCourseHour],
+        ...params,
+        section_index: state.curCourseHour + 1,
+      };
+      const { data } = await axios.post(url, requestData);
+      commit("updateCourseHour", data.message.one_class[state.curCourseHour]);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getSources({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/resources/getLessonResourceOfTeacher";
+      const { data } = await axios.post(url, requestData);
+      commit("updateSources", data.resource);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default action;

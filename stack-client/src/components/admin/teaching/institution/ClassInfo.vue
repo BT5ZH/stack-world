@@ -20,7 +20,7 @@
       </a-col>
     </a-row>
     <a-table
-      rowKey="_id"
+      rowKey="user_id"
       :columns="columns"
       :data-source="data"
       bordered
@@ -48,7 +48,7 @@
       @ok="addstudent_ok"
       :maskClosable="false"
     >
-      <add_students></add_students>
+      <add_students @refresh="parent_refresh"></add_students>
     </a-modal>
   </div>
 </template>
@@ -90,6 +90,7 @@ export default {
     this.cacheData = data.map((item) => ({ ...item }));
     return {
       // 初始数据
+      refresh: 1,
       data,
       columns,
       editingKey: "",
@@ -105,7 +106,15 @@ export default {
     this.class_name = this.$route.query.class_name;
     this.getStudents();
   },
+  watch: {
+    refresh(val) {
+      this.getStudents();
+    },
+  },
   methods: {
+    parent_refresh(ss) {
+      this.refresh += ss;
+    },
     async getStudents() {
       // 获取所有学生名
       const class_id = this.$route.query.classId;
@@ -113,6 +122,8 @@ export default {
       try {
         const { data } = await axios.get(url);
         this.data = data.data.classEntity.studentList;
+        console.log("---data---")
+        console.log(data)
         // console.log(data.data.classEntity.studentList);
       } catch (err) {
         console.log(err);
@@ -147,7 +158,9 @@ export default {
     add_student() {
       this.visible = true;
     },
-    addstudent_ok() {},
+    addstudent_ok() {
+      this.visible = false;
+    },
     // 删除学生
     deleteStudent(record) {
       console.log(record);

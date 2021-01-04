@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 class="sign-title">测试结果</h1>
     <a-empty v-if="emptyShow" class="empty-area"></a-empty>
     <a-row v-else v-for="(item, index) in tempdata" :key="index" class="chart">
       <v-chart :options="item.echartConfig" />
@@ -11,20 +12,16 @@
 import ECharts from "vue-echarts";
 import "echarts/lib/chart/bar";
 import "echarts/lib/component/title";
-import { mapState } from "vuex";
-import * as socket from "@/utils/socket";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: { "v-chart": ECharts },
   data() {
-    return {
-      testAnswerList: {},
-      tempdata: [],
-      emptyShow: true,
-    };
+    return {};
   },
   methods: {
     getEchartConfig(value) {
+      delete value.id;
       return {
         color: ["#019d96"],
         xAxis: {
@@ -44,38 +41,36 @@ export default {
         ],
       };
     },
-    testAnswer() {
-      this.tempdata = Object.keys(this.testAnswerList).map((item) => {
-        return {
-          quesId: item,
-          echartConfig: this.getEchartConfig(this.testAnswerList[item]),
-        };
-      });
-      this.emptyShow = false;
-    },
   },
   computed: {
-    // ...mapState({
-    //   testAnswerList: (state) => state.teacher.testAnswerList,
-    // }),
-    // getEchartConfig() {
-    //   return;
-    // },
-  },
-  mounted() {
-    socket.createInstance("teacher", this, this.lessonId);
-  },
-  boforeDestroy() {
-    // TODO 给出提示，刷新后数据丢失
+    emptyShow() {
+      return !this.testAnswerList.length;
+    },
+    testAnswerList() {
+      return this.$store.state.teacher.testAnswerList;
+    },
+    tempdata() {
+      return this.testAnswerList.map((ques) => ({
+        quesId: ques.id,
+        echartConfig: this.getEchartConfig(Object.assign({}, ques)),
+      }));
+    },
   },
 };
 </script>
 
 <style scoped>
-.chart {
-  padding: 20px 0;
+.echarts {
+  width: 100%;
+  height: 400px;
 }
 .empty-area {
   padding: 80px 40px;
+}
+.sign-title {
+  font-weight: bold;
+  color: #bbb;
+  text-align: center;
+  padding-top: 20px;
 }
 </style>

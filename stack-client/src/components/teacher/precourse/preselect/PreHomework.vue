@@ -1,34 +1,83 @@
 <template>
-  <div class="setcard ant-card ant-card-bordered">
-    <div class="ant-card-head">
-      <div class="ant-card-head-wrapper">
-        <div class="ant-card-head-title">布置作业</div>
-      </div>
-    </div>
-    <div></div>
-    <div>
-      <div id="div1">
-      </div>
-    </div>
+  <div class="container">
+    <a-card :title="'布置作业'" class="card">
+      <a-row :gutter="20">
+        <a-col :span="24">
+          <a-row class="title">
+            <h3>题目</h3>
+          </a-row>
+          <a-row style="height: 320px">
+            <div id="editor"></div>
+          </a-row>
+        </a-col>
+      </a-row>
+      <a-row type="flex" justify="end">
+        <a-col>
+          <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+        </a-col>
+      </a-row>
+    </a-card>
   </div>
 </template>
 
 <script>
-import E from 'wangeditor'
+import E from "wangeditor";
+
 export default {
-    mounted() {
-        const editor = new E('#div1')
-        editor.create()
+  data() {
+    return {};
+  },
+  methods: {
+    to_vuex() {},
+    handleChange(value) {
+      console.log(`Selected: ${value}`);
     },
-}
+    createEditor(selector) {
+      const editor = new E(selector);
+      editor.config.showFullScreen = false;
+      editor.config.menus = [
+        // "head",
+        // "bold",
+        // "fontSize",
+        // "italic",
+        // "underline",
+        // "strikeThrough",
+        // "lineHeight",
+        // "foreColor",
+        // "backColor",
+        // "link",
+        // "list",
+        // "justify",
+        // "image",
+        // "video",
+        // "code",
+      ];
+      editor.create();
+    },
+  },
+  mounted() {
+    this.createEditor("#editor");
+  },
+};
 </script>
-<style>
-.w-e-toolbar {
-  width: 100%;
+
+<style scoped>
+.card-btn .ant-btn {
+  margin: 0 5px;
 }
 
-.w-e-text-container {
-  width: 100%;
-  height: 200px !important;
+.title h3 {
+  padding: 10px 0;
+}
+
+.options {
+  padding-left: 30px;
+  position: relative;
+  right: 10px;
+  margin-bottom: 20px;
+}
+
+.card {
+  margin-bottom: 40px;
 }
 </style>
