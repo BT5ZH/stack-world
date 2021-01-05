@@ -27,7 +27,7 @@
             <a-button-group>
               <a-tooltip placement="top">
                 <template slot="title">
-                  <span>编辑</span>
+                  <span>编辑课时名称</span>
                 </template>
                 <a-button
                   icon="edit"
@@ -36,18 +36,28 @@
                   @click="editcourse(index)"
                 ></a-button>
               </a-tooltip>
-              <a-button
-                icon="plus"
-                size="small"
-                type="link"
-                @click="addcourse(index)"
-              ></a-button>
-              <a-button
-                icon="minus"
-                size="small"
-                type="link"
-                @click="deletecourse(index)"
-              ></a-button>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>增加课时</span>
+                </template>
+                <a-button
+                  icon="plus"
+                  size="small"
+                  type="link"
+                  @click="addcourse(index)"
+                ></a-button>
+              </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>删除课时</span>
+                </template>
+                <a-button
+                  icon="minus"
+                  size="small"
+                  type="link"
+                  @click="deletecourse(index)"
+                ></a-button>
+              </a-tooltip>
             </a-button-group>
           </template>
         </a-list-item>

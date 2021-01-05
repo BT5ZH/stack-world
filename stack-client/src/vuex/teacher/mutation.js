@@ -60,7 +60,6 @@ const mutation = {
     state.nodes = state.courseHours[params].nodes;
   },
   updateCourseHour(state, params) {
-    console.log(params);
     state.courseHours[state.curCourseHour] = params;
   },
   updateNodeIndex(state, params) {

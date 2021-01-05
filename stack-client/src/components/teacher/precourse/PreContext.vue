@@ -10,32 +10,29 @@
         <span>时长：</span>
         <a-input placeholder="50" v-model="form.time" style="width: 80%" />
       </a-col>
-      <a-col :span="8" style="display: flex; align-items: center">
+      <a-col :span="14" style="display: flex; align-items: center">
         <span>描述：</span>
         <a-textarea
           placeholder="本节课重难点"
           v-model="form.desc1"
           @change="onChange"
-          :auto-size="{ minRows: 3, maxRows: 3 }"
+          :auto-size="{ minRows: 2, maxRows: 2 }"
           style="width: 80%"
         />
       </a-col>
-      <a-col :span="8">
+      <a-col :span="4">
         <a-row type="flex" justify="end" class="header-btn">
-          <a-button type="primary" @click="save"> 保存 </a-button>
-          &nbsp;&nbsp;
           <a-button type="primary" @click="pptvisible = true">
-            选择ppt
+            选择PPT
           </a-button>
           &nbsp;&nbsp;
-          <a-button type="primary" :disabled="publish" @click="published">
-            发布
-          </a-button>
+          <a-button type="primary" @click="save"> 保存 </a-button>
         </a-row>
         <br />
-        <a-row type="flex" justify="end" v-show="!publish"
+        <a-row type="flex" justify="end" v-if="!publish"
           >已选择PPT：{{ ppt.name }}.ppt
         </a-row>
+        <a-row type="flex" justify="end" v-else>请选择PPT </a-row>
       </a-col>
     </a-row>
     <a-modal title="选择ppt" v-model="pptvisible" :zIndex="10001" width="40%">
@@ -310,21 +307,27 @@ export default {
   methods: {
     onChange(course) {
       course.selected = !course.selected;
-      this.ppt = { name: course.name, id: course.id, url: course.url };
+      if (course.selected) {
+        this.ppt = { name: course.name, id: course.id, url: course.url };
+      } else {
+        this.ppt = { name: "", id: "", url: "" };
+      }
     },
     selectppt() {
       const ppt = { name: this.ppt.name, rsId: this.ppt.id, url: this.ppt.url };
-      console.log(ppt);
       this.$store.commit("teacher/updatePPT", ppt);
       this.pptvisible = false;
     },
     save() {
+      const h = this.$createElement;
+      this.$info({
+        title: "请注意先暂存事件",
+      });
       this.$store.dispatch("teacher/updateCourseHour", {
         lesson_id: this.lesson_id,
         teacher_id: this.uid,
       });
     },
-    published() {},
     addChange(current) {
       this.current = current;
       let findsteps = this.steps[current].title;
@@ -460,6 +463,13 @@ export default {
         this.componentId = "";
       }
       this.pptsource = this.$store.getters["teacher/getPPTSource"];
+      if (this.ppt.id) {
+        this.pptsource
+          .filter((item) => {
+            return item.id === this.ppt.id;
+          })
+          .forEach((item) => (item.selected = true));
+      }
       this.steps = nodes.map((item, index) => {
         let time = nodes[index].time;
         let titletag = type[item.tag];
