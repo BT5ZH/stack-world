@@ -1,68 +1,60 @@
 <template>
   <a-card title="文件下发" class="setcard">
-    <a-row type="flex" align="middle" juestify="center" style="padding: 5px">
-      <a-space size="large">
-        <a-col>
-          <a-button @click="selectvisible = true"
-            ><a-icon type="plus" />从资源库选择</a-button
-          >
-        </a-col>
-        <a-modal
-          title="选择资源"
-          v-model="selectvisible"
-          @ok="selectsource"
-          :zIndex="10001"
-          width="80%"
-        >
-          <a-row class="cards-area" :gutter="30">
-            <a-col :span="6" v-for="(course, index) in sources" :key="index">
-              <a-card style="margin-top: 15px" size="small">
-                <a slot="extra">
+    <a-modal
+      title="选择资源"
+      v-model="selectvisible"
+      @ok="selectsource"
+      :zIndex="10001"
+      width="40%"
+    >
+      <a-row>
+        <a-list :data-source="sources">
+          <template #renderItem="sourse">
+            <a-list-item>
+              <a-list-item-meta>
+                <template #title>
                   <a-checkbox
-                    :checked="course.selected"
-                    @change="onChange(course)"
+                    :checked="sourse.selected"
+                    @change="onChange(sourse)"
                   ></a-checkbox>
-                </a>
-                <img
-                  slot="cover"
-                  alt="example"
-                  :src="course.src"
-                  width="100px"
-                  height="80px"
-                />
-                <h3>{{ course.courseName }}</h3>
-                <br />
-                <!-- <div>
-                  <template v-for="tag in course.tags">
-                    <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
-                      <a-tag :key="tag">
-                        {{ "${tag.slice(0, 100)}..." }}
-                      </a-tag>
-                    </a-tooltip>
-                    <a-tag v-else :key="tag">
-                      {{ tag }}
-                    </a-tag>
-                  </template>
-                </div> -->
-              </a-card>
-            </a-col>
-          </a-row>
-          <a-row type="flex" justify="center">
-            <a-pagination
-              class="pagination"
-              :total="sources.length"
-              :show-size-changer="true"
-              :show-quick-jumper="true"
-            ></a-pagination>
-          </a-row>
-          <template #footer>
-            <a-button type="primary" @click="selectppt"> 确定 </a-button>
+                  <img
+                    slot="cover"
+                    alt="example"
+                    :src="sourse.src"
+                    style="margin: 2px"
+                    width="30px"
+                    height="30px"
+                  />
+                  <a :href="sourse.url" target="_blink">{{
+                    sourse.courseName
+                  }}</a>
+                </template>
+              </a-list-item-meta>
+            </a-list-item>
           </template>
-        </a-modal>
-        <a-col>
-          <p>可上传视频,word,pdf,excel,图片等</p>
-        </a-col>
-      </a-space>
+        </a-list>
+      </a-row>
+      <a-row type="flex" justify="center">
+        <a-pagination
+          class="pagination"
+          :total="sources.length"
+          :page-size="5"
+          :show-quick-jumper="true"
+        ></a-pagination>
+      </a-row>
+      <template #footer>
+        <a-button type="primary" @click="selectsource"> 确定 </a-button>
+      </template>
+    </a-modal>
+    <a-row type="flex" align="middle" justify="start" :gutter="10">
+      <a-col>
+        <a-button @click="selectvisible = true"
+          ><a-icon type="plus" />从资源库选择</a-button
+        >
+      </a-col>
+      <a-col>
+        <span> 可上传视频,word,pdf,excel,图片等 </span>
+      </a-col>
     </a-row>
     <br />
     <a-row>
@@ -91,7 +83,7 @@
     <br />
     <a-row type="flex" justify="end">
       <a-col>
-        <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
+        <a-button type="primary" @click="node_vote"> 暂存事件 </a-button>
       </a-col>
     </a-row>
   </a-card>
@@ -156,7 +148,6 @@ export default {
         [["xlsx", "xls"], "excel"],
       ]);
       for (let [suffix, iconName] of iconMap.entries()) {
-        console.log(suffix);
         if (suffix.some((item) => item === rsType)) {
           return iconName;
         }
