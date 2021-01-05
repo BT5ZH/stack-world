@@ -49,7 +49,7 @@
       <a-row>
         <a-col :span="3">
           <a-menu style="width: 150px" @click="handleClick" v-model="curMenus">
-            <a-menu-item key="Knowledge">课程知识点</a-menu-item>
+            <!-- <a-menu-item key="Knowledge">课程知识点</a-menu-item> -->
             <a-menu-item key="Resource">课程资源</a-menu-item>
             <a-menu-item key="Question">课程试题</a-menu-item>
             <a-menu-item key="Class">课程班级</a-menu-item>

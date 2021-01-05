@@ -13,9 +13,7 @@
         <a-button @click="startLive" type="primary" :disabled="liveDisabled"
           >开始授课(视频)</a-button
         >
-        <a-button @click="closeLiveRoom" type="danger" :disabled="closeDiabled"
-          >结束授课</a-button
-        >
+        <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
       </div>
       <h3 align="center">教室成员列表</h3>
       <a-list
@@ -185,6 +183,10 @@ ul li {
 
 #local_stream div {
   background: #fff;
+}
+
+#local_stream {
+  height: 400px;
 }
 
 .btn-area {

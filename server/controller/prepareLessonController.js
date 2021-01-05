@@ -1,6 +1,6 @@
 const PrepareLesson = require("../models/prepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
-
+const AppError = require("../utils/appError");
 /**
  * 根据teacher_id获取该教师所有的备课
  */
@@ -76,7 +76,33 @@ exports.getOnePrepareLesson = catchAsync(async (req, res) => {
     });
  
 });
+exports.getOneClassByName = catchAsync(async (req, res) => {
 
+    // var data = await PrepareLesson.findOne({
+    //   //lesson_id: lesson_id,
+    //   //teacher_id: teacher_id,
+    //   one_class:{$elemMatch:{ name: { $eq: name }}}
+   
+    // })
+
+    var data = await PrepareLesson.aggregate([
+      {$unwind: "$one_class"},
+      {$match: {teacher_id: req.body.teacher_id}},
+      {$match: {lesson_id: req.body.lesson_id}},
+      {$match: {"one_class.name": req.body.name}},
+
+    ]);
+    if (!data||data.length===0) {
+      return next(new AppError("该数据不存在", 404));
+    }
+    data=data[0]
+    res.status(200).json({
+      status: true,
+      data,
+      
+    });
+ 
+});
 /**
  * 为某一门课添加新课时备课
  * req中包括课程信息如lesson_id、备课教师信息teacher_id、课时信息section_index（课时的序号从1开始）section_name

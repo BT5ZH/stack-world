@@ -17,12 +17,12 @@
     </a-row>
     <a-row class="content">
       <a-row>
-        <a-col :span="3">
+        <!-- <a-col :span="3">
           <a-menu style="width: 150px" @click="handleClick" v-model="curMenus">
             <a-menu-item key="Course">课程管理</a-menu-item>
             <a-menu-item key="Feedback">课堂反馈</a-menu-item>
           </a-menu>
-        </a-col>
+        </a-col> -->
         <a-col :span="21">
           <component :is="curMenus[0]"></component>
         </a-col>
