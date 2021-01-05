@@ -1,82 +1,92 @@
 <template>
-  <a-row style="padding-top: 50px">
-    <a-col :span="15">
-      <!-- 实时课堂 -->
-      <a-row type="flex" justify="start">
-        <a-col :span="6">
-          <h2 class="block-title">
-            <a href="#">实时课堂</a>
-          </h2>
-        </a-col>
-      </a-row>
-      <a-row style="height: 400px">
-        <a-col :span="20" :push="2">
-          <teacher-live></teacher-live>
-        </a-col>
-      </a-row>
-
-      <!-- 课堂活动 -->
-      <a-row type="flex" justify="start">
-        <a-col :span="6">
-          <h2 class="block-title">
-            <a href="#">课堂活动</a>
-          </h2>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-row type="flex" justify="center">
-          <a-col :span="22">
-            <a-carousel
-              arrows
-              dots-class="slick-dots slick-thumb"
-              ref="eventPanel"
-            >
-              <a-col :span="18" :push="2">
-                <div class="card-container">
-                  <a-row>
-                    <span class="action-type">{{ events[curEvent].name }}</span>
-                  </a-row>
-                  <a-row :gutter="20" class="card-body">
-                    <a-col :span="18">
-                      <h2>{{ events[curEvent].title }}</h2>
-                    </a-col>
-                    <a-col :span="2">
-                      <a-button
-                        shape="circle"
-                        size="large"
-                        @click="navigateToEvent(curEvent)"
-                      >
-                        <a-icon type="right-circle" style="font-size: 40px" />
-                      </a-button>
-                    </a-col>
-                  </a-row>
-                </div>
-              </a-col>
-            </a-carousel>
+  <a-row>
+    <a-row style="padding-top: 20px" type="flex" justify="end">
+      <a-col :pull="1" :span="2">
+        <a-button @click="$router.push({ name: 'teacher_index' })" type="link">
+          返回首页
+        </a-button>
+      </a-col>
+    </a-row>
+    <a-row style="padding-top: 50px">
+      <a-col :span="15">
+        <!-- 实时课堂 -->
+        <a-row type="flex" justify="start">
+          <a-col :span="6">
+            <h2 class="block-title">
+              <a href="#">实时课堂</a>
+            </h2>
           </a-col>
         </a-row>
-        <a-row class="event-steps">
+        <a-row style="height: 400px">
           <a-col :span="20" :push="2">
-            <a-steps
-              size="small"
-              progress-dot
-              v-model="curEvent"
-              @change="eventChange"
-            >
-              <a-step
-                v-for="(step, index) in steps"
-                :key="index"
-                :title="step.title"
-                :description="step.description"
-              />
-            </a-steps>
+            <teacher-live></teacher-live>
           </a-col>
         </a-row>
-      </a-row>
-    </a-col>
 
-    <a-col :span="9">
-      <!-- 互动内容 -->
+        <!-- 课堂活动 -->
+        <a-row type="flex" justify="start">
+          <a-col :span="6">
+            <h2 class="block-title">
+              <a href="#">课堂活动</a>
+            </h2>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-row type="flex" justify="center">
+            <a-col :span="22">
+              <a-carousel
+                arrows
+                dots-class="slick-dots slick-thumb"
+                ref="eventPanel"
+              >
+                <a-col :span="18" :push="2">
+                  <div class="card-container">
+                    <a-row>
+                      <span class="action-type">{{
+                        events[curEvent].name
+                      }}</span>
+                    </a-row>
+                    <a-row :gutter="20" class="card-body">
+                      <a-col :span="18">
+                        <h2>{{ events[curEvent].title }}</h2>
+                      </a-col>
+                      <a-col :span="2">
+                        <a-button
+                          shape="circle"
+                          size="large"
+                          @click="navigateToEvent(curEvent)"
+                        >
+                          <a-icon type="right-circle" style="font-size: 40px" />
+                        </a-button>
+                      </a-col>
+                    </a-row>
+                  </div>
+                </a-col>
+              </a-carousel>
+            </a-col>
+          </a-row>
+          <a-row class="event-steps">
+            <a-col :span="20" :push="2">
+              <a-steps
+                size="small"
+                progress-dot
+                v-model="curEvent"
+                @change="eventChange"
+              >
+                <a-step
+                  v-for="(step, index) in steps"
+                  :key="index"
+                  :title="step.title"
+                  :description="step.description"
+                />
+              </a-steps>
+            </a-col>
+          </a-row>
+        </a-row>
+      </a-col>
+
+      <a-col :span="9">
+        <!-- 互动内容
       <a-row type="flex" justify="start">
         <a-col :span="6">
           <h2 class="block-title">
@@ -87,18 +97,19 @@
 
       <a-row style="height: 400px">
         <a-empty> </a-empty>
-      </a-row>
+      </a-row> -->
 
-      <!-- 互动结果 -->
-      <a-row type="flex" justify="start">
-        <a-col :span="6">
-          <h2 class="block-title">
-            <a href="#">互动结果</a>
-          </h2>
-        </a-col>
-      </a-row>
-      <result></result>
-    </a-col>
+        <!-- 互动结果 -->
+        <a-row type="flex" justify="start">
+          <a-col :span="6">
+            <h2 class="block-title">
+              <a href="#">互动结果</a>
+            </h2>
+          </a-col>
+        </a-row>
+        <result></result>
+      </a-col>
+    </a-row>
   </a-row>
 </template>
 

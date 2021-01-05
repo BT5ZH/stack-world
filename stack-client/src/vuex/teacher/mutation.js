@@ -90,11 +90,11 @@ const mutation = {
   updateSources(state, params) {
     state.sources = params;
   },
-  updateLessonNames(state, params) {
-    state.lessonNames = params;
-  },
   updatePPT(state, params) {
     state.courseHours[state.curCourseHour].ppt = params;
+  },
+  updateLessonNames(state, params) {
+    state.lessonNames = params.map((item) => item.name);
   },
 };
 

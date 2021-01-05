@@ -104,6 +104,7 @@ export default {
         authorId: this.uid,
         url: this.resourceUrl,
         tags: this.fileForm.tags.split("-"),
+        lesson_id: this.$route.query.lessonId,
       };
     },
   },
