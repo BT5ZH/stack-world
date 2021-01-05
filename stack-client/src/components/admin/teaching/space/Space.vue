@@ -43,7 +43,6 @@
           <a-button type="primary" @click="bulkImport_visible = true"
             >批量添加{{ spaceName }}</a-button
           >
-          <!-- <a-button type="primary">添加教室</a-button> -->
         </a-col>
         <a-col :span="4">
           <a-button type="primary">
