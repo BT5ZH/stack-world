@@ -10,7 +10,7 @@
     </a-row> -->
     <!-- <a-row type="flex" justify="end">
       <a-col>
-        <a-button type="primary" @click="to_vuex"> 暂存到本地 </a-button>
+        <a-button type="primary" @click="node_vote"> 暂存事件 </a-button>
       </a-col>
     </a-row> -->
   </a-card>
@@ -24,7 +24,7 @@ export default {
     };
   },
   // methods: {
-  //   to_vuex() {},
+  //   node_vote() {},
   // },
 };
 </script>

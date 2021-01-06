@@ -91,6 +91,15 @@ const getter = {
         selected: false,
       }));
   },
+  resourceList(state) {
+    return state.sources.map((item) => ({
+      sourceId: item._id,
+      sourceName: item.name,
+      rsType: item.rsType,
+      tags: item.tags,
+      url: item.url,
+    }));
+  },
 };
 
 export default getter;

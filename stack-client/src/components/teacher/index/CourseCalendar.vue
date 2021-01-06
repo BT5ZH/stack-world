@@ -44,7 +44,9 @@
           <span>{{ item.roomName }}</span>
         </a-col>
         <a-col :span="3">
-          <a-button @click="classBegin(item)" type="primary">开始上课</a-button>
+          <a-button @click="popSelectModal(item)" type="primary"
+            >开始上课</a-button
+          >
         </a-col>
       </a-row>
     </a-row>
@@ -53,6 +55,31 @@
         <a-empty description="今天暂无课程" />
       </div>
     </a-row>
+
+    <a-modal v-model="lessonVisible">
+      <div style="padding: 50px 0">
+        <a-select
+          style="width: 100%"
+          v-model="curLesson"
+          placeholder="请选择即将授课的课时"
+          allowClear
+        >
+          <a-select-option
+            :value="name"
+            v-for="name in lessonNames"
+            :key="name"
+          >
+            {{ name }}
+          </a-select-option>
+        </a-select>
+      </div>
+      <template #footer>
+        <a-button @click="lessonVisible = false">取消</a-button>
+        <a-button @click="classBegin" type="primary" :disabled="!curLesson"
+          >开始上课</a-button
+        >
+      </template>
+    </a-modal>
   </a-row>
 </template>
 
@@ -73,7 +100,12 @@ export default {
       { title: "六", titleEn: "Sat" },
       { title: "七", titleEn: "Sun" },
     ];
-    return { oneWeek };
+    return {
+      oneWeek,
+      lessonVisible: false,
+      curLesson: undefined,
+      curCourse: undefined,
+    };
   },
   computed: {
     ...mapState({
@@ -82,6 +114,7 @@ export default {
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.org_name,
       teacherName: (state) => state.public.name,
+      lessonNames: (state) => state.teacher.lessonNames,
     }),
     ...mapGetters({
       todayCourses: "teacher/todayCourses",
@@ -104,7 +137,8 @@ export default {
     switchToday(day, title) {
       this.$store.commit("teacher/updateToday", { day, title });
     },
-    classBegin(course) {
+    classBegin() {
+      let course = this.curCourse;
       const config = { params: { activityID: course.lessonId } };
       const requestData = {
         activityID: course.lessonId,
@@ -128,6 +162,17 @@ export default {
         .catch((err) => {
           console.error(err);
           this.$message.error("创建房间失败");
+        });
+    },
+    popSelectModal(course) {
+      this.$store
+        .dispatch("teacher/getLessonNames", {
+          lesson_id: course.lessonId,
+          teacher_id: this.uid,
+        })
+        .then(() => {
+          this.curCourse = course;
+          this.lessonVisible = true;
         });
     },
   },

@@ -3,7 +3,7 @@
     <a-row type="flex" align="middle" class="profile clearfix">
       <a-col :span="4">
         <img
-          src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           alt="课程封面"
           class="img-cover"
         />
@@ -37,18 +37,19 @@
           placeholder="请输入课程简介！"
         ></a-input>
       </a-col>
-      <a-col :span="6"></a-col>
-      <a-col :span="2" :push="1">
-        <a-row type="flex" align="middle" justify="center">
+      <a-col :span="5"></a-col>
+      <a-col :span="3">
+        <a-row style="text-align: center">
           <h3>共{{ courseNums }}节课</h3>
           <a-button type="primary" size="large">开始备课</a-button>
         </a-row>
       </a-col>
     </a-row>
+
     <a-row class="content">
       <a-row>
         <a-col :span="3">
-          <a-menu style="width: 150px" @click="handleClick" v-model="curMenus">
+          <a-menu style="width: 150px" v-model="curMenus">
             <!-- <a-menu-item key="Knowledge">课程知识点</a-menu-item> -->
             <a-menu-item key="Resource">课程资源</a-menu-item>
             <a-menu-item key="Question">课程试题</a-menu-item>
@@ -77,58 +78,14 @@ export default {
       courseCode: "8HB4GC3P0",
       courseNums: 3,
       courseDesc: "暂无简介",
-      teacherName: "李师",
-      uid: "201501245789",
       workNumber: "201501245789",
       curMenus: ["Resource"],
       previewVisible: false,
       showDescEditor: false,
       previewImage: "",
-      fileList: [
-        {
-          uid: "-1",
-          name: "image.png",
-          status: "done",
-          url:
-            "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        },
-      ],
     };
   },
   methods: {
-    fileInput(file) {
-      console.log(file);
-      this.fileList = [file];
-      return false;
-    },
-    uploadFile() {
-      // const url = "/s3";
-      // const config = {
-      //   that: this,
-      //   successCallback() {
-      //     this.$message.success("上传成功！");
-      //   },
-      //   failCallback(err) {
-      //     console.error(err);
-      //     this.$message.error("上传失败！");
-      //   },
-      // };
-      // const params = {
-      //   Metadata: { uploader: "Henrenx", star: "10" },
-      // };
-      // fileUploader(this.fileList, url, "", config, params);
-    },
-    handleClick() {},
-    async handlePreview(file = "") {
-      if (!file.url && !file.preview) {
-        //   file.preview = await getBase64(file.originFileObj);
-      }
-      // this.previewImage = file.url || file.preview;
-      // this.previewVisible = true;
-    },
-    handleChange({ fileList }) {
-      this.fileList = fileList;
-    },
     editDesc() {
       this.showDescEditor = !this.showDescEditor;
       // submit modification to back end;

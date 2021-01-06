@@ -74,7 +74,7 @@
     </a-card>
     <a-row type="flex" justify="end">
       <a-col>
-        <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
+        <a-button type="primary" @click="node_vote"> 暂存事件 </a-button>
       </a-col>
     </a-row>
   </div>
@@ -202,24 +202,5 @@ export default {
 </style>
 
 <style>
-@media only screen and (min-height: 800px) {
-  .container {
-    height: 600px;
-    overflow-y: auto;
-  }
-}
-@media only screen and (max-height: 799px) and(min-height: 600px) {
-  .container {
-    height: 400px;
-    overflow-y: auto;
-    background: #000;
-  }
-}
 
-@media only screen and (max-height: 599px) {
-  .container {
-    height: 300px;
-    overflow-y: auto;
-  }
-}
 </style>

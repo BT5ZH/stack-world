@@ -60,7 +60,6 @@ const mutation = {
     state.nodes = state.courseHours[params].nodes;
   },
   updateCourseHour(state, params) {
-    console.log(params);
     state.courseHours[state.curCourseHour] = params;
   },
   updateNodeIndex(state, params) {
@@ -91,11 +90,11 @@ const mutation = {
   updateSources(state, params) {
     state.sources = params;
   },
-  updateLessonNames(state, params) {
-    state.lessonNames = params;
-  },
   updatePPT(state, params) {
     state.courseHours[state.curCourseHour].ppt = params;
+  },
+  updateLessonNames(state, params) {
+    state.lessonNames = params.map((item) => item.name);
   },
 };
 

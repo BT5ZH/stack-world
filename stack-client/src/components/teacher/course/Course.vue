@@ -93,7 +93,9 @@ export default {
       return `${prepareNumber}备课/${total_study_hours}课时`;
     },
   },
-  mounted() {},
+  mounted() {
+    this.$store.dispatch("teacher/getTeacherCourses", this.uid);
+  },
 };
 </script>
 

@@ -1,169 +1,157 @@
 <template>
   <a-row>
-    <a-row>
+    <a-row type="flex" justify="space-between">
       <a-col :span="5">
         <a-input-search
-          placeholder="名称、知识点"
+          placeholder="名称、标签"
           enter-button
+          v-model="inputValue"
           @search="onSearch"
         />
       </a-col>
-      <a-col :span="12"></a-col>
-      <a-col :span="6">
-        <a-button type="primary" @click="localVisible = true"
-          >本地上传</a-button
-        >
-        &nbsp;&nbsp;
-        <a-button type="primary" @click="libiaryVisible = true"
-          >资源库导入</a-button
-        >
-        &nbsp;&nbsp;
-        <a-button type="primary">删除</a-button>
+      <a-col :span="2">
+        <a-button type="primary" @click="localVisible = true">
+          本地上传
+        </a-button>
       </a-col>
     </a-row>
+
     <a-row class="cards-area" :gutter="30">
-      <a-col :span="6" v-for="(course, index) in courses" :key="index">
+      <a-col :span="4" v-for="(source, index) in sourceList" :key="index">
         <a-card style="margin-top: 15px" size="small">
-          <a slot="extra">
+          <template #title>
+            <img
+              slot="cover"
+              alt="example"
+              :src="source.src"
+              width="40px"
+              height="40px"
+            />
+            <span>{{ source.sourceName }}</span>
+          </template>
+
+          <template #extra>
             <a-checkbox @change="onChange"></a-checkbox>
-          </a>
-          <img 
-            slot="cover"
-            alt="example"
-            :src="course.src"
-            width="100px"
-            height="80px"
-          />
-          <h3>{{ course.courseName }}</h3><br/>
-          <div>
-            <template v-for="(tag, index) in course.tags">
-              <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
-                <a-tag :key="tag" :closable="index !== 0" @close="() => handleClose(tag)">
-                  {{ '${tag.slice(0, 100)}...' }}
-                </a-tag>
-              </a-tooltip>
-              <a-tag v-else :key="tag" :closable="index !== 0" @close="() => handleClose(tag)">
+          </template>
+
+          <template v-if="source.tags.length">
+            <span v-for="tag in source.tags" :key="tag">
+              <a-tag color="#2db7f5" :key="tag" style="margin: 6px">
                 {{ tag }}
               </a-tag>
-            </template>
-            <a-input :key="index"
-              v-if="inputVisible"
-              ref="input"
-              type="text"
-              size="small"
-              :style="{ width: '78px' }"
-              :value="inputValue"
-              @change="handleInputChange"
-              @blur="handleInputConfirm"
-              @keyup.enter="handleInputConfirm"
-            />
-            <a-tag :key="index" v-else style="background: #fff; borderStyle: dashed;" @click="showInput">
-              <a-icon type="plus" /> 新标签
-            </a-tag>
-          </div>
-          <template slot="actions" class="ant-card-actions">
-            <a-button type="primary">编辑</a-button>
-            <a-button type="primary">下载</a-button>
+            </span>
           </template>
-       </a-card>
+
+          <template v-else>
+            <p align="center">暂无标签</p>
+          </template>
+
+          <template #actions class="ant-card-actions">
+            <a-button type="link">编辑</a-button>
+            <a-button type="link" @click="download(source)">查看</a-button>
+            <!-- <a-button type="link">删除</a-button> -->
+          </template>
+        </a-card>
       </a-col>
     </a-row>
-    <a-row type="flex" justify="center">
+
+    <a-row type="flex" justify="start" style="margin-top: 50px">
       <a-pagination
         class="pagination"
-        :total="50"
-        :show-size-changer="true"
+        :total="sourceList.length"
         :show-quick-jumper="true"
       ></a-pagination>
     </a-row>
-  
-    <libiary :visible.sync="libiaryVisible"></libiary>
+
     <local :visible.sync="localVisible"></local>
   </a-row>
 </template>
 
 <script>
-import Libiary from "./Libiary";
 import Local from "./Local";
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  components: { Libiary, Local },
+  components: { Local },
   data() {
     return {
       inputVisible: false,
-      inputValue: '',
-      courses: [
-        {
-          courseId: "1",
-          courseName: "线性代数习题.doc",
-          tags:['jhksajnc', '知识点', '练习题','线代','习题'],
-          src:require('../../../../../src/assets/img/SVGS/word.svg'),
-        },
-        {
-          courseId: "2",
-          courseName: "计算机构成说明书.jpg",
-          tags:['2章', '知识点2', '练习题2','线代2','习题2'],
-          src:require('../../../../../src/assets/img/SVGS/jpg.svg'),
-        },
-        {
-          courseId: "3",
-          courseName: "高等数学.xls",
-          tags:['3章', '知识点3', '练习题3','线代3','习题3'],
-          src:require('../../../../../src/assets/img/SVGS/excel.svg'),
-        },
-        {
-          courseId: "4",
-          courseName: "概率论与数理统计.ppt",
-          tags:['4章', '知识点4', '练习题4','线代4','习题4'],
-          src:require('../../../../../src/assets/img/SVGS/ppt.svg'),
-        },
-        {
-          courseId: "5",
-          courseName: "软件工程.pdf",
-          tags:['5章', '知识点5', '练习题5','线代5','习题5'],
-          src:require('../../../../../src/assets/img/SVGS/pdf.svg'),
-        },
-      ],
-      libiaryVisible: false,
+      inputValue: "",
       localVisible: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      resourceList: "teacher/resourceList",
+    }),
+    ...mapState({
+      uid: (state) => state.public.uid,
+    }),
+    lessonId() {
+      return this.$route.query.lessonId;
+    },
+    sourceList() {
+      if (!this.resourceList) return [];
+      let temp = this.resourceList.map((item) => {
+        let src = this.getResourceIconUrl(item.rsType);
+        return {
+          ...item,
+          sourceName: `${item.sourceName}.${item.rsType}`,
+          src: require("@/assets/img/SVGS/" + src + ".svg"),
+        };
+      });
+      if (!this.inputValue) return temp;
+      return temp.filter(
+        (item) =>
+          item.sourceName.includes(this.inputValue) ||
+          item.tags.some((tag) => tag.includes(this.inputValue))
+      );
+    },
   },
   methods: {
     onChange(e) {
       console.log(`checked = ${e.target.checked}`);
     },
-    handleClose(removedTag) {
-      const tags = this.tags.filter(tag => tag !== removedTag);
-      console.log(tags);
-      this.tags = tags;
-    },
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(function() {
-        this.$refs.input.focus();
-      });
-    },
-
-    handleInputChange(e) {
-         console.log("handleInputChange:",e)
-      this.inputValue = e.target.value;
-    },
-
-    handleInputConfirm(e) {
-      console.log("handleInputConfirme:",e)
-      const inputValue = this.inputValue;
-      let tags = this.tags;
-      if (inputValue && tags.indexOf(inputValue) === -1) {
-        tags = [...tags, inputValue];
+    getResourceIconUrl(rsType) {
+      let iconMap = new Map([
+        [["mp4"], "video"],
+        [["zip", "rar", "7z", "tar", "gz"], "zip"],
+        [["doc", "docx"], "word"],
+        [["txt"], "txt"],
+        [["psd"], "psd"],
+        [["ppt", "pptx"], "ppt"],
+        [["png"], "png"],
+        [["pdf"], "pdf"],
+        [["mp3", "wma", "aac", "wav"], "mp3"],
+        [["jpeg", "jpg"], "jpg"],
+        [["html"], "html"],
+        [["gif"], "gif"],
+        [["xlsx", "xls"], "excel"],
+      ]);
+      for (let [suffix, iconName] of iconMap.entries()) {
+        if (suffix.some((item) => item === rsType)) {
+          return iconName;
+        }
       }
-      console.log(tags);
-      Object.assign(this, {
-        tags,
-        inputVisible: false,
-        inputValue: '',
-      });
+      return "white";
     },
     onSearch() {},
+    download(source) {
+      // setTimeout(() => {
+      let a = document.createElement("a");
+      let event = new MouseEvent("click");
+      a.download = source.sourceName;
+      a.target = "_blank";
+      a.href = source.url;
+      a.dispatchEvent(event);
+      // }, 1000);
+    },
+  },
+  mounted() {
+    this.$store.dispatch("teacher/getSources", {
+      teacher_id: this.uid,
+      lesson_id: this.lessonId,
+    });
   },
 };
 </script>
