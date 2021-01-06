@@ -69,7 +69,21 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
     },
   });
 });
+exports.getCourseInfoByLessonID = catchAsync(async (req, res, next) => {
+  console.log(req.query.lesson_id );
+   const data = await Lesson.findOne({ _id: req.query.lesson_id }).select("_id course_id")
+    .populate("course_id", "name evaluation course_id credit total_study_hours course_type -_id")
 
+  if (!data) {
+    return next(new AppError("该课不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+      data,
+
+  });
+});
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
   const fullInfo = await Lesson.find({ teacher_id: req.body.teacher_id })
   .populate(
