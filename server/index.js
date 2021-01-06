@@ -56,7 +56,7 @@ const prodOptions = {
   },
 };
 
-const io = require("socket.io")(server, devOptions);
+const io = require("socket.io")(server, prodOptions);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
