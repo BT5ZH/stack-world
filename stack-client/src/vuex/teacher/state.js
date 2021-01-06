@@ -16,6 +16,7 @@ const state = {
   nodes: [],
   nodeindex: 0,
   sources: [],
+  questionBank:[],
 };
 
 export default state;

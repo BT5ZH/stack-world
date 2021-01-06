@@ -35,7 +35,18 @@ const resourceSchema = new mongoose.Schema(
     rsType: {
       type: String,
       required: [true, "A resource must have a resourceType"],
-      enum: ["mp4", "pdf", "doc", "jpeg", "jpg", "png", "docx", "zip"],
+      enum: [
+        "mp4",
+        "pdf",
+        "doc",
+        "jpeg",
+        "jpg",
+        "png",
+        "docx",
+        "zip",
+        "ppt",
+        "pptx",
+      ],
     },
     tags: {
       // select: false,

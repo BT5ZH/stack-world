@@ -55,9 +55,10 @@ const getter = {
     return state.nodes[state.nodeindex];
   },
   getVote(state) {
-    return state.nodes[state.nodeindex].vote.map((item) => {
-      return { title: item.title, options: item.options };
-    });
+    return state.nodes[state.nodeindex].vote.map((item) => ({
+      title: item.title,
+      options: item.options,
+    }));
   },
   getCompete(state) {
     const vote = state.nodes[state.nodeindex].vote[0];
@@ -68,6 +69,12 @@ const getter = {
       ifshow: vote.question_type,
       rightanswer: vote.right_answer,
     };
+  },
+  getDocument(state) {
+    return state.nodes[state.nodeindex].vote[0].options;
+  },
+  getTest(state) {
+    return state.nodes[state.nodeindex].vote.map((item) => item.title);
   },
   getSources(state) {
     return state.sources.map((item) => {
@@ -88,7 +95,6 @@ const getter = {
         id: item._id,
         url: item.url,
         name: item.name,
-        selected: false,
       }));
   },
   resourceList(state) {
@@ -99,6 +105,23 @@ const getter = {
       tags: item.tags,
       url: item.url,
     }));
+  },
+  getQuestionList(state) {
+    return state.questionBank
+      .filter((item) => item.question_type === 2 || item.question_type === 3)
+      .map((question) => {
+        return {
+          id: question._id,
+          stem: question.statement.stem,
+          option: question.statement.options,
+          answer: question.statement.right_answer,
+          multiple: question.question_type !== 2,
+          type: question.stem_type,
+          knowledge: question.knowledge,
+          grade: question.grade,
+          key_word: question.key_word,
+        };
+      });
   },
 };
 

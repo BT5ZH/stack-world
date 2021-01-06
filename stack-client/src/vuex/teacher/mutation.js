@@ -70,7 +70,7 @@ const mutation = {
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   updateNode(state, params) {
-    state.nodes.splice(state.nodeindex, 1, params);
+    state.nodes[state.nodeindex] = params;
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   deleteNode(state, params) {
@@ -78,7 +78,7 @@ const mutation = {
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
   updateNodevote(state, params) {
-    const node = state.nodes[state.nodeindex];
+    let node = state.nodes[state.nodeindex];
     node.vote = params;
     state.nodes.splice(state.nodeindex, 1, node);
     state.courseHours[state.curCourseHour].nodes = state.nodes;
@@ -91,10 +91,13 @@ const mutation = {
     state.sources = params;
   },
   updatePPT(state, params) {
-    state.courseHours[state.curCourseHour].ppt = params;
+    state.courseHours[state.curCourseHour].PPT = params;
   },
   updateLessonNames(state, params) {
     state.lessonNames = params.map((item) => item.name);
+  },
+  updatequestionBank(state, params) {
+    state.questionBank = params;
   },
 };
 

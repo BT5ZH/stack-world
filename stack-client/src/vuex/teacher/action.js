@@ -108,6 +108,16 @@ const action = {
       console.error(error);
     }
   },
+  async getquestionBank({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/questions";
+      const { data } = await axios.get(url, requestData);
+      commit("updatequestionBank", data.questions);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default action;

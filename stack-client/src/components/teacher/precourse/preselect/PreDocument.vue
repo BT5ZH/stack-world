@@ -9,24 +9,24 @@
     >
       <a-row>
         <a-list :data-source="sources">
-          <template #renderItem="sourse">
+          <template #renderItem="source">
             <a-list-item>
               <a-list-item-meta>
                 <template #title>
                   <a-checkbox
-                    :checked="sourse.selected"
-                    @change="onChange(sourse)"
+                    :checked="source.selected"
+                    @change="onChange(source)"
                   ></a-checkbox>
                   <img
                     slot="cover"
                     alt="example"
-                    :src="sourse.src"
+                    :src="source.src"
                     style="margin: 2px"
                     width="30px"
                     height="30px"
                   />
-                  <a :href="sourse.url" target="_blink">{{
-                    sourse.courseName
+                  <a :href="source.url" target="_blink">{{
+                    source.courseName
                   }}</a>
                 </template>
               </a-list-item-meta>
@@ -112,14 +112,13 @@ export default {
   },
   methods: {
     node_vote() {
-      const vote = this.selectedsource.map((item, index) => {
-        return {
-          options: item.courseId,
-          question_type: null,
-          right_answer: "",
-          title: "",
-        };
-      });
+      let option = this.selectedsource.map((item) => item.courseId);
+      const vote = {
+        options: option,
+        question_type: null,
+        right_answer: "",
+        title: "",
+      };
       this.$store.commit("teacher/updateNodevote", vote);
     },
     selectsource() {
@@ -162,12 +161,13 @@ export default {
         teacher_id: this.uid,
       })
       .then(() => {
+        let selected_IdList = this.$store.getters["teacher/getDocument"];
         this.sources = this.$store.getters["teacher/getSources"].map((item) => {
           let src = this.getResourceIconUrl(item.type);
           return {
             courseId: item.courseId,
             courseName: item.courseName + "." + item.type,
-            selected: false,
+            selected: selected_IdList.some((id) => id === item.courseId),
             url: item.url,
             src: require("@/assets/img/SVGS/" + src + ".svg"),
           };

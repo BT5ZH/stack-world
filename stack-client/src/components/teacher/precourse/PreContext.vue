@@ -15,7 +15,6 @@
         <a-textarea
           placeholder="本节课重难点"
           v-model="form.desc1"
-          @change="onChange"
           :auto-size="{ minRows: 2, maxRows: 2 }"
           style="width: 80%"
         />
@@ -30,25 +29,24 @@
         </a-row>
         <br />
         <a-row type="flex" justify="end" v-if="!publish"
-          >已选择PPT：{{ ppt.name }}.ppt
+          >已选择PPT：{{ ppt.name }}
         </a-row>
         <a-row type="flex" justify="end" v-else>请选择PPT </a-row>
       </a-col>
     </a-row>
     <a-modal title="选择ppt" v-model="pptvisible" :zIndex="10001" width="40%">
-      <a-list :data-source="pptsource">
-        <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
-          <a-list-item-meta>
-            <a slot="title">
-              <a-checkbox
-                :checked="item.selected"
-                @change="onChange(item)"
-              ></a-checkbox>
-              <span> {{ index + 1 }}. {{ item.name }} </span>
-            </a>
-          </a-list-item-meta>
-        </a-list-item>
-      </a-list>
+      <a-radio-group name="radioGroup" v-model="ppt">
+        <a-radio
+          :style="radioStyle"
+          v-for="(item, index) in pptsource"
+          :key="item.id"
+          :value="item"
+        >
+          <a :href="item.url" target="_blink">
+            {{ index + 1 }}. {{ item.name }}</a
+          >
+        </a-radio>
+      </a-radio-group>
       <a-row type="flex" justify="center">
         <a-pagination
           class="pagination"
@@ -243,6 +241,11 @@ export default {
   },
   data() {
     return {
+      radioStyle: {
+        display: "block",
+        height: "30px",
+        lineHeight: "30px",
+      },
       pptsource: [],
       ppt: {},
       labelCol: { span: 3 },
@@ -305,14 +308,6 @@ export default {
     },
   },
   methods: {
-    onChange(course) {
-      course.selected = !course.selected;
-      if (course.selected) {
-        this.ppt = { name: course.name, id: course.id, url: course.url };
-      } else {
-        this.ppt = { name: "", id: "", url: "" };
-      }
-    },
     selectppt() {
       const ppt = { name: this.ppt.name, rsId: this.ppt.id, url: this.ppt.url };
       this.$store.commit("teacher/updatePPT", ppt);
@@ -427,7 +422,7 @@ export default {
           that.steps.splice(that.current, 1);
           that.$store.commit("teacher/deleteNode", that.current);
           that.current = that.steps.length - 1;
-          that.onChange(that.current);
+          this.addChange(that.current);
         },
         onCancel() {
           console.log("Cancel");
@@ -447,14 +442,14 @@ export default {
         Dispatch: "文件下发",
         // Homework: "布置作业",
       };
-      this.$store.dispatch("teacher/getSources", {
-        lesson_id: this.lesson_id,
-        teacher_id: this.uid,
-      });
       const { PPT, description, duration, name, nodes } = value;
       this.form.desc1 = description;
       this.form.time = duration;
-      this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
+      if (this.pptsource.some((item) => item.id === PPT.rsId)) {
+        this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
+      } else {
+        this.ppt = { name: "", id: "", url: "" };
+      }
       if (nodes.length) {
         this.componentId = Object.keys(this.eventname).find((item) => {
           return this.eventname[item] === nodes[0].tag;
@@ -462,20 +457,19 @@ export default {
       } else {
         this.componentId = "";
       }
-      this.pptsource = this.$store.getters["teacher/getPPTSource"];
-      if (this.ppt.id) {
-        this.pptsource
-          .filter((item) => {
-            return item.id === this.ppt.id;
-          })
-          .forEach((item) => (item.selected = true));
-      }
       this.steps = nodes.map((item, index) => {
         let time = nodes[index].time;
         let titletag = type[item.tag];
         return { title: titletag, description: time };
       });
     },
+  },
+  mounted() {
+    this.$store.dispatch("teacher/getSources", {
+      lesson_id: this.lesson_id,
+      teacher_id: this.uid,
+    });
+    this.pptsource = this.$store.getters["teacher/getPPTSource"];
   },
 };
 </script>

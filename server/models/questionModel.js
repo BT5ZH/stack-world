@@ -8,8 +8,9 @@ const questionSchema = new mongoose.Schema({
         default:uuid.v1,
 
     },
-    course_id:{
+    lesson_id:{
         type: String,
+        ref:"Lesson"
     },
     teacher_id:{
         type: String,
@@ -33,8 +34,8 @@ const questionSchema = new mongoose.Schema({
     stem_type:{//题干的类型（如果题干是文件类的，stem存的是文件的地址，如果是文字类的直接存文字
         type:String,
     },
-    question_type:{//题型（danxuan\duoxuan\panduan\zhuguan)
-        type:String,
+    question_type:{//题型（单选2\多选3\主观1)
+        type:Number,
     },
     analysis: {
         type: String,
