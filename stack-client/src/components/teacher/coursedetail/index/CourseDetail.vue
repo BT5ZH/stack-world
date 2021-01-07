@@ -10,38 +10,29 @@
       </a-col>
       <a-col :span="5">
         <a-row type="flex" justify="space-between" align="top">
-          <h2>{{ courseName }}</h2>
-          <span style="line-height: 2.5em">课程编码{{ courseCode }}</span>
+          <h2>{{ courseInfo.name }}</h2>
+          <span style="line-height: 2.5em">
+            课程编码：{{ courseInfo.course_id }}
+          </span>
         </a-row>
         <a-row type="flex" justify="space-between" align="top">
-          <p>课程简介：{{ courseDesc }}</p>
-          <a href="#" @click="editDesc">
-            {{ showDescEditor ? "保存简介" : "编辑简介" }}
-          </a>
+          <p>考试类型：{{ courseInfo.evaluation }}</p>
         </a-row>
         <a-row type="flex" justify="space-between" align="top">
-          <label for="progress">上课进度：</label>
-          <a-progress
-            :percent="30"
-            size="small"
-            style="width: 75%"
-          ></a-progress>
+          <p>课程属性：{{ courseInfo.course_type }}</p>
         </a-row>
       </a-col>
-      <a-col :span="6" :push="1">
-        <a-input
-          v-if="showDescEditor"
-          type="textarea"
-          :auto-size="{ minRows: 5, maxRows: 5 }"
-          v-model="courseDesc"
-          placeholder="请输入课程简介！"
-        ></a-input>
-      </a-col>
-      <a-col :span="5"></a-col>
+      <a-col :span="5"> </a-col>
+      <a-col :span="6"></a-col>
       <a-col :span="3">
         <a-row style="text-align: center">
-          <h3>共{{ courseNums }}节课</h3>
-          <a-button type="primary" size="large">开始备课</a-button>
+          <h3>共 {{ courseInfo.total_study_hours }} 课时</h3>
+          <a-button
+            type="primary"
+            size="large"
+            @click="startPrepare(courseInfo)"
+            >开始备课</a-button
+          >
         </a-row>
       </a-col>
     </a-row>
@@ -74,24 +65,34 @@ export default {
   components: { Resource, Question, Knowledge, Class },
   data() {
     return {
-      courseName: "计算机基础",
-      courseCode: "8HB4GC3P0",
-      courseNums: 3,
-      courseDesc: "暂无简介",
-      workNumber: "201501245789",
       curMenus: ["Resource"],
-      previewVisible: false,
       showDescEditor: false,
-      previewImage: "",
     };
+  },
+  computed: {
+    courseInfo() {
+      return this.$store.state.teacher.courseInfo;
+    },
+    lessonId() {
+      return this.$route.query.lessonId;
+    },
   },
   methods: {
     editDesc() {
       this.showDescEditor = !this.showDescEditor;
       // submit modification to back end;
     },
+    startPrepare({ name }) {
+      const lessonId = this.lessonId;
+      this.$router.push({
+        name: "teacher_precourse",
+        query: { lessonId, lessonName: name },
+      });
+    },
   },
-  created() {},
+  mounted() {
+    this.$store.dispatch("teacher/getCourseInfo", this.$route.query.lessonId);
+  },
 };
 </script>
 

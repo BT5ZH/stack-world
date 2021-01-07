@@ -31,40 +31,32 @@
             </h2>
           </a-col>
         </a-row>
+
         <a-row>
           <a-row type="flex" justify="center">
-            <a-col :span="22">
-              <a-carousel
-                arrows
-                dots-class="slick-dots slick-thumb"
-                ref="eventPanel"
-              >
-                <a-col :span="18" :push="2">
-                  <div class="card-container">
-                    <a-row>
-                      <span class="action-type">{{
-                        events[curEvent].name
-                      }}</span>
-                    </a-row>
-                    <a-row :gutter="20" class="card-body">
-                      <a-col :span="18">
-                        <h2>{{ events[curEvent].title }}</h2>
-                      </a-col>
-                      <a-col :span="2">
-                        <a-button
-                          shape="circle"
-                          size="large"
-                          @click="navigateToEvent(curEvent)"
-                        >
-                          <a-icon type="right-circle" style="font-size: 40px" />
-                        </a-button>
-                      </a-col>
-                    </a-row>
-                  </div>
-                </a-col>
-              </a-carousel>
+            <a-col :span="18">
+              <div class="card-container">
+                <a-row>
+                  <span class="action-type">{{ steps[curEvent].title }}</span>
+                </a-row>
+                <a-row :gutter="20" class="card-body">
+                  <a-col :span="18">
+                    <h2>{{ steps[curEvent].desc }}</h2>
+                  </a-col>
+                  <a-col :span="2">
+                    <a-button
+                      shape="circle"
+                      size="large"
+                      @click="navigateToEvent(curEvent)"
+                    >
+                      <a-icon type="right-circle" style="font-size: 40px" />
+                    </a-button>
+                  </a-col>
+                </a-row>
+              </div>
             </a-col>
           </a-row>
+
           <a-row class="event-steps">
             <a-col :span="20" :push="2">
               <a-steps
@@ -77,7 +69,7 @@
                   v-for="(step, index) in steps"
                   :key="index"
                   :title="step.title"
-                  :description="step.description"
+                  :description="step.time"
                 />
               </a-steps>
             </a-col>
@@ -124,50 +116,24 @@ export default {
   components: { TeacherLive, Result },
   data() {
     return {
-      actions: [
-        { icon: "carry-out", title: "签到", url: "interaction_sign" },
-        { icon: "bulb", title: "随堂提问", url: "interaction_ques" },
-        { icon: "alert", title: "随机抽人", url: "interaction_pick" },
-        { icon: "thunderbolt", title: "抢答", url: "interaction_race" },
-        { icon: "hourglass", title: "随堂测试", url: "interaction_test" },
-        { icon: "file-text", title: "文件下发", url: "interaction_file" },
-        { icon: "like", title: "投票", url: "interaction_vote" },
-      ],
-      colors: [
-        "#9FE6B8",
-        "#FFDb5C",
-        "#FF9F7F",
-        "#F87293",
-        "#8378EA",
-        "#E7bCF3",
-        "#96BFFF",
-      ],
-      steps: [
-        { title: "签到", description: "2分钟" },
-        { title: "随堂测试", description: "5分钟" },
-      ],
+      actionMap: {
+        sign: { name: "签到", desc: "请同学们开始签到" },
+        test: { name: "随堂测试", desc: "请同学们开始作答" },
+        teach: { name: "讲课", desc: "讲课时间" },
+        ask: { name: "提问", desc: "开始提问" },
+        race: { name: "抢答", desc: "请同学们开始抢答" },
+        vote: { name: "投票", desc: "请同学们开始投票" },
+        dispatch: { name: "文件下发", desc: "请同学们查看文件" },
+      },
       curEvent: 0,
-      events: [
-        {
-          name: "签到",
-          title: "请大家开始签到",
-          type: "sign",
-        },
-        {
-          name: "随堂测试",
-          title: "中国传统佳节“中秋节”是那一天？",
-          type: "test",
-        },
-      ],
     };
   },
   methods: {
     eventChange(value) {
       this.curEvent = value;
-      this.$refs.eventPanel.next();
       this.$store.commit(
         "teacher/updateCurActivity",
-        this.events[this.curEvent].type
+        this.steps[this.curEvent].type
       );
     },
     navigateToEvent(eventIndex) {
@@ -213,9 +179,26 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      nodes: (state) => state.teacher.precourse.nodes,
     }),
+    steps() {
+      if (!this.nodes) return [];
+      return this.nodes.map((item) => ({
+        type: item.tag.toLowerCase(),
+        title: this.actionMap[item.tag.toLowerCase()].name,
+        time: item.time,
+        desc: this.actionMap[item.tag.toLowerCase()].desc,
+      }));
+    },
+    events() {
+      if (!this.nodes) return [];
+      return this.nodes.map(({ vote }) => ({}));
+    },
     lessonId() {
       return this.$route.query.lessonId;
+    },
+    courseHourName() {
+      return this.$route.query.name;
     },
   },
   mounted() {
@@ -233,6 +216,11 @@ export default {
       });
     };
     socket.createInstance("teacher", this, this.lessonId).then(callback);
+    this.$store.dispatch("teacher/getTeacherPrepare", {
+      teacher_id: this.uid,
+      lesson_id: this.lessonId,
+      name: this.courseHourName,
+    });
   },
 };
 </script>
@@ -258,7 +246,6 @@ export default {
 .card-container {
   margin: 10px 0;
   border-radius: 10px;
-  width: 80%;
   height: 120px;
   box-shadow: 0 0 10px #ccc;
   /* box-shadow: 10px 10px 5px #888888; */
