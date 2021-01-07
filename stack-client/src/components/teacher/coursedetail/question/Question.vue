@@ -1,5 +1,7 @@
 <template>
-  <div>课程试题</div>
+  <div>
+    
+  </div>
 </template>
 
 <script>

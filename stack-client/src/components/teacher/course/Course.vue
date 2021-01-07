@@ -33,8 +33,7 @@
       <a-pagination
         class="pagination"
         :total="courses.length"
-        :page-size="8"
-        :show-quick-jumper="true"
+        :page-size="2"
       ></a-pagination>
     </a-row>
   </a-row>

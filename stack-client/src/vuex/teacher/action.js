@@ -42,13 +42,12 @@ const action = {
       console.error(error);
     }
   },
-  async getTeacherPrepare({ commit }, teacher_id) {
+  async getTeacherPrepare({ commit }, params) {
+    // params => teacher_id, lesson_id, name
     try {
-      // TODO 完善教师备课获取函数
-      const url = "/pc/v1/prepares/";
-      const requestData = { teacher_id };
-      const { data } = await axios.post(url, requestData);
-      commit("updateTeacherPrepare", data);
+      const url = "/pc/v1/prepares/getOneClassByName";
+      const { data } = await axios.post(url, params);
+      commit("updateTeacherPrepare", data.data.one_class);
     } catch (error) {
       console.error(error);
     }
@@ -114,6 +113,16 @@ const action = {
       const url = "pc/v1/questions";
       const { data } = await axios.get(url, requestData);
       commit("updatequestionBank", data.questions);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getCourseInfo({ commit }, lesson_id) {
+    try {
+      const url = "/pc/v1/lessons/getCourseInfoByLessonID";
+      const { data } = await axios.get(url, { params: { lesson_id } });
+      const info = data.data.course_id;
+      commit("updateCourseInfo", info);
     } catch (error) {
       console.error(error);
     }

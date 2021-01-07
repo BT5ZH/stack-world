@@ -8,7 +8,7 @@
       width="40%"
     >
       <a-row>
-        <a-list :data-source="sources">
+        <a-list :data-source="sources" :pagination="pagination">
           <template #renderItem="source">
             <a-list-item>
               <a-list-item-meta>
@@ -34,14 +34,6 @@
           </template>
         </a-list>
       </a-row>
-      <a-row type="flex" justify="center">
-        <a-pagination
-          class="pagination"
-          :total="sources.length"
-          :page-size="5"
-          :show-quick-jumper="true"
-        ></a-pagination>
-      </a-row>
       <template #footer>
         <a-button type="primary" @click="selectsource"> 确定 </a-button>
       </template>
@@ -66,14 +58,17 @@
               {{ item.courseName }}
             </span>
             <template #extra>
-              <a-button-group>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>取消选中</span>
+                </template>
                 <a-button
                   icon="delete"
                   size="small"
                   type="link"
                   @click="deleteit(item)"
                 ></a-button>
-              </a-button-group>
+              </a-tooltip>
             </template>
           </a-list-item>
         </a-list>
@@ -95,6 +90,13 @@ const sources = [];
 export default {
   data() {
     return {
+      pagination: {
+        onChange: (page) => {
+          console.log(page);
+        },
+        pageSize: 5,
+        showQuickJumper: true,
+      },
       sources,
       selectvisible: false,
     };

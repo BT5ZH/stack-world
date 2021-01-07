@@ -72,6 +72,9 @@
             {{ name }}
           </a-select-option>
         </a-select>
+        <h3 style="color: #666; margin-top: 20px">
+          选择课时后，系统将会拉取对应的备课数据
+        </h3>
       </div>
       <template #footer>
         <a-button @click="lessonVisible = false">取消</a-button>
@@ -156,7 +159,7 @@ export default {
           }
           this.$router.push({
             name: "interaction_index",
-            query: { lessonId: course.lessonId },
+            query: { lessonId: course.lessonId, name: this.curLesson },
           });
         })
         .catch((err) => {

@@ -41,6 +41,9 @@ const mutation = {
   updateTeacherCourses(state, params) {
     state.courses = params;
   },
+  updateTeacherPrepare(state, params) {
+    state.precourse = params;
+  },
   updateOnlineList(state, params) {
     state.onlineList = Object.keys(params).map((key) => {
       let info = JSON.parse(params[key]);
@@ -98,6 +101,9 @@ const mutation = {
   },
   updatequestionBank(state, params) {
     state.questionBank = params;
+  },
+  updateCourseInfo(state, params) {
+    state.courseInfo = params;
   },
 };
 
