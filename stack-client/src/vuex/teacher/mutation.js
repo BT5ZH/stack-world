@@ -105,6 +105,10 @@ const mutation = {
   updateCourseInfo(state, params) {
     state.courseInfo = params;
   },
+  updateCourseHourInfo(state, { time, description }) {
+    state.courseHours[state.curCourseHour].duration = time;
+    state.courseHours[state.curCourseHour].description = description;
+  },
 };
 
 export default mutation;

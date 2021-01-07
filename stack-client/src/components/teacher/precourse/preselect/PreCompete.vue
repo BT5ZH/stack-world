@@ -124,7 +124,7 @@ export default {
           options: this.cards.options,
           question_type: this.ifshow,
           right_answer: this.rightanswer,
-          title: this.cards.title,
+          title: this["editor"].txt.text(),
         },
       ];
       this.$store.commit("teacher/updateNodevote", vote);
@@ -159,6 +159,7 @@ export default {
         // "code",
       ];
       editor.create();
+      this["editor"] = editor;
       if (content) {
         editor.txt.html("<p>" + content + "</p>");
       }

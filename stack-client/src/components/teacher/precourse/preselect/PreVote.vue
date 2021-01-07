@@ -8,20 +8,6 @@
     >
       <template #extra>
         <a-row class="card-btn">
-          <!-- <a-button
-            type="primary"
-            shape="circle"
-            icon="arrow-up"
-            :disabled="idx <= 1"
-            @click="riseUp(idx)"
-          ></a-button>
-          <a-button
-            type="primary"
-            shape="circle"
-            icon="arrow-down"
-            :disabled="idx >= cards.length - 1"
-            @click="dropDown(idx)"
-          ></a-button> -->
           <a-button
             type="primary"
             shape="circle"
@@ -202,5 +188,4 @@ export default {
 </style>
 
 <style>
-
 </style>

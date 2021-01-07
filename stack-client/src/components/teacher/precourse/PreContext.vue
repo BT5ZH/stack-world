@@ -7,7 +7,7 @@
       style="padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <span>时长：</span>
+        <span>总时长：</span>
         <a-input placeholder="50" v-model="form.time" style="width: 80%" />
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
@@ -82,7 +82,7 @@
       >
         <a-row type="flex" align="middle">
           <a-col :span="15">
-            修改时间：
+            修改耗时：
             <a-input-number
               id="inputNumber"
               v-model="time"
@@ -137,7 +137,7 @@
       >
         <a-row type="flex" align="middle">
           <a-col :span="15">
-            花费时间：
+            耗时：
             <a-input-number
               id="inputNumber"
               v-model="time"
@@ -313,6 +313,10 @@ export default {
       this.pptvisible = false;
     },
     save() {
+      this.$store.commit("teacher/updateCourseHourInfo", {
+        time: this.form.time,
+        description: this.form.desc1,
+      });
       const h = this.$createElement;
       this.$info({
         title: "请注意先暂存事件",
@@ -349,11 +353,16 @@ export default {
           description: steptime,
         });
         const node = {
-          people_num: 0,
+          people_num: 3,
           tag: this.eventname[this.componentId],
           time: steptime,
           vote: [
-            { options: [], question_type: null, right_answer: "", title: "" },
+            {
+              options: ["", ""],
+              question_type: 2,
+              right_answer: "",
+              title: "",
+            },
           ],
         };
         this.current = this.steps.length - 1;
@@ -393,7 +402,12 @@ export default {
           tag: this.eventname[this.componentId],
           time: steptime,
           vote: [
-            { options: [], question_type: null, right_answer: "", title: "" },
+            {
+              options: ["", ""],
+              question_type: 2,
+              right_answer: "",
+              title: "",
+            },
           ],
         };
         this.$store.commit("teacher/updateNodeIndex", this.current);
@@ -422,7 +436,7 @@ export default {
           that.steps.splice(that.current, 1);
           that.$store.commit("teacher/deleteNode", that.current);
           that.current = that.steps.length - 1;
-          this.addChange(that.current);
+          that.addChange(that.current);
         },
         onCancel() {
           console.log("Cancel");
@@ -446,7 +460,7 @@ export default {
       const { PPT, description, duration, name, nodes } = value;
       this.form.desc1 = description;
       this.form.time = duration;
-      if (this.pptsource.some((item) => item.id === PPT.rsId)) {
+      if (PPT.rsId && this.pptsource.some((item) => item.id === PPT.rsId)) {
         this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
       } else {
         this.ppt = { name: "", id: "", url: "" };
