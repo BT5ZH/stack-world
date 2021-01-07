@@ -51,7 +51,6 @@
         <a-pagination
           class="pagination"
           :total="pptsource.length"
-          :show-size-changer="true"
           :show-quick-jumper="true"
         ></a-pagination>
       </a-row>
@@ -317,6 +316,7 @@ export default {
       const h = this.$createElement;
       this.$info({
         title: "请注意先暂存事件",
+        zIndex: 10001,
       });
       this.$store.dispatch("teacher/updateCourseHour", {
         lesson_id: this.lesson_id,
@@ -442,6 +442,7 @@ export default {
         Dispatch: "文件下发",
         // Homework: "布置作业",
       };
+      this.current = 0;
       const { PPT, description, duration, name, nodes } = value;
       this.form.desc1 = description;
       this.form.time = duration;

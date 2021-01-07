@@ -27,7 +27,7 @@
             <a-button-group>
               <a-tooltip placement="top">
                 <template slot="title">
-                  <span>编辑课时名称</span>
+                  <span>编辑名称</span>
                 </template>
                 <a-button
                   icon="edit"

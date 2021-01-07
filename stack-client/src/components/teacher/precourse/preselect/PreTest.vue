@@ -27,6 +27,9 @@
                 <a-button size="small" type="link" @click="showit(item)"
                   >查看</a-button
                 >
+                <a-button size="small" type="link" @click="deleteit(item)"
+                  >删除</a-button
+                >
               </a-button-group>
             </template>
           </a-list-item>
@@ -40,7 +43,7 @@
       :zIndex="10001"
       width="60%"
     >
-      <a-list :data-source="source">
+      <a-list :data-source="source" :pagination="pagination">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
           <a-list-item-meta>
             <template #title>
@@ -56,14 +59,6 @@
           </a-list-item-meta>
         </a-list-item>
       </a-list>
-      <a-row type="flex" justify="center">
-        <a-pagination
-          class="pagination"
-          :total="source.length"
-          :show-size-changer="true"
-          :show-quick-jumper="true"
-        ></a-pagination>
-      </a-row>
       <template #footer>
         <a-button type="primary" @click="selectsource"> 确定 </a-button>
       </template>
@@ -108,6 +103,10 @@ import classlistVue from "../../coursedetail/class/classlist.vue";
 export default {
   data() {
     return {
+      pagination: {
+        pageSize: 5,
+        showQuickJumper: true,
+      },
       selectvisible: false,
       source: [],
       showvisible: false,
