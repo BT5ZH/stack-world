@@ -51,12 +51,19 @@ const devOptions = {
 const prodOptions = {
   cors: {
     origin:
-      "http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+      "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
 
-const io = require("socket.io")(server, prodOptions);
+const prodOptionsS = {
+  cors: {
+    origin: "https://test.w-click.cn:8080",
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+  },
+};
+
+const io = require("socket.io")(server, prodOptionsS);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
