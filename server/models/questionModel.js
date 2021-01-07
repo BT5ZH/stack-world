@@ -40,7 +40,7 @@ const questionSchema = new mongoose.Schema({
     analysis: {
         type: String,
     },
-    knowlege: {//知识点
+    knowledge: {//知识点
         type: String,
     },
     grade: {//难度
