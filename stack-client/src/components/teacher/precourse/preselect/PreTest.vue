@@ -63,7 +63,13 @@
         <a-button type="primary" @click="selectsource"> 确定 </a-button>
       </template>
     </a-modal>
-    <a-modal title="查看题目" v-model="showvisible" :zIndex="10001" width="40%">
+    <a-modal
+      title="查看题目"
+      v-model="showvisible"
+      :zIndex="10001"
+      width="40%"
+      @ok="showvisible = false"
+    >
       <a-row class="title">
         <h3 v-if="question.type === 'wenzi'">{{ question.stem }}</h3>
         <img v-else :src="question.item" alt="题目" />
@@ -86,7 +92,33 @@
       <br />
       <a-row> 类型：{{ question.multiple | multipleFormatter }} </a-row>
       <br />
-      <a-row> 难度：{{ question.grade }} </a-row>
+      <a-row>
+        难度： <a-tag v-if="question.grade === 1" color="#87d068">简单 </a-tag>
+        <a-tag v-else-if="question.grade === 2" color="#2db7f5">适中 </a-tag>
+        <a-tag v-else color="#f50">困难</a-tag>
+      </a-row>
+      <br />
+      <a-row>
+        关键字：
+        <a-tag
+          color="blue"
+          v-for="(item, index) in question.key_word"
+          :key="index"
+        >
+          {{ item }}
+        </a-tag>
+      </a-row>
+      <br />
+      <a-row>
+        知识点：
+        <a-tag
+          color="blue"
+          v-for="(item, index) in question.knowledge"
+          :key="index"
+        >
+          {{ item }}
+        </a-tag>
+      </a-row>
     </a-modal>
     <br />
     <a-row type="flex" justify="end">
