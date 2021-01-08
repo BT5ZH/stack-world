@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - "3050:80"
+      - "3050:443"
   redis:
     image: "redis:latest"
   api:
