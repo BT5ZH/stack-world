@@ -64,7 +64,6 @@ export default {
         let index = this.checkedList.findIndex((item) => {
           return item === value;
         });
-        //删除元素
         this.checkedList.splice(index, 1);
       }
       console.log(this.checkedList);

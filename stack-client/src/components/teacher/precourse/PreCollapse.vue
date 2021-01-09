@@ -27,7 +27,7 @@
             <a-button-group>
               <a-tooltip placement="top">
                 <template slot="title">
-                  <span>编辑</span>
+                  <span>编辑名称</span>
                 </template>
                 <a-button
                   icon="edit"
@@ -36,18 +36,28 @@
                   @click="editcourse(index)"
                 ></a-button>
               </a-tooltip>
-              <a-button
-                icon="plus"
-                size="small"
-                type="link"
-                @click="addcourse(index)"
-              ></a-button>
-              <a-button
-                icon="minus"
-                size="small"
-                type="link"
-                @click="deletecourse(index)"
-              ></a-button>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>增加课时</span>
+                </template>
+                <a-button
+                  icon="plus"
+                  size="small"
+                  type="link"
+                  @click="addcourse(index)"
+                ></a-button>
+              </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>删除课时</span>
+                </template>
+                <a-button
+                  icon="minus"
+                  size="small"
+                  type="link"
+                  @click="deletecourse(index)"
+                ></a-button>
+              </a-tooltip>
             </a-button-group>
           </template>
         </a-list-item>
@@ -63,15 +73,12 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      courseId: "1",
-      coursename: "软件工程",
       coursehours: [],
     };
   },
-  watch: {},
   methods: {
     courseclick(index) {
-      this.$store.commit("teacher/updateCurCourseHour",index);
+      this.$store.commit("teacher/updateCurCourseHour", index);
     },
     editcourse(index) {
       this.coursehours[index].editable = true;
@@ -99,6 +106,9 @@ export default {
         .then(({ data }) => {
           if (!data.status) throw "delete coursehour fail";
           this.coursehours.splice(index, 1);
+          if (this.$store.state.teacher.courseHours.length) {
+            this.$store.commit("teacher/updateCurCourseHour", index - 1);
+          }
         })
         .catch((err) => {
           console.error(err);
@@ -153,6 +163,9 @@ export default {
     lesson_id() {
       return this.$route.query.lessonId;
     },
+    coursename() {
+      return this.$route.query.lessonName;
+    },
   },
   mounted() {
     this.$store
@@ -167,6 +180,10 @@ export default {
             name: item,
           })
         );
+        if (!this.$store.state.teacher.courseHours.length) {
+          this.addcourse(0);
+          this.$store.commit("teacher/updateCurCourseHour", 0);
+        }
       });
   },
 };

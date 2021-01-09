@@ -1,18 +1,5 @@
 <template>
   <a-row class="container" :style="{ height: containerHeight }">
-    <a-row>
-      <a-col :span="5">
-        <a-input-search
-          placeholder="课程名称"
-          enter-button
-          @search="onSearch"
-        />
-      </a-col>
-      <a-col :span="16"></a-col>
-      <!-- <a-col :span="3">
-        <a-button type="primary" @click="addVisible = true">新建课程</a-button>
-      </a-col> -->
-    </a-row>
     <a-row class="cards-area" :gutter="30">
       <a-col :span="6" v-for="(course, index) in courses" :key="index">
         <a-card style="margin-top: 15px" size="small">
@@ -42,12 +29,11 @@
         </a-card>
       </a-col>
     </a-row>
-    <a-row type="flex" justify="center">
+    <a-row type="flex">
       <a-pagination
         class="pagination"
-        :total="50"
-        :show-size-changer="true"
-        :show-quick-jumper="true"
+        :total="courses.length"
+        :page-size="2"
       ></a-pagination>
     </a-row>
   </a-row>
@@ -72,9 +58,22 @@ export default {
     },
     prepareCourse(courseIndex) {
       const lessonId = this.courses[courseIndex]._id;
+      let recentCourses = localStorage.getItem("recent-courses") || "[]";
+      recentCourses = JSON.parse(recentCourses);
+      let curCourse = recentCourses.findIndex((item) => item._id === lessonId);
+      console.log(curCourse);
+      if (curCourse >= 0) {
+        recentCourses.splice(curCourse, 1);
+      }
+      recentCourses.unshift(this.courses[courseIndex]);
+      localStorage.setItem(
+        "recent-courses",
+        JSON.stringify(Array.from(new Set(recentCourses)).slice(0, 4))
+      );
+      const lessonName = this.courses[courseIndex].lesson_name;
       this.$router.push({
         name: "teacher_precourse",
-        query: { lessonId },
+        query: { lessonId, lessonName },
       });
     },
   },

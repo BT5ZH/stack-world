@@ -3,6 +3,7 @@ const PrepareLesson = require("../models/prepareLessonModel");
 const Class = require("../models/classModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const TimeTable = require("../models/timeTableModel");
 
 //author: Chaos 12-13
 exports.getAllLessons = catchAsync(async (req, res, next) => {
@@ -69,7 +70,21 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
     },
   });
 });
+exports.getCourseInfoByLessonID = catchAsync(async (req, res, next) => {
+  console.log(req.query.lesson_id );
+   const data = await Lesson.findOne({ _id: req.query.lesson_id }).select("_id course_id")
+    .populate("course_id", "name evaluation course_id credit total_study_hours course_type -_id")
 
+  if (!data) {
+    return next(new AppError("该课不存在", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+      data,
+
+  });
+});
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
   const fullInfo = await Lesson.find({ teacher_id: req.body.teacher_id })
   .populate(
@@ -224,15 +239,15 @@ exports.deleteLesson = catchAsync(async (req, res, next) => {
   if(result){
     return next(new AppError("该课已经存在备课内容，不能删除", 500));
   }
-  const data = await Lesson.findByIdAndDelete(req.params.lesson_id);
 
+  const data = await Lesson.findByIdAndDelete(req.params.lesson_id);
+  
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
-
+  await TimeTable.findOneAndDelete({lesson_id:req.params.lesson_id});
   res.status(204).json({
     status: "success",
-    data: null,
   });
 });
 

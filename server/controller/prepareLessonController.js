@@ -1,6 +1,6 @@
 const PrepareLesson = require("../models/prepareLessonModel");
 const catchAsync = require("../utils/catchAsync");
-
+const AppError = require("../utils/appError");
 /**
  * 根据teacher_id获取该教师所有的备课
  */
@@ -11,11 +11,11 @@ exports.getAllPrepareLessonByTeacherId = catchAsync(async (req, res) => {
     res.status(200).json({
       status: true,
       data: {
-        prepareLessons
-      }
+        prepareLessons,
+      },
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
@@ -28,21 +28,21 @@ exports.deleteOnePrepareLesson = catchAsync(async (req, res) => {
   try {
     var delLessonInfo = await PrepareLesson.deleteOne({
       lesson_id: lessonInfo.lesson_id,
-      teacher_id: lessonInfo.teacher_id
+      teacher_id: lessonInfo.teacher_id,
     });
     if (delLessonInfo.deletedCount != 0) {
       res.status(200).json({
         status: true,
-        message: "success delete PrepareLesson"
+        message: "success delete PrepareLesson",
       });
     } else {
       res.status(200).json({
         status: false,
-        message: "fail delete PrepareLesson"
+        message: "fail delete PrepareLesson",
       });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
@@ -55,28 +55,49 @@ exports.getOnePrepareLesson = catchAsync(async (req, res) => {
   var lessonInfo = req.body;
   var teacher_id = lessonInfo.teacher_id;
   var lesson_id = lessonInfo.lesson_id;
- 
-    var lesson = await PrepareLesson.findOne({
-      lesson_id: lesson_id,
-      teacher_id: teacher_id
-    });
-    if(!lesson){
-      return next(new AppError("该备课不存在", 404));
-    }
-    var names=lesson.one_class.map(n=>{
-          return{
-            name:n.name
-          }
-        })
 
-    res.status(200).json({
-      status: true,
-      lesson,
-      names
-    });
- 
+  var lesson = await PrepareLesson.findOne({
+    lesson_id: lesson_id,
+    teacher_id: teacher_id,
+  });
+  if (!lesson) {
+    return next(new AppError("该备课不存在", 404));
+  }
+  var names = lesson.one_class.map((n) => {
+    return {
+      name: n.name,
+    };
+  });
+
+  res.status(200).json({
+    status: true,
+    lesson,
+    names,
+  });
 });
+exports.getOneClassByName = catchAsync(async (req, res) => {
+  // var data = await PrepareLesson.findOne({
+  //   //lesson_id: lesson_id,
+  //   //teacher_id: teacher_id,
+  //   one_class:{$elemMatch:{ name: { $eq: name }}}
 
+  // })
+
+  var data = await PrepareLesson.aggregate([
+    { $unwind: "$one_class" },
+    { $match: { teacher_id: req.body.teacher_id } },
+    { $match: { lesson_id: req.body.lesson_id } },
+    { $match: { "one_class.name": req.body.name } },
+  ]);
+  if (!data || data.length === 0) {
+    return next(new AppError("该数据不存在", 404));
+  }
+  data = data[0];
+  res.status(200).json({
+    status: true,
+    data,
+  });
+});
 /**
  * 为某一门课添加新课时备课
  * req中包括课程信息如lesson_id、备课教师信息teacher_id、课时信息section_index（课时的序号从1开始）section_name
@@ -89,21 +110,21 @@ exports.addNewSection = catchAsync(async (req, res) => {
   var section_name = newLessonInfo.section_name;
   var new_section = {
     name: section_name,
-    PPT: "",
-    duration: 0,
+    PPT: { name: "", rsId: "", url: "" },
+    duration: 50,
     description: "",
-    nodes: []
+    nodes: [],
   };
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
-      teacher_id: teacher_id
+      teacher_id: teacher_id,
     });
     if (lesson == null) {
       var new_lesson = await PrepareLesson.create({
         lesson_id: lesson_id,
         teacher_id: teacher_id,
-        one_class: [new_section]
+        one_class: [new_section],
       });
       res.status(200).json({ status: true, message: new_lesson });
     } else {
@@ -116,7 +137,7 @@ exports.addNewSection = catchAsync(async (req, res) => {
       res.status(200).json({ status: true, message: lesson });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
@@ -134,14 +155,14 @@ exports.deleteSection = catchAsync(async (req, res) => {
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
-      teacher_id: teacher_id
+      teacher_id: teacher_id,
     });
     lesson.one_class.splice(section_index - 1, 1);
     //此处还没考虑是否要删除相应的附件
     lesson.save();
     res.status(200).json({ status: true, message: lesson });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
@@ -158,17 +179,16 @@ exports.updateSectionName = catchAsync(async (req, res) => {
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
-      teacher_id: teacher_id
+      teacher_id: teacher_id,
     });
     lesson.one_class[section_index - 1].name = section_name;
     lesson.save();
     res.status(200).json({ status: true, message: lesson });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
-
 
 exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
   // BUILD QUERY
@@ -208,7 +228,7 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
  * section_index(从1开始),
  * PPT,
  * duration,
- * description: 
+ * description:
  * nodes: [
  *         {
  *           tag: {
@@ -222,7 +242,7 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
  *         }
  *        ],
  * }
- *         
+ *
  */
 exports.updateOnePrepareLesson = catchAsync(async (req, res) => {
   var newLessonInfo = req.body;
@@ -236,7 +256,7 @@ exports.updateOnePrepareLesson = catchAsync(async (req, res) => {
   try {
     var lesson = await PrepareLesson.findOne({
       lesson_id: lesson_id,
-      teacher_id: teacher_id
+      teacher_id: teacher_id,
     });
     lesson.one_class[section_index - 1].PPT = PPT;
     lesson.one_class[section_index - 1].duration = duration;
@@ -246,11 +266,10 @@ exports.updateOnePrepareLesson = catchAsync(async (req, res) => {
 
     res.status(200).json({ status: true, message: lesson });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
-})
-
+});
 
 ///////////////////////////////////////////////////
 //以下代码暂时不用

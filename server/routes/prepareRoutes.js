@@ -24,8 +24,10 @@ router
 router
   .route("/updateSectionName")
   .post(authController.protect, prepareLessonController.updateSectionName);
-
-
+router
+  .route("/getOneClassByName")
+  .post(authController.protect, prepareLessonController.getOneClassByName);
+  
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

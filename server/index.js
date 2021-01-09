@@ -51,17 +51,22 @@ const devOptions = {
 const prodOptions = {
   cors: {
     origin:
-      "http://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+      "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
 
-const io = require("socket.io")(server, prodOptions);
+const prodOptionsS = {
+  cors: {
+    origin: "https://test.w-click.cn:8080",
+    methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
+  },
+};
+
+const io = require("socket.io")(server, prodOptionsS);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
-
-// redisClient.hset("values", index, "Nothing yet");
 
 io.on("connection", (socket) => {
   console.log("server connected,socketId: " + socket.id);
@@ -125,37 +130,6 @@ io.on("connection", (socket) => {
           break;
       }
     }
-
-    //查找房间标志
-    /*
-    let roomFlag = false;
-    redisClient.keys("*", function (err, keys) {
-      if (err) return console.log(err);
-      console.log("有多少老师正在上课: " + keys.length);
-      for (let i = 0, len = keys.length; i < len; i++) {
-        console.log(
-          "keys[i]: " + keys[i] + "; roomChannel:" + roomChannel + ";"
-        );
-        console.log("keys[i] == roomChannel" + (keys[i] == roomChannel));
-        if (keys[i] == roomChannel) {
-          roomFlag = true;
-          break;
-        }
-      }
-      if (roomFlag) {
-        // 找到房间
-        console.log("进来" + roomChannel + "啦");
-        socket.join(roomChannel);
-        return socket.emit(roomChannel, data.activityType);
-      } else {
-        // 没有找到房间
-        return socket.emit(
-          "err",
-          "ERROR, No Room named" + data.roomId + "不存在"
-        );
-      }
-    });
-    */
   });
 });
 server.listen(mgPort, (err) => {

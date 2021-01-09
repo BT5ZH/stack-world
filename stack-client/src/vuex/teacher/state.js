@@ -2,6 +2,7 @@ const state = {
   courseCalendar: [],
   today: { title: "", day: "" },
   weekTable: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  lessonNames: [],
   // interaction data
   signList: [],
   testAnswerList: [],
@@ -15,6 +16,9 @@ const state = {
   nodes: [],
   nodeindex: 0,
   sources: [],
+  questionBank: [],
+  // courseinfo
+  courseInfo: {},
 };
 
 export default state;

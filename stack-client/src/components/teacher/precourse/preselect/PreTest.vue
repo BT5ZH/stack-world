@@ -1,7 +1,7 @@
 <template>
   <a-card title="随堂测试" class="setcard">
     <a-row>
-      <a-button @click="selectvisible = true"
+      <a-button @click="get_source_list"
         ><a-icon type="plus" />从资源库选题</a-button
       >
     </a-row>
@@ -10,14 +10,25 @@
       <a-card style="padding: 10px">
         <a-list :data-source="selectedsource" v-if="selectedsource.length">
           <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
-            <span>
-              {{ index + 1 }}. {{ item.stem }} |
-              {{ item.multiple | multipleFormatter }}
+            <span v-if="item.type === 'wenzi'">
+              {{ index + 1 }}.{{ item.stem }}({{
+                item.multiple | multipleFormatter
+              }})
             </span>
+            <a :href="item.url" target="_blink" v-else>
+              <span>
+                {{ index + 1 }}.题目为图片({{
+                  item.multiple | multipleFormatter
+                }})
+              </span>
+            </a>
             <template #extra>
               <a-button-group>
                 <a-button size="small" type="link" @click="showit(item)"
                   >查看</a-button
+                >
+                <a-button size="small" type="link" @click="deleteit(item)"
+                  >删除</a-button
                 >
               </a-button-group>
             </template>
@@ -30,39 +41,38 @@
       title="选择题目"
       v-model="selectvisible"
       :zIndex="10001"
-      width="40%"
+      width="60%"
     >
-      <a-list :data-source="source">
+      <a-list :data-source="source" :pagination="pagination">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
           <a-list-item-meta>
-            <a slot="title">
+            <template #title>
               <a-checkbox
                 :checked="item.selected"
                 @change="onChange(item)"
               ></a-checkbox>
               <span>
-                {{ index + 1 }}. {{ item.stem }} |
-                {{ item.multiple | multipleFormatter }}
+                ({{ item.multiple | multipleFormatter }}){{ index + 1 }}.
+                {{ item.stem }}
               </span>
-            </a>
+            </template>
           </a-list-item-meta>
         </a-list-item>
       </a-list>
-      <a-row type="flex" justify="center">
-        <a-pagination
-          class="pagination"
-          :total="source.length"
-          :show-size-changer="true"
-          :show-quick-jumper="true"
-        ></a-pagination>
-      </a-row>
       <template #footer>
         <a-button type="primary" @click="selectsource"> 确定 </a-button>
       </template>
     </a-modal>
-    <a-modal title="查看题目" v-model="showvisible" :zIndex="10001" width="40%">
+    <a-modal
+      title="查看题目"
+      v-model="showvisible"
+      :zIndex="10001"
+      width="40%"
+      @ok="showvisible = false"
+    >
       <a-row class="title">
-        <h3>{{ question.stem }}</h3>
+        <h3 v-if="question.type === 'wenzi'">{{ question.stem }}</h3>
+        <img v-else :src="question.item" alt="题目" />
         <br />
       </a-row>
       <a-row>
@@ -79,52 +89,58 @@
         </a-input>
       </a-row>
       <a-row> 正确答案：{{ question.answer }} </a-row>
+      <br />
+      <a-row> 类型：{{ question.multiple | multipleFormatter }} </a-row>
+      <br />
+      <a-row>
+        难度： <a-tag v-if="question.grade === 1" color="#87d068">简单 </a-tag>
+        <a-tag v-else-if="question.grade === 2" color="#2db7f5">适中 </a-tag>
+        <a-tag v-else color="#f50">困难</a-tag>
+      </a-row>
+      <br />
+      <a-row>
+        关键字：
+        <a-tag
+          color="blue"
+          v-for="(item, index) in question.key_word"
+          :key="index"
+        >
+          {{ item }}
+        </a-tag>
+      </a-row>
+      <br />
+      <a-row>
+        知识点：
+        <a-tag
+          color="blue"
+          v-for="(item, index) in question.knowledge"
+          :key="index"
+        >
+          {{ item }}
+        </a-tag>
+      </a-row>
     </a-modal>
     <br />
     <a-row type="flex" justify="end">
       <a-col>
-        <a-button type="primary" @click="node_vote"> 暂存到本地 </a-button>
+        <a-button type="primary" @click="node_vote"> 暂存事件 </a-button>
       </a-col>
     </a-row>
   </a-card>
 </template>
 
 <script>
-const source = [
-  {
-    stem: "下列选项正确的是",
-    option: ["王晓瀑是个二傻子", "王晓瀑同志很Nice"],
-    answer: "AB",
-    multiple: true,
-    selected: false,
-  },
-  {
-    stem: "下列选项错误的是",
-    option: ["", "B"],
-    answer: "A",
-    multiple: false,
-    selected: false,
-  },
-  {
-    stem: "下列选项正确的是",
-    option: ["A", "B"],
-    answer: "A",
-    multiple: false,
-    selected: false,
-  },
-  {
-    stem: "下列选项错误的是",
-    option: ["A", "B"],
-    answer: "A",
-    multiple: false,
-    selected: false,
-  },
-];
+import axios from "@/utils/axios";
+import classlistVue from "../../coursedetail/class/classlist.vue";
 export default {
   data() {
     return {
+      pagination: {
+        pageSize: 5,
+        showQuickJumper: true,
+      },
       selectvisible: false,
-      source,
+      source: [],
       showvisible: false,
       question: {},
     };
@@ -133,18 +149,27 @@ export default {
     selectedsource() {
       return this.source.filter((item) => item.selected);
     },
+    lesson_id() {
+      return this.$route.query.lessonId;
+    },
+    teacher_id() {
+      return this.$store.state.public.uid;
+    },
   },
   methods: {
+    get_source_list() {
+      this.selectvisible = true;
+    },
     node_vote() {
-      // const vote = [
-      //   {
-      //     options: this.cards.options,
-      //     question_type: this.ifshow,
-      //     right_answer: this.rightanswer,
-      //     title: this.cards.title,
-      //   },
-      // ];
-      // this.$store.commit("teacher/updateNodevote", vote);
+      const vote = this.selectedsource.map((item, index) => {
+        return {
+          options: item.option,
+          question_type: item.multiple ? 3 : 2,
+          right_answer: item.answer,
+          title: item.id,
+        };
+      });
+      this.$store.commit("teacher/updateNodevote", vote);
     },
     selectsource() {
       this.selectvisible = false;
@@ -153,7 +178,6 @@ export default {
       course.selected = !course.selected;
     },
     showit(item) {
-      console.log(item);
       this.showvisible = true;
       this.question = item;
     },
@@ -168,6 +192,22 @@ export default {
     multipleFormatter(multiple) {
       return multiple ? "多选题" : "单选题";
     },
+  },
+  mounted() {
+    this.$store
+      .dispatch("teacher/getquestionBank", {
+        lesson_id: this.lesson_id,
+        teacher_id: this.teacher_id,
+      })
+      .then(() => {
+        let selected_IdList = this.$store.getters["teacher/getTest"];
+        this.source = this.$store.getters["teacher/getQuestionList"].map(
+          (item) => ({
+            ...item,
+            selected: selected_IdList.some((id) => id === item.id),
+          })
+        );
+      });
   },
 };
 </script>

@@ -2,7 +2,9 @@ const express = require("express");
 const lessonController = require("../controller/lessonController");
 const router = express.Router({ mergeParams: true });
 const authController = require("../controller/authController");
-
+router
+  .route("/getCourseInfoByLessonID")
+  .get(authController.protect, lessonController.getCourseInfoByLessonID);
 router
   .route("/")
   .get(authController.protect,lessonController.getAllLessons)
@@ -22,6 +24,8 @@ router
 router
   .route("/getLessonsByClassID")
   .post(authController.protect, lessonController.getLessonsByClassID);
+
+  
 router
   .route("/getLessonByCourseIDandTeacherID")
   .post(authController.protect,lessonController.getLessonByCourseIDandTeacherID);

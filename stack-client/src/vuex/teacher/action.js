@@ -10,7 +10,13 @@ const action = {
   async getCourseCalendar({ commit }, teacher_id) {
     try {
       const url = "pc/v1/timetables/getTimeTableFromTeacherID";
-      const { data } = await axios.post(url, { teacher_id });
+      let date = new Date();
+      let month = date.getMonth() + 1;
+      const { data } = await axios.post(url, {
+        teacher_id,
+        year: date.getFullYear().toString(),
+        semester: (month >= 3 && month <= 8 ? 2 : 1).toString(),
+      });
       errorHandler(data);
       const courseCalendar = data.data.map((item) => {
         return {
@@ -36,13 +42,12 @@ const action = {
       console.error(error);
     }
   },
-  async getTeacherPrepare({ commit }, teacher_id) {
+  async getTeacherPrepare({ commit }, params) {
+    // params => teacher_id, lesson_id, name
     try {
-      // TODO 完善教师备课获取函数
-      const url = "/pc/v1/prepares/";
-      const requestData = { teacher_id };
-      const { data } = await axios.post(url, requestData);
-      commit("updateTeacherPrepare", data);
+      const url = "/pc/v1/prepares/getOneClassByName";
+      const { data } = await axios.post(url, params);
+      commit("updateTeacherPrepare", data.data.one_class);
     } catch (error) {
       console.error(error);
     }
@@ -63,7 +68,7 @@ const action = {
       const requestData = { teacher_id, lesson_id };
       const url = "pc/v1/prepares/getOnePrepareLesson";
       const { data } = await axios.post(url, requestData);
-      commit("updateCourseHours", data.message);
+      commit("updateCourseHours", data.lesson);
     } catch (error) {
       console.error(error);
     }
@@ -88,6 +93,36 @@ const action = {
       const url = "pc/v1/resources/getLessonResourceOfTeacher";
       const { data } = await axios.post(url, requestData);
       commit("updateSources", data.resource);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getLessonNames({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/prepares/getOnePrepareLesson";
+      const { data } = await axios.post(url, requestData);
+      commit("updateLessonNames", data.names);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getquestionBank({ commit }, { lesson_id, teacher_id }) {
+    try {
+      const requestData = { teacher_id, lesson_id };
+      const url = "pc/v1/questions";
+      const { data } = await axios.get(url, requestData);
+      commit("updatequestionBank", data.questions);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getCourseInfo({ commit }, lesson_id) {
+    try {
+      const url = "/pc/v1/lessons/getCourseInfoByLessonID";
+      const { data } = await axios.get(url, { params: { lesson_id } });
+      const info = data.data.course_id;
+      commit("updateCourseInfo", info);
     } catch (error) {
       console.error(error);
     }

@@ -7,70 +7,56 @@
       style="padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <span>时长：</span>
+        <span>总时长：</span>
         <a-input placeholder="50" v-model="form.time" style="width: 80%" />
       </a-col>
-      <a-col :span="8" style="display: flex; align-items: center">
+      <a-col :span="14" style="display: flex; align-items: center">
         <span>描述：</span>
         <a-textarea
           placeholder="本节课重难点"
           v-model="form.desc1"
-          allow-clear
-          @change="onChange"
-          :auto-size="{ minRows: 3, maxRows: 3 }"
+          :auto-size="{ minRows: 2, maxRows: 2 }"
           style="width: 80%"
         />
       </a-col>
-      <a-col :span="8">
+      <a-col :span="4">
         <a-row type="flex" justify="end" class="header-btn">
-          <a-button type="primary" @click="save"> 保存 </a-button>
-          &nbsp;&nbsp;
-          <a-button type="primary" @click="pptvisible = true"> 上传 </a-button>
-          &nbsp;&nbsp;
-          <a-button type="primary" :disabled="true" @click="publish">
-            发布
+          <a-button type="primary" @click="pptvisible = true">
+            选择PPT
           </a-button>
+          &nbsp;&nbsp;
+          <a-button type="primary" @click="save"> 保存 </a-button>
         </a-row>
+        <br />
+        <a-row type="flex" justify="end" v-if="!publish"
+          >已选择PPT：{{ ppt.name }}
+        </a-row>
+        <a-row type="flex" justify="end" v-else>请选择PPT </a-row>
       </a-col>
     </a-row>
-    <a-modal
-      @cancel="pptvisible = false"
-      @ok="uploadFile"
-      :maskClosable="false"
-      :confirm-loading="confirmLoading"
-      centered
-      width="40%"
-      :closable="false"
-      :destroyOnClose="true"
-      v-model="pptvisible"
-      :zIndex="10001"
-    >
-      <a-form-model
-        :model="fileForm"
-        ref="fileForm"
-        labelAlign="left"
-        :rules="formRules"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-form-model-item label="ppt名称" prop="name">
-          <a-input
-            placeholder="请输入ppt名称"
-            v-model="fileForm.name"
-          ></a-input>
-        </a-form-model-item>
-      </a-form-model>
-      <a-upload-dragger
-        :multiple="true"
-        :before-upload="fileInput"
-        :file-list="fileList"
-      >
-        <p class="ant-upload-drag-icon">
-          <a-icon type="inbox" />
-        </p>
-        <p class="ant-upload-text">点击或拖拽以上传ppt</p>
-        <p class="ant-upload-hint">请上传ppt</p>
-      </a-upload-dragger>
+    <a-modal title="选择ppt" v-model="pptvisible" :zIndex="10001" width="40%">
+      <a-radio-group name="radioGroup" v-model="ppt">
+        <a-radio
+          :style="radioStyle"
+          v-for="(item, index) in pptsource"
+          :key="item.id"
+          :value="item"
+        >
+          <a :href="item.url" target="_blink">
+            {{ index + 1 }}. {{ item.name }}</a
+          >
+        </a-radio>
+      </a-radio-group>
+      <a-row type="flex" justify="center">
+        <a-pagination
+          class="pagination"
+          :total="pptsource.length"
+          :show-quick-jumper="true"
+        ></a-pagination>
+      </a-row>
+      <template #footer>
+        <a-button type="primary" @click="selectppt"> 确定 </a-button>
+      </template>
     </a-modal>
     <a-row class="box">
       <a-row type="flex" justify="end" style="padding: 20px">
@@ -96,7 +82,7 @@
       >
         <a-row type="flex" align="middle">
           <a-col :span="15">
-            修改时间：
+            修改耗时：
             <a-input-number
               id="inputNumber"
               v-model="time"
@@ -151,7 +137,7 @@
       >
         <a-row type="flex" align="middle">
           <a-col :span="15">
-            花费时间：
+            耗时：
             <a-input-number
               id="inputNumber"
               v-model="time"
@@ -254,14 +240,15 @@ export default {
   },
   data() {
     return {
-      fileList: [],
+      radioStyle: {
+        display: "block",
+        height: "30px",
+        lineHeight: "30px",
+      },
+      pptsource: [],
+      ppt: {},
       labelCol: { span: 3 },
       wrapperCol: { span: 14 },
-      fileForm: { name: "" },
-      confirmLoading: false,
-      formRules: {
-        name: [{ required: true, message: "资源名称不能为空" }],
-      },
       form: {
         desc1: "",
         time: 50,
@@ -299,7 +286,7 @@ export default {
       changevisible: false,
       pptvisible: false,
       selectevent: "",
-      componentId: "PreTeaching",
+      componentId: "",
     };
   },
   computed: {
@@ -315,47 +302,31 @@ export default {
     lesson_id() {
       return this.$route.query.lessonId;
     },
+    publish() {
+      return !this.ppt.id;
+    },
   },
   methods: {
-    onChange() {},
+    selectppt() {
+      const ppt = { name: this.ppt.name, rsId: this.ppt.id, url: this.ppt.url };
+      this.$store.commit("teacher/updatePPT", ppt);
+      this.pptvisible = false;
+    },
     save() {
-      // const { desc1, time } = this.form;
-      // const requestData = {
-      //   year: desc1,
-      //   semester: time,
-      // };
-      // const that = this;
-      // const url = `pc/v1/schoolyear/addSchoolYear`;
-      // axios
-      //   .post(url, requestData)
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     const { status, message } = data;
-      //     console.log(message);
-      //     if (!status) {
-      //       that.$message.error(message);
-      //       return;
-      //     }
-      //     const { schoolYear } = data;
-      //     that.data.push({
-      //       id: schoolYear._id,
-      //       schoolYear: schoolYear.year,
-      //       semester: schoolYear.semester,
-      //       teachingWeek: schoolYear.weeks,
-      //       startDate: schoolYear.start_time,
-      //       endDate: schoolYear.end_time,
-      //       index: that.data.length + 1,
-      //     });
-      //   })
-      //   .catch(() => {
-      //     this.$message.error("添加失败，请重试！");
-      //   });
+      this.$store.commit("teacher/updateCourseHourInfo", {
+        time: this.form.time,
+        description: this.form.desc1,
+      });
+      const h = this.$createElement;
+      this.$info({
+        title: "请注意先暂存事件",
+        zIndex: 10001,
+      });
       this.$store.dispatch("teacher/updateCourseHour", {
         lesson_id: this.lesson_id,
         teacher_id: this.uid,
       });
     },
-    publish() {},
     addChange(current) {
       this.current = current;
       let findsteps = this.steps[current].title;
@@ -382,11 +353,16 @@ export default {
           description: steptime,
         });
         const node = {
-          people_num: 0,
+          people_num: 3,
           tag: this.eventname[this.componentId],
           time: steptime,
           vote: [
-            { options: [], question_type: null, right_answer: "", title: "" },
+            {
+              options: ["", ""],
+              question_type: 2,
+              right_answer: "",
+              title: "",
+            },
           ],
         };
         this.current = this.steps.length - 1;
@@ -426,7 +402,12 @@ export default {
           tag: this.eventname[this.componentId],
           time: steptime,
           vote: [
-            { options: [], question_type: null, right_answer: "", title: "" },
+            {
+              options: ["", ""],
+              question_type: 2,
+              right_answer: "",
+              title: "",
+            },
           ],
         };
         this.$store.commit("teacher/updateNodeIndex", this.current);
@@ -455,41 +436,12 @@ export default {
           that.steps.splice(that.current, 1);
           that.$store.commit("teacher/deleteNode", that.current);
           that.current = that.steps.length - 1;
-          that.onChange(that.current);
+          that.addChange(that.current);
         },
         onCancel() {
           console.log("Cancel");
         },
       });
-    },
-    fileInput(file) {
-      console.log(file);
-      this.fileList = [file];
-      return false;
-    },
-    uploadFile() {
-      this.confirmLoading = true;
-      const that = this;
-      const config = {
-        that,
-        apiUrl: "/pc/v1/resources/upload",
-        filePath: `${this.oid}/teacher/`,
-        body: that.createResource(),
-        successCallback() {
-          that.$message.success("上传成功！");
-          that.confirmLoading = false;
-        },
-        failCallback(err) {
-          console.error(err);
-          that.confirmLoading = false;
-          that.$message.error("上传失败！");
-        },
-        progressCallback(...args) {
-          console.log({ args });
-        },
-      };
-      const params = { Metadata: { star: "10" } };
-      fileUploader(this.fileList, config, params);
     },
   },
   watch: {
@@ -504,16 +456,35 @@ export default {
         Dispatch: "文件下发",
         // Homework: "布置作业",
       };
-      console.log(value);
+      this.current = 0;
       const { PPT, description, duration, name, nodes } = value;
       this.form.desc1 = description;
       this.form.time = duration;
+      if (PPT.rsId && this.pptsource.some((item) => item.id === PPT.rsId)) {
+        this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
+      } else {
+        this.ppt = { name: "", id: "", url: "" };
+      }
+      if (nodes.length) {
+        this.componentId = Object.keys(this.eventname).find((item) => {
+          return this.eventname[item] === nodes[0].tag;
+        });
+      } else {
+        this.componentId = "";
+      }
       this.steps = nodes.map((item, index) => {
         let time = nodes[index].time;
         let titletag = type[item.tag];
         return { title: titletag, description: time };
       });
     },
+  },
+  mounted() {
+    this.$store.dispatch("teacher/getSources", {
+      lesson_id: this.lesson_id,
+      teacher_id: this.uid,
+    });
+    this.pptsource = this.$store.getters["teacher/getPPTSource"];
   },
 };
 </script>

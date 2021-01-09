@@ -1,15 +1,165 @@
 <template>
-  <div>课程试题</div>
+  <a-row>
+    <a-row type="flex" justify="space-between">
+      <a-col :span="5">
+        <a-input-search
+          placeholder="关键字、知识点"
+          enter-button
+          v-model="inputValue"
+        />
+      </a-col>
+      <a-col :span="2">
+        <a-button type="primary" @click="addVisible = true">
+          上传题目
+        </a-button>
+      </a-col>
+    </a-row>
+
+    <a-row class="table-area">
+      <a-table
+        :columns="columns"
+        :data-source="tableData"
+        bordered
+        rowKey="index"
+      >
+        <template #stem="record">
+          <span>
+            {{ record.stem_type === "wenzi" ? record.statement.stem : "图片" }}
+          </span>
+        </template>
+        <template #grade="grade">
+          <a-tag color="#87d068" v-if="grade === 1">简单</a-tag>
+          <a-tag color="#2db7f5" v-else-if="grade === 2">适中</a-tag>
+          <a-tag color="#f50000" v-else>困难</a-tag>
+        </template>
+        <template #question_type="type">
+          <span>
+            {{ type === 1 ? "主观题" : type === 2 ? "单选题" : "多选题" }}
+          </span>
+        </template>
+        <template #key_word="key_word">
+          <a-tag v-for="(item, index) in key_word" :key="index" color="#2db7f5">
+            {{ item }}
+          </a-tag>
+        </template>
+        <template #knowledge="knowledge">
+          <a-tag
+            v-for="(item, index) in knowledge"
+            :key="index"
+            color="#87d068"
+          >
+            {{ item }}
+          </a-tag>
+        </template>
+        <template #operation="record">
+          <a-button type="link" @click="viewQuestion(record)">查看</a-button>
+        </template>
+      </a-table>
+    </a-row>
+
+    <add-question :visible.sync="addVisible"></add-question>
+  </a-row>
 </template>
 
 <script>
+import AddQuestion from "./AddQuestion";
+
 export default {
+  components: { AddQuestion },
   data() {
-    return {};
+    const columns = [
+      {
+        title: "序号",
+        dataIndex: "index",
+        align: "center",
+        width: 80,
+      },
+      {
+        title: "题目",
+        align: "center",
+        scopedSlots: { customRender: "stem" },
+        ellipsis: true,
+        width: "30%",
+      },
+      {
+        title: "难度",
+        dataIndex: "grade",
+        scopedSlots: { customRender: "grade" },
+        align: "center",
+        width: 80,
+      },
+      {
+        title: "题型",
+        dataIndex: "question_type",
+        scopedSlots: { customRender: "question_type" },
+        align: "center",
+        width: 80,
+      },
+      {
+        title: "关键字",
+        dataIndex: "key_word",
+        scopedSlots: { customRender: "key_word" },
+        align: "center",
+      },
+      {
+        title: "知识点",
+        dataIndex: "knowledge",
+        scopedSlots: { customRender: "knowledge" },
+        align: "center",
+      },
+      {
+        title: "分析",
+        dataIndex: "analysis",
+        align: "center",
+      },
+      // {
+      //   title: "操作",
+      //   align: "center",
+      //   scopedSlots: { customRender: "operation" },
+      // },
+    ];
+    return {
+      columns,
+      inputValue: "",
+      addVisible: false,
+    };
+  },
+  computed: {
+    questionBank() {
+      return this.$store.state.teacher.questionBank;
+    },
+    tableData() {
+      if (!this.questionBank) return [];
+      let temp = this.questionBank.map((item, index) => ({
+        index: index + 1,
+        grade: item.grade,
+        question_type: item.question_type,
+        key_word: item.key_word.split(" "),
+        knowledge: item.knowlege.split(" "),
+        // TODO 把 knowlege 改为 knowledge
+        analysis: item.analysis,
+        statement: item.statement,
+        stem_type: item.stem_type,
+      }));
+      if (!this.inputValue) return temp;
+      return temp.filter(
+        (item) =>
+          item.key_word.some((key) => key.includes(this.inputValue)) ||
+          item.knowledge.some((tag) => tag.includes(this.inputValue))
+      );
+    },
   },
   methods: {},
+  mounted() {
+    const lesson_id = this.$route.query.lessonId;
+    const teacher_id = this.$store.state.public.uid;
+    this.$store.dispatch("teacher/getquestionBank", { lesson_id, teacher_id });
+  },
 };
 </script>
 
 <style scoped>
+.table-area {
+  margin-top: 20px;
+}
 </style>
