@@ -40,7 +40,7 @@ export default {
     return {
       roomMap: {
         教室: { name: "教室", color: "#96BFFF", icon: "home" },
-        实验室: { name: "实验室", color: "#FFDB5C", icon: "experiment" },
+        实验室: { name: "教学楼", color: "#FFDB5C", icon: "experiment" },
         办公室: { name: "办公室", color: "#9FE6B8", icon: "bank" },
         其他: { name: "其他", color: "#ff9f7f", icon: "question" },
       },

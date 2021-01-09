@@ -166,7 +166,7 @@ export default {
         major_name: "",
         class_name: "",
       },
-      major_names: [{ major_name: "软件工程" }, { major_name: "人工智能" }],
+      major_names: [],
       // major_names: [{major_name:"软件工程"},{major_name:"人工智能"}],
       colleges: [],
       teacherList: [],
@@ -219,6 +219,7 @@ export default {
   computed: {
     ...mapState({
       orgName: (state) => state.public.org_name,
+      oid: (state) => state.public.oid,
     }),
   },
   created() {
@@ -234,6 +235,7 @@ export default {
   watch: {
     refresh(val) {
       this.getclassdata();
+      this.getTreeData();
     },
     subOrg_name(val) {
       // 根据学院找到专业赋值
@@ -277,8 +279,7 @@ export default {
     },
     async getSubOrgsName() {
       // 获取学院名
-      const orgId = "5facabb2cf3bb2002b4b3f38";
-      const url = "/pc/v1/organizations/" + orgId + "/suborgs";
+      const url = "/pc/v1/organizations/" + this.oid + "/suborgs";
       try {
         const { data } = await axiosInstance.get(url);
         this.colleges = data.subOrgs;
@@ -357,13 +358,12 @@ export default {
     // 删除班级
     async deleteclass(record) {
       await this.showDeleteConfirm(record._id);
-      this.refresh += 1;
       // console.log(record);
       //post record._id
     },
     showDeleteConfirm(deleteList) {
       // console.log(deleteList);
-      var that = this
+      var that = this;
       deleteList.length == 0
         ? this.$message.info("请选中要删除的项")
         : this.$confirm({
@@ -379,6 +379,7 @@ export default {
               try {
                 await axiosInstance.delete(url);
                 that.$message.info("删除成功！");
+                that.refresh += 1;
               } catch (err) {
                 console.log(err);
                 that.$message.error("删除失败，请重试！");
@@ -444,8 +445,8 @@ export default {
       const url = "/pc/v1/classes/search";
       try {
         const { data } = await axiosInstance.post(url, payload);
-        console.log("--classes----");
-        console.log(data.data.classes);
+        // console.log("--classes----");
+        // console.log(data.data.classes);
         this.classList = data.data.classes;
         this.classList.map((item) => {
           item.studentNum = item.students.length;

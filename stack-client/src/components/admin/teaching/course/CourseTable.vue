@@ -9,8 +9,8 @@
           @search="onSearch"
         />
       </a-col>
-      <a-col :span="13"></a-col>
-      <a-col :span="6" class="btn">
+      <a-col :span="10"></a-col>
+      <a-col :span="9" class="btn">
         <a-button type="primary" @click="bulkImport_visible = true"
           >批量添加课程</a-button
         >
@@ -91,7 +91,7 @@ export default {
           align: "center",
         },
         {
-          title: "考试方式",
+          title: "考核方式",
           dataIndex: "evaluation",
           align: "center",
         },

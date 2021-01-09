@@ -10,8 +10,6 @@
           allow-clear
           tree-default-expand-all
           @change="onChange"
-          @search="onSearch"
-          @select="onSelect"
         >
           <a-tree-select-node
             :key="campus.campus_name"
@@ -33,25 +31,26 @@
         <a-col :span="4">
           <a-input></a-input>
         </a-col>
-        <a-col :span="4">
+        <a-col :span="14"></a-col>
+        <a-col :span="2">
           <a-button type="primary">添加校区</a-button>
         </a-col>
-        <a-col :span="4">
+        <!-- <a-col :span="4">
           <a-button type="primary">添加建筑</a-button>
-        </a-col>
+        </a-col> -->
         <a-col :span="4">
           <a-button type="primary" @click="bulkImport_visible = true"
             >批量添加{{ spaceName }}</a-button
           >
           <!-- <a-button type="primary">添加教室</a-button> -->
         </a-col>
-        <a-col :span="4">
+        <!-- <a-col :span="4">
           <a-button type="primary">
             <a-button type="primary" @click="showDeleteConfirm(checkedList)"
               >批量删除</a-button
             >
           </a-button>
-        </a-col>
+        </a-col> -->
       </a-row>
       <a-row :span="20">
         <a-tabs :active-key="activeIndex" @change="callback">
@@ -152,12 +151,6 @@ export default {
         this.getSpaceFromCondition(payload, 2);
       }
       this.value = label;
-    },
-    onSearch() {
-      console.log(...arguments);
-    },
-    onSelect() {
-      console.log(...arguments);
     },
     async spaceList() {
       let queryString = "";

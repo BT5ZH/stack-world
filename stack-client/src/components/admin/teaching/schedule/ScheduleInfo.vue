@@ -287,16 +287,20 @@ export default {
           this.year;
         this.getTimeTableFromRoomID(url, label);
       } else {
+        console.log("---record---");
+        // console.log(queryString);
         let url = "/pc/v1/timetables/getTimeTableFromTeacherID";
         let queryString = {
           teacher_id: record,
           semester: this.semester,
           year: this.year,
         };
+        console.log(queryString);
         this.getTimeTableFromRoomID(url, queryString);
       }
     },
     async getTimeTableFromRoomID(url, label) {
+      // console.log(this.style);
       try {
         let newCourseTabledata;
         if (this.style === "place") {
@@ -324,8 +328,8 @@ export default {
           });
         } else {
           const { data } = await axiosInstance.post(url, label);
-          // console.log("---people data---");
-          // console.log(data.result);
+          console.log("---people data---");
+          console.log(data.result);
           newCourseTabledata = data.result.map((item) => {
             let middle = item.curriculum.map((temp) => {
               let week = "全周";
@@ -372,7 +376,10 @@ export default {
         // console.log(this.cardData);
         // this.roomList = data.data.rooms;
       } catch (err) {
-        this.$message.error("没有课");
+        // console.log("---card-----");
+        // console.log(newCourseTabledata);
+        this.$message.error("没有排课");
+        this.$emit("courseTableData",[])
         console.log(err);
       }
     },

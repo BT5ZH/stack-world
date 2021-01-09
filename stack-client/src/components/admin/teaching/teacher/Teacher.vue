@@ -9,8 +9,6 @@
         allow-clear
         tree-default-expand-all
         @change="onTreeChange"
-        @search="onTreeSearch"
-        @select="onTreeSelect"
       >
         <a-tree-select-node
           :key="item._id"
@@ -29,12 +27,7 @@
       </a-tree-select>
     </a-row>
     <batchAddTeacher :visible.sync="bulkImport_visible"></batchAddTeacher>
-    <a-modal
-      v-model="editModal_visible"
-      title="编辑教师"
-      @ok="handleSubmit"
-      @cancel="handleCancel"
-    >
+    <a-modal v-model="editModal_visible" title="编辑教师" @ok="handleSubmit">
       <a-form
         :model="form"
         :label-col="{ span: 5 }"
@@ -46,8 +39,27 @@
         <a-form-model-item label="姓名">
           <a-input v-model="form.name" />
         </a-form-model-item>
+        <a-form-model-item label="学院">
+          <a-select @change="handleSelectChange" v-model="subOrg_name">
+            <a-select-option
+              v-for="item in colleges"
+              :key="item._id"
+              :value="item.subOrgName"
+            >
+              {{ item.subOrgName }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="专业">
-          <a-input v-model="form.major_name" />
+          <a-select v-model="form.major_name">
+            <a-select-option
+              v-for="item in major_names"
+              :key="item._id"
+              :value="item.majorName"
+            >
+              {{ item.majorName }}
+            </a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="状态">
           <a-switch
@@ -69,23 +81,11 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="学院">
-          <a-select @change="handleSelectChange" v-model="form.subOrg_name">
-            <a-select-option
-              v-for="item in colleges"
-              :key="item._id"
-              :value="item.subOrgName"
-            >
-              {{ item.subOrgName }}
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
       </a-form>
     </a-modal>
 
     <a-row>
-      <a-empty v-if="!teacherList.length"></a-empty>
-      <div v-else>
+      <div>
         <a-row>
           <div class="btn-area">
             <a-col> </a-col>
@@ -161,12 +161,12 @@ export default {
   data() {
     const columns = [
       {
-        title: "账号（工号）",
+        title: "工号（学号）",
         dataIndex: "user_id",
         align: "center",
       },
       {
-        title: "教师姓名",
+        title: "姓名",
         dataIndex: "name",
         align: "center",
       },
@@ -181,7 +181,7 @@ export default {
         align: "center",
       },
       {
-        title: "职称",
+        title: "身份",
         dataIndex: "title",
         align: "center",
       },
@@ -223,7 +223,9 @@ export default {
         { _id: "2", title: "副教授" },
         { _id: "3", title: "讲师" },
       ],
+      subOrg_name: "",
       colleges: [],
+      major_names: [],
       teacherList: [],
       peopleTreeList: [],
     };
@@ -231,10 +233,13 @@ export default {
   computed: {
     ...mapState({
       orgName: (state) => state.public.org_name,
+      oid: (state) => state.public.oid,
       role: (state) => state.public.role,
     }),
   },
   mounted() {
+    // 获取学院名
+    this.getSubOrgsName();
     // this.getTeacherList();
     // this.getSubOrgsName();
     this.getTreeList();
@@ -243,8 +248,41 @@ export default {
     tableIndex() {
       this.getTeacherList();
     },
+    subOrg_name(val) {
+      // 根据学院找到专业赋值
+      this.form.subOrg_name = val;
+      // console.log(val)
+      this.getmajors(val);
+    },
   },
   methods: {
+    async getSubOrgsName() {
+      // 获取学院名
+      const orgId = this.oid;
+      const url = "/pc/v1/organizations/" + orgId + "/suborgs";
+      try {
+        const { data } = await axiosInstance.get(url);
+        this.colleges = data.subOrgs;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async getmajors(queryString) {
+      // 按获取专业
+      // console.log(queryString)
+      // console.log(this.orgName
+      this.form.major_name = "";
+      const url =
+        "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
+      try {
+        const { data } = await axiosInstance.get(url);
+        // console.log(data)
+        this.major_names = data.majors;
+        // console.log(data.data.majors);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     //连接后台获取成功之后记得更改前台数据
     //操作成功或失败弹出提示
     handleUpdateClick() {
@@ -293,13 +331,17 @@ export default {
 
     //row options
     editTeacher(record) {
+      console.log("---record---");
+      // console.log(record);
       this.editModal_visible = true;
       this.form = record;
+      this.subOrg_name = record.subOrg_name;
+      // console.log(this.form);
       this.user_id = record._id;
-      console.log(this.form);
+      // console.log(this.form);
     },
     resetPassword(record) {
-      console.log(record);
+      // console.log(record);
     },
     deleteTeacher(record) {
       this.showDeleteConfirm(record._id);
@@ -307,23 +349,22 @@ export default {
     },
 
     //modal options
-    handleOk(e) {
-      console.log(e);
-      this.editModal_visible = false;
-      this.handleUpdateClick();
-    },
-    handleSubmit(e) {
-      console.log(e);
-      e.preventDefault();
+    // handleOk(e) {
+    //   console.log(e);
+    //   this.editModal_visible = false;
+    //   this.handleUpdateClick();
+    // },
+    handleSubmit() {
+      // console.log(this.user_id);
       let url = `pc/v1/users/${this.user_id}`;
       let that = this;
-      // console.log(url);
+      // console.log(this.form);
       axiosInstance.patch(url, this.form).then(
-        function(res) {
+        function (res) {
           console.log(res);
           that.$message.success("编辑成功");
         },
-        function(err) {
+        function (err) {
           console.log(err);
           that.$message.error("编辑失败");
         }
@@ -470,13 +511,6 @@ export default {
         this.getTeacherList(payload);
       }
       this.value = this.label;
-    },
-    onTreeSearch() {
-      console.log(...arguments);
-    },
-    onTreeSelect() {
-      console.log("selected:   ");
-      console.log(...arguments);
     },
   },
 

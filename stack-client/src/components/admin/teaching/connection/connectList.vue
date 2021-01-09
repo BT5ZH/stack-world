@@ -212,7 +212,7 @@ export default {
   },
   watch: {
     orginfo(value) {
-      this.getOrgInfo();
+      this.getOrgInfo()
     },
   },
 };

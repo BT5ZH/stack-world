@@ -25,7 +25,7 @@
               @change="onChange($event, building.building_name)"
             ></a-checkbox>
             <p>{{ building.building_name }}</p>
-            <a-tag color="#2db7f5">文津楼</a-tag>
+            <!-- <a-tag color="#2db7f5">文津楼</a-tag> -->
             <a-tag color="#ffb900">{{
               buildingMap[building.building_type]["name"]
             }}</a-tag>
@@ -47,9 +47,10 @@ export default {
   data() {
     return {
       buildingMap: {
-        classroom: { name: "教室", color: "#96BFFF", icon: "home" },
-        lab: { name: "实验室", color: "#FFDB5C", icon: "experiment" },
-        office: { name: "办公室", color: "#9FE6B8", icon: "bank" },
+        classroom: { name: "教学楼", color: "#96BFFF", icon: "home" },
+        lab: { name: "实验楼", color: "#FFDB5C", icon: "experiment" },
+        office: { name: "办公楼", color: "#9FE6B8", icon: "bank" },
+        library: { name: "图书馆", color: "#9FE6B8", icon: "bank" },
         others: { name: "其他", color: "#ff9f7f", icon: "question" },
       },
 

@@ -5,10 +5,10 @@
     @click="route_to"
     :default-open-keys="['teaching']"
   >
-    <a-menu-item key="admin_resource">
+    <!-- <a-menu-item key="admin_resource">
       <a-icon type="arrow-up" />
       <span>资源管理</span>
-    </a-menu-item>
+    </a-menu-item> -->
 
     <!-- 教学信息管理 -->
     <a-sub-menu key="teaching">
@@ -27,17 +27,17 @@
         <a-icon type="deployment-unit" />
         <span>教学空间</span>
       </a-menu-item>
-      <a-menu-item key="admin_institution">
-        <a-icon type="deployment-unit" />
-        <span>院系班级</span>
-      </a-menu-item>
       <a-menu-item key="admin_teacher">
         <a-icon type="deployment-unit" />
         <span>人员管理</span>
       </a-menu-item>
+      <a-menu-item key="admin_institution">
+        <a-icon type="deployment-unit" />
+        <span>院系班级</span>
+      </a-menu-item>
       <a-menu-item key="admin_course">
         <a-icon type="deployment-unit" />
-        <span>教学计划</span>
+        <span>教学规划</span>
       </a-menu-item>
       <a-menu-item key="admin_connection">
         <a-icon type="deployment-unit" />
@@ -45,7 +45,7 @@
       </a-menu-item>
       <a-menu-item key="admin_schedule">
         <a-icon type="deployment-unit" />
-        <span>课表设置</span>
+        <span>课表显示</span>
       </a-menu-item>
     </a-sub-menu>
 
