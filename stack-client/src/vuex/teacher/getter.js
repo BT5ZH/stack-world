@@ -117,9 +117,10 @@ const getter = {
           answer: question.statement.right_answer,
           multiple: question.question_type !== 2,
           type: question.stem_type,
-          knowledge: question.knowledge,
+          knowledge: question.knowlege.split(" "),
           grade: question.grade,
-          key_word: question.key_word,
+          key_word: question.key_word.split(" "),
+          analysis: question.analysis,
         };
       });
   },

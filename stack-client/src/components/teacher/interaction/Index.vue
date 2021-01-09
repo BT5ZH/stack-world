@@ -137,7 +137,7 @@ export default {
       );
     },
     navigateToEvent(eventIndex) {
-      const event = this.events[eventIndex];
+      const event = this.steps[eventIndex];
       this[`send${event.type}Event`]();
     },
     sendsignEvent() {

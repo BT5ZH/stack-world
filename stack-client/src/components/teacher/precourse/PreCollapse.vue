@@ -106,6 +106,9 @@ export default {
         .then(({ data }) => {
           if (!data.status) throw "delete coursehour fail";
           this.coursehours.splice(index, 1);
+          if (this.$store.state.teacher.courseHours.length) {
+            this.$store.commit("teacher/updateCurCourseHour", index - 1);
+          }
         })
         .catch((err) => {
           console.error(err);
@@ -177,6 +180,10 @@ export default {
             name: item,
           })
         );
+        if (!this.$store.state.teacher.courseHours.length) {
+          this.addcourse(0);
+          this.$store.commit("teacher/updateCurCourseHour", 0);
+        }
       });
   },
 };

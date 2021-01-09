@@ -50,7 +50,6 @@
             <a-select
               placeholder="请输入正确答案"
               style="width: 200px"
-              @change="handleChange"
               v-if="ifshow === 2"
               v-model="rightanswer"
             >
@@ -62,9 +61,8 @@
               mode="tags"
               placeholder="请输入正确答案"
               style="width: 200px"
-              @change="handleChange"
               v-else
-              v-model="rightanswer"
+              v-model="answer"
             >
               <a-select-option v-for="index in optionlength" :key="index + ''">
                 {{ ENG_CHARS[index - 1] }}
@@ -105,6 +103,7 @@ export default {
     ];
     const MAX_OPTIONS = ENG_CHARS.length;
     return {
+      answer: [],
       ifshow: 1,
       ENG_CHARS,
       MAX_OPTIONS,
@@ -121,18 +120,18 @@ export default {
   },
   methods: {
     node_vote() {
+      if (this.ifshow === 3) {
+        this.rightanswer = this.answer.join("");
+      }
       const vote = [
         {
           options: this.cards.options,
           question_type: this.ifshow,
           right_answer: this.rightanswer,
-          title: this.cards.title,
+          title: this["editor"].txt.text(),
         },
       ];
       this.$store.commit("teacher/updateNodevote", vote);
-    },
-    handleChange(value) {
-      console.log(`Selected: ${value}`);
     },
     closeOption(index) {
       if (this.optionlength <= 2) {
@@ -163,6 +162,7 @@ export default {
         // "code",
       ];
       editor.create();
+      this["editor"] = editor;
       if (content) {
         editor.txt.html("<p>" + content + "</p>");
       }
@@ -173,8 +173,11 @@ export default {
       title: this.getCompete.title,
       options: this.getCompete.options,
     };
-    this.rightanswer = this.getCompete.rightanswer;
     this.ifshow = this.getCompete.ifshow;
+    this.rightanswer = this.getCompete.rightanswer;
+    if (this.ifshow === 3) {
+      this.answer = Array.from(this.rightanswer);
+    }
     this.optionlength = this.getCompete.options.length;
     this.$nextTick(() => {
       this.createEditor("#editor", this.cards.title);
