@@ -1,31 +1,33 @@
 <template>
   <div>
     <a-row class="container">
-      <a-row :span="20" style="margin: 10px 25px 20px 5px;">
-        <a-tree-select
-          style="width: 100%"
-          :value="value"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :placeholder="orgName"
-          allow-clear
-          tree-default-expand-all
-          @change="onChange"
-        >
-          <a-tree-select-node
-            :key="campus.campus_name"
-            :value="`${campus._id}#`"
-            :title="campus.campus_name"
-            v-for="campus in campusList"
+      <a-row :span="20" style="margin: 10px 25px 20px 5px">
+        <a-spin :spinning="Tree_spin_status" tip="Loading...">
+          <a-tree-select
+            style="width: 100%"
+            :value="value"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :placeholder="orgName"
+            allow-clear
+            tree-default-expand-all
+            @change="onChange"
           >
             <a-tree-select-node
-              :key="buildings.building_name"
-              :value="`${campus._id}:${buildings._id}`"
-              :title="buildings.building_name"
-              v-for="buildings in campus.buildings"
+              :key="campus.campus_name"
+              :value="`${campus._id}#`"
+              :title="campus.campus_name"
+              v-for="campus in campusList"
             >
+              <a-tree-select-node
+                :key="buildings.building_name"
+                :value="`${campus._id}:${buildings._id}`"
+                :title="buildings.building_name"
+                v-for="buildings in campus.buildings"
+              >
+              </a-tree-select-node>
             </a-tree-select-node>
-          </a-tree-select-node>
-        </a-tree-select>
+          </a-tree-select>
+        </a-spin>
       </a-row>
       <a-row>
         <a-col :span="4">
@@ -60,11 +62,13 @@
             ></space-tree>
           </a-tab-pane>
           <a-tab-pane key="2" tab="房间列表" force-render>
-            <space-card
-              class="class-card"
-              :roomsProp="roomList"
-              :buildingName="value"
-            ></space-card>
+            <a-spin :spinning="spin_status" tip="Loading...">
+              <space-card
+                class="class-card"
+                :roomsProp="roomList"
+                :buildingName="value"
+              ></space-card>
+            </a-spin>
           </a-tab-pane>
         </a-tabs>
       </a-row>
@@ -125,6 +129,8 @@ export default {
   },
   computed: {
     ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
       orgName: (state) => state.public.org_name,
@@ -155,14 +161,16 @@ export default {
       let queryString = "";
       const url = "/pc/v1/campus" + queryString;
       try {
+        this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
         this.campusList = data.data.campus;
       } catch (err) {
         console.log(err);
       }
     },
     callback(key) {
-      console.log(key);
+      // console.log(key);
     },
     async getSpaceFromCondition(payload, type) {
       let queryString = "";
@@ -173,10 +181,12 @@ export default {
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/rooms/getRoomByCampusOrBuilding" + queryString;
       try {
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_spin_status", false);
         if (type == 1) {
           this.buildingList = data.data.buildings;
-          console.log(this.buildingList);
+          // console.log(this.buildingList);
         } else if (type == 2) {
           console.log(data.data);
           this.roomList = data.data.rooms;

@@ -1,48 +1,52 @@
 <template>
   <a-row class="container">
-    <a-row :span="20" style="margin: 10px 25px 20px 5px;">
-      <a-tree-select
-        style="width: 100%"
-        :value="value"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-        :placeholder="orgName"
-        allow-clear
-        tree-default-expand-all
-        @change="onChange"
-        @search="onSearch"
-        @select="onSelect"
-      >
-        <a-tree-select-node
-          :key="item._id"
-          :value="`${item._id}#`"
-          :title="item._id"
-          v-for="item in treeData"
+    <a-row :span="20" style="margin: 10px 25px 20px 5px">
+      <a-spin :spinning="Tree_spin_status" tip="Loading...">
+        <a-tree-select
+          style="width: 100%"
+          :value="value"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :placeholder="orgName"
+          allow-clear
+          tree-default-expand-all
+          @change="onChange"
         >
           <a-tree-select-node
-            :key="mName"
-            :value="`${mName}:${item._id}`"
-            :title="mName"
-            v-for="mName in item.majors"
+            :key="item._id"
+            :value="`${item._id}#`"
+            :title="item._id"
+            v-for="item in treeData"
           >
+            <a-tree-select-node
+              :key="mName"
+              :value="`${mName}:${item._id}`"
+              :title="mName"
+              v-for="mName in item.majors"
+            >
+            </a-tree-select-node>
           </a-tree-select-node>
-        </a-tree-select-node>
-      </a-tree-select>
+        </a-tree-select>
+      </a-spin>
     </a-row>
     <a-row :span="20">
       <a-tabs :active-key="activeIndex" @change="callback">
         <a-tab-pane key="1" tab="简介" force-render>
-          <course-dashboard
-            class="class-dashboard"
-            :courseProp="courseList"
-            :collegeName="value"
-          ></course-dashboard>
+          <a-spin :spinning="spin_status" tip="Loading...">
+            <course-dashboard
+              class="class-dashboard"
+              :courseProp="courseList"
+              :collegeName="value"
+            ></course-dashboard>
+          </a-spin>
         </a-tab-pane>
 
         <a-tab-pane key="2" tab="课程">
-          <course-table
-            class="class-table"
-            :courses="courseList2"
-          ></course-table>
+          <a-spin :spinning="spin_status" tip="Loading...">
+            <course-table
+              class="class-table"
+              :courses="courseList2"
+            ></course-table>
+          </a-spin>
         </a-tab-pane>
       </a-tabs>
     </a-row>
@@ -76,6 +80,8 @@ export default {
   },
   computed: {
     ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
       orgName: (state) => state.public.org_name,
@@ -88,10 +94,12 @@ export default {
     async getTreeData() {
       let queryString = this.orgName;
       const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
-      console.log(url);
+      // console.log(url);
       try {
+        this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance.get(url);
-        console.log(data);
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
+        // console.log(data);
         this.treeData = data.data;
         this.courseNumber = data.totalCourseNumber;
         this.collegeNumber = this.treeData.length;
@@ -121,24 +129,25 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/courses" + queryString;
-      console.log(url);
+      // console.log(url);
       try {
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_spin_status", false);
         if (type == 1) {
           this.courseList = data.courses;
-          console.log(this.courseList);
+          // console.log(this.courseList);
         } else if (type == 2) {
           this.courseList2 = data.courses;
-          console.log(this.courseList2);
+          // console.log(this.courseList2);
         }
       } catch (err) {
         console.log(err);
       }
     },
-
     async onChange(value, label) {
-      console.log("onchange:  value " + value);
-      console.log("onchange:   label" + label);
+      // console.log("onchange:  value " + value);
+      // console.log("onchange:   label" + label);
       this.flag = value;
       if (this.flag.slice(-1) == "#") {
         let payload = {};
@@ -151,25 +160,16 @@ export default {
         this.activeIndex = "2";
         let dataArray = this.flag.split(":");
         payload = { subOrg_name: dataArray[1], major_name: dataArray[0] };
-        console.log(payload);
+        // console.log(payload);
         this.getCoursesFromCondition(payload, 2);
 
-        console.log("代码出差");
+        // console.log("代码出差");
       }
-      console.log(label);
+      // console.log(label);
       this.value = label;
     },
-
-    onSearch() {
-      console.log(...arguments);
-    },
-    onSelect() {
-      console.log("selected:   ");
-      console.log(...arguments);
-    },
-    callback(key) {
-      console.log(key);
-    },
+    callback() {
+    }
   },
 };
 </script>

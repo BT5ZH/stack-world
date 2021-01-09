@@ -119,7 +119,7 @@ export default {
     courses: {
       immediate: true,
       handler(value) {
-        console.log(value);
+        // console.log(value);
         this.courseList = value;
       },
     },

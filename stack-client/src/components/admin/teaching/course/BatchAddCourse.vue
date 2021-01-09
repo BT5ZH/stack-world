@@ -85,7 +85,7 @@ export default {
   },
   methods: {
     fileInput(file) {
-      console.log(file);
+      // console.log(file);
       this.fileList = [file];
       return false;
     },
@@ -113,7 +113,7 @@ export default {
     parseExcelData() {
       xlsxParser(this.fileList[0], {
         dataCb: (data) => {
-          console.log("extracted data: ", data);
+          // console.log("extracted data: ", data);
           axios.post("/pc/v1/courses/batchOptCourses", data);
         },
       });

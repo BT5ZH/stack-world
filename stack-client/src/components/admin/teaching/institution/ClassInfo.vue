@@ -19,28 +19,30 @@
         <a-button type="primary" disabled>批量删除学生</a-button>
       </a-col>
     </a-row>
-    <a-table
-      rowKey="user_id"
-      :columns="columns"
-      :data-source="data"
-      bordered
-      :row-selection="{
-        selectedRowKeys: selectedClasses,
-        onChange: onSelectChange,
-      }"
-      :pagination="{
-        total: 50,
-        'show-size-changer': true,
-        'show-quick-jumper': true,
-      }"
-      class="table_set"
-    >
-      <template v-for="col in ['name', 'user_id', 'phone']" :slot="col">
-      </template>
-      <template #operation="record">
-        <a-button type="link" @click="deleteStudent(record)">删除</a-button>
-      </template>
-    </a-table>
+    <a-spin :spinning="spin_status" tip="Loading...">
+      <a-table
+        rowKey="user_id"
+        :columns="columns"
+        :data-source="data"
+        bordered
+        :row-selection="{
+          selectedRowKeys: selectedClasses,
+          onChange: onSelectChange,
+        }"
+        :pagination="{
+          total: 50,
+          'show-size-changer': true,
+          'show-quick-jumper': true,
+        }"
+        class="table_set"
+      >
+        <template v-for="col in ['name', 'user_id', 'phone']" :slot="col">
+        </template>
+        <template #operation="record">
+          <a-button type="link" @click="deleteStudent(record)">删除</a-button>
+        </template>
+      </a-table>
+    </a-spin>
     <!-- 添加学生对话框 -->
     <a-modal
       v-model="visible"
@@ -56,6 +58,7 @@
 <script>
 import add_students from "./add_students";
 import axios from "@/utils/axios";
+import { mapState } from "vuex";
 
 const columns = [
   {
@@ -101,6 +104,12 @@ export default {
       selectedClasses: [],
     };
   },
+  computed: {
+    ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
+    }),
+  },
   mounted() {
     // 显示班名
     this.class_name = this.$route.query.class_name;
@@ -120,10 +129,12 @@ export default {
       const class_id = this.$route.query.classId;
       const url = "/pc/v1/classes/" + class_id;
       try {
+        this.$store.dispatch("admin/change_spin_status",true)
         const { data } = await axios.get(url);
+        this.$store.dispatch("admin/change_spin_status",false)
         this.data = data.data.classEntity.studentList;
-        console.log("---data---")
-        console.log(data)
+        console.log("---data---");
+        console.log(data);
         // console.log(data.data.classEntity.studentList);
       } catch (err) {
         console.log(err);

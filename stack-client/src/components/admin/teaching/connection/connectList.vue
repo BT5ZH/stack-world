@@ -39,7 +39,7 @@
             >
           </a-select>
         </a-col>
-        <a-col :span="8" style="marginTop:20px">
+        <a-col :span="8" style="margintop: 20px">
           <p>学年：</p>
           <a-select v-model="year" style="width: 100%">
             <a-select-option
@@ -50,7 +50,7 @@
             >
           </a-select>
         </a-col>
-        <a-col :span="8" style="marginTop:20px">
+        <a-col :span="8" style="margintop: 20px">
           <p>学期：</p>
           <a-select v-model="term" style="width: 100%">
             <a-select-option
@@ -143,6 +143,7 @@ export default {
     },
     getOrgInfo() {
       const [major_name, subOrg_name] = this.orginfo.split(":");
+      this.$store.dispatch("admin/change_spin_status", true);
       axios
         .post("/pc/v1/courses/getCourseTeacherClassByOrg", {
           org_name: this.orgname,
@@ -152,11 +153,12 @@ export default {
         .then(({ data }) => {
           // console.log("-----getOrgInfo------")
           // console.log(data);
+          this.$store.dispatch("admin/change_spin_status", false);
           this.courseList = data.courses;
           this.teacherList = data.teachers;
           this.classList = data.classes;
           this.lessonList = data.lessonlist;
-          console.log( this.lessonList)
+          // console.log( this.lessonList)
         })
         .catch((err) => {
           console.error(err);
@@ -212,7 +214,7 @@ export default {
   },
   watch: {
     orginfo(value) {
-      this.getOrgInfo()
+      this.getOrgInfo();
     },
   },
 };

@@ -1,32 +1,34 @@
 <template>
   <a-row class="container">
     <a-row :span="20" style="margin: 10px 25px 20px 5px">
-      <a-tree-select
-        style="width: 100%"
-        :value="value"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-        :placeholder="orgName"
-        allow-clear
-        tree-default-expand-all
-        @change="onChange"
-        @search="onSearch"
-        @select="onSelect"
-      >
-        <a-tree-select-node
-          :key="item.subOrgName"
-          :value="item.subOrgName"
-          :title="item.subOrgName"
-          v-for="item in treeData"
+      <a-spin :spinning="Tree_spin_status">
+        <a-tree-select
+          style="width: 100%"
+          :value="value"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :placeholder="orgName"
+          allow-clear
+          tree-default-expand-all
+          @change="onChange"
+          @search="onSearch"
+          @select="onSelect"
         >
           <a-tree-select-node
-            :key="mName.majorName"
-            :value="`${mName.majorName}:${item.subOrgName}`"
-            :title="mName.majorName"
-            v-for="mName in item.majors"
+            :key="item.subOrgName"
+            :value="item.subOrgName"
+            :title="item.subOrgName"
+            v-for="item in treeData"
           >
+            <a-tree-select-node
+              :key="mName.majorName"
+              :value="`${mName.majorName}:${item.subOrgName}`"
+              :title="mName.majorName"
+              v-for="mName in item.majors"
+            >
+            </a-tree-select-node>
           </a-tree-select-node>
-        </a-tree-select-node>
-      </a-tree-select>
+        </a-tree-select>
+      </a-spin>
     </a-row>
     <a-col :span="2"></a-col>
     <a-col :span="19">
@@ -54,6 +56,7 @@ export default {
   },
   computed: {
     ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
       orgName: (state) => state.public.org_name,
@@ -69,7 +72,9 @@ export default {
       const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
       try {
+        this.$store.dispatch("admin/change_spin_status",true)
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_spin_status",false)
         // console.log(data.data);
         // console.log("----treedata-----")
         // console.log(data.tree)

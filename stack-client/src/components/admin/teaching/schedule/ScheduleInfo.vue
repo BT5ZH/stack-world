@@ -80,17 +80,19 @@
         </a-tree-select-node>
       </a-tree-select>
     </a-row>
-    <a-card>
-      <a-card-grid
-        style="width: 25%; text-align: center"
-        :key="item.cardData"
-        :value="`${item.cardData}`"
-        v-for="item in cardData"
-        @click="changeCard(item.cardData, item.cardShow)"
-      >
-        {{ item.cardShow }}
-      </a-card-grid>
-    </a-card>
+    <a-spin :spinning="Card_spin_status" tip="Loading...">
+      <a-card>
+        <a-card-grid
+          style="width: 25%; text-align: center"
+          :key="item.cardData"
+          :value="`${item.cardData}`"
+          v-for="item in cardData"
+          @click="changeCard(item.cardData, item.cardShow)"
+        >
+          {{ item.cardShow }}
+        </a-card-grid>
+      </a-card>
+    </a-spin>
   </div>
 </template>
 
@@ -101,8 +103,9 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
+      Card_spin_status:false,
       // 选择
-      year:  moment().year(),
+      year: moment().year(),
       semester: "1",
       style: "place",
       value: "",
@@ -124,6 +127,8 @@ export default {
     },
     ...mapState({
       uid: (state) => state.public.uid,
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
       oid: (state) => state.public.oid,
       orgName: (state) => state.public.org_name,
     }),
@@ -138,7 +143,9 @@ export default {
       let queryString = "";
       const url = "/pc/v1/campus" + queryString;
       try {
+        this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
         this.campusList = data.data.campus;
         // console.log("----cam-----")
         // console.log(this.campusList)
@@ -153,7 +160,9 @@ export default {
         const url =
           "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" +
           this.orgName;
+        this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance(url);
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
         // console.log("---this.peopleTreeList---");
         // console.log(this.peopleTreeList);
         // console.log(data.result);
@@ -214,7 +223,9 @@ export default {
         "&org_name=" +
         this.orgName;
       try {
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_spin_status", false);
         // console.log(data.users);
         this.cardData = [];
         data.users.map((item) => {
@@ -253,7 +264,11 @@ export default {
         "&semester=" +
         this.semester;
       try {
+        // this.$store.dispatch("admin/change_spin_status", true);
+        this.Card_spin_status = true
         const { data } = await axiosInstance.get(url);
+        // this.$store.dispatch("admin/change_spin_status", false);
+        this.Card_spin_status = false
         // console.log("---data---")
         // console.log(data)
         // console.log(data.rooms.rooms);
@@ -287,7 +302,7 @@ export default {
           this.year;
         this.getTimeTableFromRoomID(url, label);
       } else {
-        console.log("---record---");
+        // console.log("---record---");
         // console.log(queryString);
         let url = "/pc/v1/timetables/getTimeTableFromTeacherID";
         let queryString = {
@@ -295,8 +310,10 @@ export default {
           semester: this.semester,
           year: this.year,
         };
-        console.log(queryString);
+        // console.log(queryString);
+        this.$store.dispatch("admin/change_spin_status", true);
         this.getTimeTableFromRoomID(url, queryString);
+        this.$store.dispatch("admin/change_spin_status", false);
       }
     },
     async getTimeTableFromRoomID(url, label) {
@@ -304,7 +321,9 @@ export default {
       try {
         let newCourseTabledata;
         if (this.style === "place") {
+          this.$store.dispatch("admin/change_spin_status", true);
           const { data } = await axiosInstance.get(url);
+          this.$store.dispatch("admin/change_spin_status", false);
           // console.log(data.result);
           newCourseTabledata = data.result.map((item) => {
             let week = "全周";
@@ -327,9 +346,11 @@ export default {
             };
           });
         } else {
+          this.$store.dispatch("admin/change_spin_status", true);
           const { data } = await axiosInstance.post(url, label);
-          console.log("---people data---");
-          console.log(data.result);
+          this.$store.dispatch("admin/change_spin_status", false);
+          // console.log("---people data---");
+          // console.log(data.result);
           newCourseTabledata = data.result.map((item) => {
             let middle = item.curriculum.map((temp) => {
               let week = "全周";
@@ -354,9 +375,8 @@ export default {
             return middle;
           });
           let CourseTabledata = [];
-          for (let i= 0; i < newCourseTabledata.length; i++) {
-          
-            for (let j=0; j < newCourseTabledata[i].length; j++) {
+          for (let i = 0; i < newCourseTabledata.length; i++) {
+            for (let j = 0; j < newCourseTabledata[i].length; j++) {
               CourseTabledata.push(newCourseTabledata[i][j]);
               // console.log(newCourseTabledata[i][j])
             }
@@ -364,22 +384,12 @@ export default {
           // console.log(newCourseTabledata.length);
           // console.log(newCourseTabledata[i].length);
           // console.log(CourseTabledata);
-          newCourseTabledata = CourseTabledata
+          newCourseTabledata = CourseTabledata;
         }
-        // console.log("---data---");
-        // console.log(data.result);
-        // 将单双周写入改变
-        // console.log("---card-----");
-        // console.log(newCourseTabledata);
         this.$emit("courseTableData", newCourseTabledata);
-        // console.log(data.result)
-        // console.log(this.cardData);
-        // this.roomList = data.data.rooms;
       } catch (err) {
-        // console.log("---card-----");
-        // console.log(newCourseTabledata);
         this.$message.error("没有排课");
-        this.$emit("courseTableData",[])
+        this.$emit("courseTableData", []);
         console.log(err);
       }
     },

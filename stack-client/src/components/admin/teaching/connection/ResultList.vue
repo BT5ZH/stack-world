@@ -1,29 +1,33 @@
 <template>
   <a-row class="container">
     <a-row>
-      <a-table
-        rowKey="lesson_id"
-        :columns="columns"
-        :data-source="lessonList"
-        bordered
-        :pagination="{
-          total: 20,
-          'show-size-changer': true,
-          'show-quick-jumper': true,
-        }"
-      >
-        <template #classes="classList">
-          <div v-for="(item, index) in classList" :key="index">
-            <span>{{ item.class_name }}</span>
-            <br />
-          </div>
-        </template>
-        <template #operation="record">
-          <a @click="edit(record)">编辑</a>
-          &nbsp;&nbsp;
-          <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
-        </template>
-      </a-table>
+      <a-spin :spinning="spin_status" tip="Loading...">
+        <a-table
+          rowKey="lesson_id"
+          :columns="columns"
+          :data-source="lessonList"
+          bordered
+          :pagination="{
+            total: 20,
+            'show-size-changer': true,
+            'show-quick-jumper': true,
+          }"
+        >
+          <template #classes="classList">
+            <div v-for="(item, index) in classList" :key="index">
+              <span>{{ item.class_name }}</span>
+              <br />
+            </div>
+          </template>
+          <template #operation="record">
+            <a @click="edit(record)">编辑</a>
+            &nbsp;&nbsp;
+            <a @click="relieve(record)" v-on:click="$emit('refresh')"
+              >解除关联</a
+            >
+          </template>
+        </a-table>
+      </a-spin>
     </a-row>
     <a-modal v-model="editModal_visible" title="课程管理" @ok="edit_submit">
       <!--  -->
@@ -272,6 +276,7 @@ export default {
   computed: {
     ...mapState({
       orgName: (state) => state.public.org_name,
+      spin_status: (state) => state.admin.spin_status,
     }),
   },
   mounted() {
@@ -295,7 +300,9 @@ export default {
       const request = { lesson_id: this.edit_message.lesson_id };
       try {
         // console.log(request);
+        // this.$store.dispatch("admin/change_spin_status",true)
         const { data } = await axiosInstance.post(url, request);
+        // this.$store.dispatch("admin/change_spin_status",false)
         // console.log("---data.data[0].curriculum---");
         // console.log(data.data[0]);
         this.dataSource = data.data[0];
@@ -403,15 +410,6 @@ export default {
       // 拼接校区
       this.edit_message.address_text = label;
       this.flag = value;
-      // if (this.flag.slice(-1) == "#") {
-      //   let payload = {};
-      //   this.activeIndex = "1";
-      //   let temp = this.flag.slice(0, -1);
-      //   payload = { campus_id: temp };
-      //   // this.getSpaceFromCondition(payload, 1);
-      //   // console.log(payload);
-      //   this.getRooms(payload);
-      // } else {
       let payload = {};
       let dataArray = this.flag.split(":");
       this.campusList.map((item) => {
@@ -451,8 +449,8 @@ export default {
       }
     },
     edit(record) {
-      console.log("---record---");
-      console.log(record);
+      // console.log("---record---");
+      // console.log(record);
       this.refresh += 1;
       this.edit_message.lesson_id = record.lesson_id;
       this.classes = record.classes;

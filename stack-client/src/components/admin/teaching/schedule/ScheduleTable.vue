@@ -5,24 +5,34 @@
       <h3 style="text-align: center">{{ tableSemester }}</h3>
     </a-row>
     <a-row>
-      <a-table
-        :columns="columns"
-        :data-source="scheduleData"
-        :pagination="false"
-        bordered
-        rowKey="scheduleTitle"
-      >
-      </a-table>
+      <a-spin :spinning="spin_status" tip="Loading...">
+        <a-table
+          :columns="columns"
+          :data-source="scheduleData"
+          :pagination="false"
+          bordered
+          rowKey="scheduleTitle"
+        >
+        </a-table>
+      </a-spin>
     </a-row>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     courseTableData: {
       type: Array,
     },
+  },
+  computed: {
+    ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
+    }),
   },
   //
   watch: {
@@ -177,8 +187,8 @@ export default {
       } catch (err) {
         // console.log(err);
         this.$message.error("没有排课");
-        this.tableTitle = ''
-        this.tableSemester = ''
+        this.tableTitle = "";
+        this.tableSemester = "";
         this.scheduleData = [
           {
             scheduleTitle: "第1节",

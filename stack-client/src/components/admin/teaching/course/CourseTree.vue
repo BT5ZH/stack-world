@@ -64,7 +64,7 @@ export default {
     courses: {
       immediate: true,
       handler(value) {
-        console.log(value);
+        // console.log(value);
         this.courses = value;
       },
     },
@@ -80,7 +80,7 @@ export default {
         //删除元素
         this.checkedList.splice(index, 1);
       }
-      console.log(this.checkedList);
+      // console.log(this.checkedList);
     },
   },
   mounted() {

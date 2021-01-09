@@ -15,19 +15,22 @@
         </template>
       </span>
     </div>
-    <a-table
-      rowKey="_id"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
-      :columns="columns"
-      :data-source="data"
-    />
+    <a-spin :spinning="spin_status" tip="Loading...">
+      <a-table
+        rowKey="_id"
+        :row-selection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange,
+        }"
+        :columns="columns"
+        :data-source="data"
+      />
+    </a-spin>
   </div>
 </template>
 <script>
 import axiosInstance from "@/utils/axios";
+import { mapState } from "vuex";
 
 const columns = [
   {
@@ -54,6 +57,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      spin_status: (state) => state.admin.spin_status,
+    }),
     hasSelected() {
       return this.selectedRowKeys.length > 0;
     },
@@ -86,7 +92,7 @@ export default {
             // console.log(res);
             this.$message.info("添加成功");
             this.child_refresh += 1;
-            this.$emit('refresh',this.child_refresh)
+            this.$emit("refresh", this.child_refresh);
           })
           .catch((err) => {
             console.log(err);
@@ -111,15 +117,13 @@ export default {
       // console.log(queryString);
       const url = "/pc/v1/classes/getStudentsNotInOneClass/" + queryString;
       try {
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
-        console.log("-----students_data------");
-        console.log(data.result);
+        // console.log(this.spin_status)
+        this.$store.dispatch("admin/change_spin_status", false);
+        // console.log("-----students_data------");
+        // console.log(data.result);
         this.data = data.result;
-        // this.users = this.data.map(item=> {
-        //   return item.user_id
-        // })
-        // console.log("----users----")
-        // console.log(this.users)
       } catch (err) {
         console.log(err);
       }

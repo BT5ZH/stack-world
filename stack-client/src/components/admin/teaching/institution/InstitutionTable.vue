@@ -1,30 +1,32 @@
 <template>
   <div>
     <a-row :span="20" style="margin: 10px 25px 20px 5px">
-      <a-tree-select
-        style="width: 100%"
-        :value="value"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-        :placeholder="orgName"
-        allow-clear
-        tree-default-expand-all
-        @change="onChange"
-      >
-        <a-tree-select-node
-          :key="item._id"
-          :value="`${item._id}#`"
-          :title="item._id"
-          v-for="item in treeData"
+      <a-spin :spinning="Tree_spin_status" tip="Loading...">
+        <a-tree-select
+          style="width: 100%"
+          :value="value"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :placeholder="orgName"
+          allow-clear
+          tree-default-expand-all
+          @change="onChange"
         >
           <a-tree-select-node
-            :key="mName"
-            :value="`${mName}:${item._id}`"
-            :title="mName"
-            v-for="mName in item.majors"
+            :key="item._id"
+            :value="`${item._id}#`"
+            :title="item._id"
+            v-for="item in treeData"
           >
+            <a-tree-select-node
+              :key="mName"
+              :value="`${mName}:${item._id}`"
+              :title="mName"
+              v-for="mName in item.majors"
+            >
+            </a-tree-select-node>
           </a-tree-select-node>
-        </a-tree-select-node>
-      </a-tree-select>
+        </a-tree-select>
+      </a-spin>
     </a-row>
 
     <a-row class="btn-area">
@@ -35,30 +37,32 @@
         <a-button type="primary" disabled>批量删除</a-button>
       </a-col>
     </a-row>
-    <a-table
-      rowKey="_id"
-      :pagination="{
-        total: classList.length,
-        pageSizeOptions: pageSize,
-        'show-less-items': true,
-        'show-size-changer': true,
-        'show-quick-jumper': true,
-        'hide-on-single-page': true,
-      }"
-      :bordered="true"
-      :row-selection="{
-        selectedRowKeys: selectedClasses,
-        onChange: onSelectChange,
-      }"
-      :columns="columns"
-      :data-source="classList"
-    >
-      <template #operation="record">
-        <a-button type="link" @click="viewClassInfo(record)">详情</a-button>
-        <a-button type="link" @click="editclass(record)">编辑</a-button>
-        <a-button type="link" @click="deleteclass(record)">删除</a-button>
-      </template>
-    </a-table>
+    <a-spin :spinning="spin_status" tip="Loading...">
+      <a-table
+        rowKey="_id"
+        :pagination="{
+          total: classList.length,
+          pageSizeOptions: pageSize,
+          'show-less-items': true,
+          'show-size-changer': true,
+          'show-quick-jumper': true,
+          'hide-on-single-page': true,
+        }"
+        :bordered="true"
+        :row-selection="{
+          selectedRowKeys: selectedClasses,
+          onChange: onSelectChange,
+        }"
+        :columns="columns"
+        :data-source="classList"
+      >
+        <template #operation="record">
+          <a-button type="link" @click="viewClassInfo(record)">详情</a-button>
+          <a-button type="link" @click="editclass(record)">编辑</a-button>
+          <a-button type="link" @click="deleteclass(record)">删除</a-button>
+        </template>
+      </a-table>
+    </a-spin>
     <!-- 添加班级对话框 -->
     <a-modal
       v-model="visible"
@@ -152,6 +156,8 @@ import axiosInstance from "@/utils/axios";
 export default {
   data() {
     return {
+      // treeSpin_status: false,
+      // spin_status: false,
       // 刷新
       refresh: 0,
       // 选择树
@@ -218,6 +224,8 @@ export default {
   },
   computed: {
     ...mapState({
+      Tree_spin_status: (state) => state.admin.Tree_spin_status,
+      spin_status: (state) => state.admin.spin_status,
       orgName: (state) => state.public.org_name,
       oid: (state) => state.public.oid,
     }),
@@ -255,7 +263,14 @@ export default {
       const url = "/pc/v1/classes/classTree?org_name=" + queryString;
       // console.log(url);
       try {
+        // this.treeSpin_status = true;
+        this.$store.dispatch("admin/change_Tree_spin_status",true)
         const { data } = await axiosInstance.get(url);
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
+        // console.log("---spin---");
+        // console.log(this.Tree_spin_status);
+        // console.log(this.orgName)
+        // this.treeSpin_status = false;
         // console.log(data.data);
         this.treeData = data.data;
       } catch (err) {
@@ -291,8 +306,11 @@ export default {
       // 获取全部班级信息
       const url = "/pc/v1/classes";
       try {
+        // this.spin_status = true;
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
-
+        // this.spin_status = false;
+        this.$store.dispatch("admin/change_spin_status", false);
         // console.log(...data.data.classes[0].students);
         this.classList = data.data.classes;
         this.classList.map((item) => {
