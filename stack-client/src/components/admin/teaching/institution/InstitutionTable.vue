@@ -5,8 +5,8 @@
         <a-tree-select
           style="width: 100%"
           :value="value"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           :placeholder="orgName"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           allow-clear
           tree-default-expand-all
           @change="onChange"
@@ -442,7 +442,7 @@ export default {
         });
       this.editModal_visible = false;
     },
-    onChange(data) {
+    onChange(data,label) {
       // console.log(data)
       let payload = {};
       if (data.slice(-1) == "#") {
@@ -458,6 +458,7 @@ export default {
         this.getClassesFromCondition(payload);
         // console.log(payload);
       }
+      this.value = label
     },
     async getClassesFromCondition(payload) {
       // 按条件检索班级

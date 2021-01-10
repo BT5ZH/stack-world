@@ -4,8 +4,8 @@
       <a-tree-select
         style="width: 100%"
         :value="value"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
         :placeholder="orgName"
+        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
         allow-clear
         tree-default-expand-all
         @change="onTreeChange"
@@ -198,7 +198,7 @@ export default {
       },
     ];
     return {
-      value: "",
+      value: undefined,
       editModal_visible: false,
       bulkImport_visible: false,
       searchContent: null,
@@ -313,7 +313,7 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/users/multipleUsers" + queryString;
-      console.log(url);
+      // console.log(url);
       try {
         const { data } = await axiosInstance.get(url);
         this.teacherList = data.teachers;
@@ -474,13 +474,13 @@ export default {
     //点击上传文件
     bulkimportSubmit() {},
     async onTreeChange(value, label) {
-      console.log("onchange:  value " + value);
-      console.log("onchange:   label" + label);
+      // console.log("onchange:  value " + value);
+      // console.log("onchange:   label" + label);
       this.flag = value;
       if (this.flag.slice(-1) == "#") {
         let payload = {};
         let temp = this.flag.slice(0, -1);
-        payload = { subOrg_name: temp };
+        payload = { subOrg_name: temp, org_name: this.orgName };
         this.getTeacherList(payload);
       } else {
         let payload = {};
@@ -504,13 +504,14 @@ export default {
             break;
         }
         payload = {
+          org_name: this.orgName,
           subOrg_name: dataArray[0],
           title: secString,
         };
-        console.log(payload);
+        // console.log(payload);
         this.getTeacherList(payload);
       }
-      this.value = this.label;
+      this.value = label;
     },
   },
 
