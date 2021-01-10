@@ -1,4 +1,6 @@
 const state = {
+    spin_status:false,
+    Tree_spin_status:false,
     role: "",
     sid: "",
     uid: "",

@@ -1,4 +1,11 @@
 const mutation = {
+  change_Tree_spin_status(state,status){
+    // console.log(state.Tree_spin_status)
+    state.Tree_spin_status = status;
+  },
+  change_spin_status(state,status){
+    state.spin_status = status;
+  },
   updateSessionStorage(key, value) {
     if (typeof key === "object") {
       let obj = key;
