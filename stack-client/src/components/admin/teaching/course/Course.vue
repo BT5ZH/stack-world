@@ -28,6 +28,26 @@
         </a-tree-select>
       </a-spin>
     </a-row>
+    <batchAddCourse :visible.sync="bulkImport_visible"></batchAddCourse>
+    <a-row class="btn-area">
+      <a-col :span="5">
+        <a-input-search
+          placeholder="课程编号/名称"
+          enter-button
+          @search="onSearch"
+        />
+      </a-col>
+      <a-col :span="10"></a-col>
+      <a-col :span="9" class="btn">
+        <a-space :size="smaall">
+          <a-button type="primary" @click="bulkImport_visible = true"
+            >批量添加课程</a-button
+          >
+          <a-button type="primary" disabled>添加课程</a-button>
+          <a-button type="primary" disabled>批量删除</a-button>
+        </a-space>
+      </a-col>
+    </a-row>
     <a-row :span="20">
       <a-tabs :active-key="activeIndex" @change="callback">
         <a-tab-pane key="1" tab="简介" force-render>
@@ -54,15 +74,17 @@
 </template>
 
 <script>
+import batchAddCourse from "./BatchAddCourse.vue";
 import courseTable from "./CourseTable";
 import courseDashboard from "./CourseTree";
 import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 export default {
-  components: { courseTable, courseDashboard },
+  components: { courseTable, courseDashboard,batchAddCourse },
   data() {
     return {
+      bulkImport_visible: false,
       value: undefined,
       courseList: [],
       courseList2: [],
@@ -168,8 +190,7 @@ export default {
       // console.log(label);
       this.value = label;
     },
-    callback() {
-    }
+    callback() {},
   },
 };
 </script>

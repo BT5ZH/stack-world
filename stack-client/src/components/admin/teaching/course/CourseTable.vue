@@ -1,29 +1,14 @@
 <template>
   <div>
-    <batchAddCourse :visible.sync="bulkImport_visible"></batchAddCourse>
-    <a-row class="btn-area">
-      <a-col :span="5">
-        <a-input-search
-          placeholder="课程编号/名称"
-          enter-button
-          @search="onSearch"
-        />
-      </a-col>
-      <a-col :span="10"></a-col>
-      <a-col :span="9" class="btn">
-        <a-button type="primary" @click="bulkImport_visible = true"
-          >批量添加课程</a-button
-        >
-        <a-button type="primary">添加课程</a-button>
-        <a-button type="primary">批量删除</a-button>
-      </a-col>
-    </a-row>
     <a-table
       rowKey="_id"
       :pagination="{
-        total: 50,
+        total: courseList.length,
+        pageSizeOptions: pageSize,
+        'show-less-items': true,
         'show-size-changer': true,
         'show-quick-jumper': true,
+        'hide-on-single-page': true,
       }"
       :bordered="true"
       :row-selection="{
@@ -42,9 +27,8 @@
 </template>
 
 <script>
-import batchAddCourse from "./BatchAddCourse.vue";
 export default {
-  components: { batchAddCourse },
+  components: {  },
   props: { courses: { type: Array } },
   data() {
     return {
@@ -112,7 +96,6 @@ export default {
         },
       ],
       selectedCourses: [],
-      bulkImport_visible: false,
     };
   },
   watch: {

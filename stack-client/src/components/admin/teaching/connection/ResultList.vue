@@ -8,9 +8,11 @@
           :data-source="lessonList"
           bordered
           :pagination="{
-            total: 20,
+            pageSizeOptions: pageSize,
+            'show-less-items': true,
             'show-size-changer': true,
             'show-quick-jumper': true,
+            'hide-on-single-page': true,
           }"
         >
           <template #classes="classList">
