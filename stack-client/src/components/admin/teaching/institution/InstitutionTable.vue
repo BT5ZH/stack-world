@@ -311,7 +311,8 @@ export default {
         const { data } = await axiosInstance.get(url);
         // this.spin_status = false;
         this.$store.dispatch("admin/change_spin_status", false);
-        // console.log(...data.data.classes[0].students);
+        // console.log("---data---");
+        // console.log(data.data.classes);
         this.classList = data.data.classes;
         this.classList.map((item) => {
           item.studentNum = item.students.length;
@@ -375,9 +376,9 @@ export default {
     },
     // 删除班级
     async deleteclass(record) {
-      await this.showDeleteConfirm(record._id);
+      // console.log("---record---");
       // console.log(record);
-      //post record._id
+      await this.showDeleteConfirm(record._id);
     },
     showDeleteConfirm(deleteList) {
       // console.log(deleteList);

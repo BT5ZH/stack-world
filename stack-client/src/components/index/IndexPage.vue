@@ -1,54 +1,56 @@
 <template>
   <div class="login">
-    <div class="container-login100">
-      <div class="wrap-login100">
-        <div class="title">教学小栈</div>
-        <div class="login100-pic js-tilt" data-tilt>
-          <img src="../../../static/images/img-01.png" alt="IMG" />
+    <a-spin :spinning="spin_status" tip="Loading...">
+      <div class="container-login100">
+        <div class="wrap-login100">
+          <div class="title">教学小栈</div>
+          <div class="login100-pic js-tilt" data-tilt>
+            <img src="../../../static/images/img-01.png" alt="IMG" />
+          </div>
+          <form class="login100-form validate-form">
+            <span class="login100-form-title">用户登录</span>
+
+            <div class="wrap-input100" v-show="errorTipShow">
+              <a-alert type="error" message="账号或密码错误" show-icon />
+            </div>
+
+            <div class="wrap-input100 validate-input">
+              <input
+                class="input100"
+                autocomplete="username"
+                type="text"
+                name="email"
+                v-model="account"
+                placeholder="手机号/邮箱"
+              />
+              <span class="input-icon">
+                <a-icon type="user" />
+              </span>
+            </div>
+            <div class="wrap-input100 validate-input">
+              <input
+                class="input100"
+                autocomplete="current-password"
+                type="password"
+                name="pass"
+                v-model="password"
+                placeholder="密码"
+              />
+              <span class="input-icon">
+                <a-icon type="lock" />
+              </span>
+            </div>
+            <div class="container-login100-form-btn">
+              <button class="login100-form-btn" @click.prevent="login">
+                登&nbsp;&nbsp;录
+              </button>
+            </div>
+            <div class="text-center p-t-12"></div>
+            <div class="text-center p-t-80"></div>
+          </form>
         </div>
-        <form class="login100-form validate-form">
-          <span class="login100-form-title">用户登录</span>
-
-          <div class="wrap-input100" v-show="errorTipShow">
-            <a-alert type="error" message="账号或密码错误" show-icon />
-          </div>
-
-          <div class="wrap-input100 validate-input">
-            <input
-              class="input100"
-              autocomplete="username"
-              type="text"
-              name="email"
-              v-model="account"
-              placeholder="手机号/邮箱"
-            />
-            <span class="input-icon">
-              <a-icon type="user" />
-            </span>
-          </div>
-          <div class="wrap-input100 validate-input">
-            <input
-              class="input100"
-              autocomplete="current-password"
-              type="password"
-              name="pass"
-              v-model="password"
-              placeholder="密码"
-            />
-            <span class="input-icon">
-              <a-icon type="lock" />
-            </span>
-          </div>
-          <div class="container-login100-form-btn">
-            <button class="login100-form-btn" @click.prevent="login">
-              登&nbsp;&nbsp;录
-            </button>
-          </div>
-          <div class="text-center p-t-12"></div>
-          <div class="text-center p-t-80"></div>
-        </form>
       </div>
-    </div>
+    </a-spin>
   </div>
 </template>
 
@@ -59,6 +61,7 @@ export default {
   name: "IndexLogin",
   data() {
     return {
+      spin_status: false,
       account: "",
       password: "",
       errorTipShow: false,
@@ -77,27 +80,29 @@ export default {
         email: this.account,
         password: this.password,
       };
+      this.spin_status = true;
       axios
         .post("pc/v1/users/login", requestData)
         .then(({ data }) => {
           const { status, token } = data;
           // TODO replce the word 'success' with 'success' whenever backend fixs the bug
-          console.log("333333");
+          // console.log("333333");
           if (status !== "success") {
             this.errorTipShow = true;
             return;
           }
           localStorage.setItem("tk", token);
           axios.defaults.headers["Authorization"] = "Bearer " + token;
-          console.log(axios.defaults);
-          console.log("55555");
+          // console.log(axios.defaults);
+          // console.log("55555");
           const navigateUrl = this.updatePublicVuexData(data.data);
-          console.log("77777");
-          setTimeout(() => {
+          // console.log("77777");
+            this.spin_status = false;
             this.$router.push(navigateUrl);
-          }, 1000);
         })
         .catch((err) => {
+          this.spin_status = false;
+          this.errorTipShow = true;
           console.error(err);
         });
     },

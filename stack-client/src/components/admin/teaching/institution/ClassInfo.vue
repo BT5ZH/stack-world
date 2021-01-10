@@ -22,9 +22,7 @@
     <a-spin :spinning="spin_status" tip="Loading...">
       <a-table
         rowKey="user_id"
-        :columns="columns"
-        :data-source="data"
-        bordered
+        :bordered="true"
         :row-selection="{
           selectedRowKeys: selectedClasses,
           onChange: onSelectChange,
@@ -34,10 +32,11 @@
           'show-size-changer': true,
           'show-quick-jumper': true,
         }"
-        class="table_set"
+        :columns="columns"
+        :data-source="data"
       >
-        <template v-for="col in ['name', 'user_id', 'phone']" :slot="col">
-        </template>
+        <!-- <template v-for="col in ['name', 'user_id', 'phone']" :slot="col">
+        </template> -->
         <template #operation="record">
           <a-button type="link" @click="deleteStudent(record)">删除</a-button>
         </template>
@@ -81,7 +80,6 @@ const columns = [
   },
   {
     title: "操作",
-    dataIndex: "operation",
     align: "center",
     scopedSlots: { customRender: "operation" },
   },
@@ -129,9 +127,9 @@ export default {
       const class_id = this.$route.query.classId;
       const url = "/pc/v1/classes/" + class_id;
       try {
-        this.$store.dispatch("admin/change_spin_status",true)
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axios.get(url);
-        this.$store.dispatch("admin/change_spin_status",false)
+        this.$store.dispatch("admin/change_spin_status", false);
         this.data = data.data.classEntity.studentList;
         console.log("---data---");
         console.log(data);
@@ -173,7 +171,8 @@ export default {
       this.visible = false;
     },
     // 删除学生
-    deleteStudent(record) {
+    async deleteStudent(record) {
+      console.log("---record---");
       console.log(record);
     },
   },
