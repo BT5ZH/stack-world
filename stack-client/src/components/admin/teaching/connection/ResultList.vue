@@ -8,7 +8,6 @@
           :data-source="lessonList"
           bordered
           :pagination="{
-            pageSizeOptions: pageSize,
             'show-less-items': true,
             'show-size-changer': true,
             'show-quick-jumper': true,

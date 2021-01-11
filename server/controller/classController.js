@@ -46,7 +46,7 @@ exports.createClass = catchAsync(async (req, res, next) => {
 exports.getClass = catchAsync(async (req, res, next) => {
   const classEntity = await Class.findOne({ _id: req.params.id }).populate({
     path: "studentList",
-    select: "user_id name phone -_id",
+    select: "user_id name phone _id",
   });
   //.populate('students','user_id name -_id');
 
@@ -222,17 +222,13 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
+  console.log("---req---");
+  console.log(req.body)
   const multiStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(
     {
       _id: req.params.id,
     },
-    // {
-    //   $pull: {
-    //     students: { _id: { $in: multiStudents } },
-
-    //   },
-    // },
     {
       $pull: {
         students: { $in: multiStudents },
@@ -261,7 +257,7 @@ exports.getStudents = catchAsync(async (req, res, next) => {
   }
   // validate students list null or length==0 TODO:
 
-  console.log(classEntity);
+  // console.log(classEntity);
   res.status(200).json({
     status: "success",
     data: {

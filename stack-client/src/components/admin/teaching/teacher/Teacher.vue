@@ -317,7 +317,7 @@ export default {
       try {
         const { data } = await axiosInstance.get(url);
         this.teacherList = data.teachers;
-        console.log(data);
+        // console.log(data);
       } catch (err) {
         console.log(err);
       }
@@ -485,8 +485,9 @@ export default {
       } else {
         let payload = {};
         let dataArray = this.flag.split(":");
-        console.log(dataArray);
+        // console.log(dataArray);
         let secString = "";
+        let role = "teacher";
         switch (dataArray[1]) {
           case "教授":
             secString = "professor";
@@ -498,6 +499,7 @@ export default {
             secString = "lecturer";
             break;
           case "学生":
+            role = "student";
             secString = "student";
             break;
           default:
@@ -507,6 +509,7 @@ export default {
           org_name: this.orgName,
           subOrg_name: dataArray[0],
           title: secString,
+          role:role,
         };
         // console.log(payload);
         this.getTeacherList(payload);
