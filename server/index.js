@@ -89,10 +89,10 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "ques":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "test":
           socket.to(roomChannel).emit(roomChannel, data);
@@ -104,10 +104,10 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "file":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         default:
           break;
@@ -124,6 +124,9 @@ io.on("connection", (socket) => {
           io.to(roomChannel).emit(roomChannel, data);
           break;
         case "test":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "vote":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "race":

@@ -41,9 +41,10 @@
           <sign v-if="flag == 1" :socket="socket"></sign>
           <quiz v-if="flag == 2" :socket="socket"></quiz>
           <random v-if="flag == 3" :socket="socket"></random>
-          <ques v-if="flag == 4" :socket="socket"></ques>
+          <file v-if="flag == 4" :socket="socket"></file>
           <vote v-if="flag == 5" :socket="socket"></vote>
           <test v-if="flag == 6" :socket="socket"></test>
+          <race v-if="flag == 7" :socket="socket"></race>
         </div>
       </div>
       <!-- <div
@@ -89,7 +90,8 @@ import random from "./class/Random.vue";
 import vote from "./class/Vote.vue";
 import test from "./class/Test.vue";
 import quiz from "./class/Quiz.vue";
-import ques from "./class/Questionnaire.vue";
+import race from "./class/Race";
+import file from "./class/File";
 
 import { mapState } from "vuex";
 import * as socket from "@/utils/socket";
@@ -107,7 +109,8 @@ export default {
     vote,
     test,
     quiz,
-    ques,
+    file,
+    race,
   },
   data() {
     return {

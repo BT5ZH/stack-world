@@ -197,15 +197,51 @@ export default {
               "和龙舟节是一天",
             ],
           },
+          limit: 3,
         },
       });
     },
-    sendraceOverEvent() {
+    senddispatchEvent() {
       socket.sendEvent("joinRoom", {
-        actionType: "race",
+        actionType: "file",
         role: "teacher",
         roomId: this.lessonId,
-        data: { start: false },
+        data: {
+          fileList: [
+            {
+              title: "一个小视频",
+              url: "https://www.runoob.com/try/demo_source/mov_bbb.mp4",
+            },
+          ],
+        },
+      });
+    },
+    sendvoteEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "vote",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: [
+          {
+            id: "YH83CP",
+            stem: "中国传统佳节“中秋节”是那一天？",
+            type: "subject",
+            multiple: false,
+            options: [
+              "农历八月十五",
+              "一月一日",
+              "农历三月初七",
+              "和龙舟节是一天",
+            ],
+          },
+          {
+            id: "1U7GVC0",
+            stem: "操作系统的目标有哪些？",
+            type: "subject",
+            multiple: true,
+            options: ["有效性", "开放性", "可扩充性", "方便性"],
+          },
+        ],
       });
     },
   },

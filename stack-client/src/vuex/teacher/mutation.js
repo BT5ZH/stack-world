@@ -38,6 +38,22 @@ const mutation = {
       [answer]: ques[answer] ? ques[answer] + 1 : 1,
     });
   },
+  updateVoteResult(state, params) {
+    const { id, answer } = params;
+    let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
+    if (quesIndex < 0) {
+      state.voteAnswerList.push({ id: id, [answer]: 1 });
+      return null;
+    }
+    let ques = state.voteAnswerList[quesIndex];
+    state.voteAnswerList.splice(quesIndex, 1, {
+      ...ques,
+      [answer]: ques[answer] ? ques[answer] + 1 : 1,
+    });
+  },
+  updateRaceResult(state, params) {
+    state.raceList.push(params);
+  },
   updateTeacherCourses(state, params) {
     state.courses = params;
   },

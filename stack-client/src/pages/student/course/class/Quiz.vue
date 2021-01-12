@@ -1,11 +1,11 @@
 <template>
   <div style="padding: 2rem">
-    <a-empty v-if="testData.start" />
+    <a-empty v-if="testData.length" />
     <a-list v-else item-layout="vertical" size="large">
-      <a-list-item>
+      <a-list-item v-for="(item, index) in testData.questions" :key="index">
         <single-ques
           @submit="submitAnswer"
-          v-if="raceData.multiple"
+          v-if="item.multiple"
           :item="item"
         ></single-ques>
         <multi-ques @submit="submitAnswer" v-else :item="item"></multi-ques>
@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     ...mapState({
-      raceData: (state) => state.student.interaction.race,
+      testData: (state) => state.student.interaction.test,
     }),
     lessonId() {
       return this.$route.query.lessonId;
@@ -47,5 +47,6 @@ export default {
       });
     },
   },
+  mounted() {},
 };
 </script>
