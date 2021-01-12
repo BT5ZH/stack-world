@@ -54,7 +54,7 @@ export default {
     }),
   },
   mounted() {
-    socket.createInstance("student", this);
+    // socket.createInstance("student", this);
   },
 };
 </script>

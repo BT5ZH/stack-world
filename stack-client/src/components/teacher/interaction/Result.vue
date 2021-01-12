@@ -6,13 +6,15 @@
 <script>
 import sign from "./activities/Sign";
 import test from "./activities/Test";
+import race from "./activities/Race";
+
 import { mapState } from "vuex";
 
 export default {
-  components: { sign, test },
+  components: { sign, test, race },
   data() {
     return {
-      activityList: ["sign", "test"],
+      activityList: ["sign", "test", "race"],
     };
   },
   computed: {
