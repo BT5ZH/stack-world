@@ -25,6 +25,11 @@ const mutation = {
       state.signList.push(params);
     }
   },
+  updatePickResult(state, params) {
+    if (params) {
+      state.pick_answer = params;
+    }
+  },
   updateTestResult(state, params) {
     const { id, answer } = params;
     let quesIndex = state.testAnswerList.findIndex((item) => item.id === id);

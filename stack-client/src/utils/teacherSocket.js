@@ -43,6 +43,9 @@ let lesson_listeners = {
   test(data, that) {
     that.$store.commit("teacher/updateTestResult", data);
   },
+  pick(data,that) {
+    that.$store.commit("teacher/updatePickResult", data);
+  }
 };
 
 export default function teacherListeners(lessonId) {

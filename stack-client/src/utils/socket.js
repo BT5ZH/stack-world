@@ -3,11 +3,11 @@ import { io } from "socket.io-client";
 import studentListeners from "./studentSocket";
 import teacherListeners from "./teacherSocket";
 
-const SOCKET_DEV_URL = "http://localhost:3050";
+const SOCKET_DEV_URL = "http://localhost:5000";
 const SOCKET_PROD_URL =
   "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn";
 const SOCKET_PROD_URL_S = "https://test.w-click.cn";
-const client = io(SOCKET_PROD_URL_S, {});
+const client = io(SOCKET_DEV_URL, {});
 
 let listeners = {};
 
@@ -60,7 +60,7 @@ function loadListeners(role, that, lessonId) {
     listeners = studentListeners(lessonId);
   } else if (role === "teacher") {
     listeners = teacherListeners(lessonId);
-    console.log(listeners);
+    // console.log(listeners);
   } else {
     const msg =
       `[utils-socket] invalid role, ${role}` +

@@ -32,13 +32,17 @@ const { redisClient } = require("./dbsSetup");
 //   port: process.env.REDIS_PORT,
 //   retry_strategy: () => 1000,
 // });
+
 // const redisPublisher = redisClient.duplicate();
+
 redisClient.on("connect", function () {
   redisClient.set("author", "Wilson", redis.print);
   redisClient.get("author", redis.print);
   console.log("connect");
 });
+
 // Server Setup
+
 const mgPort = process.env.MGSPORT || 5001;
 const server = require("http").createServer(app);
 const devOptions = {
@@ -63,7 +67,7 @@ const prodOptionsS = {
   },
 };
 
-const io = require("socket.io")(server, prodOptionsS);
+const io = require("socket.io")(server, devOptions);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
@@ -97,6 +101,10 @@ io.on("connection", (socket) => {
         case "test":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
+        case "pick":
+          // console.log("---come---");
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
         case "sign":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
@@ -119,6 +127,9 @@ io.on("connection", (socket) => {
           break;
         case "sign":
           io.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "pick":
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "test":
           socket.to(roomChannel).emit(roomChannel, data);

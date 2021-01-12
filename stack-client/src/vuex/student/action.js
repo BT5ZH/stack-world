@@ -34,18 +34,22 @@ const action = {
     const url = "/pc/v1/users/" + state.user.id;
     const { data } = await axios.patch(url, obj);
     errorHandler(data, "changeUserInfo");
-    console.log(data);
+    // console.log(data);
     return data.status;
   },
 
   async getCourseList({ commit }, timeData) {
+    // console.log("---req---");
+    // console.log(timeData);
     const url = "/pc/v1/timetables/getTimeTableFromStudentID";
     const { data } = await axios.post(url, timeData);
     errorHandler(data, "getCourseList");
-    console.log(data.data.result);
+    // console.log("---data---");
+    // console.log(data.data.result);
     let courseList = data.data.result;
     if (courseList.length != 0) {
       courseList = courseList.map((item,index) => ({
+        lesson_id:item.lesson_id,
         course_id: item.course_id._id,
         course_name: item.course_id.name,
         teacher: item.teacher_id.name,
@@ -54,18 +58,20 @@ const action = {
           week: dateTransform(obj.date),
           odd: obj.odd_or_even==0?'单双周':(obj.odd_or_even==1?'单周':'双周'),
           time: '第' + obj.order[0] +'-'+ obj.order[obj.order.length-1] + '节课',
-          classroom: obj.room_id.building.name + obj.room_id.room_number,
+          classroom: obj.room_id.building_name + obj.room_id.room_number,
         })),
       }));
     }
+    // console.log("---course---");
+    // console.log(courseList);
     commit("updateCourseList", courseList);
   },
-
+  
   async getCourseInfo({ commit }, id) {
     const url = "/pc/v1/lessons/" + id;
     const { data } = await axios.get(url);
     errorHandler(data, "getCourseInfo");
-    console.log(data);
+    // console.log(data);
     const courseList = data.data;
     // .organizations.map((item) => ({
     //   courseName: item.organizationName,
@@ -78,7 +84,7 @@ const action = {
   async getResList({ commit }, id) {
     const { data } = await axios.get("/pc/v1/resources?lesson_id=" + id);
     errorHandler(data, "getResList");
-    console.log(data);
+    // console.log(data);
     const resList = data.resources;
     // .map((item) => ({
     //   resName: item.organizationName,
@@ -94,7 +100,7 @@ const action = {
       postData
     );
     errorHandler(data, "getHomeworkList");
-    console.log(data.Homeworks)
+    // console.log(data.Homeworks)
     let homeworkList = data.Homeworks;
     if (homeworkList.length != 0) {
       homeworkList = homeworkList.map((item) => ({

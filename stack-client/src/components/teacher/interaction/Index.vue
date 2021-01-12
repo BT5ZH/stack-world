@@ -44,6 +44,7 @@
                     <h2>{{ steps[curEvent].desc }}</h2>
                   </a-col>
                   <a-col :span="2">
+                    <!-- >发送事件 -->
                     <a-button
                       shape="circle"
                       size="large"
@@ -124,6 +125,7 @@ export default {
         race: { name: "抢答", desc: "请同学们开始抢答" },
         vote: { name: "投票", desc: "请同学们开始投票" },
         dispatch: { name: "文件下发", desc: "请同学们查看文件" },
+        pick: { name: "提问", desc: "请回答" },
       },
       curEvent: 0,
     };
@@ -137,6 +139,8 @@ export default {
       );
     },
     navigateToEvent(eventIndex) {
+      // console.log("---step---");
+      // console.log(this.steps[eventIndex]);
       const event = this.steps[eventIndex];
       this[`send${event.type}Event`]();
     },
@@ -175,9 +179,32 @@ export default {
         ],
       });
     },
+    sendaskEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "pick",
+        role: "teacher",
+        // students: this.onlineList, //在场学生
+        roomId: this.lessonId,
+        data: 
+          {
+            id: "YH83CP",
+            stem: "中国传统佳节“中秋节”是那一天？",
+            type: "subject",
+            multiple: false,
+            options: [
+              {text:"农历八月十五",value:0},
+              {text:"一月一日",value:1},
+              {text:"农历三月初七",value:2},
+              {text:"和龙舟节是一天",value:3}
+            ],
+          },
+        
+      });
+    },
   },
   computed: {
     ...mapState({
+      onlineList: (state) => state.teacher.onlineList,
       uid: (state) => state.public.uid,
       nodes: (state) => state.teacher.precourse.nodes,
     }),
@@ -202,6 +229,10 @@ export default {
     },
   },
   mounted() {
+    // console.log("---onlineList---");
+    // console.log(this.onlineList);
+    // console.log("---name---");
+    // console.log(this.actionMap[item.tag.toLowerCase()].name);
     const callback = (id) => {
       socket.sendEvent("joinRoom", {
         actionType: "enter",
