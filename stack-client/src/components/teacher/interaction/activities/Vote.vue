@@ -1,37 +1,37 @@
 <template>
   <div>
-    <v-chart :options="config" />
+    <h1 class="sign-title">投票结果</h1>
+    <a-empty v-if="emptyShow" class="empty-area"></a-empty>
+    <a-row v-else v-for="(item, index) in tempdata" :key="index" class="chart">
+      <v-chart :options="item.echartConfig" />
+    </a-row>
   </div>
 </template>
 
 <script>
 import ECharts from "vue-echarts";
 import "echarts/lib/chart/bar";
-import "echarts/lib/component/tooltip";
-import "echarts/lib/component/dataZoom";
 import "echarts/lib/component/title";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: { "v-chart": ECharts },
   data() {
     return {};
   },
-  methods: {},
-  computed: {
-    config() {
+  methods: {
+    getEchartConfig(value) {
+      delete value.id;
       return {
-        tooltip: {
-          formatter: "{b}: {c}名",
-        },
         color: ["#019d96"],
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: Object.keys(value),
         },
-        yAxis: { type: "value" },
+        yAxis: { type: "value", minInterval: 1 },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: Object.values(value),
             type: "bar",
             showBackground: true,
             backgroundStyle: {
@@ -42,8 +42,35 @@ export default {
       };
     },
   },
+  computed: {
+    emptyShow() {
+      return !this.voteAnswerList.length;
+    },
+    voteAnswerList() {
+      return this.$store.state.teacher.voteAnswerList;
+    },
+    tempdata() {
+      return this.voteAnswerList.map((ques) => ({
+        quesId: ques.id,
+        echartConfig: this.getEchartConfig(Object.assign({}, ques)),
+      }));
+    },
+  },
 };
 </script>
 
 <style scoped>
+.echarts {
+  width: 100%;
+  height: 400px;
+}
+.empty-area {
+  padding: 80px 40px;
+}
+.sign-title {
+  font-weight: bold;
+  color: #bbb;
+  text-align: center;
+  padding-top: 20px;
+}
 </style>

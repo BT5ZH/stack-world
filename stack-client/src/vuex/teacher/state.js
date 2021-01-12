@@ -6,6 +6,7 @@ const state = {
   // interaction data
   signList: [],
   testAnswerList: [],
+  voteAnswerList: [],
   precourse: {},
   curActivity: "sign",
   onlineList: [],

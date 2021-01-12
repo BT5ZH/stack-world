@@ -45,14 +45,18 @@ let lesson_listeners = {
     if (data.role === "teacher") return null;
     that.$store.commit("teacher/updateTestResult", data);
   },
+  vote(data, that) {
+    if (data.role === "teacher") return null;
+    that.$store.commit("teacher/updateVoteResult", data);
+  },
   race(data, that) {
     if (data.role === "teacher") return null;
     const curLength = that.$store.state.teacher.raceList.length;
-    if (curLength <= data.limit) {
+    if (curLength < data.limit) {
       that.$store.commit("teacher/updateRaceResult", data);
       return null;
     }
-    that.sendraceOverEvent();
+    // that.sendraceOverEvent();
   },
 };
 
