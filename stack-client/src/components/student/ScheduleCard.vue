@@ -61,7 +61,7 @@ export default {
       { title: "七", titleNumber: 7 },
     ];
     return {
-      weekbadage: [false, false, true, false, false, false, false],
+      weekbadage: [false, false, false, false, false, false, false],
       oneWeek,
       nowTime: new Date(),
       day: 1,
@@ -73,6 +73,35 @@ export default {
     day: function () {
       this.changeSchedule(this.day);
     },
+  },
+  created() {
+    this.courseList.map((item) => {
+      item.curriculum.map((temp) => {
+        switch (temp.week) {
+          case 1:
+            this.weekbadage[0] = true;
+            break;
+          case 2:
+            this.weekbadage[1] = true;
+            break;
+          case 3:
+            this.weekbadage[2] = true;
+            break;
+          case 4:
+            this.weekbadage[3] = true;
+            break;
+          case 5:
+            this.weekbadage[4] = true;
+            break;
+          case 6:
+            this.weekbadage[5] = true;
+            break;
+          case 7:
+            this.weekbadage[6] = true;
+            break;
+        }
+      });
+    });
   },
   mounted() {
     this.getCourse();
@@ -86,33 +115,6 @@ export default {
   },
   methods: {
     getCourse() {
-      this.courseList.map((item) => {
-        item.curriculum.map((temp) => {
-          switch (temp.week) {
-            case 1:
-              this.weekbadage[0] = true;
-              break;
-            case 2:
-              this.weekbadage[1] = true;
-              break;
-            case 3:
-              this.weekbadage[2] = true;
-              break;
-            case 4:
-              this.weekbadage[3] = true;
-              break;
-            case 5:
-              this.weekbadage[4] = true;
-              break;
-            case 6:
-              this.weekbadage[5] = true;
-              break;
-            case 7:
-              this.weekbadage[6] = true;
-              break;
-          }
-        });
-      });
       let date = this.nowTime;
       let year = date.getFullYear();
       //  + '-' + Number(date.getFullYear() + 1);

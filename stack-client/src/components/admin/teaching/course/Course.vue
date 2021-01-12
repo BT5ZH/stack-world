@@ -34,12 +34,12 @@
         <a-input-search
           placeholder="课程编号/名称"
           enter-button
-          @search="onSearch"
         />
+          <!-- @search="onSearch" -->
       </a-col>
       <a-col :span="10"></a-col>
       <a-col :span="9" class="btn">
-        <a-space :size="smaall">
+        <a-space>
           <a-button type="primary" @click="bulkImport_visible = true"
             >批量添加课程</a-button
           >

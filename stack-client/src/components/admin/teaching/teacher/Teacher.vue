@@ -27,7 +27,7 @@
       </a-tree-select>
     </a-row>
     <batchAddTeacher :visible.sync="bulkImport_visible"></batchAddTeacher>
-    <a-modal v-model="editModal_visible" title="编辑教师" @ok="handleSubmit">
+    <a-modal v-model="editModal_visible" title="编辑" @ok="handleSubmit">
       <a-form
         :model="form"
         :label-col="{ span: 5 }"
@@ -358,7 +358,8 @@ export default {
       // console.log(this.user_id);
       let url = `pc/v1/users/${this.user_id}`;
       let that = this;
-      // console.log(this.form);
+      console.log("---form---");
+      console.log(this.form);
       axiosInstance.patch(url, this.form).then(
         function (res) {
           console.log(res);
