@@ -72,26 +72,33 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
   });
   let students = [];
   for (let i = 0; i < studentss.length; i++) {
-    students.push(studentss[i]._id);
+    //students.push(studentss[i]._id);
+    students.push(studentss[i]);
   }
 
   const studentsInClass = await Class.findById(req.query.class_id).select(
     "students"
   );
+
   if(studentsInClass.students.length>0||studentsInClass.students.length!=null){
     for (let i = 0; i < studentsInClass.students.length; i++) {
-      let index = students.indexOf(studentsInClass.students[i]);
+      // let index = students.indexOf(studentsInClass.students[i]);
+      // if (index > -1) {
+      //   students.splice(index, 1);
+      // }
+      let index = students._id.indexOf(studentsInClass.students[i]);
       if (index > -1) {
         students.splice(index, 1);
       }
     }
   }
-  let result = [];
-  for (let i = 0; i < students.length; i++) {
-    let student = await User.findById(students[i]).select("_id user_id name");
-    result.push(student);
-  }
-
+  // let result = [];
+  // for (let i = 0; i < students.length; i++) {
+  //   let student = await User.findById(students[i]).select("_id user_id name");
+  //   console.log("------(((((((((((((---------)))))))))))))--------------"+i);
+  //   result.push(student);
+  // }
+  let result= students
   res.status(200).json({
     status: "success",
     result,
