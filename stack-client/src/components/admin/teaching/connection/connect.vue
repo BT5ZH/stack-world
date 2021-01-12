@@ -14,6 +14,7 @@
           @select="onSelect"
         >
           <a-tree-select-node
+            :selectable="false"
             :key="item.subOrgName"
             :value="item.subOrgName"
             :title="item.subOrgName"
@@ -72,9 +73,9 @@ export default {
       const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
       try {
-        this.$store.dispatch("admin/change_spin_status",true)
+        this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axiosInstance.get(url);
-        this.$store.dispatch("admin/change_spin_status",false)
+        this.$store.dispatch("admin/change_spin_status", false);
         // console.log(data.data);
         // console.log("----treedata-----")
         // console.log(data.tree)

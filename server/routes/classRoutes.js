@@ -26,13 +26,13 @@ router
   .route("/:id")
   .get(authController.protect, classController.getClass)
   .patch(authController.protect, classController.updateClass)
-  .delete(authController.protect, classController.deleteClass);
+  .delete(authController.protect, classController.deleteClass)
+  .post(authController.protect, classController.deleteStudents);
 router
   .route("/:id/students")
   .get(authController.protect, classController.getStudents)
   //.patch(authController.protect, classController.updateStudents)
   .post(authController.protect, classController.addStudents)
-  .delete(authController.protect, classController.deleteStudents);
 router.route("/:id/curriculum");
 //.get(authController.protect, classController.getCurriculum)
 //   .patch(authController.protect, classController.updateStudent)
