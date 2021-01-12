@@ -35,7 +35,10 @@
         <a-row>
           <a-row type="flex" justify="center">
             <a-col :span="18">
-              <div class="card-container">
+              <div class="card-container" v-if="curEvent == -1">
+                <a-empty description="暂无备课内容"></a-empty>
+              </div>
+              <div class="card-container" v-else>
                 <a-row>
                   <span class="action-type">{{ steps[curEvent].title }}</span>
                 </a-row>
@@ -125,7 +128,7 @@ export default {
         vote: { name: "投票", desc: "请同学们开始投票" },
         dispatch: { name: "文件下发", desc: "请同学们查看文件" },
       },
-      curEvent: 0,
+      curEvent: -1,
     };
   },
   methods: {
@@ -175,6 +178,36 @@ export default {
         ],
       });
     },
+    sendraceEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "race",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: {
+          start: true,
+          question: {
+            id: "YH83CP",
+            stem: "中国传统佳节“中秋节”是那一天？",
+            type: "subject",
+            multiple: false,
+            options: [
+              "农历八月十五",
+              "一月一日",
+              "农历三月初七",
+              "和龙舟节是一天",
+            ],
+          },
+        },
+      });
+    },
+    sendraceOverEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "race",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: { start: false },
+      });
+    },
   },
   computed: {
     ...mapState({
@@ -182,7 +215,7 @@ export default {
       nodes: (state) => state.teacher.precourse.nodes,
     }),
     steps() {
-      if (!this.nodes) return [];
+      if (!this.nodes.length) return [];
       return this.nodes.map((item) => ({
         type: item.tag.toLowerCase(),
         title: this.actionMap[item.tag.toLowerCase()].name,

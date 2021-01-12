@@ -9,6 +9,7 @@ const state = {
   precourse: {},
   curActivity: "sign",
   onlineList: [],
+  raceList: [],
   // precourse data
   courses: [],
   courseHours: [],

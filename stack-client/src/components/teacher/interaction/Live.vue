@@ -110,7 +110,7 @@ export default {
       localStream
         .initialize()
         .catch((error) => {
-          console.error("初始化本地流失败 " + error);
+          this.$message.error("找不到可用直播设备");
           // TODO give some tips
           //   switch (error.name) {
           //     case "NotReadableError":

@@ -45,10 +45,14 @@ const mutation = {
     state.precourse = params;
   },
   updateOnlineList(state, params) {
-    state.onlineList = Object.keys(params).map((key) => {
-      let info = JSON.parse(params[key]);
-      return info;
-    });
+    state.onlineList = Object.keys(params)
+      .filter((item) => {
+        return params[item].startsWith("{");
+      })
+      .map((key) => {
+        let info = JSON.parse(params[key]);
+        return info;
+      });
   },
   updateCurActivity(state, params) {
     state.curActivity = params;

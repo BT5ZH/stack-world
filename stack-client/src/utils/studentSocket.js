@@ -49,6 +49,12 @@ let lesson_listeners = {
   enter(data, that) {
     console.log("someone join class", data);
   },
+  race(data, that) {
+    that.$store.commit("student/updateInteraction", {
+      name: "race",
+      params: { ...data },
+    });
+  },
 };
 
 export default function studentListeners(lessonId) {

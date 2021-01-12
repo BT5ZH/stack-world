@@ -21,6 +21,7 @@ const state = {
     sign: { start: false, endTime: 0 },
     vote: { start: false },
     test: { questions: [] },
+    race: { start: false, question: {} },
   },
   //student
   //首页目录分区
