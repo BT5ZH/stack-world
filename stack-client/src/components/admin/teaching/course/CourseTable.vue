@@ -111,7 +111,7 @@ export default {
     onSelectChange(selectedKeys) {
       this.selectedCourses = selectedKeys;
     },
-    onSearch() {},
+    // onSearch() {},
   },
 };
 </script>
