@@ -78,14 +78,14 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
   const studentsInClass = await Class.findById(req.query.class_id).select(
     "students"
   );
-
-  for (let i = 0; i < studentsInClass.students.length; i++) {
-    let index = students.indexOf(studentsInClass.students[i]);
-    if (index > -1) {
-      students.splice(index, 1);
+  if(studentsInClass.students.length>0||studentsInClass.students.length!=null){
+    for (let i = 0; i < studentsInClass.students.length; i++) {
+      let index = students.indexOf(studentsInClass.students[i]);
+      if (index > -1) {
+        students.splice(index, 1);
+      }
     }
   }
-
   let result = [];
   for (let i = 0; i < students.length; i++) {
     let student = await User.findById(students[i]).select("_id user_id name");
