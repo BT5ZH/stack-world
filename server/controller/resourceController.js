@@ -140,7 +140,7 @@ exports.getURLByIDs= catchAsync(async (req, res) => {
   console.log(req.body.resourceIDs)
   for(let i=0;i<req.body.resourceIDs.length;i++){
  
-    let url = await Resource.findById(req.body.resourceIDs[i]).select("_id url")
+    let url = await Resource.findById(req.body.resourceIDs[i]).select("_id url name")
     
     if (!url) {
       return next(new AppError("资源不存在", 404));
