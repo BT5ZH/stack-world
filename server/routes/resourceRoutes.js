@@ -19,6 +19,10 @@ router
   .route("/getLessonResourceOfTeacher")
   .post(authController.protect, resourceController.getLessonResourceOfTeacher);
 
+router
+  .route("/getURLByIDs")
+  .post(resourceController.getURLByIDs);
+  
 // // 测试
 router
   .route("/")
