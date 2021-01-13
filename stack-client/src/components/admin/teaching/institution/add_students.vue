@@ -78,7 +78,6 @@ export default {
       // console.log("come")
       // console.log("---data----")
       // console.log(this.data);
-      setTimeout(() => {
         // 开始
         const url = "/pc/v1/classes/updateStudents";
         const requestdata = {
@@ -101,7 +100,6 @@ export default {
         // 结束
         this.loading = false;
         this.selectedRowKeys = [];
-      }, 1000);
     },
     async getStudents() {
       // 按要求获取user
