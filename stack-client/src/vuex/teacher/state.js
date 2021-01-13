@@ -5,7 +5,9 @@ const state = {
   lessonNames: [],
   // interaction data
   signList: [],
+  ask_answer: {},
   testAnswerList: [],
+  voteAnswerList: [],
   precourse: {},
   curActivity: "sign",
   onlineList: [],

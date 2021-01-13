@@ -8,8 +8,8 @@ exports.enterHandler = function (roomId, data) {
 };
 
 exports.leaveHandler = function (roomId, data) {
-  const { studentId, studentName } = data;
-  if (studentId && studentName && className) {
+  const { studentId } = data;
+  if (studentId) {
     redisClient.hdel(roomId, studentId);
   }
 };

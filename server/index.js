@@ -32,13 +32,17 @@ const { redisClient } = require("./dbsSetup");
 //   port: process.env.REDIS_PORT,
 //   retry_strategy: () => 1000,
 // });
+
 // const redisPublisher = redisClient.duplicate();
+
 redisClient.on("connect", function () {
   redisClient.set("author", "Wilson", redis.print);
   redisClient.get("author", redis.print);
   console.log("connect");
 });
+
 // Server Setup
+
 const mgPort = process.env.MGSPORT || 5001;
 const server = require("http").createServer(app);
 const devOptions = {
@@ -89,12 +93,18 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "ques":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "test":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "pick":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "ask":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":
@@ -104,10 +114,10 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomPick":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "file":
-          socket.to(roomChannel).emit(res);
+          socket.to(roomChannel).emit(roomChannel, data);
           break;
         default:
           break;
@@ -120,10 +130,23 @@ io.on("connection", (socket) => {
           socketOP.enterHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
+        case "leave":
+          socketOP.leaveHandler(roomChannel, data.data);
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
         case "sign":
           io.to(roomChannel).emit(roomChannel, data);
           break;
+        case "pick":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
         case "test":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "ask":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "vote":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "race":

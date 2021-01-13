@@ -1,6 +1,7 @@
 const Resource = require("../models/resourceModel");
 const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
+const AppError = require("./../utils/appError");
 const { assumeRole } = require("../utils/aws");
 
 exports.uploadResource = async (req, res) => {
@@ -131,5 +132,25 @@ exports.deleteCollectResource = catchAsync(async (req, res) => {
     status: true,
     collect_resource: user.resources,
     message: "取消收藏成功",
+  });
+});
+
+exports.getURLByIDs= catchAsync(async (req, res) => {
+  let data=[]
+  console.log(req.body.resourceIDs)
+  for(let i=0;i<req.body.resourceIDs.length;i++){
+ 
+    let url = await Resource.findById(req.body.resourceIDs[i]).select("_id url name")
+    
+    if (!url) {
+      return next(new AppError("资源不存在", 404));
+    }
+  
+    data.push(url)
+  }
+
+  res.status(200).json({
+    status: true,
+    data,
   });
 });

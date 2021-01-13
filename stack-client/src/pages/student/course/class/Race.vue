@@ -1,16 +1,24 @@
 <template>
   <div style="padding: 2rem">
-    <a-empty v-if="testData.length" />
-    <a-list v-else item-layout="vertical" size="large">
-      <a-list-item v-for="(item, index) in testData.questions" :key="index">
-        <single-ques
+    <a-list v-if="raceData.start" item-layout="vertical" size="large">
+      <a-list-item>
+        <multi-ques
+          v-if="raceData.question.multiple"
           @submit="submitAnswer"
-          v-if="item.multiple"
-          :item="item"
+          :disabled="!raceData.start"
+          :btnText="raceData.start ? '提交答案' : '抢答已结束'"
+          :item="raceData.question"
+        ></multi-ques>
+        <single-ques
+          v-else
+          @submit="submitAnswer"
+          :disabled="!raceData.start"
+          :btnText="raceData.start ? '提交答案' : '抢答已结束'"
+          :item="raceData.question"
         ></single-ques>
-        <multi-ques @submit="submitAnswer" v-else :item="item"></multi-ques>
       </a-list-item>
     </a-list>
+    <a-empty v-else description="暂无抢答题目" />
   </div>
 </template>
 
@@ -18,7 +26,6 @@
 import singleQues from "../../../../components/SingleQues.vue";
 import multiQues from "../../../../components/MultiQues.vue";
 import { mapState } from "vuex";
-import * as socket from "@/utils/socket";
 
 export default {
   props: {
@@ -26,27 +33,35 @@ export default {
       required: true,
     },
   },
-  components: {    singleQues,    multiQues,  },
+  components: {
+    singleQues,
+    multiQues,
+  },
   computed: {
     ...mapState({
-      testData: (state) => state.student.interaction.test,
+      raceData: (state) => state.student.interaction.race,
+      studentName: (state) => state.public.name,
     }),
     lessonId() {
       return this.$route.query.lessonId;
+    },
+    quesAvailable() {
+      return Object.keys(this.raceData.question).length;
     },
   },
   methods: {
     submitAnswer(data) {
       this.socket.sendEvent("joinRoom", {
-        actionType: "test",
+        actionType: "race",
         role: "student",
         roomId: this.lessonId,
-        data: data,
+        data: {
+          ...data,
+          studentName: this.studentName,
+          limit: this.raceData.limit,
+        },
       });
     },
-  },
-  mounted() {
-    socket.createInstance("student", this, this.lessonId);
   },
 };
 </script>
