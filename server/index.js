@@ -67,7 +67,7 @@ const prodOptionsS = {
   },
 };
 
-const io = require("socket.io")(server, devOptions);
+const io = require("socket.io")(server, prodOptionsS);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
@@ -128,6 +128,10 @@ io.on("connection", (socket) => {
         case "enter":
           socket.join(roomChannel);
           socketOP.enterHandler(roomChannel, data.data);
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "leave":
+          socketOP.leaveHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":

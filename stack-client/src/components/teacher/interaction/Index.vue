@@ -136,10 +136,10 @@ export default {
   methods: {
     eventChange(value) {
       this.curEvent = value;
-      this.$store.commit(
-        "teacher/updateCurActivity",
-        this.steps[this.curEvent].type
-      );
+      this.$store.commit("teacher/updateCurActivity", {
+        curType: this.steps[this.curEvent].type,
+        curIndex: this.curEvent,
+      });
     },
     navigateToEvent(eventIndex) {
       // console.log("---step---");
@@ -155,6 +155,8 @@ export default {
       });
     },
     sendtestEvent() {
+      const testList = this.nodes[this.curEvent].vote;
+
       socket.sendEvent("joinRoom", {
         actionType: "test",
         role: "teacher",
@@ -183,69 +185,64 @@ export default {
       });
     },
     sendraceEvent() {
+      const [raceData] = this.nodes[this.curEvent].vote;
+      const limit = this.nodes[this.curEvent].people_num;
       socket.sendEvent("joinRoom", {
         actionType: "race",
         role: "teacher",
         roomId: this.lessonId,
         data: {
           start: true,
+          limit,
           question: {
             id: "YH83CP",
-            stem: "中国传统佳节“中秋节”是那一天？",
-            type: "subject",
-            multiple: false,
-            options: [
-              "农历八月十五",
-              "一月一日",
-              "农历三月初七",
-              "和龙舟节是一天",
-            ],
+            stem: raceData.title,
+            type: raceData.question_type,
+            right_answer: raceData.right_answer,
+            multiple: raceData.question_type === 3,
+            options: raceData.options,
           },
-          limit: 3,
         },
       });
     },
     senddispatchEvent() {
-      socket.sendEvent("joinRoom", {
-        actionType: "file",
-        role: "teacher",
-        roomId: this.lessonId,
-        data: {
-          fileList: [
-            {
-              title: "一个小视频",
-              url: "https://www.runoob.com/try/demo_source/mov_bbb.mp4",
+      const [files] = this.nodes[this.curEvent].vote;
+      const fileIdList = files.options;
+      axios
+        .post("pc/v1/resources/getURLByIDs", {
+          resourceIDs: fileIdList,
+        })
+        .then(({ data }) => {
+          socket.sendEvent("joinRoom", {
+            actionType: "file",
+            role: "teacher",
+            roomId: this.lessonId,
+            data: {
+              fileList: data.data.map((item) => ({
+                title: item.name,
+                url: item.url,
+              })),
             },
-          ],
-        },
-      });
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error("获取文件信息失败");
+        });
     },
     sendvoteEvent() {
+      const voteList = this.nodes[this.curEvent].vote;
       socket.sendEvent("joinRoom", {
         actionType: "vote",
         role: "teacher",
         roomId: this.lessonId,
-        data: [
-          {
-            id: "YH83CP",
-            stem: "中国传统佳节“中秋节”是那一天？",
-            type: "subject",
-            multiple: false,
-            options: [
-              "农历八月十五",
-              "一月一日",
-              "农历三月初七",
-              "和龙舟节是一天",
-            ],
-          },
-          {
-            id: "1U7GVC0",
-            stem: "操作系统的目标有哪些？",
-            type: "subject",
-            multiple: true,
-            options: ["有效性", "开放性", "可扩充性", "方便性"],
-          },
-        ],
+        data: voteList.map((item, index) => ({
+          id: `YH83CP${index}`,
+          stem: item.title,
+          type: 2,
+          multiple: false,
+          options: item.options,
+        })),
       });
     },
     sendaskEvent() {
@@ -284,10 +281,6 @@ export default {
         desc: this.actionMap[item.tag.toLowerCase()].desc,
       }));
     },
-    events() {
-      if (!this.nodes) return [];
-      return this.nodes.map(({ vote }) => ({}));
-    },
     lessonId() {
       return this.$route.query.lessonId;
     },
@@ -296,10 +289,6 @@ export default {
     },
   },
   mounted() {
-    // console.log("---onlineList---");
-    // console.log(this.onlineList);
-    // console.log("---name---");
-    // console.log(this.actionMap[item.tag.toLowerCase()].name);
     const callback = (id) => {
       socket.sendEvent("joinRoom", {
         actionType: "enter",
