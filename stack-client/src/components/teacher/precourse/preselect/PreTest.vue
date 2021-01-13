@@ -166,7 +166,7 @@ export default {
           options: item.option,
           question_type: item.multiple ? 3 : 2,
           right_answer: item.answer,
-          title: item.id,
+          title: item.stem,
         };
       });
       this.$store.commit("teacher/updateNodevote", vote);

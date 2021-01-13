@@ -178,7 +178,6 @@ export default {
   },
   created() {
     this.courseId = this.$route.params.id;
-    console.log(this.courseId);
     this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
@@ -189,6 +188,7 @@ export default {
   },
   computed: {
     ...mapState({
+      studentId: (state) => state.public.user_id,
       courseDetailMenu: (state) => state.student.courseDetailMenu,
       classMenu: (state) => state.student.classMenu,
       resList: (state) => state.student.resList,
@@ -199,6 +199,15 @@ export default {
     courseStart() {
       return this.openRooms.some((item) => item === this.lessonId);
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    socket.sendEvent("joinRoom", {
+      actionType: "leave",
+      role: "student",
+      roomId: this.lessonId,
+      data: { studentId: this.studentId },
+    });
+    next();
   },
 };
 </script>
