@@ -1,6 +1,6 @@
 const PrepareLesson = require("../models/prepareLessonModel");
-const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/appError");
+const catchAsync = require("./../utils/catchAsync");
+const AppError = require("./../utils/appError");
 /**
  * 根据teacher_id获取该教师所有的备课
  */
