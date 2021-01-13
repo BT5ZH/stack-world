@@ -71,23 +71,28 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
     role: "student",
   });
   let students = [];
+  let studentIds = [];
   for (let i = 0; i < studentss.length; i++) {
-    //students.push(studentss[i]._id);
+    studentIds.push(studentss[i]._id);
     students.push(studentss[i]);
   }
 
   const studentsInClass = await Class.findById(req.query.class_id).select(
     "students"
   );
-
-  if(studentsInClass.students.length>0||studentsInClass.students.length!=null){
+  // console.log("students========");
+  // console.log(studentss);
+  if (studentsInClass.students.length > 0 || studentsInClass.students.length != null) {
     for (let i = 0; i < studentsInClass.students.length; i++) {
       // let index = students.indexOf(studentsInClass.students[i]);
       // if (index > -1) {
       //   students.splice(index, 1);
       // }
-      let index = students._id.indexOf(studentsInClass.students[i]);
+      // console.log("test");
+      // console.log(students);
+      let index = studentIds.indexOf(studentsInClass.students[i]);
       if (index > -1) {
+        studentIds.splice(index, 1);
         students.splice(index, 1);
       }
     }
@@ -98,7 +103,7 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
   //   console.log("------(((((((((((((---------)))))))))))))--------------"+i);
   //   result.push(student);
   // }
-  let result= students
+  let result = students
   res.status(200).json({
     status: "success",
     result,
