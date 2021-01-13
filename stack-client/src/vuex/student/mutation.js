@@ -43,8 +43,8 @@ const mutation = {
       console.error("[vuex-student-mutation] invalid interaction name");
       return null;
     }
-    if (name == "pick") {
-      console.log("---data---");
+    if (name == "ask") {
+      console.log("---mut_data---");
       console.log(params);
       state.interaction[name] = params
     } else {

@@ -18,7 +18,6 @@
 import singleQues from "../../../../components/SingleQues.vue";
 import multiQues from "../../../../components/MultiQues.vue";
 import { mapState } from "vuex";
-import * as socket from "@/utils/socket";
 
 export default {
   props: {
@@ -48,8 +47,6 @@ export default {
       });
     },
   },
-  mounted() {
-    socket.createInstance("student", this, this.lessonId);
-  },
+  mounted() {},
 };
 </script>

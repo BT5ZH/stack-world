@@ -33,6 +33,11 @@
 import { mapState } from "vuex";
 
 export default {
+  props: {
+    socket: {
+      required: true,
+    },
+  },
   data() {
     return {
       value: "",
@@ -49,8 +54,12 @@ export default {
   },
   computed: {
     ...mapState({
-      pickData: (state) => state.student.interaction.pick,
+      studentName: (state) => state.public.name,
+      pickData: (state) => state.student.interaction.ask,
     }),
+    lessonId() {
+      return this.$route.query.lessonId;
+    },
   },
   onChange(val) {
     if (!val.length) return;
@@ -59,13 +68,13 @@ export default {
 
   methods: {
     submitAnswer() {
-      console.log(this.value);
-      // this.socket.sendEvent("joinRoom", {
-      //   actionType: "test",
-      //   role: "student",
-      //   roomId: this.lessonId,
-      //   data: data,
-      // });
+      // console.log(this.value);
+      this.socket.sendEvent("joinRoom", {
+        actionType: "ask",
+        role: "student",
+        roomId: this.lessonId,
+        data: { value: this.value, student: this.studentName },
+      });
     },
   },
   mounted() {

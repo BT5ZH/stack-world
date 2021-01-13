@@ -35,7 +35,10 @@
         <a-row>
           <a-row type="flex" justify="center">
             <a-col :span="18">
-              <div class="card-container">
+              <div class="card-container" v-if="curEvent == -1">
+                <a-empty description="暂无备课内容"></a-empty>
+              </div>
+              <div class="card-container" v-else>
                 <a-row>
                   <span class="action-type">{{ steps[curEvent].title }}</span>
                 </a-row>
@@ -125,9 +128,9 @@ export default {
         race: { name: "抢答", desc: "请同学们开始抢答" },
         vote: { name: "投票", desc: "请同学们开始投票" },
         dispatch: { name: "文件下发", desc: "请同学们查看文件" },
-        pick: { name: "提问", desc: "请回答" },
+        pick: { name: "提问", desc: "请同学回答问题" },
       },
-      curEvent: 0,
+      curEvent: -1,
     };
   },
   methods: {
@@ -179,26 +182,90 @@ export default {
         ],
       });
     },
-    sendaskEvent() {
+    sendraceEvent() {
       socket.sendEvent("joinRoom", {
-        actionType: "pick",
+        actionType: "race",
         role: "teacher",
-        // students: this.onlineList, //在场学生
         roomId: this.lessonId,
-        data: 
+        data: {
+          start: true,
+          question: {
+            id: "YH83CP",
+            stem: "中国传统佳节“中秋节”是那一天？",
+            type: "subject",
+            multiple: false,
+            options: [
+              "农历八月十五",
+              "一月一日",
+              "农历三月初七",
+              "和龙舟节是一天",
+            ],
+          },
+          limit: 3,
+        },
+      });
+    },
+    senddispatchEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "file",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: {
+          fileList: [
+            {
+              title: "一个小视频",
+              url: "https://www.runoob.com/try/demo_source/mov_bbb.mp4",
+            },
+          ],
+        },
+      });
+    },
+    sendvoteEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "vote",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: [
           {
             id: "YH83CP",
             stem: "中国传统佳节“中秋节”是那一天？",
             type: "subject",
             multiple: false,
             options: [
-              {text:"农历八月十五",value:0},
-              {text:"一月一日",value:1},
-              {text:"农历三月初七",value:2},
-              {text:"和龙舟节是一天",value:3}
+              "农历八月十五",
+              "一月一日",
+              "农历三月初七",
+              "和龙舟节是一天",
             ],
           },
-        
+          {
+            id: "1U7GVC0",
+            stem: "操作系统的目标有哪些？",
+            type: "subject",
+            multiple: true,
+            options: ["有效性", "开放性", "可扩充性", "方便性"],
+          },
+        ],
+      });
+    },
+    sendaskEvent() {
+      socket.sendEvent("joinRoom", {
+        actionType: "ask",
+        role: "teacher",
+        // students: this.onlineList, //在场学生
+        roomId: this.lessonId,
+        data: {
+          id: "YH83CP",
+          stem: "中国传统佳节“中秋节”是那一天？",
+          type: "subject",
+          multiple: false,
+          options: [
+            { text: "农历八月十五", value: 0 },
+            { text: "一月一日", value: 1 },
+            { text: "农历三月初七", value: 2 },
+            { text: "和龙舟节是一天", value: 3 },
+          ],
+        },
       });
     },
   },
@@ -209,7 +276,7 @@ export default {
       nodes: (state) => state.teacher.precourse.nodes,
     }),
     steps() {
-      if (!this.nodes) return [];
+      if (!this.nodes.length) return [];
       return this.nodes.map((item) => ({
         type: item.tag.toLowerCase(),
         title: this.actionMap[item.tag.toLowerCase()].name,

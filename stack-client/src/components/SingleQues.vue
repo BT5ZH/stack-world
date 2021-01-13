@@ -13,11 +13,12 @@
     </a-radio-group>
     <br />
     <a-button
+      :disabled="disabled"
       @click="submitAnswer"
       style="width: 100%; margin-top: 20px"
       type="primary"
     >
-      提交答案
+      {{ btnText }}
     </a-button>
   </div>
 </template>
@@ -26,6 +27,14 @@
 export default {
   props: {
     item: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    btnText: {
+      type: String,
+      default: "提交答案",
+    },
   },
   data() {
     return {

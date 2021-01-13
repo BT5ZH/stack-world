@@ -5,11 +5,13 @@ const state = {
   lessonNames: [],
   // interaction data
   signList: [],
+  ask_answer: {},
   testAnswerList: [],
-  pick_answer:{},
+  voteAnswerList: [],
   precourse: {},
   curActivity: "sign",
   onlineList: [],
+  raceList: [],
   // precourse data
   courses: [],
   courseHours: [],

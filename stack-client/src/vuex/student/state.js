@@ -21,7 +21,9 @@ const state = {
     sign: { start: false, endTime: 0 },
     vote: { start: false },
     test: { questions: [] },
-    pick: {},
+    race: { start: false, question: {} },
+    file: { fileList: [] },
+    ask: {},
   },
   //student
   //首页目录分区
@@ -103,9 +105,9 @@ const state = {
     },
     {
       id: 4,
-      name: "问卷",
+      name: "文件下发",
       icon: "solution",
-      route: "questionnaire",
+      route: "file",
       style: { backgroundColor: colorItems[4], borderColor: colorItems[4] },
     },
     {
@@ -121,6 +123,13 @@ const state = {
       icon: "bulb",
       route: "test",
       style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+    },
+    {
+      id: 7,
+      name: "抢答",
+      icon: "hourglass",
+      route: "race",
+      style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
     },
     // {
     //   id: 6,

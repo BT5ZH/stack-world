@@ -30,6 +30,7 @@ let default_listeners = {
 
 let lesson_listeners = {
   sign(data, that) {
+    if (data.role === "teacher") return null;
     that.$store.commit("teacher/updateSignResult", data);
   },
   enter(data, that, rawData) {
@@ -41,11 +42,27 @@ let lesson_listeners = {
     that.$store.dispatch("teacher/getOnlineStudents", rawData.roomId);
   },
   test(data, that) {
+    if (data.role === "teacher") return null;
     that.$store.commit("teacher/updateTestResult", data);
   },
-  pick(data,that) {
-    that.$store.commit("teacher/updatePickResult", data);
-  }
+  ask(data, that) {
+    console.log("student_data_come-----");
+    if (data.role === "teacher") return null;
+    that.$store.commit("teacher/updateAskResult", data);
+  },
+  vote(data, that) {
+    if (data.role === "teacher") return null;
+    that.$store.commit("teacher/updateVoteResult", data);
+  },
+  race(data, that) {
+    if (data.role === "teacher") return null;
+    const curLength = that.$store.state.teacher.raceList.length;
+    if (curLength < data.limit) {
+      that.$store.commit("teacher/updateRaceResult", data);
+      return null;
+    }
+    // that.sendraceOverEvent();
+  },
 };
 
 export default function teacherListeners(lessonId) {

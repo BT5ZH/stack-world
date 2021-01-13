@@ -30,6 +30,13 @@ const mutation = {
       state.pick_answer = params;
     }
   },
+  updateAskResult(state, params) {
+    if(params){
+      state.ask_answer = params
+    }else{
+      console.error("学生端未返回数据");
+    }
+  },
   updateTestResult(state, params) {
     const { id, answer } = params;
     let quesIndex = state.testAnswerList.findIndex((item) => item.id === id);
@@ -43,6 +50,22 @@ const mutation = {
       [answer]: ques[answer] ? ques[answer] + 1 : 1,
     });
   },
+  updateVoteResult(state, params) {
+    const { id, answer } = params;
+    let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
+    if (quesIndex < 0) {
+      state.voteAnswerList.push({ id: id, [answer]: 1 });
+      return null;
+    }
+    let ques = state.voteAnswerList[quesIndex];
+    state.voteAnswerList.splice(quesIndex, 1, {
+      ...ques,
+      [answer]: ques[answer] ? ques[answer] + 1 : 1,
+    });
+  },
+  updateRaceResult(state, params) {
+    state.raceList.push(params);
+  },
   updateTeacherCourses(state, params) {
     state.courses = params;
   },
@@ -50,10 +73,14 @@ const mutation = {
     state.precourse = params;
   },
   updateOnlineList(state, params) {
-    state.onlineList = Object.keys(params).map((key) => {
-      let info = JSON.parse(params[key]);
-      return info;
-    });
+    state.onlineList = Object.keys(params)
+      .filter((item) => {
+        return params[item].startsWith("{");
+      })
+      .map((key) => {
+        let info = JSON.parse(params[key]);
+        return info;
+      });
   },
   updateCurActivity(state, params) {
     state.curActivity = params;

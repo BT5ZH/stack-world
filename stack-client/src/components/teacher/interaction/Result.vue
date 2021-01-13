@@ -4,15 +4,19 @@
 </template>
 
 <script>
-import sign from "./activities/Sign";
-import test from "./activities/Test";
 import { mapState } from "vuex";
 
+import sign from "./activities/Sign";
+import test from "./activities/Test";
+import vote from "./activities/Vote";
+import race from "./activities/Race";
+import ask from "./activities/Ques";
+
 export default {
-  components: { sign, test },
+  components: { sign, test, race, vote,ask },
   data() {
     return {
-      activityList: ["sign", "test"],
+      activityList: ["sign", "test", "race", "vote", "ask"],
     };
   },
   computed: {
