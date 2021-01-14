@@ -1,14 +1,10 @@
 <template>
   <a-collapse default-active-key="1" :bordered="false">
     <a-collapse-panel :header="coursename" key="1">
-      <a-row v-if="!coursehours.length" type="flex" justify="center">
-        <a-button
-          size="small"
-          type="link"
-          @click="addcourse(0)"
-          style="text-align: center"
-          >添加课时</a-button
-        >
+      <a-row type="flex" justify="center">
+        <a-button block type="primary" @click="addcourse(prepareNumber)">
+          添加课时
+        </a-button>
       </a-row>
       <a-list :data-source="coursehours">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
@@ -36,7 +32,7 @@
                   @click="editcourse(index)"
                 ></a-button>
               </a-tooltip>
-              <a-tooltip placement="top">
+              <!-- <a-tooltip placement="top">
                 <template slot="title">
                   <span>增加课时</span>
                 </template>
@@ -46,7 +42,7 @@
                   type="link"
                   @click="addcourse(index)"
                 ></a-button>
-              </a-tooltip>
+              </a-tooltip> -->
               <a-tooltip placement="top">
                 <template slot="title">
                   <span>删除课时</span>
@@ -73,6 +69,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      prepareNumber: this.$route.query.prepareNumber,
       coursehours: [],
     };
   },
@@ -95,6 +92,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.courseinput.focus();
       });
+      this.prepareNumber += 1;
     },
     deletecourse(index) {
       axios
@@ -203,8 +201,8 @@ export default {
 
 .ant-btn[disabled] {
   color: #ffffff;
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #001529;
+  border-color: #001529;
 }
 .ant-btn {
   color: #ffffff;
@@ -219,9 +217,9 @@ export default {
   color: #ffffff;
 }
 .ant-collapse {
-  background-color: black;
+  background-color: #001529;
 }
 .ant-collapse-content {
-  background-color: black;
+  background-color: #001529;
 }
 </style>

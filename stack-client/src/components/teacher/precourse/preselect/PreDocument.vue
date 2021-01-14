@@ -114,16 +114,21 @@ export default {
   },
   methods: {
     node_vote() {
-      let option = this.selectedsource.map((item) => item.courseId);
-      const vote = [
-        {
-          options: option,
-          question_type: null,
-          right_answer: "",
-          title: "",
-        },
-      ];
-      this.$store.commit("teacher/updateNodevote", vote);
+      try {
+        let option = this.selectedsource.map((item) => item.courseId);
+        const vote = [
+          {
+            options: option,
+            question_type: null,
+            right_answer: "",
+            title: "",
+          },
+        ];
+        this.$store.commit("teacher/updateNodevote", vote);
+        this.$message.info("暂存成功")
+      } catch (err) {
+        this.$message.error("暂存失败")
+      }
     },
     selectsource() {
       this.selectvisible = false;

@@ -82,21 +82,7 @@
       </a-col>
 
       <a-col :span="9">
-        <!-- 互动内容
-      <a-row type="flex" justify="start">
-        <a-col :span="6">
-          <h2 class="block-title">
-            <a href="#">互动内容</a>
-          </h2>
-        </a-col>
-      </a-row>
-
-      <a-row style="height: 400px">
-        <a-empty> </a-empty>
-      </a-row> -->
-
-        <!-- 互动结果 -->
-        <a-row type="flex" justify="start">
+         <a-row type="flex" justify="start">
           <a-col :span="6">
             <h2 class="block-title">
               <a href="#">互动结果</a>
@@ -246,22 +232,24 @@ export default {
       });
     },
     sendaskEvent() {
+      const [askData] = this.nodes[this.curEvent].vote;
+      // console.log("askData+++++");
+      // console.log(askData);
       socket.sendEvent("joinRoom", {
         actionType: "ask",
         role: "teacher",
         // students: this.onlineList, //在场学生
         roomId: this.lessonId,
         data: {
-          id: "YH83CP",
-          stem: "中国传统佳节“中秋节”是那一天？",
-          type: "subject",
-          multiple: false,
-          options: [
-            { text: "农历八月十五", value: 0 },
-            { text: "一月一日", value: 1 },
-            { text: "农历三月初七", value: 2 },
-            { text: "和龙舟节是一天", value: 3 },
-          ],
+          start: true,
+          question: {
+            id: "YH83CP",
+            stem: askData.title,
+            type: askData.question_type,
+            multiple: false,
+            right_answer: askData.right_answer,
+            options: askData.options,
+          },
         },
       });
     },

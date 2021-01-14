@@ -37,6 +37,6 @@ export default {
 .sider {
   overflow-y: auto;
   height: 100%;
-  background: #000000;
+  background: #19191a;
 }
 </style>

@@ -161,15 +161,23 @@ export default {
       this.selectvisible = true;
     },
     node_vote() {
-      const vote = this.selectedsource.map((item, index) => {
-        return {
-          options: item.option,
-          question_type: item.multiple ? 3 : 2,
-          right_answer: item.answer,
-          title: item.stem,
-        };
-      });
-      this.$store.commit("teacher/updateNodevote", vote);
+      try {
+        const vote = this.selectedsource.map((item, index) => {
+          return {
+            options: item.option,
+            question_type: item.multiple ? 3 : 2,
+            right_answer: item.answer,
+            title: item.stem,
+          };
+        });
+        // console.log("vote---");
+        // console.log(vote);
+        this.$store.commit("teacher/updateNodevote", vote);
+        this.$message.info("暂存成功");
+      } catch (err) {
+        this.$message.error("暂存失败");
+        console.log(err);
+      }
     },
     selectsource() {
       this.selectvisible = false;

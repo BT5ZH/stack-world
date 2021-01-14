@@ -2,6 +2,12 @@
   <a-row>
     <a-col :span="18" :push="3">
       <h1 class="sign-title">抢答结果</h1>
+      <div class="teacher_question">
+        问题:&nbsp;{{ raceList[1].question.stem }}
+      </div>
+      <div class="teacher_question">
+        正确答案:&nbsp;{{ raceList[1].question.right_answer }}
+      </div>
       <a-list
         size="small"
         bordered
@@ -28,6 +34,10 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    console.log("sssss")
+    console.log(this.raceList)
+  },
   computed: {
     ...mapState({
       raceList: (state) => state.teacher.raceList,
@@ -44,7 +54,9 @@ export default {
   text-align: center;
   padding: 20px 0;
 }
-
+.teacher_question {
+  font-weight: bold;
+}
 .name {
   font-weight: bold;
   color: #666;
