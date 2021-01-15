@@ -136,9 +136,9 @@ export default {
     lessonchange(value) {
       const course = this.courseList.find((item) => value === item._id);
       if (course.semester % 2 == 0) {
-        this.termList = "1";
-      } else {
         this.termList = "2";
+      } else {
+        this.termList = "1";
       }
     },
     getOrgInfo() {
