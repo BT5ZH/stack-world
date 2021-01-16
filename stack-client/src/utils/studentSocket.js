@@ -89,11 +89,16 @@ let lesson_listeners = {
       params: { fileList: data.fileList },
     });
   },
-  ask(params, that) {
+  ask(data, that) {
+    data.question.content = data.question.stem;
+    data.question.options = data.question.options.map((option, index) => ({
+      value: String.fromCharCode(65 + index),
+      text: option,
+    }));
     that.$store.commit("student/updateInteraction", {
       name: "ask",
-      params,
-});
+      params:{...data},
+    });
   },
 };
 

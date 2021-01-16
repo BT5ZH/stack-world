@@ -82,15 +82,21 @@ export default {
   },
   methods: {
     node_vote() {
-      const vote = this.cards.map((item, index) => {
-        return {
-          options: item.options,
-          question_type: null,
-          right_answer: "",
-          title: this["editor" + index].txt.text(),
-        };
-      });
-      this.$store.commit("teacher/updateNodevote", vote);
+      try {
+        const vote = this.cards.map((item, index) => {
+          return {
+            options: item.options,
+            question_type: null,
+            right_answer: "",
+            title: this["editor" + index].txt.text(),
+          };
+        });
+        this.$store.commit("teacher/updateNodevote", vote);
+        this.$message.info("暂存成功");
+      } catch (err) {
+        this.$message.error("暂存失败");
+        console.log(err);
+      }
     },
     closeOption(idx, index) {
       if (this.optionlength[idx] <= 2) {

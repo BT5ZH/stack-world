@@ -69,7 +69,7 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
     subOrg_name: req.query.subOrg_name,
     major_name: req.query.major_name,
     role: "student",
-  });
+  }).select("_id user_id name");
   let students = [];
   let studentIds = [];
   for (let i = 0; i < studentss.length; i++) {

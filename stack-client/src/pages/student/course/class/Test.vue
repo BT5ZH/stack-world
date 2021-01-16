@@ -1,35 +1,26 @@
 <template>
   <div style="padding: 2rem">
-    <a-empty v-if="pickData.id == null" />
+    <a-empty v-if="pickData.start == null" description="暂无提问" />
     <a-list v-else item-layout="vertical" size="large">
       <a-list-item>
-        {{ pickData.stem }}
-        <a-radio-group :style="radioStyle" v-model="value">
-          <a-radio
-            :style="radioStyle"
-            :key="opt.value"
-            v-for="opt in pickData.options"
-            :value="opt.value"
-          >
-            {{ opt.text }}
-          </a-radio>
-        </a-radio-group>
-        <br /><br /><br /><br />
-        <a-button
-          @click="submitAnswer"
-          style="width: 100%; margin-top: 20px"
-          type="primary"
-        >
-          提交答案
-        </a-button>
+        <multi-ques
+          v-if="pickData.question.multiple"
+          @submit="submitAnswer"
+          :item="pickData.question"
+        ></multi-ques>
+        <single-ques
+          v-else
+          @submit="submitAnswer"
+          :item="pickData.question"
+        ></single-ques>
       </a-list-item>
     </a-list>
   </div>
 </template>
 
 <script>
-// import singleQues from "../../../../components/SingleQues.vue";
-// import multiQues from "../../../../components/MultiQues.vue";
+import singleQues from "../../../../components/SingleQues.vue";
+import multiQues from "../../../../components/MultiQues.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -40,7 +31,6 @@ export default {
   },
   data() {
     return {
-      value: "",
       radioStyle: {
         display: "block",
         height: "30px",
@@ -49,8 +39,8 @@ export default {
     };
   },
   components: {
-    // singleQues,
-    // multiQues,
+    singleQues,
+    multiQues,
   },
   computed: {
     ...mapState({
@@ -67,19 +57,19 @@ export default {
   },
 
   methods: {
-    submitAnswer() {
+    submitAnswer(data) {
       // console.log(this.value);
       this.socket.sendEvent("joinRoom", {
         actionType: "ask",
         role: "student",
         roomId: this.lessonId,
-        data: { value: this.value, student: this.studentName },
+        data: { ...data, student: this.studentName,question:this.pickData.question },
       });
     },
   },
   mounted() {
     // console.log("---test_data---");
-    // console.log(this.pickData);
+    // console.log(this.pickData.question);
     // console.log(this.pickData.question);
   },
 };

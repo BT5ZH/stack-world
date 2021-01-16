@@ -119,6 +119,7 @@ userSchema.post("findOne", function (result) {
   // else if(result.role==='orgAdmin') result.role = "学校管理员"
   // else if(result.role==='patrol') result.role = "巡视督导"
   // else if(result.role==='superAdmin') result.role = "超级管理员"
+
   if(result!=null){
     if (result.title === "student") result.title = "学生";
     else if (result.title === "lecturer") result.title = "讲师";

@@ -21,11 +21,12 @@
       </a-col>
       <a-col :span="4">
         <a-row type="flex" justify="end" class="header-btn">
-          <a-button type="primary" @click="pptvisible = true">
-            选择PPT
-          </a-button>
-          &nbsp;&nbsp;
-          <a-button type="primary" @click="save"> 保存 </a-button>
+          <a-space>
+            <a-button type="primary" @click="pptvisible = true">
+              选择PPT
+            </a-button>
+            <a-button type="primary" @click="save"> 保存 </a-button>
+          </a-space>
         </a-row>
         <br />
         <a-row type="flex" justify="end" v-if="!publish"
@@ -258,10 +259,7 @@ export default {
       oldtime: 0,
       sumtime: 0,
       current: 0,
-      steps: [
-        { title: "讲课", description: "20分钟" },
-        { title: "提问", description: "5分钟" },
-      ],
+      steps: [],
       event: {
         PreVote: "投票",
         PreSign: "签到",
@@ -298,6 +296,7 @@ export default {
     }),
     ...mapState({
       uid: (state) => state.public.uid,
+      nodes: (state) => state.teacher.precourse.nodes,
     }),
     lesson_id() {
       return this.$route.query.lessonId;
@@ -313,19 +312,27 @@ export default {
       this.pptvisible = false;
     },
     save() {
-      this.$store.commit("teacher/updateCourseHourInfo", {
-        time: this.form.time,
-        description: this.form.desc1,
-      });
-      const h = this.$createElement;
-      this.$info({
-        title: "请注意先暂存事件",
-        zIndex: 10001,
-      });
-      this.$store.dispatch("teacher/updateCourseHour", {
-        lesson_id: this.lesson_id,
-        teacher_id: this.uid,
-      });
+      try {
+        this.$store.commit("teacher/updateCourseHourInfo", {
+          time: this.form.time,
+          description: this.form.desc1,
+        });
+        const h = this.$createElement;
+        if (this.$store.state.nodes == []) {
+          this.$info({
+            title: "请注意先暂存事件",
+            zIndex: 10001,
+          });
+        }
+        this.$store.dispatch("teacher/updateCourseHour", {
+          lesson_id: this.lesson_id,
+          teacher_id: this.uid,
+        });
+        this.$message.info("保存成功");
+      } catch (err) {
+        this.$message.error("保存失败");
+        console.log(err);
+      }
     },
     addChange(current) {
       this.current = current;

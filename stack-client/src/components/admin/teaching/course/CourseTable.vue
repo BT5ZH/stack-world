@@ -4,7 +4,6 @@
       rowKey="_id"
       :pagination="{
         total: courseList.length,
-        pageSizeOptions: pageSize,
         'show-less-items': true,
         'show-size-changer': true,
         'show-quick-jumper': true,

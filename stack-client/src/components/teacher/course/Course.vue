@@ -73,7 +73,11 @@ export default {
       const lessonName = this.courses[courseIndex].lesson_name;
       this.$router.push({
         name: "teacher_precourse",
-        query: { lessonId, lessonName },
+        query: {
+          lessonId,
+          lessonName,
+          prepareNumber: this.courses[courseIndex].prepareNumber,
+        },
       });
     },
   },
@@ -89,7 +93,7 @@ export default {
   },
   filters: {
     progressFilter({ prepareNumber, total_study_hours }) {
-      return `${prepareNumber}备课/${total_study_hours}课时`;
+      return `已备${prepareNumber}课时/共${total_study_hours}课时`;
     },
   },
   mounted() {

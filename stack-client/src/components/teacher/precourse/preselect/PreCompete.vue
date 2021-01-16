@@ -58,7 +58,7 @@
               v-if="ifshow === 2"
               v-model="rightanswer"
             >
-              <a-select-option v-for="index in optionlength" :key="index + ''">
+              <a-select-option v-for="index in optionlength" :key="ENG_CHARS[index - 1]">
                 {{ ENG_CHARS[index - 1] }}
               </a-select-option>
             </a-select>
@@ -69,7 +69,7 @@
               v-else
               v-model="rightanswer"
             >
-              <a-select-option v-for="index in optionlength" :key="index + ''">
+              <a-select-option v-for="index in optionlength" :key="ENG_CHARS[index - 1]">
                 {{ ENG_CHARS[index - 1] }}
               </a-select-option>
             </a-select>
@@ -119,16 +119,22 @@ export default {
   },
   methods: {
     node_vote() {
-      const vote = [
-        {
-          options: this.cards.options,
-          question_type: this.ifshow,
-          right_answer: this.rightanswer,
-          title: this["editor"].txt.text(),
-        },
-      ];
-      this.$store.commit("teacher/updateNodevote", vote);
-      this.$store.commit("teacher/updatepeople_num", this.value);
+      try {
+        const vote = [
+          {
+            options: this.cards.options,
+            question_type: this.ifshow,
+            right_answer: this.rightanswer,
+            title: this["editor"].txt.text(),
+          },
+        ];
+        this.$store.commit("teacher/updateNodevote", vote);
+        this.$store.commit("teacher/updatepeople_num", this.value);
+        this.$message.info("暂存成功")
+      } catch (err) {
+        this.$message.error("暂存错误")
+        console.log(err);
+      }
     },
     closeOption(index) {
       if (this.optionlength <= 2) {
