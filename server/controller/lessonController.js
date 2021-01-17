@@ -93,7 +93,7 @@ exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
   )
   .populate(
     "course_id",
-    "total_study_hours name -_id"
+    "total_study_hours name course_type evaluation credit subOrg_name major_name -_id"
   )
   .populate(
     "prepareLesson",
