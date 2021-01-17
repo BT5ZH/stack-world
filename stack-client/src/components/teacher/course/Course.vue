@@ -29,13 +29,13 @@
         </a-card>
       </a-col>
     </a-row>
-    <a-row type="flex">
+    <!-- <a-row type="flex">
       <a-pagination
         class="pagination"
         :total="courses.length"
         :page-size="2"
       ></a-pagination>
-    </a-row>
+    </a-row> -->
   </a-row>
 </template>
 
