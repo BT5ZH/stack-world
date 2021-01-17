@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     getUserSig() {
-      axios
+      return axios
         .post("/pc/v1/activities/user_sig", {
           user_id: this.uid,
         })
@@ -83,22 +83,30 @@ export default {
       });
     },
     joinLiveRoom() {
-      const roomId = this.lessonId;
-      this.client
-        .join({ roomId, role: "anchor" })
-        .catch((error) => {
-          this.$notification.error({
-            message: "温馨提示",
-            description: "未能成功进入教室，请刷新后重试",
+      let joinRoom = (client, roomId) => {
+        client
+          .join({ roomId, role: "anchor" })
+          .catch((error) => {
+            this.$notification.error({
+              message: "温馨提示",
+              description: "未能成功进入教室，请刷新后重试",
+            });
+          })
+          .then(() => {
+            this.$notification.success({
+              message: "温馨提示",
+              description: "成功进入教室，系统正在播放您的声音",
+            });
+            this.roomDisabled = true;
           });
-        })
-        .then(() => {
-          this.$notification.success({
-            message: "温馨提示",
-            description: "成功进入教室，系统正在播放您的声音",
-          });
-          this.roomDisabled = true;
+      };
+      if (!this.localStream) {
+        this.createStream();
+        this.getUserSig().then(() => {
+          joinRoom(this.client, this.lessonId);
         });
+      }
+      joinRoom(this.client, this.lessonId);
     },
     createStream() {
       const localStream = TRTC.createStream({
@@ -130,6 +138,8 @@ export default {
       this.client
         .leave()
         .then(() => {
+          this.localStream.close();
+          this.localStream = null;
           console.error("退房成功 ");
           // 退房成功，可再次调用client.join重新进房开启新的通话。
         })
@@ -150,6 +160,7 @@ export default {
           this.$message.info("可以观看直播啦");
         });
     },
+    joinRoom() {},
   },
   mounted() {
     this.createStream();
