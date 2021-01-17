@@ -8,9 +8,9 @@
             alt="example"
             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           />
-          <a-row type="flex" justify="space-between">
-            <a-col :span="10">
-              <h3>{{ course.lesson_name }}</h3>
+          <a-row type="flex" justify="space-between" >
+            <a-col :span="10" >
+              <h3 style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ course.lesson_name }}</h3>
             </a-col>
             <a-col :span="8">
               <span style="float: left; color: #bbb">
