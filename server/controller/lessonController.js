@@ -112,6 +112,10 @@ exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
         cover:item.cover,
         lesson_name:item.course_id.name,
         total_study_hours:item.course_id.total_study_hours,
+        course_type:item.course_id.course_type,
+        credit:item.course_id.credit,
+        subOrg_name:item.course_id.subOrg_name,
+        major_name:item.course_id.major_name,
         prepareNumber:classlength,
     }
   })
