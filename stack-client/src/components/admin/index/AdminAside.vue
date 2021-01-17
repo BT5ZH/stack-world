@@ -5,10 +5,10 @@
     @click="route_to"
     :default-open-keys="['teaching']"
   >
-    <!-- <a-menu-item key="admin_resource">
+    <a-menu-item key="admin_resource">
       <a-icon type="arrow-up" />
       <span>资源管理</span>
-    </a-menu-item> -->
+    </a-menu-item>
 
     <!-- 教学信息管理 -->
     <a-sub-menu key="teaching">
