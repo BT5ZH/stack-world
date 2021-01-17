@@ -7,8 +7,8 @@
       style="padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <span>总时长：</span>
-        <a-input placeholder="50" v-model="form.time" style="width: 80%" />
+        <h3>总时长：{{this.$route.query.courseHours}}</h3>
+        <!-- <a-input v-model="form.time" style="width: 80%" /> -->
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
         <span>描述：</span>
@@ -22,8 +22,8 @@
       <a-col :span="4">
         <a-row type="flex" justify="end" class="header-btn">
           <a-space>
-            <a-button type="primary" @click="pptvisible = true">
-              选择PPT
+            <a-button type="primary" @click="componentId = 'PreResource'">
+              上传资源
             </a-button>
             <a-button type="primary" @click="save"> 保存 </a-button>
           </a-space>
@@ -209,7 +209,7 @@
       <br />
       <a-row class="contextstyle">
         <a-empty :description="false" v-if="isempty" />
-        <component :is="componentId" v-else></component>
+        <component @selectppt="pptvisible = true" :is="componentId" v-else></component>
       </a-row>
     </a-row>
   </a-row>
@@ -223,6 +223,7 @@ import PreVote from "./preselect/PreVote.vue";
 import PreSign from "./preselect/PreSign.vue";
 import PreDocument from "./preselect/PreDocument.vue";
 import PreTest from "./preselect/PreTest.vue";
+import PreResource from "./preselect/PreResource"
 import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
@@ -237,11 +238,13 @@ export default {
     PreSign,
     PreDocument,
     PreTest,
+    PreResource
     // PreHomework,
   },
   data() {
     return {
       // 讲课标记
+      // courseHours:this.$route.query.courseHours,
       radioStyle: {
         display: "block",
         height: "30px",
@@ -253,7 +256,7 @@ export default {
       wrapperCol: { span: 14 },
       form: {
         desc1: "",
-        time: 50,
+        time: this.$route.query.courseHours,
       },
       show: false,
       time: 10,
@@ -515,6 +518,7 @@ export default {
     },
   },
   mounted() {
+    this.form.time = this.$route.query.courseHours
     this.$store.dispatch("teacher/getSources", {
       lesson_id: this.lesson_id,
       teacher_id: this.uid,
