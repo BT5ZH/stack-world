@@ -2,18 +2,18 @@
   <div>
     <course-calendar />
     <!-- <recent-edit /> -->
-    <index/>
+    <course/>
   </div>
 </template>
 
 <script>
 import CourseCalendar from "./CourseCalendar";
 //import RecentEdit from "./RecentEdit";
-import Index from "./../course/Index.vue"
+import Course from "./../course/Course.vue"
 
 export default {
   //components: { CourseCalendar, RecentEdit },
-  components: { CourseCalendar, Index },
+  components: { CourseCalendar, Course },
   data() {
     return {};
   },
