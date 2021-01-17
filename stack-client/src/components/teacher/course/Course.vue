@@ -61,7 +61,7 @@ export default {
       let recentCourses = localStorage.getItem("recent-courses") || "[]";
       recentCourses = JSON.parse(recentCourses);
       let curCourse = recentCourses.findIndex((item) => item._id === lessonId);
-      console.log(curCourse);
+      // console.log(curCourse);
       if (curCourse >= 0) {
         recentCourses.splice(curCourse, 1);
       }

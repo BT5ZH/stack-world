@@ -2,13 +2,13 @@
   <a-row>
     <a-col :span="18" :push="3">
       <h1 class="sign-title">提问结果</h1>
-      <div class="teacher_question">问题:&nbsp;{{ask_answer.question.stem}}</div>
-      <div class="teacher_question">正确答案:&nbsp;{{ask_answer.question.right_answer}}</div>
-      <a-list
-        size="small"
-        bordered
-        v-if="ask_answer.id"
-      >
+      <div class="teacher_question">
+        问题:&nbsp;{{ ask_answer.question.stem }}
+      </div>
+      <div class="teacher_question">
+        正确答案:&nbsp;{{ ask_answer.question.right_answer }}
+      </div>
+      <a-list size="small" bordered v-if="ask_answer.id">
         <template>
           <a-list-item>
             <span class="name"> {{ ask_answer.student }} </span>

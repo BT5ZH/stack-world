@@ -241,6 +241,7 @@ export default {
   },
   data() {
     return {
+      // 讲课标记
       radioStyle: {
         display: "block",
         height: "30px",
@@ -288,8 +289,25 @@ export default {
     };
   },
   computed: {
+    lecture() {
+      //判断有无演讲
+      let lecture_status;
+      for (let i = 0; i < this.steps.length; i++) {
+        if (this.steps[i].title == "讲课") {
+          lecture_status = true;
+          break;
+        } else {
+          lecture_status = false;
+        }
+      }
+      return lecture_status;
+    },
     isempty() {
-      return !!Object.keys(this.current).length;
+      if (this.current == -1) {
+        return true;
+      } else {
+        return false;
+      }
     },
     ...mapGetters({
       curCourseHour: "teacher/curCourseHour",
@@ -313,6 +331,16 @@ export default {
     },
     save() {
       try {
+        // 判断有无讲课以及有无ppt
+        if (this.lecture) {
+          if (this.ppt.id == "") {
+            this.$info({
+              title: "讲课必须要有ppt哦",
+              zIndex: 10001,
+            });
+            return;
+          }
+        }
         this.$store.commit("teacher/updateCourseHourInfo", {
           time: this.form.time,
           description: this.form.desc1,
