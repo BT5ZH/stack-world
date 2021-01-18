@@ -95,7 +95,7 @@ exports.collectResource = catchAsync(async (req, res) => {
 /***
  * 根据teacher_id、lesson_id获取该教师的某门课的资源
  */
-exports.getLessonResourceOfTeacher = catchAsync(async (req, res) => {
+exports.getLessonResourceOfTeacher = catchAsync(async (req, res, next) => {
   var authorId = req.body.teacher_id;
   var lessonId = req.body.lesson_id;
   var resource = await Resource.find({
@@ -135,18 +135,19 @@ exports.deleteCollectResource = catchAsync(async (req, res) => {
   });
 });
 
-exports.getURLByIDs= catchAsync(async (req, res) => {
-  let data=[]
-  console.log(req.body.resourceIDs)
-  for(let i=0;i<req.body.resourceIDs.length;i++){
- 
-    let url = await Resource.findById(req.body.resourceIDs[i]).select("_id url name")
-    
+exports.getURLByIDs = catchAsync(async (req, res) => {
+  let data = [];
+  console.log(req.body.resourceIDs);
+  for (let i = 0; i < req.body.resourceIDs.length; i++) {
+    let url = await Resource.findById(req.body.resourceIDs[i]).select(
+      "_id url name"
+    );
+
     if (!url) {
       return next(new AppError("资源不存在", 404));
     }
-  
-    data.push(url)
+
+    data.push(url);
   }
 
   res.status(200).json({
