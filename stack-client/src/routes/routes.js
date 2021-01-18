@@ -202,7 +202,7 @@ export const routes = [
         path: "precourse",
         name: "teacher_precourse",
         component: TeacherPreCourse,
-        props: (route) => ({ query: route.query.courseId }),
+        props: (route) => ({ query: route.query }),
       },
     ],
   },

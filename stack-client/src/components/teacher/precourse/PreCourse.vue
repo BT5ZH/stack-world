@@ -27,6 +27,9 @@ export default {
       return `${window.innerHeight - 64}px`;
     },
   },
+  mounted() {
+    console.log(this.$route.query);
+  },
 };
 </script>
 

@@ -82,22 +82,6 @@ export default {
   data() {
     return {
       courseMap: courseLayout.courseMap,
-      // courseMap: {
-      //   专业核心课程: { name: "专业核心课程", color: "#96BFFF", icon: "home" },
-      //   基础课: { name: "基础课", color: "#FFDB5C", icon: "experiment" },
-      //   专业方向课程: {
-      //     name: "专业方向课程",
-      //     color: "#9FE6B8",
-      //     icon: "bank",
-      //   },
-      //   专业必修课: { name: "专业必修课", color: "#ff9f7f", icon: "question" },
-      //   专业技能课程: {
-      //     name: "专业必修课",
-      //     color: "#ff9f7f",
-      //     icon: "question",
-      //   },
-      //   其他: { name: "其他", color: "#e7bcf3", icon: "bank" },
-      // },
     };
   },
   methods: {
@@ -114,7 +98,7 @@ export default {
       let recentCourses = localStorage.getItem("recent-courses") || "[]";
       recentCourses = JSON.parse(recentCourses);
       let curCourse = recentCourses.findIndex((item) => item._id === lessonId);
-      // console.log(curCourse);
+      console.log(this.courses[courseIndex]);
       if (curCourse >= 0) {
         recentCourses.splice(curCourse, 1);
       }
@@ -123,14 +107,14 @@ export default {
         "recent-courses",
         JSON.stringify(Array.from(new Set(recentCourses)).slice(0, 4))
       );
-      const lessonName = this.courses[courseIndex].lesson_name;
+      // const lessonName = this.courses[courseIndex].lesson_name;
       this.$router.push({
         name: "teacher_precourse",
         query: {
           lessonId,
-          lessonName,
-          prepareNumber: this.courses[courseIndex].prepareNumber,
-          courseHours: this.courses[courseIndex].total_study_hours,
+          lessonName: this.courses[courseIndex].course_id.name,
+          prepareNumber: this.courses[courseIndex].prepareLesson.length,
+          courseHours: this.courses[courseIndex].course_id.total_study_hours,
         },
       });
     },
