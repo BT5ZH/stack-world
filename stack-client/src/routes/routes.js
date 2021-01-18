@@ -39,7 +39,7 @@ const AdminUpgrade = () => import("@/components/admin/device/upgrade/Upgrade");
 // ------------------------  teacher router  ------------------------------
 const TeacherRouter = () => import("@/components/teacher/index/TeacherRouter");
 const TeacherIndex = () => import("@/components/teacher/index/IndexPage");
-const TeacherCourse = () => import("@/components/teacher/course/Index");
+// const TeacherCourse = () => import("@/components/teacher/course/Index");
 const TeacherCourseDetail = () =>
   import("@/components/teacher/coursedetail/index/CourseDetail");
 const TeacherPreCourse = () =>
@@ -190,7 +190,7 @@ export const routes = [
       {
         path: "course",
         name: "teacher_course",
-        component: TeacherCourse,
+       // component: TeacherCourse,
       },
       {
         path: "coursedetail",
