@@ -187,19 +187,11 @@ export const routes = [
         name: "teacher_index",
         component: TeacherIndex,
       },
-<<<<<<< HEAD
-      {
-        path: "course",
-        name: "teacher_course",
-       // component: TeacherCourse,
-      },
-=======
       // {
       //   path: "course",
       //   name: "teacher_course",
       //   component: TeacherCourse,
       // },
->>>>>>> c718fb0931bba804cb72a847cc8b43deeb591a2f
       {
         path: "coursedetail",
         name: "teacher_coursedetail",
