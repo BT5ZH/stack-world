@@ -6,13 +6,13 @@
           class="space"
           :style="{
             backgroundColor: `${
-              courseMap[course.course_id.course_type]['color']
+              courseMap[course.course_type]['color']
             }`,
           }"
           @click="prepareCourse(index)"
         >
           <a-icon
-            :type="courseMap[course.course_id.course_type]['icon']"
+            :type="courseMap[course.course_type]['icon']"
             class="room_icon"
           />
           <div
@@ -25,17 +25,17 @@
             <!-- <a-checkbox
               @change="onChange($event, course.lesson_name)"
             ></a-checkbox> -->
-            <p>代课老师：{{ course.teacher_id.name }}</p>
-            <a-tag color="#2db7f5">{{ course.course_id.evaluation }}</a-tag>
+            <p>代课老师：{{ course.teacher_name }}</p>
+            <a-tag color="#2db7f5">{{ course.evaluation }}</a-tag>
             <a-tag color="#ffb900"
-              >共{{ course.course_id.total_study_hours }}课时</a-tag
+              >共{{ course.total_study_hours }}课时</a-tag
             >
             <a-icon type="right-circle" style="font-size: 20px" />
           </div>
           <div>
-            <p>课程名：{{ course.course_id.name }}</p>
+            <p>课程名：{{ course.lesson_name }}</p>
             <p>
-              课程类型：{{ courseMap[course.course_id.course_type]["name"] }}
+              课程类型：{{ courseMap[course.course_type]["name"] }}
             </p>
           </div>
         </a-card>
@@ -73,7 +73,7 @@ export default {
         name: "teacher_precourse",
         query: {
           lessonId,
-          lessonName,
+          // lessonName,
           prepareNumber: this.courses[courseIndex].prepareNumber,
           courseHours: this.courses[courseIndex].total_study_hours,
         },
