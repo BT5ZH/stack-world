@@ -1,6 +1,7 @@
 <template>
   <div>
     <course-calendar />
+    <a-divider> 我的课程 </a-divider>
     <course />
   </div>
 </template>
