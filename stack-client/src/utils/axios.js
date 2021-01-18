@@ -7,5 +7,5 @@ const proURLS = "https://test.w-click.cn/api";
 export default axios.create({
   baseURL: devURL,
   headers: { Authorization: "Bearer " + token },
-  timeout: 5000,
+  timeout: 100000,
 });

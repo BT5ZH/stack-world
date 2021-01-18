@@ -180,10 +180,8 @@ exports.getLessonResourceOfSubOrg = catchAsync(async (req, res) => {
     }
   }
   
+  //let allResources = await Resource.find();
 
-  // if (resource.length === 0 || !resource) {
-  //   return next(new AppError("资源不存在", 404));
-  // }
   res.status(200).json({
     status: true,
     allResources,

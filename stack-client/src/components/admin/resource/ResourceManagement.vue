@@ -180,7 +180,9 @@ export default {
          subOrg_name:subOrgName
        })
        .then(res => {
-          this.resourceList = res.resources;
+          this.resourceList = res.data.allResources;
+           console.log("this.resourceList99999999999999999999" );
+          console.log(this.resourceList);
         })
         .catch(err=>{
           console.log(err);
