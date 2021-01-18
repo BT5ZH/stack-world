@@ -35,7 +35,7 @@
             >
               <a-select-option
                 v-for="iTeacher in instructorList"
-                :value="iTeacher.name"
+                :value="iTeacher._id"
                 :key="iTeacher._id"
               >
                 {{ iTeacher.name }} | {{ iTeacher.title }}
@@ -133,6 +133,7 @@ const data = [
 ];
 
 import axiosInstance from "../../../utils/axios.js";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -153,13 +154,14 @@ export default {
       // if switch close, just check resource of college
       this.currentCollege = value;
       //if switch open, do NOTHING
-      this.getTeacherName(value);
+      //this.getTeacherName(this.currentCollege);
+      this.getResourcesOfSubOrg(this.currentCollege)
     },
     peopleChange(value) {
       console.log(`Selected: ${value}`);
       this.currentTeacher = value;
       //if switch open, check out resource of people in college
-      this.getResources(this.currentCollege, value);
+      this.getResources(this.currentCollege, this.currentTeacher);
     },
     switchChange(checked) {
       console.log(`a-switch to ${checked}`);
@@ -171,8 +173,23 @@ export default {
         this.peopleSwitch = true;
       }
     },
+    getResourcesOfSubOrg(subOrgName){
+       this.$store.dispatch("admin/getResourcesOfOneCollege", 
+       {
+         org_name:this.org_name,
+         subOrg_name:subOrgName
+       })
+       .then(res => {
+          this.resourceList = res.data.allResources;
+           console.log("this.resourceList99999999999999999999" );
+          console.log(this.resourceList);
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+    },
     async getSubOrgsName() {
-      const orgId = "5facabb2cf3bb2002b4b3f38";
+      const orgId = this.oid;///////////////
       const url = "/pc/v1/organizations/" + orgId + "/suborgs";
       try {
         const { data } = await axiosInstance.get(url);
@@ -181,19 +198,20 @@ export default {
         console.log(err);
       }
     },
-    async getTeacherName(value) {
-      console.log(value);
+    async getTeacherName(subOrgName) {
       // const orgId="5facabb2cf3bb2002b4b3f38"
       const queryObject = {
-        org_name: "陕西师范大学",
-        subOrg_name: value,
+        org_name: this.org_name,
+        subOrg_name: subOrgName,
         role: "teacher",
       };
       let queryString = "";
       Object.keys(queryObject).forEach((key) => {
         queryString += key + "=" + queryObject[key] + "&";
       });
+  
       queryString = "?" + queryString.slice(0, -1);
+   
       const url = "/pc/v1/users/multipleUsers" + queryString;
       console.log(url);
       try {
@@ -204,12 +222,12 @@ export default {
         console.log(err);
       }
     },
-    async getResources(college, value) {
-      console.log(value);
+    async getResources(college, teacher) {
+     
       const queryObject = {
-        org_name: "陕西师范大学",
-        subOrg_name: college,
-        authorId: "26052730-3dbc-11eb-8646-0f45281ed99c",
+        //org_name: this.org_name,
+        //subOrg_name: college,
+        authorId: teacher,////////////////////////////
       };
       let queryString = "";
       Object.keys(queryObject).forEach((key) => {
@@ -217,7 +235,7 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/resources" + queryString;
-
+      
       try {
         const { data } = await axiosInstance.get(url);
         this.resourceList = data.resources;
@@ -227,10 +245,18 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapState({
+      oid: (state) => state.public.oid,
+      uid: (state) => state.public.uid,
+      org_name:(state)=>state.public.org_name,
+    }),
+  },
   created: function() {},
   mounted() {
     this.getSubOrgsName();
     this.getTeacherName();
+    this.$store.dispatch("public/getOrgnizationName", this.oid);
   },
 };
 </script>
