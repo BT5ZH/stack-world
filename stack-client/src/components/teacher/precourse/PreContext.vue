@@ -1,13 +1,13 @@
 <template>
-  <a-row style="height: 100%">
+  <div style="height: 100%">
     <a-row
       type="flex"
       justify="space-between"
       align="middle"
-      style="padding: 20px"
+      style="background: #f9f0fa; padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <h3>总时长：{{this.$route.query.courseHours}}</h3>
+        <h3>总时长：{{ this.$route.query.courseHours }}</h3>
         <!-- <a-input v-model="form.time" style="width: 80%" /> -->
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
@@ -20,19 +20,20 @@
         />
       </a-col>
       <a-col :span="4">
-        <a-row type="flex" justify="end" class="header-btn">
+        <a-button type="primary" @click="save"> 保存 </a-button>
+        <!-- <a-row type="flex" justify="end" class="header-btn">
           <a-space>
             <a-button type="primary" @click="componentId = 'PreResource'">
               上传资源
             </a-button>
-            <a-button type="primary" @click="save"> 保存 </a-button>
+            
           </a-space>
-        </a-row>
-        <br />
-        <a-row type="flex" justify="end" v-if="!publish"
+        </a-row> -->
+        <!-- <br /> -->
+        <!-- <a-row type="flex" justify="end" v-if="!publish"
           >已选择PPT：{{ ppt.name }}
         </a-row>
-        <a-row type="flex" justify="end" v-else>请选择PPT </a-row>
+        <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
       </a-col>
     </a-row>
     <a-modal title="选择ppt" v-model="pptvisible" :zIndex="10001" width="40%">
@@ -209,10 +210,29 @@
       <br />
       <a-row class="contextstyle">
         <a-empty :description="false" v-if="isempty" />
-        <component @selectppt="pptvisible = true" :is="componentId" v-else></component>
+        <component
+          @selectppt="pptvisible = true"
+          :is="componentId"
+          v-else
+        ></component>
       </a-row>
     </a-row>
-  </a-row>
+    <div class="resourceBlock" style="background: #f9f0fa; padding: 20px">
+      <div :span="4">
+        <a-button type="primary"> 上传资源 </a-button>
+      </div>
+      <div>该区域回显上传资源列表</div>
+    </div>
+    <div
+      class="resourceBlock"
+      style="background: #f9f0fa; padding: 20px; margin-top: 20px"
+    >
+      <div :span="4">
+        <a-button type="primary"> 导入试题 </a-button>
+      </div>
+      <div>该区域回显试题资源列表</div>
+    </div>
+  </div>
 </template>
 <script>
 // import PreHomework from "./preselect/PreHomework.vue";
@@ -223,7 +243,7 @@ import PreVote from "./preselect/PreVote.vue";
 import PreSign from "./preselect/PreSign.vue";
 import PreDocument from "./preselect/PreDocument.vue";
 import PreTest from "./preselect/PreTest.vue";
-import PreResource from "./preselect/PreResource"
+// import PreResource from "./preselect/PreResource";
 import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
@@ -238,7 +258,7 @@ export default {
     PreSign,
     PreDocument,
     PreTest,
-    PreResource
+    // PreResource,
     // PreHomework,
   },
   data() {
@@ -518,7 +538,7 @@ export default {
     },
   },
   mounted() {
-    this.form.time = this.$route.query.courseHours
+    this.form.time = this.$route.query.courseHours;
     this.$store.dispatch("teacher/getSources", {
       lesson_id: this.lesson_id,
       teacher_id: this.uid,
@@ -540,8 +560,9 @@ export default {
 }
 
 .box {
-  background: #fff;
+  background: #f9f0fa;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .contextstyle {
@@ -563,6 +584,9 @@ export default {
 .header-btn .ant-btn {
   margin: 0 5px;
 }
+/* .resourceBlock {
+  margin-top: 20px;
+  background-color: #f9f0fa;
+} */
 </style>
-<style>
-</style>
+<style></style>
