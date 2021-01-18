@@ -130,6 +130,7 @@ export default {
           lessonId,
           lessonName,
           prepareNumber: this.courses[courseIndex].prepareNumber,
+          courseHours: this.courses[courseIndex].total_study_hours,
         },
       });
     },

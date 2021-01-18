@@ -16,6 +16,21 @@ const courseMap = {
     color: "#ff9f7f",
     icon: "question",
   },
+  实践教学课: {
+    name: "实践教学课",
+    color: "#ff9f7f",
+    icon: "question",
+  },
+  相关学科基础课: {
+    name: "相关学科基础课",
+    color: "#ff9f7f",
+    icon: "question",
+  },
+  本学科基础课: {
+    name: "相关学科基础课",
+    color: "#ff9f7f",
+    icon: "question",
+  },
   其他: { name: "其他", color: "#e7bcf3", icon: "bank" },
 };
 

@@ -8,7 +8,7 @@
     <a-col :span="4" class="sider">
       <pre-collapse></pre-collapse>
     </a-col>
-    <a-col :span="20" style="background: #f0f2f5; padding: 10px">
+    <a-col :span="20">
       <pre-context></pre-context>
     </a-col>
   </a-row>
