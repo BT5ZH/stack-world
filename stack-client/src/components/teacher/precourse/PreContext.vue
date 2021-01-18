@@ -7,7 +7,7 @@
       style="background: #f9f0fa; padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <h3>总时长：{{ this.$route.query.courseHours }}</h3>
+        <h3>总时长：{{ form.time }}</h3>
         <!-- <a-input v-model="form.time" style="width: 80%" /> -->
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
@@ -264,7 +264,6 @@ export default {
   data() {
     return {
       // 讲课标记
-      // courseHours:this.$route.query.courseHours,
       radioStyle: {
         display: "block",
         height: "30px",
@@ -517,7 +516,7 @@ export default {
       this.current = 0;
       const { PPT, description, duration, name, nodes } = value;
       this.form.desc1 = description;
-      this.form.time = duration;
+      // this.form.time = duration;
       if (PPT.rsId && this.pptsource.some((item) => item.id === PPT.rsId)) {
         this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
       } else {
