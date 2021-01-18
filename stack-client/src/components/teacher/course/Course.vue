@@ -50,16 +50,18 @@
             <!-- <a-checkbox
               @change="onChange($event, course.lesson_name)"
             ></a-checkbox> -->
-            <p>{{ course.course_id.name }}</p>
+            <p>代课老师：{{ course.teacher_id.name }}</p>
             <a-tag color="#2db7f5">{{ course.course_id.evaluation }}</a-tag>
-            <a-tag color="#ffb900">{{
-              courseMap[course.course_id.course_type]["name"]
-            }}</a-tag>
+            <a-tag color="#ffb900"
+              >共{{ course.course_id.total_study_hours }}课时</a-tag
+            >
             <a-icon type="right-circle" style="font-size: 20px" />
           </div>
           <div>
-            <p>课程负责人：{{ course.teacher_id.name }}</p>
-            <p>代课老师：{{ course.teacher_id.name }}</p>
+            <p>课程名：{{ course.course_id.name }}</p>
+            <p>
+              课程类型：{{ courseMap[course.course_id.course_type]["name"] }}
+            </p>
           </div>
         </a-card>
       </a-col>
