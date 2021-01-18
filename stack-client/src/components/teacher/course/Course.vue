@@ -73,9 +73,9 @@ export default {
         name: "teacher_precourse",
         query: {
           lessonId,
-          lessonName,
-          prepareNumber: this.courses[courseIndex].prepareNumber,
-          courseHours: this.courses[courseIndex].total_study_hours,
+          lessonName: this.courses[courseIndex].course_id.name,
+          prepareNumber: this.courses[courseIndex].prepareLesson.length,
+          courseHours: this.courses[courseIndex].course_id.total_study_hours,
         },
       });
     },
