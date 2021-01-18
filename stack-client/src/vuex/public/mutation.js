@@ -27,6 +27,9 @@ const mutation = {
     }
     listeners[channel] = { ...listeners[channel], [actionType]: callback };
   },
+  updateOrganizationName(state, params) {
+    state.org_name = params;
+  },
 };
 
 export default mutation;

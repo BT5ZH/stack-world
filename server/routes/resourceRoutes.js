@@ -21,7 +21,10 @@ router
 
 router
   .route("/getURLByIDs")
-  .post(resourceController.getURLByIDs);
+  .post(authController.protect, resourceController.getURLByIDs);
+router
+  .route("/getLessonResourceOfSubOrg")
+  .post(resourceController.getLessonResourceOfSubOrg);
   
 // // 测试
 router

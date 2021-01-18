@@ -44,7 +44,7 @@ exports.getOrganization = catchAsync(async (req, res, next) => {
     return next(new AppError("该课程不存在", 404));
   }
 
-  console.log(organization);
+  //console.log(organization);
   res.status(200).json({
     status: "success",
     data: {
