@@ -37,7 +37,7 @@ const action = {
       const url = "pc/v1/lessons/getLessonsByTeacherID";
       const requestData = { teacher_id };
       const { data } = await axios.post(url, requestData);
-      console.log("data.abstractInfo-----")
+      console.log("data.abstractInfo-----");
       console.log(data.abstractInfo);
       commit("updateTeacherCourses", data.abstractInfo);
     } catch (error) {
@@ -96,6 +96,7 @@ const action = {
       const { data } = await axios.post(url, requestData);
       commit("updateSources", data.resource);
     } catch (error) {
+      commit("updateSources", []);
       console.error(error);
     }
   },
