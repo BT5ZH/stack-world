@@ -1,7 +1,28 @@
 <template>
   <a-row>
     <a-row class="cards-area" :gutter="30">
-      <a-col :span="4" v-for="(source, index) in sourceList" :key="index">
+      <a-table
+        :columns="columns"
+        :data-source="sourceList"
+        bordered
+        :pagination="{
+          total: sourceList.length,
+          pageSize: 2,
+          'hide-on-single-page': true,
+          'show-quick-jumper': true,
+        }"
+        rowKey="sourceId"
+      >
+        <template #tags="tags">
+          <a-tag v-for="(item, index) in tags" :key="index" color="#2db7f5">
+            {{ item }}
+          </a-tag>
+        </template>
+        <template #operation="record">
+          <a-button type="link" @click="download(record)">查看</a-button>
+        </template>
+      </a-table>
+      <!-- <a-col :span="4" v-for="(source, index) in sourceList" :key="index">
         <a-card style="margin-top: 15px" size="small">
           <template #title>
             <img
@@ -31,22 +52,21 @@
           </template>
 
           <template #actions class="ant-card-actions">
-            <!-- <a-button type="link">编辑</a-button> -->
             <a-button type="link" @click="download(source)">查看</a-button>
-            <!-- <a-button type="link">删除</a-button> -->
           </template>
         </a-card>
-      </a-col>
+      </a-col> -->
     </a-row>
 
-    <a-row type="flex" justify="start" style="margin-top: 50px">
+    <!-- <a-row type="flex" justify="start" style="margin-top: 50px">
       <a-pagination
         class="pagination"
-        :total="resourceList.length"
+        :total="sourceList.length"
         :pageSize="pageSize"
+        hideOnSinglePage="true"
         @change="pageChange"
       ></a-pagination>
-    </a-row>
+    </a-row> -->
   </a-row>
 </template>
 
@@ -55,7 +75,35 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
   data() {
+    const columns = [
+      {
+        title: "资源名",
+        align: "center",
+        dataIndex: "sourceName",
+        ellipsis: true,
+        width: "30%",
+      },
+      {
+        title: "资源类型",
+        dataIndex: "rsType",
+        align: "center",
+        width: "10%",
+      },
+      {
+        title: "关键字",
+        dataIndex: "tags",
+        scopedSlots: { customRender: "tags" },
+        align: "center",
+        width: "30%",
+      },
+      {
+        title: "操作",
+        align: "center",
+        scopedSlots: { customRender: "operation" },
+      },
+    ];
     return {
+      columns,
       inputVisible: false,
       inputValue: "",
       localVisible: false,
@@ -123,16 +171,13 @@ export default {
       }
       return "white";
     },
-    onSearch() {},
     download(source) {
-      // setTimeout(() => {
       let a = document.createElement("a");
       let event = new MouseEvent("click");
       a.download = source.sourceName;
       a.target = "_blank";
       a.href = source.url;
       a.dispatchEvent(event);
-      // }, 1000);
     },
     pageChange(page, pageSize) {
       this.curPage = page;

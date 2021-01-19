@@ -8,6 +8,7 @@
         :pagination="{
           total: tableData.length,
           pageSize: 2,
+          'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
         rowKey="index"
@@ -136,6 +137,8 @@ export default {
   },
   methods: {},
   mounted() {
+    console.log("this.tableData");
+    console.log(this.tableData);
     const lesson_id = this.$route.query.lessonId;
     const teacher_id = this.$store.state.public.uid;
     this.$store.dispatch("teacher/getquestionBank", { lesson_id, teacher_id });

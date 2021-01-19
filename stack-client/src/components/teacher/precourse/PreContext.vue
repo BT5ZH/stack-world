@@ -7,7 +7,7 @@
       style="background: #f9f0fa; padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <h3>总时长：{{ form.time }}</h3>
+        <h3>总时长：{{ courseHours }}</h3>
         <!-- <a-input v-model="form.time" style="width: 80%" /> -->
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
@@ -155,7 +155,6 @@
         <div>
           <a-radio-group
             v-model="componentId"
-            default-value="PreTeaching"
             button-style="solid"
             size="small"
           >
@@ -192,6 +191,7 @@
       >
         <a-col :span="24" @contextmenu.prevent="deletesteps">
           <a-steps
+            v-if="steps"
             size="small"
             progress-dot
             v-model="current"
@@ -209,7 +209,7 @@
       <br />
       <br />
       <a-row class="contextstyle">
-        <a-empty :description="false" v-if="isempty" />
+        <div v-if="isempty" />
         <component
           @selectppt="pptvisible = true"
           :is="componentId"
@@ -223,6 +223,7 @@
           上传资源
         </a-button>
       </div>
+      <br/>
       <local-uploader :visible.sync="uploadVisible"></local-uploader>
       <resource-list></resource-list>
     </div>
@@ -279,18 +280,18 @@ export default {
   data() {
     return {
       // 讲课标记
+      courseHours: this.$route.query.courseHours,
       radioStyle: {
         display: "block",
         height: "30px",
         lineHeight: "30px",
       },
-      pptsource: [],
       ppt: {},
       labelCol: { span: 3 },
       wrapperCol: { span: 14 },
       form: {
         desc1: "",
-        time: this.$route.query.courseHours,
+        time: 50,
       },
       show: false,
       time: 10,
@@ -350,6 +351,7 @@ export default {
     },
     ...mapGetters({
       curCourseHour: "teacher/curCourseHour",
+      pptsource: "teacher/getPPTSource",
     }),
     ...mapState({
       uid: (state) => state.public.uid,
@@ -411,6 +413,7 @@ export default {
       this.componentId = result;
     },
     addsteps() {
+      this.componentId = "PreTeaching";
       this.sumtime = 0;
       this.steps.map((item) => {
         this.sumtime += item.description.split("分钟")[0] - 0;
@@ -449,6 +452,7 @@ export default {
       }
     },
     modalClose() {
+      this.componentId = "";
       this.modalvisible = false;
     },
     changesteps() {
@@ -505,15 +509,21 @@ export default {
         cancelText: "取消",
         zIndex: 10001,
         onOk() {
-          let time = that.steps[that.current].description.split("分钟")[0];
-          that.sumtime -= time;
-          that.steps.splice(that.current, 1);
-          that.$store.commit("teacher/deleteNode", that.current);
-          that.current = that.steps.length - 1;
-          that.addChange(that.current);
+          try {
+            let time = that.steps[that.current].description.split("分钟")[0];
+            that.sumtime -= time;
+            that.steps.splice(that.current, 1);
+            that.$store.commit("teacher/deleteNode", that.current);
+            that.current = that.steps.length - 1;
+            that.addChange(that.current);
+          } catch (err) {
+            console.log("that.steps");
+            console.log(that.steps);
+            console.log(err);
+          }
         },
         onCancel() {
-          console.log("Cancel");
+          // console.log("Cancel");
         },
       });
     },
@@ -554,12 +564,10 @@ export default {
     },
   },
   mounted() {
-    this.form.time = this.$route.query.courseHours;
     this.$store.dispatch("teacher/getSources", {
       lesson_id: this.lesson_id,
       teacher_id: this.uid,
     });
-    this.pptsource = this.$store.getters["teacher/getPPTSource"];
   },
 };
 </script>
