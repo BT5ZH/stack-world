@@ -5,9 +5,7 @@
         <a-card
           class="space"
           :style="{
-            backgroundColor: `${
-              courseMap[course.course_type]['color']
-            }`,
+            backgroundColor: `${courseMap[course.course_type]['color']}`,
           }"
           @click="prepareCourse(index)"
         >
@@ -27,16 +25,12 @@
             ></a-checkbox> -->
             <p>代课老师：{{ course.teacher_name }}</p>
             <a-tag color="#2db7f5">{{ course.evaluation }}</a-tag>
-            <a-tag color="#ffb900"
-              >共{{ course.total_study_hours }}课时</a-tag
-            >
+            <a-tag color="#ffb900">共{{ course.total_study_hours }}课时</a-tag>
             <a-icon type="right-circle" style="font-size: 20px" />
           </div>
           <div>
             <p>课程名：{{ course.lesson_name }}</p>
-            <p>
-              课程类型：{{ courseMap[course.course_type]["name"] }}
-            </p>
+            <p>课程类型：{{ courseMap[course.course_type]["name"] }}</p>
           </div>
         </a-card>
       </a-col>
@@ -69,11 +63,12 @@ export default {
         "recent-courses",
         JSON.stringify(Array.from(new Set(recentCourses)).slice(0, 4))
       );
+      console.log(this.courses[courseIndex]);
       this.$router.push({
         name: "teacher_precourse",
         query: {
           lessonId,
-          lessonName: this.courses[courseIndex].name,
+          lessonName: this.courses[courseIndex].lesson_name,
           prepareNumber: this.courses[courseIndex].prepareNumber,
           courseHours: this.courses[courseIndex].total_study_hours,
         },
