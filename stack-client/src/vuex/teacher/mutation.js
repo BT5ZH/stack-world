@@ -25,15 +25,20 @@ const mutation = {
       state.signList.push(params);
     }
   },
+  updaterandimSignResult(state, params) {
+    if (params) {
+      state.randomList.push(params);
+    }
+  },
   updatePickResult(state, params) {
     if (params) {
       state.pick_answer = params;
     }
   },
   updateAskResult(state, params) {
-    if(params){
+    if (params) {
       state.ask_answer = params
-    }else{
+    } else {
       console.error("学生端未返回数据");
     }
   },
@@ -91,6 +96,7 @@ const mutation = {
     state.nodes = state.courseHours[state.curCourseHour].nodes;
   },
   updateCurCourseHour(state, params) {
+    if (state.courseHours[params].nodes == undefined) return
     state.curCourseHour = params;
     state.nodes = state.courseHours[params].nodes;
   },

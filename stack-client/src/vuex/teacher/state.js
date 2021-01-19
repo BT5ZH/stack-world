@@ -5,6 +5,7 @@ const state = {
   lessonNames: [],
   // interaction data
   signList: [],
+  randomList: [],
   ask_answer: {},
   testAnswerList: [],
   voteAnswerList: [],

@@ -109,6 +109,7 @@
               <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
               <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
               <a-radio-button value="PreVote"> 投票 </a-radio-button>
+              <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
               <a-radio-button value="PreSign"> 签到 </a-radio-button>
               <a-popover trigger="hover">
                 <template slot="content">
@@ -164,6 +165,7 @@
               <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
               <a-radio-button value="PreVote"> 投票 </a-radio-button>
               <a-radio-button value="PreSign"> 签到 </a-radio-button>
+              <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
               <a-popover trigger="hover">
                 <template slot="content">
                   <p>视频,word,pdf,excel,图片等</p>
@@ -171,7 +173,7 @@
                 <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
               </a-popover>
               <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
-              <!-- <a-radio-button value="PreHomework"> 布置作业 </a-radio-button> -->
+              <!-- <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>PreRandomSign -->
             </a-space>
           </a-radio-group>
         </div>
@@ -223,7 +225,7 @@
           上传资源
         </a-button>
       </div>
-      <br/>
+      <br />
       <local-uploader :visible.sync="uploadVisible"></local-uploader>
       <resource-list></resource-list>
     </div>
@@ -242,12 +244,13 @@
   </div>
 </template>
 <script>
-// import PreHomework from "./preselect/PreHomework.vue";
+// import PreHomework from "./preselect/PreHomework.vue";PreRandomSign
 import PreTeaching from "./preselect/PreTeaching.vue";
 import PreQuestion from "./preselect/PreQuestion.vue";
 import PreCompete from "./preselect/PreCompete.vue";
 import PreVote from "./preselect/PreVote.vue";
 import PreSign from "./preselect/PreSign.vue";
+import PreRandomSign from "./preselect/PreRandomSign.vue";
 import PreDocument from "./preselect/PreDocument.vue";
 import PreTest from "./preselect/PreTest.vue";
 // import PreResource from "./preselect/PreResource";
@@ -274,6 +277,7 @@ export default {
     ResourceList,
     QuestionList,
     AddQuestion,
+    PreRandomSign,
     // PreResource,
     // PreHomework,
   },
@@ -307,7 +311,7 @@ export default {
         PreTeaching: "讲课",
         PreTest: "随堂测试",
         PreDocument: "文件下发",
-        // PreHomework: "布置作业",
+        PreRandomSign: "随机点名",
       },
       eventname: {
         PreVote: "Vote",
@@ -317,6 +321,7 @@ export default {
         PreTeaching: "Teach",
         PreTest: "Test",
         PreDocument: "Dispatch",
+        PreRandomSign: "randomSign",
       },
       slidervalue: 5,
       modalvisible: false,
@@ -387,12 +392,12 @@ export default {
           description: this.form.desc1,
         });
         const h = this.$createElement;
-        if (this.$store.state.nodes == []) {
-          this.$info({
-            title: "请注意先暂存事件",
-            zIndex: 10001,
-          });
-        }
+        // if (this.$store.state.nodes == []) {
+        //   this.$info({
+        //     title: "请注意先暂存事件",
+        //     zIndex: 10001,
+        //   });
+        // }
         this.$store.dispatch("teacher/updateCourseHour", {
           lesson_id: this.lesson_id,
           teacher_id: this.uid,
@@ -517,8 +522,6 @@ export default {
             that.current = that.steps.length - 1;
             that.addChange(that.current);
           } catch (err) {
-            console.log("that.steps");
-            console.log(that.steps);
             console.log(err);
           }
         },
@@ -530,37 +533,45 @@ export default {
   },
   watch: {
     curCourseHour(value) {
-      const type = {
-        Vote: "投票",
-        Sign: "签到",
-        Race: "抢答",
-        Ask: "提问",
-        Teach: "讲课",
-        Test: "随堂测试",
-        Dispatch: "文件下发",
-        // Homework: "布置作业",
-      };
-      this.current = 0;
-      const { PPT, description, duration, name, nodes } = value;
-      this.form.desc1 = description;
-      // this.form.time = duration;
-      if (PPT.rsId && this.pptsource.some((item) => item.id === PPT.rsId)) {
-        this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
-      } else {
-        this.ppt = { name: "", id: "", url: "" };
-      }
-      if (nodes.length) {
-        this.componentId = Object.keys(this.eventname).find((item) => {
-          return this.eventname[item] === nodes[0].tag;
+      try {
+        if (value == undefined) {
+          return;
+        }
+        const type = {
+          Vote: "投票",
+          Sign: "签到",
+          randomSign: "随机点名",
+          Race: "抢答",
+          Ask: "提问",
+          Teach: "讲课",
+          Test: "随堂测试",
+          Dispatch: "文件下发",
+          // Homework: "布置作业",
+        };
+        this.current = 0;
+        const { PPT, description, duration, name, nodes } = value;
+        this.form.desc1 = description;
+        // this.form.time = duration;
+        if (PPT.rsId && this.pptsource.some((item) => item.id === PPT.rsId)) {
+          this.ppt = { id: PPT.rsId, url: PPT.url, name: PPT.name };
+        } else {
+          this.ppt = { name: "", id: "", url: "" };
+        }
+        if (nodes.length) {
+          this.componentId = Object.keys(this.eventname).find((item) => {
+            return this.eventname[item] === nodes[0].tag;
+          });
+        } else {
+          this.componentId = "";
+        }
+        this.steps = nodes.map((item, index) => {
+          let time = nodes[index].time;
+          let titletag = type[item.tag];
+          return { title: titletag, description: time };
         });
-      } else {
-        this.componentId = "";
+      } catch (err) {
+        console.log(err);
       }
-      this.steps = nodes.map((item, index) => {
-        let time = nodes[index].time;
-        let titletag = type[item.tag];
-        return { title: titletag, description: time };
-      });
     },
   },
   mounted() {

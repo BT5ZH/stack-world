@@ -39,13 +39,9 @@ const action = {
   },
 
   async getCourseList({ commit }, timeData) {
-    // console.log("---req---");
-    // console.log(timeData);
     const url = "/pc/v1/timetables/getTimeTableFromStudentID";
     const { data } = await axios.post(url, timeData);
     errorHandler(data, "getCourseList");
-    // console.log("---data---");
-    // console.log(data.data.result);
     let courseList = data.data.result;
     if (courseList.length != 0) {
       courseList = courseList.map((item,index) => ({

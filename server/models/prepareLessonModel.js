@@ -55,6 +55,7 @@ const prepareLessonSchema = new mongoose.Schema(
                 "Vote",
                 "Dispatch",
                 "Test",
+                "randomSign",
               ],
             },
             time: String,

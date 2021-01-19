@@ -82,7 +82,7 @@
       </a-col>
 
       <a-col :span="9">
-         <a-row type="flex" justify="start">
+        <a-row type="flex" justify="start">
           <a-col :span="6">
             <h2 class="block-title">
               <a href="#">互动结果</a>
@@ -115,6 +115,7 @@ export default {
         vote: { name: "投票", desc: "请同学们开始投票" },
         dispatch: { name: "文件下发", desc: "请同学们查看文件" },
         pick: { name: "提问", desc: "请同学回答问题" },
+        randomsign: { name: "随机点名", desc: "请同学签到" },
       },
       curEvent: -1,
     };
@@ -253,10 +254,23 @@ export default {
         },
       });
     },
+    sendrandomsignEvent() {
+      if (this.signList[0].studentName == undefined) {
+        this.$message.info("请先发布大签到");
+        return;
+      }
+      socket.sendEvent("joinRoom", {
+        actionType: "randomSign",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: { studentList: this.signList[0].studentName },
+      });
+    },
   },
   computed: {
     ...mapState({
       onlineList: (state) => state.teacher.onlineList,
+      signList: (state) => state.teacher.signList,
       uid: (state) => state.public.uid,
       nodes: (state) => state.teacher.precourse.nodes,
     }),

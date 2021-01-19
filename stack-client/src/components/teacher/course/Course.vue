@@ -63,7 +63,6 @@ export default {
         "recent-courses",
         JSON.stringify(Array.from(new Set(recentCourses)).slice(0, 4))
       );
-      console.log(this.courses[courseIndex]);
       this.$router.push({
         name: "teacher_precourse",
         query: {

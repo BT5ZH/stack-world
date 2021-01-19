@@ -123,7 +123,7 @@ export default {
       let timeData = {
         student_id: this.uid,
         year: year,
-        semester: 1,
+        semester: semester,
       };
       this.$store.dispatch("student/getCourseList", timeData).then(() => {
         // 默认为今天

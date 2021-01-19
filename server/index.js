@@ -110,6 +110,9 @@ io.on("connection", (socket) => {
         case "sign":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
+        case "randomSign":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
         case "race":
           socket.to(roomChannel).emit(roomChannel, data);
           break;
@@ -135,6 +138,9 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":
+          io.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "randomSign":
           io.to(roomChannel).emit(roomChannel, data);
           break;
         case "pick":

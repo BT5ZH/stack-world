@@ -24,6 +24,7 @@ const state = {
     race: { start: false, question: {} },
     file: { fileList: [] },
     ask: {},
+    randomSign:{start:false, endTime: 0,randomStudent:""}
   },
   //student
   //首页目录分区

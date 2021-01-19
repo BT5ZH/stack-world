@@ -33,6 +33,10 @@ let lesson_listeners = {
     if (data.role === "teacher") return null;
     that.$store.commit("teacher/updateSignResult", data);
   },
+  randomSign(data, that) {
+    if (data.role === "teacher") return null;
+    that.$store.commit("teacher/updaterandimSignResult", data);
+  },
   enter(data, that, rawData) {
     if (data.role === "teacher") return null;
     that.$store.dispatch("teacher/getOnlineStudents", rawData.roomId);
