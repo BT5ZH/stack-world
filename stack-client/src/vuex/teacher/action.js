@@ -37,8 +37,14 @@ const action = {
       const url = "pc/v1/lessons/getLessonsByTeacherID";
       const requestData = { teacher_id };
       const { data } = await axios.post(url, requestData);
+<<<<<<< HEAD
       console.log(data);
       commit("updateTeacherCourses", data.fullInfo);
+=======
+      console.log("data.abstractInfo-----");
+      console.log(data.abstractInfo);
+      commit("updateTeacherCourses", data.abstractInfo);
+>>>>>>> e7faa4148356003e82f9fed526b3e4bfc219d38d
     } catch (error) {
       console.error(error);
     }
@@ -95,6 +101,7 @@ const action = {
       const { data } = await axios.post(url, requestData);
       commit("updateSources", data.resource);
     } catch (error) {
+      commit("updateSources", []);
       console.error(error);
     }
   },

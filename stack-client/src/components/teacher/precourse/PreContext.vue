@@ -219,18 +219,24 @@
     </a-row>
     <div class="resourceBlock" style="background: #f9f0fa; padding: 20px">
       <div :span="4">
-        <a-button type="primary"> 上传资源 </a-button>
+        <a-button type="primary" @click="uploadVisible = true">
+          上传资源
+        </a-button>
       </div>
-      <div>该区域回显上传资源列表</div>
+      <local-uploader :visible.sync="uploadVisible"></local-uploader>
+      <resource-list></resource-list>
     </div>
     <div
       class="resourceBlock"
       style="background: #f9f0fa; padding: 20px; margin-top: 20px"
     >
       <div :span="4">
-        <a-button type="primary"> 导入试题 </a-button>
+        <a-button type="primary" @click="questionVisible = true">
+          导入试题
+        </a-button>
       </div>
-      <div>该区域回显试题资源列表</div>
+      <add-question :visible.sync="questionVisible"></add-question>
+      <question-list></question-list>
     </div>
   </div>
 </template>
@@ -244,6 +250,11 @@ import PreSign from "./preselect/PreSign.vue";
 import PreDocument from "./preselect/PreDocument.vue";
 import PreTest from "./preselect/PreTest.vue";
 // import PreResource from "./preselect/PreResource";
+
+import LocalUploader from "@/components/teacher/coursedetail/resource/Local";
+import AddQuestion from "@/components/teacher/coursedetail/question/AddQuestion";
+import ResourceList from "./ResourceList";
+import QuestionList from "./QuestionList";
 import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
@@ -258,6 +269,10 @@ export default {
     PreSign,
     PreDocument,
     PreTest,
+    LocalUploader,
+    ResourceList,
+    QuestionList,
+    AddQuestion,
     // PreResource,
     // PreHomework,
   },
@@ -308,6 +323,8 @@ export default {
       pptvisible: false,
       selectevent: "",
       componentId: "",
+      uploadVisible: false,
+      questionVisible: false,
     };
   },
   computed: {

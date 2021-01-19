@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const User = require("./userModel");
 const resourceSchema = new mongoose.Schema(
   {
     _id: {
@@ -64,10 +65,30 @@ const resourceSchema = new mongoose.Schema(
       type: String,
       ref: "Lesson",
     },
+    org_name: {
+      type: String,
+      //ref: 'Org',
+    },
+    subOrg_name: {
+      type: String,
+      //ref: 'SubOrg',
+    },
+    major_name: {
+      type: String,
+      //ref: 'Major',
+    },
   },
   { _id: false }
 );
-
+resourceSchema.post('save', async function (doc) {
+  const data = await User.findById(doc.authorId).select('org_name subOrg_name major_name')
+  if(data != null){
+    await Resource.updateOne(
+      { _id: doc._id},
+      { $set: { org_name: data.org_name,subOrg_name:data.subOrg_name,major_name:data.major_name }
+    })
+  }
+});
 const Resource = mongoose.model("Resource", resourceSchema);
 
 module.exports = Resource;
