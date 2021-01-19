@@ -3,7 +3,7 @@
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <a-row>
-          <a-col :span="8" style="background: #faf9f9">
+          <a-col :span="12" style="background: #faf9f9">
             <a-select
               default-value="请选择学院"
               size="large"
@@ -20,12 +20,12 @@
             </a-select>
           </a-col>
           <a-col :span="8" style="background: #faf9f9">
-            <a-switch
+            <!-- <a-switch
               checked-children="开"
               un-checked-children="关"
               default-checked
               @change="switchChange"
-            />
+            /> -->
             <a-select
               default-value="请选择教师"
               size="large"
@@ -154,7 +154,7 @@ export default {
       // if switch close, just check resource of college
       this.currentCollege = value;
       //if switch open, do NOTHING
-      //this.getTeacherName(this.currentCollege);
+      this.getTeacherName(this.currentCollege);
       this.getResourcesOfSubOrg(this.currentCollege)
     },
     peopleChange(value) {
@@ -163,16 +163,16 @@ export default {
       //if switch open, check out resource of people in college
       this.getResources(this.currentCollege, this.currentTeacher);
     },
-    switchChange(checked) {
-      console.log(`a-switch to ${checked}`);
-      if (checked) {
-        // open switch
-        this.peopleSwitch = false;
-      } else {
-        //close switch
-        this.peopleSwitch = true;
-      }
-    },
+    // switchChange(checked) {
+    //   console.log(`a-switch to ${checked}`);
+    //   if (checked) {
+    //     // open switch
+    //     this.peopleSwitch = false;
+    //   } else {
+    //     //close switch
+    //     this.peopleSwitch = true;
+    //   }
+    // },
     getResourcesOfSubOrg(subOrgName){
        this.$store.dispatch("admin/getResourcesOfOneCollege", 
        {

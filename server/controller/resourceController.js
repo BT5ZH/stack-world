@@ -159,28 +159,10 @@ exports.getURLByIDs = catchAsync(async (req, res) => {
  * 根据org_name subOrg_name获取该学院所有老师上传的资源
  */
 exports.getLessonResourceOfSubOrg = catchAsync(async (req, res) => {
-  var subOrg = req.body.subOrg_name;
-  var org = req.body.org_name;
-  
-  const teachers = await User.find({
-    org_name:req.body.org_name,
-    subOrg_name: req.body.subOrg_name,
-    role: "teacher",
-  }).select('_id');
-  if (teachers.length===0) {
-    return next(new AppError("该学院没有教师", 404));
-  }
-  let allResources=[]
-  for(let i=0;i<teachers.length;i++){
-    let resources = await Resource.find({
-      authorId: teachers[i]._id
-    });
-    for(let j=0;j<resources.length;j++){
-      allResources.push(resources[j])
-    }
-  }
-  
-  //let allResources = await Resource.find();
+  let allResources = await Resource.find({
+      org_name:req.body.org_name,
+      subOrg_name: req.body.subOrg_name,
+  });
 
   res.status(200).json({
     status: true,
