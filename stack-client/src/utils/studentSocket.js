@@ -30,6 +30,12 @@ let lesson_listeners = {
       name: "sign",
       params: { start: true, endTime: Date.now() + 60000 },
     });
+  }, 
+  randomSign(data, that) {
+    that.$store.commit("student/updateInteraction", {
+      name: "randomSign",
+      params: { start: true, endTime: Date.now() + 60000,randomStudent:data.studentList },
+    });
   },
   pick(data, that) {
     that.$store.commit("student/updateInteraction", {
@@ -97,7 +103,7 @@ let lesson_listeners = {
     }));
     that.$store.commit("student/updateInteraction", {
       name: "ask",
-      params:{...data},
+      params: { ...data },
     });
   },
 };

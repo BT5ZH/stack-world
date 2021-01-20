@@ -8,6 +8,7 @@
         :pagination="{
           total: tableData.length,
           pageSize: 2,
+          'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
         rowKey="index"

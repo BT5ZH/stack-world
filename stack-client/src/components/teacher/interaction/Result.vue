@@ -7,16 +7,17 @@
 import { mapState } from "vuex";
 
 import sign from "./activities/Sign";
+import randomsign from "./activities/randomSign";
 import test from "./activities/Test";
 import vote from "./activities/Vote";
 import race from "./activities/Race";
 import ask from "./activities/Ques";
 
 export default {
-  components: { sign, test, race, vote, ask },
+  components: { sign, test, race, vote, ask, randomsign },
   data() {
     return {
-      activityList: ["sign", "test", "race", "vote", "ask"],
+      activityList: ["sign", "test", "race", "vote", "ask","randomsign"],
     };
   },
   computed: {
