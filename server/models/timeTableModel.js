@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const Lesson = require("../models/lessonModel");
 
 const timeTableSchema = new mongoose.Schema(
   {
@@ -20,6 +21,12 @@ const timeTableSchema = new mongoose.Schema(
     teacher_id: {
       type: mongoose.Schema.Types.String, //type: mongoose.Schema.Types.ObjectID,
       ref: "User",
+    },
+    year:{
+      type:String,//eg. '2020'-2021
+    },
+    semester:{
+        type:Number,//eg.1 means the 1th semester; 2 means 2nd semester.
     },
     curriculum: [
       {
@@ -62,7 +69,15 @@ const timeTableSchema = new mongoose.Schema(
     _id: false,
   }
 );
-
+timeTableSchema.post('save', async function (doc) {
+  const data = await Lesson.findById(doc.lesson_id).select('year semester')
+  if(data != null){
+    await TimeTable.updateOne(
+      { _id: doc._id},
+      { $set: { year: data.year,semester:data.semester }
+    })
+  }
+});
 const TimeTable = mongoose.model("TimeTable", timeTableSchema);
 
 module.exports = TimeTable;

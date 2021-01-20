@@ -22,7 +22,7 @@ var lessonSchema = mongoose.Schema({
         },
     ],
     year:{
-        type:String,//eg. '2020'
+        type:String,//eg. '2020'-2021
     },
     semester:{
         type:Number,//eg.1 means the 1th semester; 2 means 2nd semester.

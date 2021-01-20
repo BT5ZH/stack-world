@@ -30,7 +30,10 @@ router
 router
   .route("/")
   .get(authController.protect, resourceController.getAllResources);
-
+router
+  .route("/:resource_id")
+  .delete(authController.protect, resourceController.deleteResourceById);
+  
 // router
 //   .route("/test1")
 //   .get(courseController.getcourse)
