@@ -1,10 +1,6 @@
 <template>
-  <a-row
-    type="flex"
-    align="top"
-    class="courseslider"
-    :style="{ height: containerHeight }"
-  >
+  <a-row type="flex" align="top" class="courseslider">
+    <!-- :style="{ height: containerHeight }" -->
     <a-col :span="4" class="sider">
       <pre-collapse></pre-collapse>
     </a-col>
@@ -23,16 +19,17 @@ export default {
     return {};
   },
   computed: {
-    containerHeight() {
-      return `${window.innerHeight - 64}px`;
-    },
+    // containerHeight() {
+    //   return `${window.innerHeight - 64}px`;
+    // },
   },
 };
 </script>
 
 <style scoped>
 .courseslider {
-  height: calc(100% - 64px);
+  /* height: calc(100% - 64px); */
+  height: 100%;
 }
 .sider {
   overflow-y: auto;
