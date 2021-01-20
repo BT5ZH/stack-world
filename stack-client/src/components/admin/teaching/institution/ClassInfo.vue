@@ -49,7 +49,7 @@
       @ok="addstudent_ok"
       :maskClosable="false"
     >
-      <add_students @refresh="parent_refresh"></add_students>
+      <add_students @refresh="parent_refresh" :child_refresh="refresh"></add_students>
     </a-modal>
   </div>
 </template>
@@ -135,6 +135,7 @@ export default {
         console.log(data);
         // console.log(data.data.classEntity.studentList);
       } catch (err) {
+        this.$store.dispatch("admin/change_spin_status", false);
         console.log(err);
       }
     },
@@ -172,26 +173,16 @@ export default {
     },
     // 删除学生
     async deleteStudent(record) {
-      // console.log("---record---");
-      // console.log(record);
       try {
         const url = "/pc/v1/classes/" + this.$route.query.classId;
         let payload = { students: [record._id] };
         let data = await axios.post(url, payload);
-        // console.log("---url---");
-        // console.log(url);
-        // console.log("---payload---");
-        // console.log(payload);
-        // console.log("---data---");
-        // console.log(data);
         this.refresh += 1;
         this.$message.info("删除成功");
       } catch (err) {
         this.$message.error("删除失败");
         console.log(err);
       }
-      // console.log("---router---")
-      // console.log(url);
     },
   },
 };
