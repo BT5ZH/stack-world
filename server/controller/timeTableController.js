@@ -474,9 +474,11 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
         })
         .populate("curriculum.class_id", "class_name -_id");
       if (!data) {
-        return next(new AppError("该课不存在", 200));
+        result.push(data);
       }
-      result.push(data);
+    }
+    if(result.length===0){
+      return next(new AppError("课表不存在", 200));
     }
     res.status(200).json({
       status: "success",
@@ -493,6 +495,42 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
       },
     });
   }
+});
+exports.getTimeTableFromClassID = catchAsync(async (req, res, next) => {
+      let lessonIdList = []; 
+      let lessonObj = await belongedToWhichLesson(req.body.class_id);
+      let lessonsOfOneClass = lessonObj[0].belongedToLesson;
+      // console.log("lessonsOfOneClass",lessonsOfOneClass)
+      for (let j = 0; j < lessonsOfOneClass.length; j++) {
+        if (
+          lessonsOfOneClass[j].year == req.body.year &&
+          lessonsOfOneClass[j].semester == req.body.semester
+        ) {
+          lessonIdList.push(lessonsOfOneClass[j]._id);
+        }
+      }
+
+    for (let i = 0; i < lessonIdList.length; i++) {
+      const data = await TimeTable.findOne({lesson_id: lessonIdList[i]})
+      .populate("course_id", "name")
+      .populate("teacher_id", "name")
+      .populate({
+          path: "curriculum.room_id",
+          populate: { path: "building" },
+      })
+      .populate("curriculum.class_id", "class_name -_id");
+
+      if (data) 
+        result.push(data);
+    }
+    if(result.length===0){
+      return next(new AppError("课表不存在", 200));
+    }
+
+    res.status(200).json({
+      status: "success",
+      result,
+    });
 });
 exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ lesson_id: req.body.lesson_id })
