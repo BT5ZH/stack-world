@@ -5,8 +5,8 @@ const classSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      required: [true,'you must tell us your class_id'],
-      default:uuid.v1,
+      required: [true, "you must tell us your class_id"],
+      default: uuid.v1,
     },
     class_name: {
       type: String,
@@ -14,28 +14,40 @@ const classSchema = new mongoose.Schema(
       required: [true, "class must have an className"],
       unique: true,
     },
-    org_name: {  type: String,required: [true, "class must have an org_name"],},
-    subOrg_name:{  type: String,required: [true, "class must have an subOrg_name"],},
-    major_name: {  type: String,required: [true, "class must have an major_name"],},
+    org_name: { type: String, required: [true, "class must have an org_name"] },
+    subOrg_name: {
+      type: String,
+      required: [true, "class must have an subOrg_name"],
+    },
+    major_name: {
+      type: String,
+      required: [true, "class must have an major_name"],
+    },
     students: [
-        {
-          type: String,
-          ref: 'User',
-        },
+      {
+        type: String,
+        ref: "User",
+      },
     ],
-   },
-   {
+    lessons: [
+      {
+        lesson: { type: String, ref: "Lesson" },
+        time_tables: [{ type: String, ref: "TimeTable" }],
+      },
+    ],
+  },
+  {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-   },
-   {_id: false,}
-  );
-   
-  classSchema.virtual('studentList', {
-    ref: 'User',
-    localField: 'students',
-    foreignField: '_id',
-    justOne: false,
+  },
+  { _id: false }
+);
+
+classSchema.virtual("studentList", {
+  ref: "User",
+  localField: "students",
+  foreignField: "_id",
+  justOne: false,
 });
 const Class = mongoose.model("Class", classSchema);
 
