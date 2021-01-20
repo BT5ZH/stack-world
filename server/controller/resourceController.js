@@ -162,10 +162,22 @@ exports.getLessonResourceOfSubOrg = catchAsync(async (req, res) => {
   let allResources = await Resource.find({
       org_name:req.body.org_name,
       subOrg_name: req.body.subOrg_name,
-  });
+  }).populate('authorId','name -_id');
 
   res.status(200).json({
     status: true,
     allResources,
+  });
+});
+exports.deleteResourceById = catchAsync(async (req, res,next) => {
+  var data = await Resource.findOneAndDelete({ _id: req.params.resource_id });
+  
+  if (!data) {
+    return next(new AppError("资源删除失败", 404));
+  }
+  
+  res.status(200).json({
+    status: true,
+    message: "资源删除成功",
   });
 });
