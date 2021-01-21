@@ -1,31 +1,40 @@
 <template>
   <div>
-    <div style="margin-bottom: 16px">
-      <a-button
-        type="primary"
-        :disabled="!hasSelected"
-        :loading="loading"
-        @click="add_students"
-      >
-        添加
-      </a-button>
-      <span style="margin-left: 8px">
-        <template v-if="hasSelected">
-          {{ `Selected ${selectedRowKeys.length} items` }}
-        </template>
-      </span>
-    </div>
-    <a-spin :spinning="spin_status" tip="Loading...">
-      <a-table
-        rowKey="_id"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
-        }"
-        :columns="columns"
-        :data-source="data"
-      />
-    </a-spin>
+    <a-modal
+      v-model="modalVisible"
+      title="添加学生"
+      okText="添加"
+      @ok="add_students"
+      :disabled="!hasSelected"
+      :loading="loading"
+    >
+      <div style="margin-bottom: 16px">
+        <!-- <a-button
+          type="primary"
+          :disabled="!hasSelected"
+          :loading="loading"
+          @click="add_students"
+        >
+          添加
+        </a-button> -->
+        <span style="margin-left: 8px">
+          <template v-if="hasSelected">
+            {{ `Selected ${selectedRowKeys.length} items` }}
+          </template>
+        </span>
+      </div>
+      <a-spin :spinning="spin_status" tip="Loading...">
+        <a-table
+          rowKey="_id"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange,
+          }"
+          :columns="columns"
+          :data-source="data"
+        />
+      </a-spin>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -47,13 +56,19 @@ const data = [];
 
 export default {
   props: {
-    child_refresh: {
+    father_refresh: {
       type: Number,
       default: 0,
+    },
+    visible: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
     return {
+      modalVisible: false,
+      child_refresh: 0,
       data,
       columns,
       selectedRowKeys: [], // Check here to configure the default column
@@ -73,6 +88,12 @@ export default {
     this.getStudents();
   },
   watch: {
+    visible(val) {
+      this.modalVisible = val;
+    },
+    father_refresh(val) {
+      this.getStudents();
+    },
     child_refresh(val) {
       this.getStudents();
     },
@@ -102,6 +123,9 @@ export default {
       // 结束
       this.loading = false;
       this.selectedRowKeys = [];
+    },
+    cancelModal() {
+      this.modalVisible = false;
     },
     async getStudents() {
       // 按要求获取user
