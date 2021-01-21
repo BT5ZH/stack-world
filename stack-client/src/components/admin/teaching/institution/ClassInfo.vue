@@ -43,14 +43,20 @@
       </a-table>
     </a-spin>
     <!-- 添加学生对话框 -->
-    <a-modal
+    <add_students
+      :visible="visible"
+      @refresh="parent_refresh"
+      :child_refresh="refresh"
+    ></add_students>
+
+    <!-- <a-modal
       v-model="visible"
       title="添加"
       @ok="addstudent_ok"
       :maskClosable="false"
     >
       <add_students @refresh="parent_refresh" :child_refresh="refresh"></add_students>
-    </a-modal>
+    </a-modal> -->
   </div>
 </template>
 
@@ -166,10 +172,7 @@ export default {
     },
     // 添加学生
     add_student() {
-      this.visible = true;
-    },
-    addstudent_ok() {
-      this.visible = false;
+      this.visible = !this.visible;
     },
     // 删除学生
     async deleteStudent(record) {

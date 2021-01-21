@@ -1,31 +1,32 @@
 <template>
   <div>
-    <div style="margin-bottom: 16px">
-      <a-button
-        type="primary"
-        :disabled="!hasSelected"
-        :loading="loading"
-        @click="add_students"
-      >
-        添加
-      </a-button>
-      <span style="margin-left: 8px">
-        <template v-if="hasSelected">
-          {{ `Selected ${selectedRowKeys.length} items` }}
-        </template>
-      </span>
-    </div>
-    <a-spin :spinning="spin_status" tip="Loading...">
-      <a-table
-        rowKey="_id"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
-        }"
-        :columns="columns"
-        :data-source="data"
-      />
-    </a-spin>
+    <a-modal
+      v-model="modalVisible"
+      title="添加学生"
+      @ok="add_students"
+      okText="添加"
+      :maskClosable="false"
+      :loading="loading"
+    >
+      <div style="margin-bottom: 16px">
+        <span style="margin-left: 8px">
+          <template v-if="hasSelected">
+            {{ `Selected ${selectedRowKeys.length} items` }}
+          </template>
+        </span>
+      </div>
+      <a-spin :spinning="spin_status" tip="Loading...">
+        <a-table
+          rowKey="_id"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange,
+          }"
+          :columns="columns"
+          :data-source="data"
+        />
+      </a-spin>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -51,9 +52,14 @@ export default {
       type: Number,
       default: 0,
     },
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      modalVisible: false,
       data,
       columns,
       selectedRowKeys: [], // Check here to configure the default column
@@ -72,9 +78,14 @@ export default {
   },
   mounted() {
     this.getStudents();
-    this.refresh_number = this.child_refresh;
   },
   watch: {
+    visible(val) {
+      this.modalVisible = true;
+    },
+    child_refresh(val) {
+      this.refresh_number = this.child_refresh;
+    },
     refresh_number(val) {
       this.getStudents();
     },
@@ -88,7 +99,6 @@ export default {
         class_id: this.$route.query.classId,
         students: this.selectedRowKeys,
       };
-      console.log("添加学生---页面");
       axiosInstance
         .patch(url, requestdata)
         .then((res) => {
