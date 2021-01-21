@@ -139,163 +139,7 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     result,//according to the given year and semester, return the suitable timetable of the teacher selected
   });
 });
-exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
 
-  let now = new Date();
-  let month = now.getMonth()
-  let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-  let today = week[now.getDay()]
-  let day = now.getDate()
-  let hour = now.getHours()
-  let minute = now.getMinutes()
-
-
-  let start_1 = new Date();
-  start_1.setFullYear(now.getFullYear(), month, day);
-  start_1.setHours(8, 0, 0);
-  let end_1 = new Date();
-  end_1.setFullYear(now.getFullYear(), month, day);
-  end_1.setHours(8, 50, 0);
-
-  let start_2 = new Date();
-  start_2.setFullYear(now.getFullYear(), month, day);
-  start_2.setHours(9, 0, 0);
-  let end_2 = new Date();
-  end_2.setFullYear(now.getFullYear(), month, day);
-  end_2.setHours(9, 50, 0);
-
-  let start_3 = new Date();
-  start_3.setFullYear(now.getFullYear(), month, day);
-  start_3.setHours(10, 10, 0);
-  let end_3 = new Date();
-  end_3.setFullYear(now.getFullYear(), month, day);
-  end_3.setHours(11, 00, 0);
-
-  let start_4 = new Date();
-  start_4.setFullYear(now.getFullYear(), month, day);
-  start_4.setHours(11, 10, 0);
-  let end_4 = new Date();
-  end_4.setFullYear(now.getFullYear(), month, day);
-  end_4.setHours(12, 0, 0);
-  // let currentTime=now.getFullYear()+"-"+now.getMonth()+1+"-"+now.getDate()
-  let start_5 = new Date();
-  start_5.setFullYear(now.getFullYear(), month, day);
-  start_5.setHours(14, 30, 0);
-  let end_5 = new Date();
-  end_5.setFullYear(now.getFullYear(), month, day);
-  end_5.setHours(15, 20, 0);
-
-  let start_6 = new Date();
-  start_6.setFullYear(now.getFullYear(), month, day);
-  start_6.setHours(15, 30, 0);
-  let end_6 = new Date();
-  end_6.setFullYear(now.getFullYear(), month, day);
-  end_6.setHours(16, 20, 0);
-
-  let start_7 = new Date();
-  start_7.setFullYear(now.getFullYear(), month, day);
-  start_7.setHours(16, 30, 0);
-  let end_7 = new Date();
-  end_7.setFullYear(now.getFullYear(), month, day);
-  end_7.setHours(17, 20, 0);
-
-  let start_8 = new Date();
-  start_8.setFullYear(now.getFullYear(), month, day);
-  start_8.setHours(17, 30, 0);
-  let end_8 = new Date();
-  end_8.setFullYear(now.getFullYear(), month, day);
-  end_8.setHours(18, 20, 0);
-
-  let currentCourse = "0"
-  if (now < end_1)
-    currentCourse = "1"
-  else if (now > end_1 && now < end_2)
-    currentCourse = "2"
-  else if (now > end_2 && now < end_3)
-    currentCourse = "3"
-  else if (now > end_3 && now < end_4)
-    currentCourse = "4"
-  else if (now > end_4 && now < end_5)
-    currentCourse = "5"
-  else if (now > end_5 && now < end_6)
-    currentCourse = "6"
-  else if (now > end_6 && now < end_7)
-    currentCourse = "7"
-  else if (now > end_7 && now < end_8)
-    currentCourse = "8"
-
-  //get school year information
-  const syInfo = await SchoolYear.findOne({current: 't'})
-  let year = syInfo.year
-  let semester = syInfo.semester
-  let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
-  let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59")); 
-  
-  // console.log("----end1--"+end_1)
-  // console.log("----end2--"+end_2)
-  // console.log("----currentCourse--"+currentCourse)
-  // console.log("----semester_startTime--"+semester_startTime)
-  // console.log("----semester_endTime--"+semester_endTime)
-  // console.log("----week--"+today)
-  if(now > semester_startTime && now < semester_endTime){
-     //console.log("+++++++get in--------")
-     const data = await TimeTable.find(
-      {
-        teacher_id: req.body.teacher_id, 
-        year:year,
-        semester:semester,
-        curriculum: { $elemMatch: { date: { $eq: today }  ,order:{ $elemMatch:{ $eq:currentCourse}}}},
-        
-      })
-      .populate("course_id", "name -_id")
-      .populate("teacher_id", "user_id name -_id")
-      .populate("curriculum.class_id", "class_name -_id")
-      .populate("curriculum.room_id", "room_number building_name -_id");
-  
-  
-    if (!data || data.length === 0) {
-      return next(new AppError("该课表不存在", 404));
-    }
- 
-    let result = []
-    // for (let i = 0; i < data.length; i++) {   
-    //   let oneLesson = await Lesson.findById(data[i].lesson_id)
-    //   // console.log("----year--"+oneLesson.year);
-    //   // console.log("----syyear--"+year);
-    //   // console.log("----seme--"+oneLesson.semester);
-    //   // console.log("----syseme--"+semester);
-    //   if (oneLesson.year === year && oneLesson.semester === semester){
-    //     result.push(data[i])
-    //   }
-    // }
-     result = data.map(item=>{
-      return{
-        course_name:item.course_id.name,
-        teacher_name:item.teacher_id.name,
-        teacher_number:item.teacher_id.user_id,
-        class_name:item.curriculum[0].class_id.class_name,
-        room_number:item.curriculum[0].room_id.room_number,
-        building_name:item.curriculum[0].room_id.building_name,
-      }
-    })
-    res.status(200).json({
-      status: "success",
-      result,
-    });
-  }
-  else{
-    res.status(200).json({
-      status: "fail",
-    });
-  }
-
-
- 
-
-  
-
- 
-});
 exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
   // const data = await TimeTable.find({
   //   curriculum: { $elemMatch: { $eq: req.query.room_id } },
@@ -473,7 +317,7 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
           populate: { path: "building" },
         })
         .populate("curriculum.class_id", "class_name -_id");
-      if (!data) {
+      if (data) {
         result.push(data);
       }
     }
@@ -497,10 +341,11 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   }
 });
 exports.getTimeTableFromClassID = catchAsync(async (req, res, next) => {
+  let result = []; 
       let lessonIdList = []; 
       let lessonObj = await belongedToWhichLesson(req.body.class_id);
       let lessonsOfOneClass = lessonObj[0].belongedToLesson;
-      // console.log("lessonsOfOneClass",lessonsOfOneClass)
+      console.log("lessonsOfOneClass",lessonsOfOneClass)
       for (let j = 0; j < lessonsOfOneClass.length; j++) {
         if (
           lessonsOfOneClass[j].year == req.body.year &&
@@ -511,6 +356,8 @@ exports.getTimeTableFromClassID = catchAsync(async (req, res, next) => {
       }
 
     for (let i = 0; i < lessonIdList.length; i++) {
+      console.log("lessonIdList[i]====="+lessonIdList.length)
+      console.log(lessonIdList[i])
       const data = await TimeTable.findOne({lesson_id: lessonIdList[i]})
       .populate("course_id", "name")
       .populate("teacher_id", "name")
@@ -548,3 +395,235 @@ exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
     data,
   });
 });
+exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
+   //get school year information
+   const syInfo = await SchoolYear.findOne({current: 't'});
+   let year = syInfo.year
+   let semester = syInfo.semester
+   let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
+   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59")); 
+   let ct = syInfo.course_time
+   let et=[]
+   
+  let now = new Date();
+  let month = now.getMonth()
+  let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  let today = week[now.getDay()]
+  let day = now.getDate()
+  let hour = now.getHours()
+  let minute = now.getMinutes()
+
+  for(let i=0;i<ct.length;i++){
+    let s = ct[i].end_time ;
+    let end = new Date()
+    end.setFullYear(now.getFullYear(), now.getMonth(), now.getDate())
+    end.setHours(s.substring(0,s.indexOf(':')), s.substring(s.indexOf(':')+1) , 0);
+    et.push(end)
+  
+  }
+
+  let currentCourse = "0"
+  if (now < et[0])
+    currentCourse = "1"
+  else 
+    for(let i=0;i<et.length-1;i++){
+      if(now>et[i] && now<et[i+1]){
+        currentCourse = (i+2).toString();
+        break;
+      }
+    }
+ 
+    console.log(" --currentCourse--:")
+    console.log( currentCourse )
+  if(now > semester_startTime && now < semester_endTime){
+     //console.log("+++++++get in--------")
+     const data = await TimeTable.find(
+      {
+        teacher_id: req.body.teacher_id, 
+        year:year,
+        semester:semester,
+        curriculum: { $elemMatch: { date: { $eq: today }  ,order:{ $elemMatch:{ $eq:currentCourse}}}},
+        
+      })
+      .populate("course_id", "name -_id")
+      .populate("teacher_id", "user_id name -_id")
+      .populate("curriculum.class_id", "class_name -_id")
+      .populate("curriculum.room_id", "room_number building_name -_id");
+  
+  
+    if (!data || data.length === 0) {
+      return next(new AppError("该课表不存在", 404));
+    }
+ 
+    let result = data.map(item=>{
+      return{
+        course_name:item.course_id.name,
+        teacher_name:item.teacher_id.name,
+        teacher_number:item.teacher_id.user_id,
+        class_name:item.curriculum[0].class_id.class_name,
+        room_number:item.curriculum[0].room_id.room_number,
+        building_name:item.curriculum[0].room_id.building_name,
+      }
+    })
+    res.status(200).json({
+      status: "success",
+      result,
+    });
+  }
+  else{
+    res.status(200).json({
+      status: "fail",
+    });
+  }
+});
+
+// exports.getLatestTimeTableofTeacher11 = catchAsync(async (req, res, next) => {
+
+//   let now = new Date();
+//   let month = now.getMonth()
+//   let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+//   let today = week[now.getDay()]
+//   let day = now.getDate()
+//   let hour = now.getHours()
+//   let minute = now.getMinutes()
+
+
+//   let start_1 = new Date();
+//   start_1.setFullYear(now.getFullYear(), month, day);
+//   start_1.setHours(8, 0, 0);
+//   let end_1 = new Date();
+//   end_1.setFullYear(now.getFullYear(), month, day);
+//   end_1.setHours(8, 50, 0);
+
+//   let start_2 = new Date();
+//   start_2.setFullYear(now.getFullYear(), month, day);
+//   start_2.setHours(9, 0, 0);
+//   let end_2 = new Date();
+//   end_2.setFullYear(now.getFullYear(), month, day);
+//   end_2.setHours(9, 50, 0);
+
+//   let start_3 = new Date();
+//   start_3.setFullYear(now.getFullYear(), month, day);
+//   start_3.setHours(10, 10, 0);
+//   let end_3 = new Date();
+//   end_3.setFullYear(now.getFullYear(), month, day);
+//   end_3.setHours(11, 00, 0);
+
+//   let start_4 = new Date();
+//   start_4.setFullYear(now.getFullYear(), month, day);
+//   start_4.setHours(11, 10, 0);
+//   let end_4 = new Date();
+//   end_4.setFullYear(now.getFullYear(), month, day);
+//   end_4.setHours(12, 0, 0);
+//   // let currentTime=now.getFullYear()+"-"+now.getMonth()+1+"-"+now.getDate()
+//   let start_5 = new Date();
+//   start_5.setFullYear(now.getFullYear(), month, day);
+//   start_5.setHours(14, 30, 0);
+//   let end_5 = new Date();
+//   end_5.setFullYear(now.getFullYear(), month, day);
+//   end_5.setHours(15, 20, 0);
+
+//   let start_6 = new Date();
+//   start_6.setFullYear(now.getFullYear(), month, day);
+//   start_6.setHours(15, 30, 0);
+//   let end_6 = new Date();
+//   end_6.setFullYear(now.getFullYear(), month, day);
+//   end_6.setHours(16, 20, 0);
+
+//   let start_7 = new Date();
+//   start_7.setFullYear(now.getFullYear(), month, day);
+//   start_7.setHours(16, 30, 0);
+//   let end_7 = new Date();
+//   end_7.setFullYear(now.getFullYear(), month, day);
+//   end_7.setHours(17, 20, 0);
+
+//   let start_8 = new Date();
+//   start_8.setFullYear(now.getFullYear(), month, day);
+//   start_8.setHours(17, 30, 0);
+//   let end_8 = new Date();
+//   end_8.setFullYear(now.getFullYear(), month, day);
+//   end_8.setHours(18, 20, 0);
+
+//   let start_9 = new Date();
+//   start_9.setFullYear(now.getFullYear(), month, day);
+//   start_9.setHours(19, 00, 0);
+//   let end_9 = new Date();
+//   end_9.setFullYear(now.getFullYear(), month, day);
+//   end_9.setHours(20, 00, 0);
+
+//   let start_10 = new Date();
+//   start_10.setFullYear(now.getFullYear(), month, day);
+//   start_10.setHours(20, 10, 0);
+//   let end_10 = new Date();
+//   end_10.setFullYear(now.getFullYear(), month, day);
+//   end_10.setHours(22, 20, 0);
+
+//   let currentCourse = "0"
+//   if (now < end_1)
+//     currentCourse = "1"
+//   else if (now > end_1 && now < end_2)
+//     currentCourse = "2"
+//   else if (now > end_2 && now < end_3)
+//     currentCourse = "3"
+//   else if (now > end_3 && now < end_4)
+//     currentCourse = "4"
+//   else if (now > end_4 && now < end_5)
+//     currentCourse = "5"
+//   else if (now > end_5 && now < end_6)
+//     currentCourse = "6"
+//   else if (now > end_6 && now < end_7)
+//     currentCourse = "7"
+//   else if (now > end_7 && now < end_8)
+//     currentCourse = "8"
+//   else if (now > end_8 && now < end_9)
+//     currentCourse = "9"
+//   else if (now > end_9 && now < end_10)
+//     currentCourse = "10"
+//   //get school year information
+//   const syInfo = await SchoolYear.findOne({current: 't'})
+//   let year = syInfo.year
+//   let semester = syInfo.semester
+//   let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
+//   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59")); 
+  
+//   if(now > semester_startTime && now < semester_endTime){
+//      //console.log("+++++++get in--------")
+//      const data = await TimeTable.find(
+//       {
+//         teacher_id: req.body.teacher_id, 
+//         year:year,
+//         semester:semester,
+//         curriculum: { $elemMatch: { date: { $eq: today }  ,order:{ $elemMatch:{ $eq:currentCourse}}}},
+        
+//       })
+//       .populate("course_id", "name -_id")
+//       .populate("teacher_id", "user_id name -_id")
+//       .populate("curriculum.class_id", "class_name -_id")
+//       .populate("curriculum.room_id", "room_number building_name -_id");
+  
+  
+//     if (!data || data.length === 0) {
+//       return next(new AppError("该课表不存在", 404));
+//     }
+ 
+//     let result = result = data.map(item=>{
+//       return{
+//         course_name:item.course_id.name,
+//         teacher_name:item.teacher_id.name,
+//         teacher_number:item.teacher_id.user_id,
+//         class_name:item.curriculum[0].class_id.class_name,
+//         room_number:item.curriculum[0].room_id.room_number,
+//         building_name:item.curriculum[0].room_id.building_name,
+//       }
+//     })
+//     res.status(200).json({
+//       status: "success",
+//       result,
+//     });
+//   }
+//   else{
+//     res.status(200).json({
+//       status: "fail",
+//     });
+//   }
+// });
