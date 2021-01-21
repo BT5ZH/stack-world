@@ -21,8 +21,21 @@ const action = {
               });
         })
        
-      },
-    
+    },
+    deleteResourceById({commit},resource_id){
+        return new Promise((resolve,reject)=>{
+            const url = "/pc/v1/resources";
+
+            axios.delete(`${url}/${resource_id}`)
+            .then(( ) => {
+                resolve( "success")
+              })
+              .catch((err) => {
+                reject('error-----')
+              })
+        })
+    }
+   
 };
 
 export default action;

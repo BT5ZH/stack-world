@@ -53,11 +53,26 @@
           minHeight: '280px',
         }"
       >
-        <a-table :columns="columns" :data-source="resourceList">
-          <span slot="action" slot-scope="text, record">
-            <a>下载 一 {{ record.name }}</a>
+        <!-- <a-table :columns="columns" :data-source="resourceList"> -->
+        <a-table
+            :pagination="{
+              total: resourceList.length,
+              //pageSizeOptions: pageSize,
+              pageSize:5,
+              'show-less-items': true,
+              'show-size-changer': true,
+              'show-quick-jumper': true,
+              'hide-on-single-page': true,
+            }"
+            :bordered="true"
+            :columns="columns"
+            :data-source="resourceList"
+          >
+          <span slot="action" slot-scope="text,record">
+            <!-- <a>下载 一 {{ record.name }}</a> -->
+             <a @click="download(record)">下载</a>
             <a-divider type="vertical" />
-            <a>删除</a>
+            <a @click="deleteResource(record._id)" v-show="isShowDeleteButton==='yes'">删除</a>
           </span>
         </a-table>
       </a-layout-content>
@@ -70,7 +85,7 @@ const columns = [
   {
     title: "文件名",
     dataIndex: "name",
-    key: "name",
+    key: "_id",
   },
   {
     title: "上传者",
@@ -106,30 +121,30 @@ const columns = [
 ];
 
 const data = [
-  {
-    name: "二元一次方程",
-    authorName: "张汇泉",
-    size: 345,
-    fileType: "mp4",
-    clicks: 999,
-    tags: ["nice", "developer"],
-  },
-  {
-    name: "操作系统",
-    authorName: "祁超",
-    size: 1024,
-    fileType: "pdf",
-    clicks: 1230,
-    tags: ["loser"],
-  },
-  {
-    name: "高级数据结构",
-    authorName: "郭敏",
-    size: 10246,
-    fileType: "doc",
-    clicks: 23500,
-    tags: ["cool", "teacher"],
-  },
+  // {
+  //   name: "二元一次方程",
+  //   authorName: "张汇泉",
+  //   size: 345,
+  //   fileType: "mp4",
+  //   clicks: 999,
+  //   tags: ["nice", "developer"],
+  // },
+  // {
+  //   name: "操作系统",
+  //   authorName: "祁超",
+  //   size: 1024,
+  //   fileType: "pdf",
+  //   clicks: 1230,
+  //   tags: ["loser"],
+  // },
+  // {
+  //   name: "高级数据结构",
+  //   authorName: "郭敏",
+  //   size: 10246,
+  //   fileType: "doc",
+  //   clicks: 23500,
+  //   tags: ["cool", "teacher"],
+  // },
 ];
 
 import axiosInstance from "../../../utils/axios.js";
@@ -146,13 +161,22 @@ export default {
       peopleSwitch: false,
       currentCollege: "",
       currentTeacher: "",
+      refresh: 0,
+      isShowDeleteButton:'yes1'
+      //pageSize: ["10", "20", "30", "50", "100"],
     };
+  },
+  watch: {
+    refresh(val) {
+      this.getResources(this.currentCollege, this.currentTeacher)
+    }
   },
   methods: {
     collegeChange(value) {
       console.log(`Selected: ${value}`);
       // if switch close, just check resource of college
       this.currentCollege = value;
+      this.isShowDeleteButton = 'no'
       //if switch open, do NOTHING
       this.getTeacherName(this.currentCollege);
       this.getResourcesOfSubOrg(this.currentCollege)
@@ -160,8 +184,59 @@ export default {
     peopleChange(value) {
       console.log(`Selected: ${value}`);
       this.currentTeacher = value;
+      this.isShowDeleteButton = 'yes'
       //if switch open, check out resource of people in college
       this.getResources(this.currentCollege, this.currentTeacher);
+    },
+    // deleteResource(resourceId) {
+    //   var that = this
+    //   if(confirm("是否确认要删除？")) {
+    //     this.$store.dispatch("admin/deleteResourceById", resourceId)
+    //     .then(res => {
+    //          console.log(`res------:${res}`)
+    //         that.refresh+=1
+    //     })
+    //     .catch(err=>{
+    //        console.log(err);
+    //     })
+    //   }
+    // },
+    deleteResource(resourceId) {
+      const that = this;
+      this.$confirm({
+        title: "确定删除此资源吗?",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        zIndex: 10001,
+        onOk() {
+          try{
+            that.$store.dispatch("admin/deleteResourceById", resourceId)
+            .then(res => {
+               console.log(`res------:${res}`)
+               that.refresh+=1
+            })
+           .catch(err=>{
+               console.log(err);
+            })
+          }catch(err){
+               console.log(err);
+            }
+        },
+        onCancel() {
+          // console.log("Cancel");
+        },
+      });
+    },
+    download(source) {
+      // setTimeout(() => {
+      let a = document.createElement("a");
+      let event = new MouseEvent("click");
+      a.download = source.name;
+      a.target = "_blank";
+      a.href = source.url;
+      a.dispatchEvent(event);
+      // }, 1000);
     },
     // switchChange(checked) {
     //   console.log(`a-switch to ${checked}`);
@@ -181,8 +256,6 @@ export default {
        })
        .then(res => {
           this.resourceList = res.data.allResources;
-           console.log("this.resourceList99999999999999999999" );
-          console.log(this.resourceList);
         })
         .catch(err=>{
           console.log(err);
