@@ -82,7 +82,10 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
   );
   // console.log("students========");
   // console.log(studentss);
-  if (studentsInClass.students.length > 0 || studentsInClass.students.length != null) {
+  if (
+    studentsInClass.students.length > 0 ||
+    studentsInClass.students.length != null
+  ) {
     for (let i = 0; i < studentsInClass.students.length; i++) {
       // let index = students.indexOf(studentsInClass.students[i]);
       // if (index > -1) {
@@ -103,7 +106,7 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
   //   console.log("------(((((((((((((---------)))))))))))))--------------"+i);
   //   result.push(student);
   // }
-  let result = students
+  let result = students;
   res.status(200).json({
     status: "success",
     result,
@@ -140,8 +143,9 @@ exports.deleteClass = catchAsync(async (req, res, next) => {
 });
 
 exports.addStudents = catchAsync(async (req, res, next) => {
+  console.log("添加学生方法2");
   const mStudents = req.body.students;
-
+  console.log(mStudents);
   const newStudents = await Class.findByIdAndUpdate(
     {
       _id: req.params.id,
@@ -207,8 +211,9 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 
 //edit by chaos
 exports.updateStudents = catchAsync(async (req, res, next) => {
-  const newStudents = req.body.students;
+  console.log("添加学生方法1");
 
+  const newStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(
     {
       _id: req.body.class_id,
@@ -228,6 +233,16 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
     return next(new AppError("该班级不存在", 404));
   }
 
+  const updatedStudent = await User.updateMany(
+    { _id: { $in: newStudents } },
+    {
+      $push: {
+        class_id: req.body.class_id,
+      },
+    }
+  );
+  console.log(updatedStudent);
+
   res.status(200).json({
     status: "success",
   });
@@ -235,7 +250,7 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
   console.log("---req---");
-  console.log(req.body)
+  console.log(req.body);
   const multiStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(
     {
