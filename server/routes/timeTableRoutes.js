@@ -34,9 +34,11 @@ router
   .post(authController.protect, timeTableController.getTimeTableFromLessonID); 
 router
   .route("/getLatestTimeTableofTeacher")
-  .post(timeTableController.getLatestTimeTableofTeacher);  
+  .post(authController.protect,timeTableController.getLatestTimeTableofTeacher);  
+router
+  .route("/getTimeTableFromClassID")
+  .post(authController.protect,timeTableController.getTimeTableFromClassID);    
   
-
 // 改删
 router
   .route("/:id")
