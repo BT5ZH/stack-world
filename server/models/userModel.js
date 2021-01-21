@@ -87,7 +87,6 @@ const userSchema = new mongoose.Schema(
     },
     //---add new fields by qichao on 1-21
     entry_year: { type: String, default: "2021" }, //入校年份，如‘2020’
-    organized_class: { type: String, ref: "Class" }, //针对学生所属的建制班
 
     //------------qichao ---------------
   },

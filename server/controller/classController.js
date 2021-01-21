@@ -270,7 +270,14 @@ exports.deleteStudents = catchAsync(async (req, res, next) => {
   if (!classEntity) {
     return next(new AppError("该班级不存在", 404));
   }
-
+  const updatedStudent = await User.updateMany(
+    { _id: { $in: multiStudents } },
+    {
+      $pull: {
+        class_id: req.params.id,
+      },
+    }
+  );
   res.status(204).json({
     status: "success",
   });
