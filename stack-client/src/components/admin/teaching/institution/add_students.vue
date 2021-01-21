@@ -59,6 +59,7 @@ export default {
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       users: ["1"],
+      refresh_number: 0,
     };
   },
   computed: {
@@ -71,9 +72,10 @@ export default {
   },
   mounted() {
     this.getStudents();
+    this.refresh_number = this.child_refresh;
   },
   watch: {
-    child_refresh(val) {
+    refresh_number(val) {
       this.getStudents();
     },
   },
@@ -86,14 +88,14 @@ export default {
         class_id: this.$route.query.classId,
         students: this.selectedRowKeys,
       };
-      // console.log(requestdata)
+      console.log("添加学生---页面");
       axiosInstance
         .patch(url, requestdata)
         .then((res) => {
           // console.log(res);
           this.$message.info("添加成功");
-          this.child_refresh += 1;
-          this.$emit("refresh", this.child_refresh);
+          this.refresh_number += 1;
+          this.$emit("refresh", this.refresh_number);
         })
         .catch((err) => {
           console.log(err);
