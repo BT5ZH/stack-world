@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
       default: uuid.v1,
     },
     user_id: { type: String },
+    class_id: { type: String },
     title: {
       type: String,
       enum: ["student", "lecturer", "professor", "vice-professor"],
@@ -58,7 +59,7 @@ const userSchema = new mongoose.Schema(
         collect_time: { type: String },
         res_type: { type: String },
       },
-    ], 
+    ],
     password: {
       type: String,
       required: [true, "Please provide a password"],
@@ -120,7 +121,7 @@ userSchema.post("findOne", function (result) {
   // else if(result.role==='patrol') result.role = "巡视督导"
   // else if(result.role==='superAdmin') result.role = "超级管理员"
 
-  if(result!=null){
+  if (result != null) {
     if (result.title === "student") result.title = "学生";
     else if (result.title === "lecturer") result.title = "讲师";
     else if (result.title === "vice-professor") result.title = "副教授";
@@ -128,7 +129,7 @@ userSchema.post("findOne", function (result) {
   }
 });
 userSchema.post("find", function (result) {
-  if (result.length!=0 || result != null) {
+  if (result.length != 0 || result != null) {
     for (let i = 0; i < result.length; i++) {
       // if(result[i].role==='student') result[i].role = "学生"
       // else if(result[i].role==='teacher') result[i].role = "教师"
