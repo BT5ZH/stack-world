@@ -116,9 +116,23 @@ export default {
   methods: {
     getCourse() {
       let date = this.nowTime;
-      let year = date.getFullYear();
+      let year = "";
+      // let year = date.getFullYear();
       //  + '-' + Number(date.getFullYear() + 1);
-      let semester = date.getMonth() < 3 || date.getMonth() > 9 ? 1 : 2;
+      // let semester = date.getMonth() < 3 || date.getMonth() > 9 ? 1 : 2;
+      let semester = -1;
+
+      if (date.getMonth() < 3) {
+        year = date.getFullYear() - 1 + "-" + date.getFullYear();
+        semester = 1;
+      } else if (date.getMonth() > 9) {
+        year = date.getFullYear() + "-" + (date.getFullYear() + 1);
+        semester = 1;
+      } else {
+        year = date.getFullYear() - 1 + "-" + date.getFullYear();
+        semester = 2;
+      }
+
       this.day = date.getDay();
       let timeData = {
         student_id: this.uid,

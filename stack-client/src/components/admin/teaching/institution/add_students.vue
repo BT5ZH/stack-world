@@ -46,9 +46,14 @@ const columns = [
 const data = [];
 
 export default {
+  props: {
+    child_refresh: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
-      child_refresh: 1,
       data,
       columns,
       selectedRowKeys: [], // Check here to configure the default column
@@ -75,31 +80,28 @@ export default {
   methods: {
     // 添加学生
     add_students() {
-      // console.log("come")
-      // console.log("---data----")
-      // console.log(this.data);
-        // 开始
-        const url = "/pc/v1/classes/updateStudents";
-        const requestdata = {
-          class_id: this.$route.query.classId,
-          students: this.selectedRowKeys,
-        };
-        // console.log(requestdata)
-        axiosInstance
-          .patch(url, requestdata)
-          .then((res) => {
-            // console.log(res);
-            this.$message.info("添加成功");
-            this.child_refresh += 1;
-            this.$emit("refresh", this.child_refresh);
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message.error("添加失败");
-          });
-        // 结束
-        this.loading = false;
-        this.selectedRowKeys = [];
+      // 开始
+      const url = "/pc/v1/classes/updateStudents";
+      const requestdata = {
+        class_id: this.$route.query.classId,
+        students: this.selectedRowKeys,
+      };
+      // console.log(requestdata)
+      axiosInstance
+        .patch(url, requestdata)
+        .then((res) => {
+          // console.log(res);
+          this.$message.info("添加成功");
+          this.child_refresh += 1;
+          this.$emit("refresh", this.child_refresh);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("添加失败");
+        });
+      // 结束
+      this.loading = false;
+      this.selectedRowKeys = [];
     },
     async getStudents() {
       // 按要求获取user

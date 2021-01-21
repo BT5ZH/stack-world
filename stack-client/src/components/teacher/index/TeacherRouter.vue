@@ -5,7 +5,7 @@
     </a-layout-header>
     <a-layout-content>
       <a-layout>
-        <a-layout-sider width="100px"> </a-layout-sider>
+        <a-layout-sider width="50px"> </a-layout-sider>
         <a-layout-content>
           <router-view />
         </a-layout-content>
