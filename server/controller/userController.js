@@ -42,7 +42,9 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     (match) => `$${match}`
   );
   // console.log(queryString);
-  const query = User.find(JSON.parse(queryString)).select("_id user_id  subOrg_name major_name title name email");
+  const query = User.find(JSON.parse(queryString)).select(
+    "_id user_id  subOrg_name major_name title name email"
+  );
   //   console.log(query);
   // EXECUTE QUERY
   const users = await query;
@@ -53,13 +55,12 @@ exports.getAllUsers = catchAsync(async (req, res) => {
     status: "success",
     results: users.length,
     users,
-
   });
 });
 
 exports.getUser = catchAsync(async (req, res) => {
   //const user = await User.findById(req.params.id);
-  const user = await User.findOne({_id:req.params.id});
+  const user = await User.findOne({ _id: req.params.id });
 
   res.status(200).json({
     status: "success",
@@ -137,10 +138,6 @@ exports.createMultipleUsers = catchAsync(async (req, res) => {
     result,
   });
 });
-
-// exports.getAllOrgAdmin= catchAsync(async (req, res, next)=>{
-
-// })
 
 exports.getOrgTeachers = catchAsync(async (req, res) => {
   const queryObj = { ...req.query };
@@ -293,21 +290,21 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
       },
     },
   ]);
- 
-  let result=data.map(item=>{
-    let title=[]
-    for(let i=0;i<item.title.length;i++){
-      if(item.title[i]==='professor') title.push('教授')
-      else if(item.title[i]==='vice-professor') title.push('副教授')
-      else if(item.title[i]==='lecturer') title.push('讲师')
-      else if(item.title[i]==='student') title.push('学生')
+
+  let result = data.map((item) => {
+    let title = [];
+    for (let i = 0; i < item.title.length; i++) {
+      if (item.title[i] === "professor") title.push("教授");
+      else if (item.title[i] === "vice-professor") title.push("副教授");
+      else if (item.title[i] === "lecturer") title.push("讲师");
+      else if (item.title[i] === "student") title.push("学生");
     }
-    return{
-        _id:item._id,
-        title:title,
-        number:item.course_number
-    }
-  })
+    return {
+      _id: item._id,
+      title: title,
+      number: item.course_number,
+    };
+  });
   if (data === [] || data === null) {
     return next(new AppError("课程不存在", 500));
   }
@@ -315,6 +312,6 @@ exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data,
-    result
+    result,
   });
 });

@@ -28,7 +28,7 @@
           onChange: onSelectChange,
         }"
         :pagination="{
-          total: 50,
+          total: data.length,
           'show-size-changer': true,
           'show-quick-jumper': true,
         }"
