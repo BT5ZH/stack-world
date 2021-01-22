@@ -2,11 +2,13 @@
   <a-row>
     <a-col :span="18" :push="3">
       <h1 class="sign-title">抢答结果</h1>
-      <div class="teacher_question">
-        问题:&nbsp;{{ raceList[1].question.stem }}
-      </div>
-      <div class="teacher_question">
-        正确答案:&nbsp;{{ raceList[1].question.right_answer }}
+      <div v-if="raceList.length != 0">
+        <div class="teacher_question">
+          问题:&nbsp;{{ raceList[1].question.stem }}
+        </div>
+        <div class="teacher_question">
+          正确答案:&nbsp;{{ raceList[1].question.right_answer }}
+        </div>
       </div>
       <a-list
         size="small"
@@ -34,14 +36,13 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    console.log("sssss")
-    console.log(this.raceList)
-  },
+
   computed: {
     ...mapState({
       raceList: (state) => state.teacher.raceList,
     }),
+  },
+  mounted() {
   },
   methods: {},
 };

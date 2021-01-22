@@ -19,13 +19,14 @@ export default {
   },
   data() {
     return {
-      studentId: "2020000222",
-      className: "软件工程一班",
     };
   },
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      user_id: (state) => state.public.user_id,
+      major_name: (state) => state.public.major_name,
+
       name: (state) => state.public.name,
       openRooms: (state) => state.student.openRooms,
       signState: (state) => state.student.interaction.sign,
@@ -47,8 +48,7 @@ export default {
         actionType: "sign",
         roomId: channel,
         data: {
-          studentId: this.studentId,
-          className: this.className,
+          studentId: this.user_id,
           studentName: this.name,
         },
       });
