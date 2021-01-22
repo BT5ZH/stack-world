@@ -289,7 +289,7 @@ export default {
       nodes: (state) => state.teacher.precourse.nodes,
     }),
     steps() {
-      if (this.nodes.length == undefined) return [];
+      if (this.nodes == undefined || this.nodes.length == undefined) return [];
       return this.nodes.map((item) => ({
         type: item.tag.toLowerCase(),
         title: this.actionMap[item.tag.toLowerCase()].name,
