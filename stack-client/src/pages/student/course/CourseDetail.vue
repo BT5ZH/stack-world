@@ -2,6 +2,7 @@
   <div>
     <a-row class="course_menu">
       <a-col :span="8" :key="index" v-for="(item, index) in courseDetailMenu">
+        <!-- 菜单栏 -->
         <button
           :class="
             isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'
@@ -28,10 +29,17 @@
       <!-- <div v-if="courseStart"> -->
       <div class="">
         <!-- <video /> -->
-        <div
+        <video
+          id="remote_stream"
+          style="width: 100%"
+          controlsList="nodownload"
+          controls
+        >
+        </video>
+        <!-- <div
           style="width: 100%; height: 200px; background-color: #ffbf35"
           id="remote_stream"
-        ></div>
+        ></div> -->
 
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
@@ -65,6 +73,7 @@
 
       <!-- <a-button >开始上课</a-button> -->
     </div>
+
     <div class="course_content" v-if="isClick == 2">
       <a-empty v-if="homeworkList.length == 0" />
       <resCard
@@ -181,8 +190,6 @@ export default {
     this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
-    // this.$store.dispatch("student/getResList", this.$route.params.id);
-    // this.$store.dispatch("student/getHomeworkList", this.$route.params.id);
     socket.createInstance("student", this, this.lessonId);
     this.initLiveClient();
   },
