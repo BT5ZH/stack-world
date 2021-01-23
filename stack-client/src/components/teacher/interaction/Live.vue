@@ -7,8 +7,8 @@
     </a-col>
     <a-col :span="9">
       <div class="btn-area">
-        <a-button @click="joinLiveRoom" type="primary">加入教室(音频)</a-button>
-        <a-button @click="startLive" type="primary">开始授课(视频)</a-button>
+        <a-button @click="joinLiveRoom" type="primary">加入教室</a-button>
+        <a-button @click="startLive" type="primary">开始授课</a-button>
         <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
       </div>
       <h3 align="center">教室成员列表</h3>
@@ -93,10 +93,10 @@ export default {
             });
           })
           .then(() => {
-            this.$notification.success({
-              message: "温馨提示",
-              description: "成功进入教室，系统正在播放您的声音",
-            });
+            // this.$notification.success({
+            //   message: "温馨提示",
+            //   description: "成功进入教室，系统正在播放您的声音",
+            // });
             this.roomDisabled = true;
           });
       };
@@ -135,6 +135,7 @@ export default {
         });
     },
     closeLiveRoom() {
+      console.log("come-------");
       this.client
         .leave()
         .then(() => {
@@ -156,6 +157,10 @@ export default {
           this.$message.error("找不到可用直播设备");
         })
         .then(() => {
+          this.$notification.success({
+            message: "温馨提示",
+            description: "成功进入教室，系统正在播放您的声音",
+          });
           console.log("本地流发布成功");
           this.$message.info("可以观看直播啦");
         });
