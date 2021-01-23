@@ -239,7 +239,6 @@ export default {
       socket.sendEvent("joinRoom", {
         actionType: "ask",
         role: "teacher",
-        // students: this.onlineList, //在场学生
         roomId: this.lessonId,
         data: {
           start: true,
@@ -305,6 +304,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit("teacher/clearOnlineList");
     const callback = (id) => {
       socket.sendEvent("joinRoom", {
         actionType: "enter",

@@ -135,7 +135,7 @@ export default {
         });
     },
     closeLiveRoom() {
-      console.log("come-------");
+      this.$store.commit("teacher/clearOnlineList")
       this.client
         .leave()
         .then(() => {

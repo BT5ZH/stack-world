@@ -87,6 +87,9 @@ const mutation = {
         return info;
       });
   },
+  clearOnlineList(state) {
+    state.onlineList = []
+  },
   updateCurActivity(state, params) {
     state.curActivity = params;
   },
