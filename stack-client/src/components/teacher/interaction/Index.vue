@@ -1,98 +1,72 @@
 <template>
-  <a-row>
-    <a-row style="padding-top: 20px" type="flex" justify="end">
-      <a-col :pull="1" :span="2">
-        <a-button @click="$router.push({ name: 'teacher_index' })" type="link">
-          返回首页
-        </a-button>
-      </a-col>
-    </a-row>
-    <a-row style="padding-top: 50px">
-      <a-col :span="15">
+  <div>
+    <div style="padding-top: 20px">
+      <a-button @click="$router.push({ name: 'teacher_index' })" type="link">
+        返回首页
+      </a-button>
+    </div>
+    <div style="margin: 20px 30px 0 30px">
+      <div>
         <!-- 实时课堂 -->
-        <a-row type="flex" justify="start">
-          <a-col :span="6">
-            <h2 class="block-title">
-              <a href="#">实时课堂</a>
-            </h2>
-          </a-col>
-        </a-row>
-        <a-row style="height: 400px">
-          <a-col :span="20" :push="2">
-            <teacher-live></teacher-live>
-          </a-col>
-        </a-row>
-
+        <div style="margin-bottom: 20px">
+          <teacher-live></teacher-live>
+        </div>
         <!-- 课堂活动 -->
-        <a-row type="flex" justify="start">
-          <a-col :span="6">
+        <div>
+          <div>
             <h2 class="block-title">
               <a href="#">课堂活动</a>
             </h2>
-          </a-col>
-        </a-row>
+          </div>
 
-        <a-row>
-          <a-row type="flex" justify="center">
-            <a-col :span="18">
-              <div class="card-container" v-if="curEvent == -1">
-                <a-empty description="暂无备课内容"></a-empty>
-              </div>
-              <div class="card-container" v-else>
-                <a-row>
-                  <span class="action-type">{{ steps[curEvent].title }}</span>
-                </a-row>
-                <a-row :gutter="20" class="card-body">
-                  <a-col :span="18">
-                    <h2>{{ steps[curEvent].desc }}</h2>
-                  </a-col>
-                  <a-col :span="2">
-                    <!-- >发送事件 -->
-                    <a-button
-                      shape="circle"
-                      size="large"
-                      @click="navigateToEvent(curEvent)"
-                    >
-                      <a-icon type="right-circle" style="font-size: 40px" />
-                    </a-button>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-col>
-          </a-row>
+          <div>
+            <div class="card-container" v-if="curEvent == -1">
+              <a-empty description="暂无备课内容"></a-empty>
+            </div>
+            <div class="card-container" v-else>
+              <a-row>
+                <span class="action-type">{{ steps[curEvent].title }}</span>
+              </a-row>
+              <a-row :gutter="20" class="card-body">
+                <a-col :span="18">
+                  <h2>{{ steps[curEvent].desc }}</h2>
+                </a-col>
+                <a-col :span="2">
+                  <a-button
+                    shape="circle"
+                    size="large"
+                    @click="navigateToEvent(curEvent)"
+                  >
+                    <a-icon type="right-circle" style="font-size: 40px" />
+                  </a-button>
+                </a-col>
+              </a-row>
+            </div>
+          </div>
 
-          <a-row class="event-steps">
-            <a-col :span="20" :push="2">
-              <a-steps
-                size="small"
-                progress-dot
-                v-model="curEvent"
-                @change="eventChange"
-              >
-                <a-step
-                  v-for="(step, index) in steps"
-                  :key="index"
-                  :title="step.title"
-                  :description="step.time"
-                />
-              </a-steps>
-            </a-col>
-          </a-row>
-        </a-row>
-      </a-col>
+          <div class="event-steps">
+            <a-steps
+              size="small"
+              progress-dot
+              v-model="curEvent"
+              @change="eventChange"
+            >
+              <a-step
+                v-for="(step, index) in steps"
+                :key="index"
+                :title="step.title"
+                :description="step.time"
+              />
+            </a-steps>
+          </div>
+        </div>
+      </div>
 
-      <a-col :span="9">
-        <a-row type="flex" justify="start">
-          <a-col :span="6">
-            <h2 class="block-title">
-              <a href="#">互动结果</a>
-            </h2>
-          </a-col>
-        </a-row>
+      <div class="interactive">
         <result></result>
-      </a-col>
-    </a-row>
-  </a-row>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -365,5 +339,25 @@ export default {
 
 .event-steps {
   padding: 50px 0 30px;
+}
+
+.interactive {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  min-height: 70vh;
+  overflow: scroll;
+  background: #f4f4f4e6;
+  transition: transform 1.4s ease;
+}
+.interactive .interactive-title {
+  color: #fff;
+  font-size: 30px;
+  letter-spacing: 5px;
+  font-weight: 400;
+  padding: 15px;
+}
+.interactive:hover {
+  transform: translateY(-70vh);
 }
 </style>

@@ -1,31 +1,38 @@
 <template>
-  <a-row class="container" :gutter="20">
-    <a-col :span="15">
-      <div class="live">
-        <div id="local_stream"></div>
+  <div class="interaction">
+    <div class="live">
+      <div class="live-header">
+        <h2>实时课堂</h2>
       </div>
-    </a-col>
-    <a-col :span="9">
+
+      <div id="local_stream"></div>
       <div class="btn-area">
         <a-button @click="joinLiveRoom" type="primary">加入教室</a-button>
         <a-button @click="startLive" type="primary">开始授课</a-button>
         <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
       </div>
-      <h3 align="center">教室成员列表</h3>
-      <a-list
-        item-layout="horizontal"
-        :data-source="audienceList"
-        :pagination="pagination"
-      >
-        <template #header>
-          <h3>当前人数：{{ currentAudience }}</h3>
-        </template>
+    </div>
+
+    <div class="onlineInfo">
+      <div class="onlineInfo-header">
+        <div class="onlineInfo-filter">成员列表</div>
+        <div class="onlineInfo-arrow">当前{{ currentAudience }}人在线</div>
+      </div>
+      <div class="onlineInfo-body">
+        <div class="onlineInfo-body-title">
+          <div class="onlineInfo-body-title-text">姓名</div>
+          <div class="onlineInfo-body-title-text">进入时间</div>
+          <div class="onlineInfo-body-title-text">是否签到</div>
+        </div>
+        <div class="onlineInfo-body-list">循环在线名单</div>
+      </div>
+      <a-list item-layout="horizontal" :data-source="audienceList">
         <template #renderItem="item">
           <a-list-item> {{ item.studentName }} </a-list-item>
         </template>
       </a-list>
-    </a-col>
-  </a-row>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -177,11 +184,65 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  color: #fff;
-  height: 100%;
+.interaction {
+  /* background-color: #f4f; */
+  display: flex;
+  justify-content: space-around;
 }
-
+.onlineInfo {
+  width: 25%;
+}
+.onlineInfo .onlineInfo-header {
+  display: flex;
+  position: relative;
+  height: 46px;
+  width: 100%;
+  background: #f4f4f4;
+  color: #222;
+  border-radius: 2px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.onlineInfo .onlineInfo-body {
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0 5px;
+}
+.onlineInfo .onlineInfo-body .onlineInfo-body-title {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  position: relative;
+  padding: 8px 0;
+  overflow: hidden;
+  z-index: 1;
+  zoom: 1;
+}
+.onlineInfo .onlineInfo-body .onlineInfo-body-list {
+  background-color: #fff;
+  position: relative;
+}
+.onlineInfo .onlineInfo-header .onlineInfo-arrow {
+  height: 14px;
+  position: absolute;
+  right: 14px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: #505050;
+}
+.onlineInfo .onlineInfo-header .onlineInfo-filter {
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+  z-index: 2;
+  height: 46px;
+  line-height: 46px;
+  border: none;
+  border-radius: 2px;
+  padding: 0 10px 0 16px;
+  zoom: 1;
+}
 /* h3,
 ul li {
   color: #fff;
@@ -193,9 +254,11 @@ ul li {
   flex-direction: column;
   align-items: center;
 }
-
-#local_stream div {
-  background: #fff;
+.live .live-header h2 {
+  color: #1890ff;
+  text-align: center;
+  margin-right: 1.5rem;
+  font-weight: bold;
 }
 
 #local_stream {
@@ -203,8 +266,8 @@ ul li {
 }
 
 .btn-area {
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 40px;
 }
 </style>

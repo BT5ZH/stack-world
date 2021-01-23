@@ -1,7 +1,6 @@
 <template>
   <a-row>
     <a-col :span="18" :push="3">
-      <h1 class="sign-title">随机点名结果</h1>
       <div v-if="randomStudent != undefined">
         <div class="randomStudent">抽到学生:&nbsp;{{ randomStudent }}</div>
       </div>
@@ -57,11 +56,5 @@ export default {
 <style scoped>
 .randomStudent {
   font-weight: bold;
-}
-.sign-title {
-  font-weight: bold;
-  color: #bbb;
-  text-align: center;
-  padding: 20px 0;
 }
 </style>

@@ -7,7 +7,7 @@
       style="background: #f9f0fa; padding: 20px"
     >
       <a-col :span="6" style="display: flex; align-items: center">
-        <h3>总时长：{{ courseHours }}</h3>
+        <h3>共{{ courseHours }}(学时)✖️ 50分钟/学时</h3>
         <!-- <a-input v-model="form.time" style="width: 80%" /> -->
       </a-col>
       <a-col :span="14" style="display: flex; align-items: center">
