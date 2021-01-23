@@ -255,18 +255,32 @@ export default {
       });
     },
     sendrandomsignEvent() {
-      if (this.signList[0].studentName == undefined) {
+      if (this.signList[0] == undefined) {
         this.$message.info("请先发布大签到");
         return;
       }
+      let studentIndex = this.randomNum(0, this.signList.length - 1);
       socket.sendEvent("joinRoom", {
         actionType: "randomSign",
         role: "teacher",
         roomId: this.lessonId,
-        data: { studentList: this.signList[0].studentName },
+        data: { studentList: this.signList[studentIndex].studentName },
       });
     },
+    // 生成min,max的随机数
+    randomNum(minNum, maxNum) {
+      switch (arguments.length) {
+        case 1:
+          return parseInt(Math.random() * minNum + 1, 10);
+        case 2:
+          return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+        //或者 Math.floor(Math.random()*( maxNum - minNum + 1 ) + minNum );
+        default:
+          return 0;
+      }
+    },
   },
+
   computed: {
     ...mapState({
       onlineList: (state) => state.teacher.onlineList,
@@ -275,7 +289,7 @@ export default {
       nodes: (state) => state.teacher.precourse.nodes,
     }),
     steps() {
-      if (!this.nodes.length) return [];
+      if (this.nodes == undefined || this.nodes.length == undefined) return [];
       return this.nodes.map((item) => ({
         type: item.tag.toLowerCase(),
         title: this.actionMap[item.tag.toLowerCase()].name,

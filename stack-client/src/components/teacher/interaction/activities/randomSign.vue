@@ -29,10 +29,6 @@ export default {
         key: "address",
       },
       {
-        title: "班级",
-        dataIndex: "className",
-      },
-      {
         title: "学号",
         dataIndex: "studentId",
       },

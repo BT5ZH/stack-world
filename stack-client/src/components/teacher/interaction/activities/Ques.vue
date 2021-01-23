@@ -2,11 +2,13 @@
   <a-row>
     <a-col :span="18" :push="3">
       <h1 class="sign-title">提问结果</h1>
-      <div class="teacher_question">
-        问题:&nbsp;{{ ask_answer.question.stem }}
-      </div>
-      <div class="teacher_question">
-        正确答案:&nbsp;{{ ask_answer.question.right_answer }}
+      <div v-if="ask_answer.question != undefined">
+        <div class="teacher_question">
+          问题:&nbsp;{{ ask_answer.question.stem }}
+        </div>
+        <div class="teacher_question">
+          正确答案:&nbsp;{{ ask_answer.question.right_answer }}
+        </div>
       </div>
       <a-list size="small" bordered v-if="ask_answer.id">
         <template>
@@ -31,10 +33,7 @@ export default {
       ask_answer: (state) => state.teacher.ask_answer,
     }),
   },
-  mounted() {
-    // console.log("question----")
-    // console.log(this.ask_answer.question)
-  },
+  mounted() {},
   data() {
     return {};
   },

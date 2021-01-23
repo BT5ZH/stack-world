@@ -19,13 +19,12 @@ export default {
   },
   data() {
     return {
-      studentId: "2020000222",
-      className: "软件工程一班",
     };
   },
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      user_id: (state) => state.public.user_id,
       name: (state) => state.public.name,
       openRooms: (state) => state.student.openRooms,
       randomSign: (state) => state.student.interaction.randomSign,
@@ -51,8 +50,7 @@ export default {
         actionType: "randomSign",
         roomId: channel,
         data: {
-          studentId: this.studentId,
-          className: this.className,
+          studentId: this.user_id,
           studentName: this.name,
         },
       });

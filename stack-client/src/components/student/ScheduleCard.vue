@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import * as socket from "@/utils/socket";
 import { mapState } from "vuex";
 // import moment from 'moment';
 
@@ -104,10 +105,13 @@ export default {
     });
   },
   mounted() {
+    socket.createInstance("student", this);
     this.getCourse();
   },
   computed: {
     ...mapState({
+      studentId: (state) => state.public.user_id,
+      studentName: (state) => state.public.name,
       uid: (state) => state.public.uid,
       courseList: (state) => state.student.courseList,
       user: (state) => state.student.user,
@@ -158,9 +162,15 @@ export default {
       // console.log(this.currentList);
     },
     jmpRoute(item) {
+      socket.sendEvent("joinRoom", {
+        actionType: "enter",
+        role: "student",
+        roomId: item.lesson_id,
+        data: { studentId: this.studentId, studentName: this.studentName },
+      });
       this.$router.push({
         path: "/student/course/" + item.course_id,
-        query: { title: item.course_name },
+        query: { title: item.course_name, lessonId: item.lesson_id },
       });
     },
   },

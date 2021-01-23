@@ -19,13 +19,15 @@ export default {
   },
   data() {
     return {
-      studentId: "2020000222",
-      className: "软件工程一班",
+      // 签到状态
+      signStatus: false,
     };
   },
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      user_id: (state) => state.public.user_id,
+      major_name: (state) => state.public.major_name,
       name: (state) => state.public.name,
       openRooms: (state) => state.student.openRooms,
       signState: (state) => state.student.interaction.sign,
@@ -37,21 +39,30 @@ export default {
   mounted() {},
   methods: {
     signin() {
-      if (!this.signState.start) {
-        this.$message.info("老师还没有发布签到哦！");
-        return null;
+      try {
+        if (this.signStatus == true) {
+          this.$message.info("不可重复签到!");
+          return;
+        }
+        if (!this.signState.start) {
+          this.$message.info("老师还没有发布签到哦！");
+          return null;
+        }
+        const channel = this.openRooms[0];
+        this.socket.sendEvent("joinRoom", {
+          role: "student",
+          actionType: "sign",
+          roomId: channel,
+          data: {
+            studentId: this.user_id,
+            studentName: this.name,
+          },
+        });
+        this.signStatus = true;
+      } catch (err) {
+        this.$message.error("签到失败");
+        console.log(err);
       }
-      const channel = this.openRooms[0];
-      this.socket.sendEvent("joinRoom", {
-        role: "student",
-        actionType: "sign",
-        roomId: channel,
-        data: {
-          studentId: this.studentId,
-          className: this.className,
-          studentName: this.name,
-        },
-      });
     },
   },
 };
