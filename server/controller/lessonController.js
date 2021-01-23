@@ -37,19 +37,12 @@ exports.getAllLessons = catchAsync(async (req, res, next) => {
 });
 
 exports.createLesson = catchAsync(async (req, res, next) => {
-  // const data = await Lesson.findOne({
-  //   course_id: req.body.course_id,
-  //   teacher_id: req.body.teacher_id,
-  // });
-  // if (!data) {
-    const onelesson = await Lesson.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: onelesson,
-    });
-  // } else {
-  //   return next(new AppError("该课已存在", 500));
-  // }
+  console.log(req.body);
+  const onelesson = await Lesson.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: onelesson,
+  });
 });
 
 exports.getOneLessonByID = catchAsync(async (req, res, next) => {
@@ -71,9 +64,13 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
   });
 });
 exports.getCourseInfoByLessonID = catchAsync(async (req, res, next) => {
-  console.log(req.query.lesson_id );
-   const data = await Lesson.findOne({ _id: req.query.lesson_id }).select("_id course_id")
-    .populate("course_id", "name evaluation course_id credit total_study_hours course_type -_id")
+  console.log(req.query.lesson_id);
+  const data = await Lesson.findOne({ _id: req.query.lesson_id })
+    .select("_id course_id")
+    .populate(
+      "course_id",
+      "name evaluation course_id credit total_study_hours course_type -_id"
+    );
 
   if (!data) {
     return next(new AppError("该课不存在", 404));
@@ -81,50 +78,43 @@ exports.getCourseInfoByLessonID = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-      data,
-
+    data,
   });
 });
 exports.getLessonsByTeacherID = catchAsync(async (req, res, next) => {
   const fullInfo = await Lesson.find({ teacher_id: req.body.teacher_id })
-  .populate(
-    "teacher_id",
-    "user_id name -_id"
-  )
-  .populate(
-    "course_id",
-    "total_study_hours name course_type evaluation credit subOrg_name major_name -_id"
-  )
-  .populate(
-    "prepareLesson",
-    "one_class -_id"
-  )
+    .populate("teacher_id", "user_id name -_id")
+    .populate(
+      "course_id",
+      "total_study_hours name course_type evaluation credit subOrg_name major_name -_id"
+    )
+    .populate("prepareLesson", "one_class -_id");
   if (!fullInfo) {
     return next(new AppError("该课不存在", 404));
   }
-  let abstractInfo=fullInfo.map((item)=>{
-    let classlength=0
-    if(item.prepareLesson.length>0)
-        classlength=item.prepareLesson[0].one_class.length
-        
-    return{
-        _id:item._id,
-        cover:item.cover,
-        lesson_name:item.course_id.name,
-        total_study_hours:item.course_id.total_study_hours,
-        course_type:item.course_id.course_type,
-        credit:item.course_id.credit,
-        evaluation:item.course_id.evaluation,
-        subOrg_name:item.course_id.subOrg_name,
-        major_name:item.course_id.major_name,
-        prepareNumber:classlength,
-        teacher_name:item.teacher_id.name
-    }
-  })
+  let abstractInfo = fullInfo.map((item) => {
+    let classlength = 0;
+    if (item.prepareLesson.length > 0)
+      classlength = item.prepareLesson[0].one_class.length;
+
+    return {
+      _id: item._id,
+      cover: item.cover,
+      lesson_name: item.course_id.name,
+      total_study_hours: item.course_id.total_study_hours,
+      course_type: item.course_id.course_type,
+      credit: item.course_id.credit,
+      evaluation: item.course_id.evaluation,
+      subOrg_name: item.course_id.subOrg_name,
+      major_name: item.course_id.major_name,
+      prepareNumber: classlength,
+      teacher_name: item.teacher_id.name,
+    };
+  });
   res.status(200).json({
     status: "success",
     abstractInfo,
-    fullInfo
+    fullInfo,
   });
 });
 
@@ -241,17 +231,19 @@ exports.getLessonByTeacherIDandClassID = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteLesson = catchAsync(async (req, res, next) => {
-  const result = await PrepareLesson.findOne({lesson_id:req.params.lesson_id})
-  if(result){
+  const result = await PrepareLesson.findOne({
+    lesson_id: req.params.lesson_id,
+  });
+  if (result) {
     return next(new AppError("该课已经存在备课内容，不能删除", 500));
   }
 
   const data = await Lesson.findByIdAndDelete(req.params.lesson_id);
-  
+
   if (!data) {
     return next(new AppError("该课不存在", 404));
   }
-  await TimeTable.findOneAndDelete({lesson_id:req.params.lesson_id});
+  await TimeTable.findOneAndDelete({ lesson_id: req.params.lesson_id });
   res.status(204).json({
     status: "success",
   });

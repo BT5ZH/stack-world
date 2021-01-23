@@ -1,5 +1,5 @@
 const TimeTable = require("../models/timeTableModel");
-const SchoolYear = require("../models/schoolYearModel")
+const SchoolYear = require("../models/schoolYearModel");
 const Lesson = require("../models/lessonModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -65,9 +65,11 @@ exports.generateTimeTable = catchAsync(async (req, res, next) => {
     status: "success",
     data: NewTimeTable,
   });
-})
+});
 exports.createTimeTable = catchAsync(async (req, res, next) => {
-  const lesson = await Lesson.findById(req.body.lesson_id).select("_id teacher_id course_id")
+  const lesson = await Lesson.findById(req.body.lesson_id).select(
+    "_id teacher_id course_id"
+  );
   if (!lesson) {
     return next(new AppError("该课程不存在", 404));
   }
@@ -75,8 +77,8 @@ exports.createTimeTable = catchAsync(async (req, res, next) => {
     course_id: lesson.course_id,
     lesson_id: lesson._id,
     teacher_id: lesson.teacher_id,
-    curriculum: req.body.curriculum
-  })
+    curriculum: req.body.curriculum,
+  });
   if (!NewTimeTable) {
     return next(new AppError("新课表创建失败", 500));
   }
@@ -126,17 +128,20 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     return next(new AppError("该课表不存在", 404));
   }
 
-  let result = []
+  let result = [];
   for (let i = 0; i < data.length; i++) {
-    let oneLesson = await Lesson.findById(data[i].lesson_id)
-    if (oneLesson.year === req.body.year && oneLesson.semester === Number(req.body.semester))
-      result.push(data[i])
+    let oneLesson = await Lesson.findById(data[i].lesson_id);
+    if (
+      oneLesson.year === req.body.year &&
+      oneLesson.semester === Number(req.body.semester)
+    )
+      result.push(data[i]);
   }
 
   res.status(200).json({
     status: "success",
-    data,//get all the timetable data of the teacher selected without regard to the year and sememser
-    result,//according to the given year and semester, return the suitable timetable of the teacher selected
+    data, //get all the timetable data of the teacher selected without regard to the year and sememser
+    result, //according to the given year and semester, return the suitable timetable of the teacher selected
   });
 });
 
@@ -199,20 +204,23 @@ exports.getTimeTableFromRoomID = catchAsync(async (req, res, next) => {
       odd_or_even: item.curriculum.odd_or_even,
       teacher_name: item.Teacher[0].name,
       teacher_number: item.Teacher[0].user_id,
-      course_name: item.Course[0].name
-    }
-  })
+      course_name: item.Course[0].name,
+    };
+  });
 
-  let result = []
+  let result = [];
   for (let i = 0; i < temp.length; i++) {
-    let oneLesson = await Lesson.findById(temp[i].lessonID)
-    if (oneLesson.year === req.query.year && oneLesson.semester === Number(req.query.semester))
-      result.push(temp[i])
+    let oneLesson = await Lesson.findById(temp[i].lessonID);
+    if (
+      oneLesson.year === req.query.year &&
+      oneLesson.semester === Number(req.query.semester)
+    )
+      result.push(temp[i]);
   }
   res.status(200).json({
     status: "success",
     temp, //the temp array saves all the timetable data of the room selected without regard to the year and sememser
-    result,//according to the given year and semester, return the suitable timetable of the room selected
+    result, //according to the given year and semester, return the suitable timetable of the room selected
   });
 });
 
@@ -321,7 +329,7 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
         result.push(data);
       }
     }
-    if(result.length===0){
+    if (result.length === 0) {
       return next(new AppError("课表不存在", 200));
     }
     res.status(200).json({
@@ -341,50 +349,52 @@ exports.getTimeTableFromStudentID = catchAsync(async (req, res, next) => {
   }
 });
 exports.getTimeTableFromClassID = catchAsync(async (req, res, next) => {
-  let result = []; 
-      let lessonIdList = []; 
-      let lessonObj = await belongedToWhichLesson(req.body.class_id);
-      let lessonsOfOneClass = lessonObj[0].belongedToLesson;
-      console.log("lessonsOfOneClass",lessonsOfOneClass)
-      for (let j = 0; j < lessonsOfOneClass.length; j++) {
-        if (
-          lessonsOfOneClass[j].year == req.body.year &&
-          lessonsOfOneClass[j].semester == req.body.semester
-        ) {
-          lessonIdList.push(lessonsOfOneClass[j]._id);
-        }
-      }
+  let result = [];
+  let lessonIdList = [];
+  let lessonObj = await belongedToWhichLesson(req.body.class_id);
+  let lessonsOfOneClass = lessonObj[0].belongedToLesson;
+  console.log("lessonsOfOneClass", lessonsOfOneClass);
+  for (let j = 0; j < lessonsOfOneClass.length; j++) {
+    if (
+      lessonsOfOneClass[j].year == req.body.year &&
+      lessonsOfOneClass[j].semester == req.body.semester
+    ) {
+      lessonIdList.push(lessonsOfOneClass[j]._id);
+    }
+  }
 
-    for (let i = 0; i < lessonIdList.length; i++) {
-      console.log("lessonIdList[i]====="+lessonIdList.length)
-      console.log(lessonIdList[i])
-      const data = await TimeTable.findOne({lesson_id: lessonIdList[i]})
+  for (let i = 0; i < lessonIdList.length; i++) {
+    console.log("lessonIdList[i]=====" + lessonIdList.length);
+    console.log(lessonIdList[i]);
+    const data = await TimeTable.findOne({ lesson_id: lessonIdList[i] })
       .populate("course_id", "name")
       .populate("teacher_id", "name")
       .populate({
-          path: "curriculum.room_id",
-          populate: { path: "building" },
+        path: "curriculum.room_id",
+        populate: { path: "building" },
       })
       .populate("curriculum.class_id", "class_name -_id");
 
-      if (data) 
-        result.push(data);
-    }
-    if(result.length===0){
-      return next(new AppError("课表不存在", 200));
-    }
+    if (data) result.push(data);
+  }
+  if (result.length === 0) {
+    return next(new AppError("课表不存在", 200));
+  }
 
-    res.status(200).json({
-      status: "success",
-      result,
-    });
+  res.status(200).json({
+    status: "success",
+    result,
+  });
 });
 exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ lesson_id: req.body.lesson_id })
     //.populate("course_id", "name -_id")
     //.populate("teacher_id", "user_id name -_id")
     .populate("curriculum.class_id", "class_name _id")
-    .populate("curriculum.room_id", "room_number campus_name building_name _id");
+    .populate(
+      "curriculum.room_id",
+      "room_number campus_name building_name _id"
+    );
 
   if (!data || data.length === 0) {
     return next(new AppError("该课表不存在", 404));
@@ -398,170 +408,203 @@ exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
 //接收两个日期值（字符串新式，如，‘2020–8-31 00:00’，‘2021–1-10 00:00’），将这个时间段按照一周一个单位划分出来，
 //以一周为一个单元存入一个数组，最终返回的是一个二维数组，一维为给定时间段划分出的周数，二维为每一个周，存储单元为一个日期字符串，如'2020-08-03'、'2020-11-13'
 //注意：年为四位，月和日为两位（如'2020-08-03'、'2020-11-13'）
-function weeks(time1,time2) {
-  let time = []; 	// 结果数组
+function weeks(time1, time2) {
+  let time = []; // 结果数组
   let statime = new Date(Date.parse(time1));
-  let week = statime.getDay();	// 开始日期的星期
+  let week = statime.getDay(); // 开始日期的星期
   let starttime;
-  if(week == 0) {	// 保证起始日期为周一
+  if (week == 0) {
+    // 保证起始日期为周一
     starttime = +new Date(time1) - 1000 * 60 * 60 * 24 * 6;
   } else {
     starttime = +new Date(time1) - 1000 * 60 * 60 * 24 * (week - 1);
   }
   let endtime = +new Date(time2);
   let times = (endtime - starttime) / 1000;
-  let d = parseInt(times / 60 / 60 /24)+1;	// 需要存放的天数
-  
-  for(let i = 0; i <= d/7; i++){
-    let weeks = new Object();	// 存放日期对象
-    if (i === parseInt(d/7)) {	// 判断最后一周是否够7天
-      if (d%7 == 0) break;
+  let d = parseInt(times / 60 / 60 / 24) + 1; // 需要存放的天数
+
+  for (let i = 0; i <= d / 7; i++) {
+    let weeks = new Object(); // 存放日期对象
+    if (i === parseInt(d / 7)) {
+      // 判断最后一周是否够7天
+      if (d % 7 == 0) break;
       n = d % 7;
     } else {
       n = 7;
     }
-    for(let j = 1; j <= n;j++) {
-      switch(j){
-        case 1:weeks.Mon = new Date(starttime + 1000 * 60 * 60 * 24 * 1);break;
-        case 2:weeks.Tues = new Date(starttime + 1000 * 60 * 60 * 24 * 2);break;
-        case 3:weeks.Wed = new Date(starttime + 1000 * 60 * 60 * 24 * 3);break;
-        case 4:weeks.Thur = new Date(starttime + 1000 * 60 * 60 * 24 * 4);break;
-        case 5:weeks.Fri = new Date(starttime + 1000 * 60 * 60 * 24 * 5);break;
-        case 6:weeks.Sat = new Date(starttime + 1000 * 60 * 60 * 24 * 6);break;
-        case 7:weeks.Sun = new Date(starttime + 1000 * 60 * 60 * 24 * 7);break;
+    for (let j = 1; j <= n; j++) {
+      switch (j) {
+        case 1:
+          weeks.Mon = new Date(starttime + 1000 * 60 * 60 * 24 * 1);
+          break;
+        case 2:
+          weeks.Tues = new Date(starttime + 1000 * 60 * 60 * 24 * 2);
+          break;
+        case 3:
+          weeks.Wed = new Date(starttime + 1000 * 60 * 60 * 24 * 3);
+          break;
+        case 4:
+          weeks.Thur = new Date(starttime + 1000 * 60 * 60 * 24 * 4);
+          break;
+        case 5:
+          weeks.Fri = new Date(starttime + 1000 * 60 * 60 * 24 * 5);
+          break;
+        case 6:
+          weeks.Sat = new Date(starttime + 1000 * 60 * 60 * 24 * 6);
+          break;
+        case 7:
+          weeks.Sun = new Date(starttime + 1000 * 60 * 60 * 24 * 7);
+          break;
       }
     }
     time[i] = weeks;
     starttime = starttime + 1000 * 60 * 60 * 24 * 7;
   }
-  let wholeWeek=[]
-  for(let i=0;i<time.length;i++){
-    let oneWeek =[]
-    if(time[i].Mon){
-        let MonString = time[i].Mon.toISOString().substring(0,10)
-        oneWeek.push(MonString)
+  let wholeWeek = [];
+  for (let i = 0; i < time.length; i++) {
+    let oneWeek = [];
+    if (time[i].Mon) {
+      let MonString = time[i].Mon.toISOString().substring(0, 10);
+      oneWeek.push(MonString);
     }
-    if(time[i].Tues){
-        let TueString = time[i].Tues.toISOString().substring(0,10)//time[i].Tues.getUTCFullYear()+"-"+time[i].Tues.getMonth()+1+"-"+time[i].Tues.getUTCDate()
-        oneWeek.push(TueString)
+    if (time[i].Tues) {
+      let TueString = time[i].Tues.toISOString().substring(0, 10); //time[i].Tues.getUTCFullYear()+"-"+time[i].Tues.getMonth()+1+"-"+time[i].Tues.getUTCDate()
+      oneWeek.push(TueString);
     }
-    if(time[i].Wed){
-        let WedString = time[i].Wed.toISOString().substring(0,10)//time[i].Wed.getUTCFullYear()+"-"+time[i].Wed.getMonth()+1+"-"+time[i].Wed.getUTCDate()
-        oneWeek.push(WedString)
+    if (time[i].Wed) {
+      let WedString = time[i].Wed.toISOString().substring(0, 10); //time[i].Wed.getUTCFullYear()+"-"+time[i].Wed.getMonth()+1+"-"+time[i].Wed.getUTCDate()
+      oneWeek.push(WedString);
     }
-    if(time[i].Thur){
-        let ThuString = time[i].Thur.toISOString().substring(0,10)//time[i].Thur.getUTCFullYear()+"-"+time[i].Thur.getMonth()+1+"-"+time[i].Thur.getUTCDate()
-        oneWeek.push(ThuString)
+    if (time[i].Thur) {
+      let ThuString = time[i].Thur.toISOString().substring(0, 10); //time[i].Thur.getUTCFullYear()+"-"+time[i].Thur.getMonth()+1+"-"+time[i].Thur.getUTCDate()
+      oneWeek.push(ThuString);
     }
-    if(time[i].Fri){
-        let FriString = time[i].Fri.toISOString().substring(0,10)//time[i].Fri.getUTCFullYear()+"-"+time[i].Fri.getMonth()+1+"-"+time[i].Fri.getUTCDate()
-        oneWeek.push(FriString)
+    if (time[i].Fri) {
+      let FriString = time[i].Fri.toISOString().substring(0, 10); //time[i].Fri.getUTCFullYear()+"-"+time[i].Fri.getMonth()+1+"-"+time[i].Fri.getUTCDate()
+      oneWeek.push(FriString);
     }
-    if(time[i].Sat){
-        let SatString = time[i].Sat.toISOString().substring(0,10)//time[i].Sat.getUTCFullYear()+"-"+time[i].Sat.getMonth()+1+"-"+time[i].Sat.getUTCDate()
-        oneWeek.push(SatString)
+    if (time[i].Sat) {
+      let SatString = time[i].Sat.toISOString().substring(0, 10); //time[i].Sat.getUTCFullYear()+"-"+time[i].Sat.getMonth()+1+"-"+time[i].Sat.getUTCDate()
+      oneWeek.push(SatString);
     }
-    if(time[i].Sun){
-        let SunString = time[i].Sun.toISOString().substring(0,10)//time[i].Sun.getUTCFullYear()+"-"+time[i].Sun.getMonth()+1+"-"+time[i].Sun.getUTCDate()
-        oneWeek.push(SunString)
+    if (time[i].Sun) {
+      let SunString = time[i].Sun.toISOString().substring(0, 10); //time[i].Sun.getUTCFullYear()+"-"+time[i].Sun.getMonth()+1+"-"+time[i].Sun.getUTCDate()
+      oneWeek.push(SunString);
     }
-    wholeWeek.push(oneWeek)
+    wholeWeek.push(oneWeek);
   }
   return wholeWeek;
 }
 exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
-   //get school year information
-   const syInfo = await SchoolYear.findOne({current: 't'});//从schoolYear表里取学期起始终止信息
-   let year = syInfo.year
-   let semester = syInfo.semester
-   let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
-   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59")); 
-   let ct = syInfo.course_time //一天内课程时间的安排
-   let et=[]
-   
-  let now = new Date();
-  let month = now.getMonth()
-  let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-  let today = week[now.getDay()]
-  let day = now.getDate()
- 
-  let weekMatrix = weeks(syInfo.start_time + " 00:00",syInfo.end_time + " 23:59")//weekMatrix[][]里存储的是本学期时段划分出的所有周，每周里包含具体日期
-  let currentTime=now.toISOString().substring(0,10)//把Date（）对象转换成格式为‘yyyy-mm-dd’字符串
-  let odd_or_even=0
+  //get school year information
+  const syInfo = await SchoolYear.findOne({ current: "t" }); //从schoolYear表里取学期起始终止信息
+  let year = syInfo.year;
+  let semester = syInfo.semester;
+  let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
+  let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59"));
+  let ct = syInfo.course_time; //一天内课程时间的安排
+  let et = [];
+
+  // let now = new Date();
+
+  let timeZone = 8;
+  let offset_GMT = new Date().getTimezoneOffset();
+  var nowDate = new Date().getTime();
+  var now = new Date(
+    nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
+  );
+  let month = now.getMonth();
+  let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let today = week[now.getDay()];
+  let day = now.getDate();
+
+  let weekMatrix = weeks(
+    syInfo.start_time + " 00:00",
+    syInfo.end_time + " 23:59"
+  ); //weekMatrix[][]里存储的是本学期时段划分出的所有周，每周里包含具体日期
+  let currentTime = now.toISOString().substring(0, 10); //把Date（）对象转换成格式为‘yyyy-mm-dd’字符串
+  let odd_or_even = 0;
   //在weekMatrix二维数组中确定今天所在的周是奇数周还是偶数周
-  for(let i=0;i<weekMatrix.length;i++){
-    for(let j=0;j<weekMatrix[i].length;j++){
-      if( weekMatrix[i][j]===currentTime){
-        if(i%2===0)
-          odd_or_even=1//代表今天所在周是奇数周
-        else
-          odd_or_even=2//代表今天所在周是偶数周
-        break
+  for (let i = 0; i < weekMatrix.length; i++) {
+    for (let j = 0; j < weekMatrix[i].length; j++) {
+      if (weekMatrix[i][j] === currentTime) {
+        if (i % 2 === 0) odd_or_even = 1;
+        //代表今天所在周是奇数周
+        else odd_or_even = 2; //代表今天所在周是偶数周
+        break;
       }
     }
   }
   //--------------------------------------------------
 
   //判断与当前时间最近的课程是第几节
-  for(let i=0;i<ct.length;i++){
-    let s = ct[i].end_time ;
-    let end = new Date()
-    end.setFullYear(now.getFullYear(), now.getMonth(), now.getDate())
-    end.setHours(s.substring(0,s.indexOf(':')), s.substring(s.indexOf(':')+1) , 0);
-    et.push(end) 
+  for (let i = 0; i < ct.length; i++) {
+    let s = ct[i].end_time;
+    let end = new Date();
+    end.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
+    end.setHours(
+      s.substring(0, s.indexOf(":")),
+      s.substring(s.indexOf(":") + 1),
+      0
+    );
+    et.push(end);
   }
 
-  let currentCourse = "0"//用于存储距离当前时间最近的是第几节课
-  if (now < et[0])
-    currentCourse = "1"
-  else 
-    for(let i=0;i<et.length-1;i++){
-      if(now>et[i] && now<et[i+1]){
-        currentCourse = (i+2).toString();
+  let currentCourse = "0"; //用于存储距离当前时间最近的是第几节课
+  if (now < et[0]) {
+    currentCourse = "1";
+  } else
+    for (let i = 0; i < et.length - 1; i++) {
+      if (now > et[i] && now < et[i + 1]) {
+        currentCourse = (i + 2).toString();
         break;
       }
     }
   ////----------------------------------------------------------------------------------
-  if(now > semester_startTime && now < semester_endTime){
-     //console.log("+++++++get in--------")
-     const data = await TimeTable.find(
-      {
-        teacher_id: req.body.teacher_id, 
-        year:year,
-        semester:semester,
-        curriculum: { $elemMatch: { date: { $eq: today } ,order:{ $elemMatch:{ $eq:currentCourse}}}},
-        
-      })
+  if (now > semester_startTime && now < semester_endTime) {
+    //console.log("+++++++get in--------")
+    const data = await TimeTable.find({
+      teacher_id: req.body.teacher_id,
+      year: year,
+      semester: semester,
+      curriculum: {
+        $elemMatch: {
+          date: { $eq: today },
+          order: { $elemMatch: { $eq: currentCourse } },
+        },
+      },
+    })
       .populate("course_id", "name -_id")
       .populate("teacher_id", "user_id name -_id")
       .populate("curriculum.class_id", "class_name -_id")
       .populate("curriculum.room_id", "room_number building_name -_id");
-  
 
     if (!data || data.length === 0) {
       return next(new AppError("该课表不存在", 404));
     }
     //如果课表中存储的是全周课，那么odd_or_even为零
-    if(data[0].curriculum[0].odd_or_even!=0 && data[0].curriculum[0].odd_or_even!=odd_or_even){
+    if (
+      data[0].curriculum[0].odd_or_even != 0 &&
+      data[0].curriculum[0].odd_or_even != odd_or_even
+    ) {
       return next(new AppError("该课表不存在", 404));
     }
 
-    let result = data.map(item=>{
-      return{
-        course_name:item.course_id.name,
-        teacher_name:item.teacher_id.name,
-        teacher_number:item.teacher_id.user_id,
-        class_name:item.curriculum[0].class_id.class_name,
-        room_number:item.curriculum[0].room_id.room_number,
-        building_name:item.curriculum[0].room_id.building_name,
-      }
-    })
+    let result = data.map((item) => {
+      return {
+        course_name: item.course_id.name,
+        teacher_name: item.teacher_id.name,
+        teacher_number: item.teacher_id.user_id,
+        class_name: item.curriculum[0].class_id.class_name,
+        room_number: item.curriculum[0].room_id.room_number,
+        building_name: item.curriculum[0].room_id.building_name,
+      };
+    });
     res.status(200).json({
       status: "success",
       result,
     });
-  }
-  else{
+  } else {
     res.status(200).json({
       status: "fail",
     });
@@ -577,7 +620,6 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
 //   let day = now.getDate()
 //   let hour = now.getHours()
 //   let minute = now.getMinutes()
-
 
 //   let start_1 = new Date();
 //   start_1.setFullYear(now.getFullYear(), month, day);
@@ -675,28 +717,27 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
 //   let year = syInfo.year
 //   let semester = syInfo.semester
 //   let semester_startTime = new Date(Date.parse(syInfo.start_time + " 00:00"));
-//   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59")); 
-  
+//   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59"));
+
 //   if(now > semester_startTime && now < semester_endTime){
 //      //console.log("+++++++get in--------")
 //      const data = await TimeTable.find(
 //       {
-//         teacher_id: req.body.teacher_id, 
+//         teacher_id: req.body.teacher_id,
 //         year:year,
 //         semester:semester,
 //         curriculum: { $elemMatch: { date: { $eq: today }  ,order:{ $elemMatch:{ $eq:currentCourse}}}},
-        
+
 //       })
 //       .populate("course_id", "name -_id")
 //       .populate("teacher_id", "user_id name -_id")
 //       .populate("curriculum.class_id", "class_name -_id")
 //       .populate("curriculum.room_id", "room_number building_name -_id");
-  
-  
+
 //     if (!data || data.length === 0) {
 //       return next(new AppError("该课表不存在", 404));
 //     }
- 
+
 //     let result = result = data.map(item=>{
 //       return{
 //         course_name:item.course_id.name,
