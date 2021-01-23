@@ -7,8 +7,9 @@
         :data-source="randomList"
         rowKey="studentId"
         :pagination="{
-          total: 50,
+          total: randomList.length,
           'show-size-changer': true,
+          'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
       >

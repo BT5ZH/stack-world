@@ -7,8 +7,9 @@
         :data-source="signList"
         rowKey="studentId"
         :pagination="{
-          total: 50,
+          total: signList.length,
           'show-size-changer': true,
+          'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
       >

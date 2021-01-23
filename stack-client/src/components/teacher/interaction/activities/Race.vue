@@ -4,10 +4,10 @@
       <h1 class="sign-title">抢答结果</h1>
       <div v-if="raceList.length != 0">
         <div class="teacher_question">
-          问题:&nbsp;{{ raceList[1].question.stem }}
+          问题:&nbsp;{{ raceList[0].question.stem }}
         </div>
         <div class="teacher_question">
-          正确答案:&nbsp;{{ raceList[1].question.right_answer }}
+          正确答案:&nbsp;{{ raceList[0].question.right_answer }}
         </div>
       </div>
       <a-list

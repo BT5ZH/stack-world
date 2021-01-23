@@ -29,17 +29,14 @@
       <!-- <div v-if="courseStart"> -->
       <div class="">
         <!-- <video /> -->
-        <video
+        <!-- <video
           id="remote_stream"
           style="width: 100%"
           controlsList="nodownload"
           controls
         >
-        </video>
-        <!-- <div
-          style="width: 100%; height: 200px; background-color: #ffbf35"
-          id="remote_stream"
-        ></div> -->
+        </video> -->
+        <div id="remote_stream"></div>
 
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
@@ -220,6 +217,11 @@ export default {
 </script>
 
 <style lang="scss">
+#remote_stream {
+  width: 100%;
+  height: 300px;
+  background-image: url("../../../assets/img/video/直播.png");
+}
 .course_menu {
   margin-bottom: 2rem;
 }
