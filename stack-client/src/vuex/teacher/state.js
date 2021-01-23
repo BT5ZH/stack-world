@@ -12,6 +12,7 @@ const state = {
   precourse: {},
   curActivity: "sign",
   onlineList: [],
+  randomStudent: "",
   raceList: [],
   // precourse data
   courses: [],

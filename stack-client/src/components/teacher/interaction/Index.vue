@@ -259,6 +259,10 @@ export default {
         return;
       }
       let studentIndex = this.randomNum(0, this.signList.length - 1);
+      this.$store.commit(
+        "teacher/addRandomStudent",
+        this.signList[studentIndex].studentName
+      );
       socket.sendEvent("joinRoom", {
         actionType: "randomSign",
         role: "teacher",
@@ -304,7 +308,6 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit("teacher/clearOnlineList");
     const callback = (id) => {
       socket.sendEvent("joinRoom", {
         actionType: "enter",

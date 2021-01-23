@@ -90,6 +90,9 @@ const mutation = {
   clearOnlineList(state) {
     state.onlineList = []
   },
+  addRandomStudent(state,randomStudent){
+    state.randomStudent = randomStudent
+  },
   updateCurActivity(state, params) {
     state.curActivity = params;
   },

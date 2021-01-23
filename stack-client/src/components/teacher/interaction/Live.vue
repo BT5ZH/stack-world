@@ -135,7 +135,7 @@ export default {
         });
     },
     closeLiveRoom() {
-      this.$store.commit("teacher/clearOnlineList")
+      this.$store.commit("teacher/clearOnlineList");
       this.client
         .leave()
         .then(() => {
@@ -168,6 +168,7 @@ export default {
     joinRoom() {},
   },
   mounted() {
+    this.$store.commit("teacher/clearOnlineList");
     this.createStream();
     this.getUserSig();
     this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
