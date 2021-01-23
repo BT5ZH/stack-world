@@ -34,7 +34,7 @@ router
   .post(authController.protect, timeTableController.getTimeTableFromLessonID); 
 router
   .route("/getLatestTimeTableofTeacher")
-  .post(authController.protect,timeTableController.getLatestTimeTableofTeacher);  
+  .post(authController.protect, timeTableController.getLatestTimeTableofTeacher);  
 router
   .route("/getTimeTableFromClassID")
   .post(authController.protect,timeTableController.getTimeTableFromClassID);    

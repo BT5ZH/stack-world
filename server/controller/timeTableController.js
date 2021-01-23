@@ -537,7 +537,7 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
       .populate("curriculum.class_id", "class_name -_id")
       .populate("curriculum.room_id", "room_number building_name -_id");
   
-    //console.log(data[0].curriculum[0])
+
     if (!data || data.length === 0) {
       return next(new AppError("该课表不存在", 404));
     }
