@@ -44,17 +44,18 @@ exports.createClass = catchAsync(async (req, res, next) => {
 });
 
 exports.getClass = catchAsync(async (req, res, next) => {
-  const classEntity = await Class.findOne({ _id: req.params.id }).populate({
-    path: "studentList",
-    select: "user_id name phone _id",
-  });
-  //.populate('students','user_id name -_id');
+  const classEntity = await Class.findOne({ _id: req.params.id })
+  // .populate({
+  //   path: "studentList",
+  //   select: "user_id name phone _id",
+  // });
+  .populate('students','user_id name phone _id');
 
   if (!classEntity) {
     return next(new AppError("该班级不存在", 404));
   }
 
-  //console.log(classEntity);
+  console.log(classEntity);
   res.status(200).json({
     status: "success",
     data: {
@@ -130,11 +131,20 @@ exports.updateClass = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteClass = catchAsync(async (req, res, next) => {
+  
   const classEntity = await Class.findByIdAndDelete(req.params.id);
 
   if (!classEntity) {
-    return next(new AppError("该机构不存在", 404));
+    return next(new AppError("该班级不存在", 404));
   }
+  const updatedStudent = await User.updateMany(
+    { _id: { $in: classEntity.students } },
+    {
+      $pull: {
+        class_id: req.params.id,
+      },
+    }
+  );
 
   res.status(204).json({
     status: "success",

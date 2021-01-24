@@ -504,15 +504,14 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
   let semester_endTime = new Date(Date.parse(syInfo.end_time + " 23:59"));
   let ct = syInfo.course_time; //一天内课程时间的安排
   let et = [];
-
-  // let now = new Date();
-
+  //获得当前东八区的时间，并赋值给 now
   let timeZone = 8;
   let offset_GMT = new Date().getTimezoneOffset();
   var nowDate = new Date().getTime();
   var now = new Date(
     nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
   );
+  //
   let month = now.getMonth();
   let week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let today = week[now.getDay()];
@@ -580,14 +579,14 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
       .populate("curriculum.room_id", "room_number building_name -_id");
 
     if (!data || data.length === 0) {
-      return next(new AppError("该课表不存在", 404));
+      return next(new AppError("当前时刻无课程安排", 404));
     }
     //如果课表中存储的是全周课，那么odd_or_even为零
     if (
       data[0].curriculum[0].odd_or_even != 0 &&
       data[0].curriculum[0].odd_or_even != odd_or_even
     ) {
-      return next(new AppError("该课表不存在", 404));
+      return next(new AppError("当前时刻无课程安排", 404));
     }
 
     let result = data.map((item) => {

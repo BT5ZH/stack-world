@@ -30,6 +30,9 @@ const mutation = {
   updateOrganizationName(state, params) {
     state.org_name = params;
   },
+  updateCurrentSchoolYear(state, params) {
+    state.school_year = params;
+  },
 };
 
 export default mutation;

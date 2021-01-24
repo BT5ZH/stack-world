@@ -11,7 +11,7 @@
       <div style="margin-bottom: 16px">
         <span style="margin-left: 8px">
           <template v-if="hasSelected">
-            {{ `Selected ${selectedRowKeys.length} items` }}
+            {{ `已选中${selectedRowKeys.length} 位学生` }}
           </template>
         </span>
       </div>
