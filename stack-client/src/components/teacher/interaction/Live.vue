@@ -34,8 +34,8 @@
               <span class="onlineInfo-body-li-name">{{
                 item.studentName
               }}</span>
-              <span class="onlineInfo-body-li-time">01-23 17:40</span>
-              <span class="onlineInfo-body-li-flag">否</span>
+              <span class="onlineInfo-body-li-time">01-24 17:40</span>
+              <span class="onlineInfo-body-li-flag">{{ item.signStatus }}</span>
             </li>
           </ul>
         </div>
@@ -70,8 +70,21 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
-      audienceList: (state) => state.teacher.onlineList,
+      onlineList: (state) => state.teacher.onlineList,
+      signList: (state) => state.teacher.signList,
     }),
+    audienceList() {
+      let audienceList = this.onlineList.map((item) => {
+        item.signStatus = "否";
+        this.signList.forEach((element) => {
+          if (element.studentName == item.studentName) {
+            item.signStatus = "是";
+          }
+        });
+        return { signStatus: item.signStatus, studentName: item.studentName };
+      });
+      return audienceList;
+    },
     lessonId() {
       return this.$route.query.lessonId;
     },
@@ -200,6 +213,7 @@ export default {
 <style scoped>
 .interaction {
   /* background-color: #f4f; */
+  height: 200px;
   display: flex;
   justify-content: space-around;
 }
