@@ -20,9 +20,9 @@
       </div>
       <div class="onlineInfo-body">
         <div class="onlineInfo-body-title">
-          <div class="onlineInfo-body-title-text">姓名</div>
-          <div class="onlineInfo-body-title-text">进入时间</div>
-          <div class="onlineInfo-body-title-text">是否签到</div>
+          <div class="onlineInfo-body-title-left">姓名</div>
+          <div class="onlineInfo-body-title-center">进入时间</div>
+          <div class="onlineInfo-body-title-right">是否签到</div>
         </div>
         <div class="onlineInfo-body-list">
           <ul class="onlineInfo-body-ul">
@@ -232,6 +232,9 @@ export default {
   z-index: 1;
   zoom: 1;
 }
+.onlineInfo .onlineInfo-body .onlineInfo-body-title .onlineInfo-body-left {
+  padding-left: 8px;
+}
 .onlineInfo .onlineInfo-body .onlineInfo-body-list {
   background-color: #fff;
   position: relative;
@@ -253,7 +256,6 @@ export default {
   width: 60px;
   position: relative;
   overflow: hidden;
-  padding-left: 10px;
 }
 .onlineInfo .onlineInfo-body .onlineInfo-body-list .onlineInfo-body-li-time {
   width: 88px;
