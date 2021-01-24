@@ -24,13 +24,27 @@
           <div class="onlineInfo-body-title-text">进入时间</div>
           <div class="onlineInfo-body-title-text">是否签到</div>
         </div>
-        <div class="onlineInfo-body-list">循环在线名单</div>
+        <div class="onlineInfo-body-list">
+          <ul class="onlineInfo-body-ul">
+            <li
+              class="onlineInfo-body-li"
+              v-for="item in audienceList"
+              :key="item.studentName"
+            >
+              <span class="onlineInfo-body-li-name">{{
+                item.studentName
+              }}</span>
+              <span class="onlineInfo-body-li-time">01-23 17:40</span>
+              <span class="onlineInfo-body-li-flag">否</span>
+            </li>
+          </ul>
+        </div>
       </div>
-      <a-list item-layout="horizontal" :data-source="audienceList">
+      <!-- <a-list item-layout="horizontal" :data-source="audienceList">
         <template #renderItem="item">
           <a-list-item> {{ item.studentName }} </a-list-item>
         </template>
-      </a-list>
+      </a-list> -->
     </div>
   </div>
 </template>
@@ -222,6 +236,37 @@ export default {
   background-color: #fff;
   position: relative;
 }
+.onlineInfo .onlineInfo-body .onlineInfo-body-list ul {
+  list-style: none;
+  outline: none;
+}
+.onlineInfo .onlineInfo-body .onlineInfo-body-list ul li {
+  font-size: 12px;
+  color: #6d757a;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.onlineInfo .onlineInfo-body .onlineInfo-body-list .onlineInfo-body-li-name {
+  width: 60px;
+  position: relative;
+  overflow: hidden;
+  padding-left: 10px;
+}
+.onlineInfo .onlineInfo-body .onlineInfo-body-list .onlineInfo-body-li-time {
+  width: 88px;
+  color: #222;
+  position: relative;
+  overflow: hidden;
+}
+.onlineInfo .onlineInfo-body .onlineInfo-body-list .onlineInfo-body-li-flag {
+  width: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
 .onlineInfo .onlineInfo-header .onlineInfo-arrow {
   height: 14px;
   position: absolute;
