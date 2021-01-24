@@ -212,8 +212,6 @@ export default {
 
 <style scoped>
 .interaction {
-  /* background-color: #f4f; */
-  height: 200px;
   display: flex;
   justify-content: space-around;
 }
