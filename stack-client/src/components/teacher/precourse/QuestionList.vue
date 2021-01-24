@@ -122,8 +122,8 @@ export default {
         index: index + 1,
         grade: item.grade,
         question_type: item.question_type,
-        key_word: item.key_word,
-        knowledge: item.knowlege,
+        key_word: item.key_word.split(" "),
+        knowledge: item.knowlege.split(" "),
         // TODO 把 knowlege 改为 knowledge
         analysis: item.analysis,
         statement: item.statement,
