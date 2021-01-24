@@ -24,7 +24,7 @@ const state = {
     race: { start: false, question: {} },
     file: { fileList: [] },
     ask: {},
-    randomSign:{start:false, endTime: 0,randomStudent:""}
+    randomSign: { start: false, endTime: 0, randomStudent: "" }
   },
   //student
   //首页目录分区
@@ -143,20 +143,6 @@ const state = {
 
   classList: [],
   courseList: [
-    {
-      lesson_id: "e72ccbd5-ec02-4fdd-b710-0a0393972001",
-      course_name: "C4D example",
-      teacher: "Sam",
-      curriculum: [
-        {
-          week: 1,
-          odd: "单双周",
-          time: "第1-2节课",
-          classroom: "W Building 1603",
-        },
-      ],
-      style: { backgroundColor: colorItems[1], borderColor: colorItems[1] },
-    },
     // {
     //   course_id: 2,
     //   course_name: "Technology",

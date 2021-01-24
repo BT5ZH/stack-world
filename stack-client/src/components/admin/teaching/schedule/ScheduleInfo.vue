@@ -105,7 +105,7 @@ export default {
     return {
       Card_spin_status:false,
       // 选择
-      year: moment().year(),
+      year: "",//moment().year(),
       semester: "1",
       style: "place",
       value: "",
@@ -120,10 +120,11 @@ export default {
   },
   computed: {
     yearList() {
-      let year = moment().year();
-      let lastyear = year - 1;
-      let nextyear = year + 1;
-      return [lastyear.toString(), year.toString(), nextyear.toString()];
+      // let year = moment().year();
+      // let lastyear = year - 1;
+      // let nextyear = year + 1;
+      // return [lastyear.toString(), year.toString(), nextyear.toString()];
+      return [this.school_year]
     },
     ...mapState({
       uid: (state) => state.public.uid,
@@ -131,12 +132,15 @@ export default {
       spin_status: (state) => state.admin.spin_status,
       oid: (state) => state.public.oid,
       orgName: (state) => state.public.org_name,
+       school_year:(state)=>state.public.school_year,
     }),
   },
   mounted() {
     this.getSpaceTree();
     this.getTreeList();
+    this.$store.dispatch("public/getCurrentSchoolYear");
   },
+    
   methods: {
     // 地点树
     async getSpaceTree() {
