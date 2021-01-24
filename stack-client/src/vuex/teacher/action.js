@@ -110,12 +110,17 @@ const action = {
       console.error(error);
     }
   },
-  async getquestionBank({ commit }, { lesson_id, teacher_id }) {
+  async getquestionBank({ commit }, payload) {
+    let queryString = "";
+    Object.keys(payload).forEach((key) => {
+      queryString += key + "=" + payload[key] + "&";
+    });
+    queryString = "?" + queryString.slice(0, -1);
+    const url = "/pc/v1/questions" + queryString;
+
     try {
-      const requestData = { teacher_id, lesson_id };
-      const url = "pc/v1/questions";
-      const { data } = await axios.get(url, requestData);
-      commit("updatequestionBank", data.questions);
+      const { questions } = await axios.get(url);
+      commit("updatequestionBank", questions);
     } catch (error) {
       console.error(error);
     }
