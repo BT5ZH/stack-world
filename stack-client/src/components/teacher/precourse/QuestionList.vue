@@ -115,13 +115,15 @@ export default {
       return this.$store.state.teacher.questionBank;
     },
     tableData() {
+      console.log("this.questionBank");
+      console.log(this.questionBank);
       if (!this.questionBank) return [];
       let temp = this.questionBank.map((item, index) => ({
         index: index + 1,
         grade: item.grade,
         question_type: item.question_type,
-        key_word: item.key_word.split(" "),
-        knowledge: item.knowlege.split(" "),
+        key_word: item.key_word,
+        knowledge: item.knowlege,
         // TODO 把 knowlege 改为 knowledge
         analysis: item.analysis,
         statement: item.statement,

@@ -117,10 +117,9 @@ const action = {
     });
     queryString = "?" + queryString.slice(0, -1);
     const url = "/pc/v1/questions" + queryString;
-
     try {
-      const { questions } = await axios.get(url);
-      commit("updatequestionBank", questions);
+      const {data} = await axios.get(url);
+      commit("updatequestionBank", data.questions);
     } catch (error) {
       console.error(error);
     }
