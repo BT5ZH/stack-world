@@ -118,12 +118,17 @@ export default {
   },
   computed: {
     yearList() {
-      let year = moment().year();
-      return [year - 1, year, year + 1];
+      //let year = moment().year();
+      //return [year - 1, year, year + 1];
+      return [this.school_year]
     },
+    ...mapState({
+      school_year:(state)=>state.public.school_year,
+    }),
   },
   mounted() {
     // console.log(this.lessonList)
+    this.$store.dispatch("public/getCurrentSchoolYear");
   },
   methods: {
     handleSearch(e) {

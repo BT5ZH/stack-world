@@ -1,5 +1,6 @@
 const SchoolYear = require("../models/schoolYearModel");
 const catchAsync = require("./../utils/catchAsync");
+const AppError = require("./../utils/appError");
 
 exports.getAllSchoolYear = catchAsync(async (req, res) => {
   try {
@@ -16,7 +17,18 @@ exports.getAllSchoolYear = catchAsync(async (req, res) => {
     });
   }
 });
+exports.getCurrentSchoolYear = catchAsync(async (req, res, next) => {
+    const syInfo = await SchoolYear.findOne({ current: "t" });
 
+    if (!syInfo) {
+      return next(new AppError("无当前学年数据", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      syInfo,
+    });
+});
 /**
  * 添加学年学期
  * 传入的参数样例

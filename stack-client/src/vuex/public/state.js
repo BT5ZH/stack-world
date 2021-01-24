@@ -13,6 +13,8 @@ const state = {
   // user id
   uid: "",
   photo: "",
+  //school year
+  school_year:"",
 };
 
 export default state;

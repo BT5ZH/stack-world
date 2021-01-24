@@ -5,6 +5,10 @@ const authController = require("../controller/authController");
 const router = express.Router({ mergeParams: true });
 
 router
+  .route("/")
+  .get(authController.protect, schoolYearController.getCurrentSchoolYear);
+
+router
   .route("/getAllSchoolYear")
   .get(authController.protect, schoolYearController.getAllSchoolYear);
 router

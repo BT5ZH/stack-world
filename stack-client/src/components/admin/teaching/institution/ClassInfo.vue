@@ -136,7 +136,7 @@ export default {
         this.$store.dispatch("admin/change_spin_status", true);
         const { data } = await axios.get(url);
         this.$store.dispatch("admin/change_spin_status", false);
-        this.data = data.data.classEntity.studentList;
+        this.data = data.data.classEntity.students;
         console.log("---data---");
         console.log(data);
         // console.log(data.data.classEntity.studentList);
