@@ -588,9 +588,10 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
     ) {
       return next(new AppError("当前时刻无课程安排", 404));
     }
-
+     
     let result = data.map((item) => {
       return {
+        lesson_id:item.lesson_id,
         course_name: item.course_id.name,
         teacher_name: item.teacher_id.name,
         teacher_number: item.teacher_id.user_id,
