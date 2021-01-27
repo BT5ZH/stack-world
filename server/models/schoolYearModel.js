@@ -34,8 +34,15 @@ var schoolYearSchema = mongoose.Schema({
                 type: String,
             },
         }
-    ]
-
+    ],
+    current:{
+        type:String,
+        default:'f'
+    },
+    org_name: {  
+        type: String,
+        required: [true, "A school year must belong to one university or school"],
+      },
    
 },{_id:false})
 

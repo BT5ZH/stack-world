@@ -31,11 +31,8 @@
     <batchAddCourse :visible.sync="bulkImport_visible"></batchAddCourse>
     <a-row class="btn-area">
       <a-col :span="5">
-        <a-input-search
-          placeholder="课程编号/名称"
-          enter-button
-        />
-          <!-- @search="onSearch" -->
+        <a-input-search placeholder="课程编号/名称" enter-button />
+        <!-- @search="onSearch" -->
       </a-col>
       <a-col :span="10"></a-col>
       <a-col :span="9" class="btn">
@@ -77,11 +74,11 @@
 import batchAddCourse from "./BatchAddCourse.vue";
 import courseTable from "./CourseTable";
 import courseDashboard from "./CourseTree";
-import axiosInstance from "@/utils/axios";
+// import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 export default {
-  components: { courseTable, courseDashboard,batchAddCourse },
+  components: { courseTable, courseDashboard, batchAddCourse },
   data() {
     return {
       bulkImport_visible: false,
@@ -113,59 +110,104 @@ export default {
     this.getTreeData();
   },
   methods: {
-    async getTreeData() {
+    // async
+     getTreeData() {
       let queryString = this.orgName;
       const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
       // console.log(url);
-      try {
-        this.$store.dispatch("admin/change_Tree_spin_status", true);
-        const { data } = await axiosInstance.get(url);
-        this.$store.dispatch("admin/change_Tree_spin_status", false);
-        // console.log(data);
-        this.treeData = data.data;
-        this.courseNumber = data.totalCourseNumber;
-        this.collegeNumber = this.treeData.length;
 
-        let mNumber = 0;
-        let tempArr = [];
-        this.treeData.forEach((item, index) => {
-          let pieObj = {};
-          pieObj.name = item._id;
-          item.majors.forEach(() => {
-            mNumber++;
+      this.$store
+        .dispatch("admin/getTreeByURLwithSpin", url)
+        .then((response) => {
+          console.log("--------coursesTree--------");
+          console.log(response);
+          this.treeData = response.data.data;
+          this.courseNumber = response.data.totalCourseNumber;
+          this.collegeNumber = this.treeData.length;
+
+          let mNumber = 0;
+          let tempArr = [];
+          this.treeData.forEach((item, index) => {
+            let pieObj = {};
+            pieObj.name = item._id;
+            item.majors.forEach(() => {
+              mNumber++;
+            });
+            pieObj.value = mNumber;
+            tempArr.push(pieObj);
           });
-          pieObj.value = mNumber;
-          tempArr.push(pieObj);
+          this.pieArr = tempArr;
+          this.majorNumber = mNumber;
+        })
+        .catch((error) => {
+          console.log(error);
         });
-        this.pieArr = tempArr;
-        this.majorNumber = mNumber;
-      } catch (err) {
-        console.log(err);
-      }
+
+      // try {
+      //   this.$store.dispatch("admin/change_Tree_spin_status", true);
+      //   const { data } = await axiosInstance.get(url);
+      //   this.$store.dispatch("admin/change_Tree_spin_status", false);
+      //   // console.log(data);
+      //   this.treeData = data.data;
+      //   this.courseNumber = data.totalCourseNumber;
+      //   this.collegeNumber = this.treeData.length;
+
+      //   let mNumber = 0;
+      //   let tempArr = [];
+      //   this.treeData.forEach((item, index) => {
+      //     let pieObj = {};
+      //     pieObj.name = item._id;
+      //     item.majors.forEach(() => {
+      //       mNumber++;
+      //     });
+      //     pieObj.value = mNumber;
+      //     tempArr.push(pieObj);
+      //   });
+      //   this.pieArr = tempArr;
+      //   this.majorNumber = mNumber;
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
 
-    async getCoursesFromCondition(payload, type) {
+    // async 
+    getCoursesFromCondition(payload, type) {
       let queryString = "";
       Object.keys(payload).forEach((key) => {
         queryString += key + "=" + payload[key] + "&";
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/courses" + queryString;
-      // console.log(url);
-      try {
-        this.$store.dispatch("admin/change_spin_status", true);
-        const { data } = await axiosInstance.get(url);
-        this.$store.dispatch("admin/change_spin_status", false);
-        if (type == 1) {
-          this.courseList = data.courses;
+
+      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        console.log("--------- courses--------");
+        console.log(response);
+              if (type == 1) {
+          this.courseList = response.data.courses;
           // console.log(this.courseList);
         } else if (type == 2) {
-          this.courseList2 = data.courses;
+          this.courseList2 = response.data.courses;
           // console.log(this.courseList2);
         }
-      } catch (err) {
-        console.log(err);
-      }
+      }).catch((error)=>{
+        console.log(error)
+      })
+
+      // console.log(url);
+      // try {
+      //   this.$store.dispatch("admin/change_spin_status", true);
+      //   const { data } = await axiosInstance.get(url);
+      //   this.$store.dispatch("admin/change_spin_status", false);
+      //   if (type == 1) {
+      //     this.courseList = data.courses;
+      //     // console.log(this.courseList);
+      //   } else if (type == 2) {
+      //     this.courseList2 = data.courses;
+      //     // console.log(this.courseList2);
+      //   }
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
     async onChange(value, label) {
       // console.log("onchange:  value " + value);

@@ -2,6 +2,33 @@ const SchoolYear = require("../models/schoolYearModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
+exports.getAllSchoolYears = catchAsync(async (req, res) => {    
+  console.log("getAllSchoolYears 进来啦");
+
+  // BUILD QUERY
+  // 1) Filtering
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach((el) => delete queryObj[el]);
+
+  // 2) Advanced filtering
+  let queryString = JSON.stringify(queryObj);
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|le)\b/g,
+    (match) => `$${match}`
+  );
+  // console.log(queryString);
+  const query = SchoolYear.find(JSON.parse(queryString));
+  //console.log(queryString)
+  const sy = await query;
+  //console.log(sy);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    sy,
+  });
+});
 exports.getAllSchoolYear = catchAsync(async (req, res) => {
   try {
     schoolYears = await SchoolYear.find();
@@ -16,6 +43,8 @@ exports.getAllSchoolYear = catchAsync(async (req, res) => {
       err
     });
   }
+
+  
 });
 exports.getCurrentSchoolYear = catchAsync(async (req, res, next) => {
     const syInfo = await SchoolYear.findOne({ current: "t" });
@@ -29,6 +58,7 @@ exports.getCurrentSchoolYear = catchAsync(async (req, res, next) => {
       syInfo,
     });
 });
+
 /**
  * 添加学年学期
  * 传入的参数样例
@@ -69,7 +99,7 @@ exports.addSchoolYear = catchAsync(async (req, res) => {
 // 传id删除
 exports.deleteSchoolYear = catchAsync(async (req, res) => {
   try {
-    var del = await SchoolYear.deleteOne({ _id: req.query._id });
+    var del = await SchoolYear.deleteOne({ _id: req.params.id });
     if ((del.deletedCount = 1)) {
       res.status(200).json({
         status: true,
@@ -100,7 +130,24 @@ exports.deleteSchoolYear = catchAsync(async (req, res) => {
  */
 exports.updateSchoolYear = catchAsync(async (req, res) => {
   try {
-    await SchoolYear.findByIdAndUpdate(req.body._id, req.body);
+    console.log("____________________")
+    console.log(req.body)
+    await SchoolYear.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).json({
+      status: true,
+      message: "success"
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: false,
+      err
+    });
+  }
+});
+exports.changeCurrentSYtoNomarl = catchAsync(async (req, res) => {
+  try {
+    await SchoolYear.findOneAndUpdate({current:'t'}, {$set:{current:'f'}});
     res.status(200).json({
       status: true,
       message: "success"
