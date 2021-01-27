@@ -7,19 +7,27 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .get(authController.protect, schoolYearController.getCurrentSchoolYear);
+  //.post(authController.protect, schoolYearController.createSchoolYear);
+
+router
+  .route("/getAllSchoolYears")
+  .get(authController.protect, schoolYearController.getAllSchoolYears);
 
 router
   .route("/getAllSchoolYear")
   .get(authController.protect, schoolYearController.getAllSchoolYear);
 router
+  .route("/changeCurrentSYtoNomarl")
+  .post(authController.protect, schoolYearController.changeCurrentSYtoNomarl);
+  
+router
   .route("/addSchoolYear")
   .post(authController.protect, schoolYearController.addSchoolYear);
 router
-  .route("/deleteSchoolYear")
-  .delete(authController.protect, schoolYearController.deleteSchoolYear);
-router
-  .route("/updateSchoolYear")
-  .post(authController.protect, schoolYearController.updateSchoolYear);
+  .route("/:id")
+  .delete(authController.protect, schoolYearController.deleteSchoolYear)
+  .patch(authController.protect, schoolYearController.updateSchoolYear);
+
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
