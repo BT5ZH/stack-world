@@ -62,7 +62,7 @@
 
 <script>
 import add_students from "./add_students";
-import axios from "@/utils/axios";
+// import axios from "@/utils/axios";
 import { mapState } from "vuex";
 
 const columns = [
