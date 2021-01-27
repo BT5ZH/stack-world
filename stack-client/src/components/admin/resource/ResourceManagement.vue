@@ -261,17 +261,28 @@ export default {
           console.log(err);
         })
     },
-    async getSubOrgsName() {
+    // async 
+    getSubOrgsName() {
       const orgId = this.oid;///////////////
       const url = "/pc/v1/organizations/" + orgId + "/suborgs";
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.sugOrgList = data.subOrgs;
-      } catch (err) {
-        console.log(err);
-      }
+      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        // console.log(response);
+      this.sugOrgList = response.data.subOrgs;
+      }).catch((error)=>{
+        console.log(error)
+      })
+      // try {
+      //   const { data } = await axiosInstance.get(url);
+      //   console.log("---------1----------------");
+      //   console.log(data);
+
+      //   this.sugOrgList = data.subOrgs;
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
-    async getTeacherName(subOrgName) {
+    // async 
+    getTeacherName(subOrgName) {
       // const orgId="5facabb2cf3bb2002b4b3f38"
       const queryObject = {
         org_name: this.org_name,
@@ -286,14 +297,22 @@ export default {
       queryString = "?" + queryString.slice(0, -1);
    
       const url = "/pc/v1/users/multipleUsers" + queryString;
-      console.log(url);
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.instructorList = data.teachers;
-        console.log(data);
-      } catch (err) {
-        console.log(err);
-      }
+      // console.log(url);
+      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        // console.log(response);
+        this.instructorList = response.data.teachers;
+         }).catch((error)=>{
+           console.log(error)
+         })
+      // try {
+      //   const { data } = await axiosInstance.get(url);
+      //   this.instructorList = data.teachers;
+      //   console.log("---------2----------------");
+
+      //   console.log(data);
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
     async getResources(college, teacher) {
      
@@ -308,14 +327,20 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/resources" + queryString;
-      
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.resourceList = data.resources;
-        console.log(this.resourceList);
-      } catch (err) {
-        console.log(err);
-      }
+      this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
+        // console.log("---------");
+      // console.log(response);
+      this.resourceList = response.data.resources;
+      }).catch((error)=>{
+        console.log(error)
+      })
+      // try {
+      //   const { data } = await axiosInstance.get(url);
+      //   this.resourceList = data.resources;
+      //   console.log(this.resourceList);
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
   },
   computed: {

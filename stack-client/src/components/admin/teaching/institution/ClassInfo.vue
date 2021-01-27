@@ -128,22 +128,30 @@ export default {
     parent_refresh(ss) {
       this.refresh += ss;
     },
-    async getStudents() {
+    // async 
+    getStudents() {
       // 获取所有学生名
       const class_id = this.$route.query.classId;
       const url = "/pc/v1/classes/" + class_id;
-      try {
-        this.$store.dispatch("admin/change_spin_status", true);
-        const { data } = await axios.get(url);
-        this.$store.dispatch("admin/change_spin_status", false);
-        this.data = data.data.classEntity.students;
-        console.log("---data---");
-        console.log(data);
-        // console.log(data.data.classEntity.studentList);
-      } catch (err) {
-        this.$store.dispatch("admin/change_spin_status", false);
-        console.log(err);
-      }
+      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        console.log(response);
+        this.data = response.data.data.classEntity.students;
+         }).catch((error)=>{
+           console.log(error)
+         })
+
+      // try {
+      //   this.$store.dispatch("admin/change_spin_status", true);
+      //   const { data } = await axios.get(url); 
+      //   this.$store.dispatch("admin/change_spin_status", false);
+      //   this.data = data.data.classEntity.students;
+      //   console.log("---data---");
+      //   console.log(data);
+      //   // console.log(data.data.classEntity.studentList);
+      // } catch (err) {
+      //   this.$store.dispatch("admin/change_spin_status", false);
+      //   console.log(err);
+      // }
     },
 
     backward() {

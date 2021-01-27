@@ -115,6 +115,8 @@ export default {
       return this.$store.state.teacher.questionBank;
     },
     tableData() {
+      console.log("this.questionBank");
+      console.log(this.questionBank);
       if (!this.questionBank) return [];
       let temp = this.questionBank.map((item, index) => ({
         index: index + 1,

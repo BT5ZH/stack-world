@@ -427,27 +427,43 @@ export default {
       this.getRooms(payload);
       // }
     },
-    async getRooms(payload) {
+    // async 
+    getRooms(payload) {
       const url =
         "/pc/v1/rooms/getRoomByCampusOrBuilding" +
         "?building_id=" +
         payload.building_id;
-      const { data } = await axiosInstance.get(url);
-      this.rooms = data.data.rooms;
+
+        this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
+        // console.log(response);
+        this.rooms = response.data.data.rooms;
+         }).catch((error)=>{
+           console.log(error)
+         })
+
+      // const { data } = await axiosInstance.get(url);
+      // this.rooms = data.data.rooms;
       // console.log("data rooms------")
       // console.log(data.data.rooms)
     },
-    async spaceList() {
+    // async 
+    spaceList() {
       let queryString = "";
       const url = "/pc/v1/campus" + queryString;
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.campusList = data.data.campus;
-        // console.log("-----campusList-----")
-        // console.log(this.campusList);
-      } catch (err) {
-        console.log(err);
-      }
+              this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
+        // console.log(response);
+        this.campusList = response.data.data.campus;
+         }).catch((error)=>{
+           console.log(error)
+         })
+      // try {
+      //   const { data } = await axiosInstance.get(url);
+      //   this.campusList = data.data.campus;
+      //   console.log("-----campusList-----")
+      //   console.log(this.campusList);
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
     edit(record) {
       // console.log("---record---");
