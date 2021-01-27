@@ -27,6 +27,12 @@
           v-model="fileForm.tags"
         ></a-input>
       </a-form-model-item>
+      <a-form-model-item label="存储位置">
+        <a-radio-group v-model="location">
+          <a-radio value="public"> 公有云 </a-radio>
+          <a-radio value="private"> 私有云 </a-radio>
+        </a-radio-group>
+      </a-form-model-item>
     </a-form-model>
     <a-upload-dragger
       :multiple="true"
@@ -46,6 +52,7 @@
 
 <script>
 import fileUploader from "@/utils/S3FileUploader";
+import epsFileUploader from "@/utils/expressFileUploader";
 import { mapState } from "vuex";
 
 export default {
@@ -65,6 +72,8 @@ export default {
       formRules: {
         name: [{ required: true, message: "资源名称不能为空" }],
       },
+      // private or public
+      location: "public",
     };
   },
   methods: {
@@ -74,6 +83,13 @@ export default {
       return false;
     },
     uploadFile() {
+      if (this.location === "public") {
+        this.uploadToPublicCloud();
+        return null;
+      }
+      this.uploadToPrivateCloud();
+    },
+    uploadToPublicCloud() {
       this.confirmLoading = true;
       const that = this;
       const config = {
@@ -98,6 +114,27 @@ export default {
       const params = { Metadata: { star: "10" } };
       fileUploader(this.fileList, config, params);
     },
+    uploadToPrivateCloud() {
+      this.confirmLoading = true;
+      const that = this;
+      const config = {
+        body: this.createResource(),
+        // TODO 同上面的代码一样，修改为正常接口即可，不用加 http://xxx
+        apiUrl: "http://localhost:3000/upload",
+        filePath: `${this.oid}/teacher/`,
+        successCallback() {
+          that.$message.success("上传成功！");
+          that.confirmLoading = false;
+          that.$emit("update:visible", false);
+        },
+        failCallback(err) {
+          that.$message.error("上传失败！");
+          that.confirmLoading = false;
+          console.error(err);
+        },
+      };
+      epsFileUploader(this.fileList, config);
+    },
     createResource() {
       return {
         ...this.fileForm,
@@ -117,5 +154,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.ant-modal-mask {
+  z-index: 100001;
+}
+.ant-modal-wrap {
+  z-index: 100002;
+}
 </style>
