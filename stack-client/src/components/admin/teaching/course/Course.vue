@@ -74,7 +74,7 @@
 import batchAddCourse from "./BatchAddCourse.vue";
 import courseTable from "./CourseTable";
 import courseDashboard from "./CourseTree";
-import axiosInstance from "@/utils/axios";
+// import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 export default {
