@@ -73,23 +73,21 @@ export default {
       let queryString = this.oid;
       const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
-      // try {
-      //   this.$store.dispatch("admin/change_spin_status", true);
-      //   const { data } = await axiosInstance.get(url);
-      //   this.$store.dispatch("admin/change_spin_status", false);
-
         this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        console.log("---------connect---------");
         console.log(response);
-        // this.rooms = response.data.data.rooms;
         this.treeData = response.data.tree;
          }).catch((error)=>{
            console.log(error)
          })
-
-        // console.log(data.data);
-        // console.log("----treedata-----")
-        // console.log(data.tree)
-        // this.treeData = data.tree;
+      // try {
+      //   this.$store.dispatch("admin/change_spin_status", true);
+      //   const { data } = await axiosInstance.get(url);
+      //   this.$store.dispatch("admin/change_spin_status", false);
+      //   console.log(data.data);
+      //   console.log("----treedata-----")
+      //   console.log(data.tree)
+      //   this.treeData = data.tree;
       // } catch (err) {
       //   console.log(err);
       // }
