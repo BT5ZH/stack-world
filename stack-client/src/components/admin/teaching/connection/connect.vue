@@ -44,7 +44,7 @@
 
 <script>
 import ConnectList from "./connectList";
-import axiosInstance from "@/utils/axios";
+// import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 export default {
@@ -68,21 +68,31 @@ export default {
     // this.getCourses();
   },
   methods: {
-    async getTreeData() {
+    // async 
+    getTreeData() {
       let queryString = this.oid;
       const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
-      try {
-        this.$store.dispatch("admin/change_spin_status", true);
-        const { data } = await axiosInstance.get(url);
-        this.$store.dispatch("admin/change_spin_status", false);
+      // try {
+      //   this.$store.dispatch("admin/change_spin_status", true);
+      //   const { data } = await axiosInstance.get(url);
+      //   this.$store.dispatch("admin/change_spin_status", false);
+
+        this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
+        console.log(response);
+        // this.rooms = response.data.data.rooms;
+        this.treeData = response.data.tree;
+         }).catch((error)=>{
+           console.log(error)
+         })
+
         // console.log(data.data);
         // console.log("----treedata-----")
         // console.log(data.tree)
-        this.treeData = data.tree;
-      } catch (err) {
-        console.log(err);
-      }
+        // this.treeData = data.tree;
+      // } catch (err) {
+      //   console.log(err);
+      // }
     },
     onChange(data) {
       // console.log("onchange:   " + data);
