@@ -108,7 +108,7 @@ export default {
       week: "请选择周数",
       year: "请选择学年",
       term: "请选择学期",
-      datevalue:"",
+      datevalue:null,
       seme: "否",
       SemeList:['是','否'],
       weekList: [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5],
@@ -198,7 +198,7 @@ export default {
         this.week="请选择周数"
         this.year="请选择学年"
         this.term="请选择学期"
-        this.datevalue=""
+        this.datevalue=null
         this.seme="否"
         this.timestart=""
         this.timeend=""
