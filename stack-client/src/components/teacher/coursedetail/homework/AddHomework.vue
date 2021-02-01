@@ -1,5 +1,5 @@
 <template>
-  <a-modal 
+  <a-modal
     class="backbody"
     :visible="visible"
     title="添加作业"
@@ -7,7 +7,7 @@
     width="35%"
     @cancel="$emit('update:visible', false)"
   >
-    <a-form-model 
+    <a-form-model
       :model="homeworkForm"
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
@@ -15,11 +15,11 @@
       <a-form-model-item label="标题">
         <a-input v-model="homeworkForm.title"></a-input>
       </a-form-model-item>
-       <a-form-model-item label="内容">
+      <a-form-model-item label="内容">
         <a-textarea v-model="homeworkForm.content"> </a-textarea>
       </a-form-model-item>
-    
-        <a-table
+
+      <a-table
         :columns="columns"
         :data-source="sourceList"
         bordered
@@ -32,7 +32,7 @@
         :row-selection="{
           selectedRowKeys: selectedResource,
           onChange: onSelectChange,
-          type:'radio'
+          type: 'radio',
         }"
         rowKey="sourceId"
       >
@@ -45,29 +45,31 @@
           <a-button type="link" @click="download(record)">查看</a-button>
         </template> -->
       </a-table>
-     
+
       <a-form-model-item label="课前/课后">
         <a-radio-group v-model="homeworkForm.type">
           <a-radio :value="1">课前</a-radio>
           <a-radio :value="2">课后</a-radio>
-     
         </a-radio-group>
       </a-form-model-item>
-    
-       <!-- <div class="datepicker"> -->
-        <a-date-picker  class="datepicker" show-time placeholder="选择提交截止日期" @change="onChange" @ok="onOk" />
-       <!-- </div> -->
-    
-      
+
+      <!-- <div class="datepicker"> -->
+      <a-date-picker
+        class="datepicker"
+        show-time
+        placeholder="选择提交截止日期"
+        @change="onChange"
+        @ok="onOk"
+      />
+      <!-- </div> -->
     </a-form-model>
   </a-modal>
-         
 </template>
 
 <script>
 import axios from "@/utils/axios";
 import { mapState, mapGetters } from "vuex";
-const sources=[]
+const sources = [];
 export default {
   props: {
     visible: {
@@ -76,25 +78,23 @@ export default {
     },
   },
   data() {
-     const columns = [
+    const columns = [
       {
         title: "资源名",
         align: "center",
         dataIndex: "sourceName",
-
       },
       {
         title: "类型",
         dataIndex: "rsType",
         align: "center",
-      
       },
       // {
       //   title: "关键字",
       //   dataIndex: "tags",
       //   scopedSlots: { customRender: "tags" },
       //   align: "center",
-     
+
       // },
       // {
       //   title: "操作",
@@ -103,13 +103,13 @@ export default {
       // },
     ];
     return {
+      refresh: 0,
       labelCol: { span: 3 },
       wrapperCol: { span: 18 },
       homeworkForm: {
         title: "",
         type: 2,
         content: "",
-     
       },
       // pagination: {
       //   onChange: (page) => {
@@ -126,8 +126,8 @@ export default {
       localVisible: false,
       curPage: 1,
       pageSize: 6,
-      selectedResource:[],
-      deadLine:"2100-12-31 00:00"//默认值，以防教师布置作业时，没有设定时间
+      selectedResource: [],
+      deadLine: "2100-12-31 00:00", //默认值，以防教师布置作业时，没有设定时间
     };
   },
   computed: {
@@ -171,16 +171,16 @@ export default {
   },
   methods: {
     onChange(value, dateString) {
-      console.log('Selected Time: ', value);
-      console.log('Formatted Selected Time: ', dateString);
-      this.deadLine=dateString
+      console.log("Selected Time: ", value);
+      console.log("Formatted Selected Time: ", dateString);
+      this.deadLine = dateString;
     },
     onOk(value) {
-      console.log('onOk: ', value);
+      console.log("onOk: ", value);
     },
     onSelectChange(selectedKeys) {
       // 表格信息的选中
-      this.selectedResource = selectedKeys;  
+      this.selectedResource = selectedKeys;
     },
     handleOk() {
       // TODO 表单验证
@@ -188,23 +188,24 @@ export default {
       // console.log("--------------"+this.homeworkForm.type)
       // console.log("+++++++++ "+this.curCourseHour)
     },
-   
+
     submitAddHomework() {
-      let task_type = "homework"
-      if(this.homeworkForm.type===1) task_type="preview"
+      let task_type = "homework";
+      if (this.homeworkForm.type === 1) task_type = "preview";
       axios
         .post("pc/v1/sethomeworks", {
           lesson_id: this.$route.query.lessonId,
-          title:this.homeworkForm.title,
-          content:this.homeworkForm.content,
-          resource_id:this.selectedResource[0],
-          task_type:task_type,
-          number_of_time:Number.parseInt(this.curCourseHour),
-          deadline:this.deadLine
+          title: this.homeworkForm.title,
+          content: this.homeworkForm.content,
+          resource_id: this.selectedResource[0],
+          task_type: task_type,
+          number_of_time: Number.parseInt(this.curCourseHour),
+          deadline: this.deadLine,
         })
         .then(({ data }) => {
           if (data.status === "success") {
             this.$message.success("添加作业成功");
+            this.$router.push({ query: { homeworkRefresh: this.refresh-- } });
             //this.$emit("update:visible", false);
           }
         })
@@ -242,14 +243,11 @@ export default {
       return String.fromCharCode(64 + value);
     },
   },
-   mounted() {
-
-    this.$store
-      .dispatch("teacher/getSources", {
-        lesson_id: this.lesson_id,
-        teacher_id: this.uid,
-      })
-
+  mounted() {
+    this.$store.dispatch("teacher/getSources", {
+      lesson_id: this.lesson_id,
+      teacher_id: this.uid,
+    });
   },
 };
 </script>
@@ -261,11 +259,11 @@ export default {
   right: 10px;
   margin-bottom: 20px;
 }
-.datepicker{
-  z-index:111
+.datepicker {
+  z-index: 111;
 }
-.backbody{
+.backbody {
   position: relative;
-  z-index:0
+  z-index: 1;
 }
 </style>

@@ -14,7 +14,7 @@
         :row-selection="{
           selectedRowKeys: selectedHomeworks,
           onChange: onSelectChange,
-          type:'radio'
+          type: 'radio',
         }"
         rowKey="_id"
       >
@@ -31,7 +31,6 @@ import { mapState } from "vuex";
 import axiosInstance from "@/utils/axios";
 export default {
   data() {
-  
     const columns = [
       // {
       //   title: "序号",
@@ -79,36 +78,39 @@ export default {
         align: "center",
       },
       {
-          title: "操作",
-          align: "center",
-          scopedSlots: { customRender: "operation" },
+        title: "操作",
+        align: "center",
+        scopedSlots: { customRender: "operation" },
       },
     ];
     return {
       columns,
       inputValue: "",
       addVisible: false,
-      refresh: 0,
-      selectedHomeworks:[]
+      selectedHomeworks: [],
     };
   },
   computed: {
+    refresh() {
+      if (this.$route.query.homeworkRefresh)
+        return this.$route.query.homeworkRefresh;
+      else return 0;
+    },
     questionBank() {
       return this.$store.state.teacher.questionBank;
     },
-    homeworkList(){
+    homeworkList() {
       let temp = this.$store.state.teacher.updateSetHomeworks;
-      temp = temp.map(item=>{
-        let task_type="课后作业"
-        if(item.task_type==="preview") task_type="课前预习"
-        return{
+      temp = temp.map((item) => {
+        let task_type = "课后作业";
+        if (item.task_type === "preview") task_type = "课前预习";
+        return {
           ...item,
-           task_type:task_type
-        }
-      })
+          task_type: task_type,
+        };
+      });
       return temp;
     },
-   
   },
   watch: {
     refresh(val) {
@@ -116,22 +118,21 @@ export default {
     },
   },
   methods: {
-     // 表格选择
+    // 表格选择
     onSelectChange(selectedKeys) {
       // 表格信息的选中
       this.selectedHomeworks = selectedKeys;
       //console.log(this.selectedSchoolyears)
-      
     },
-    async loadHomeworks(){
+    async loadHomeworks() {
       const lesson_id = this.$route.query.lessonId;
-      this.$store.dispatch("teacher/getSetHomeworksByLessonID", { lesson_id});
+      this.$store.dispatch("teacher/getSetHomeworksByLessonID", { lesson_id });
     },
     async deleteHomework(record) {
       console.log("---record---");
       console.log(record);
       await this.showDeleteConfirm(record._id);
- 
+
       // record=null
       // this.$emit("showSelected", record);
     },
@@ -139,35 +140,35 @@ export default {
       // console.log(deleteList);
       var that = this;
       this.$confirm({
-            title: "确认删除吗",
-            content: "数据删除后不可恢复",
-            okText: "确定",
-            okType: "danger",
-            cancelText: "取消",
-            async onOk() {
-              // console.log(deleteList);
-              //post deleteList
-              const url = "/pc/v1/sethomeworks/" + id;
-              try {
-                await axiosInstance.delete(url);
-                that.$message.info("删除成功！");
-                
-                that.refresh += 1;
-              } catch (err) {
-                console.log(err);
-                that.$message.error("删除失败，请重试！");
-              }
-            },
-            onCancel() {
-              // console.log("Cancel");
-            },
-          });
+        title: "确认删除吗",
+        content: "数据删除后不可恢复",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        async onOk() {
+          // console.log(deleteList);
+          //post deleteList
+          const url = "/pc/v1/sethomeworks/" + id;
+          try {
+            await axiosInstance.delete(url);
+            that.$message.info("删除成功！");
+
+            that.refresh += 1;
+          } catch (err) {
+            console.log(err);
+            that.$message.error("删除失败，请重试！");
+          }
+        },
+        onCancel() {
+          // console.log("Cancel");
+        },
+      });
     },
   },
   mounted() {
     // const lesson_id = this.$route.query.lessonId;
     // this.$store.dispatch("teacher/getSetHomeworksByLessonID", { lesson_id});
-     this.loadHomeworks();
+    this.loadHomeworks();
   },
 };
 </script>
