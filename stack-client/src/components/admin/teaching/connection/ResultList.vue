@@ -30,13 +30,24 @@
         </a-table>
       </a-spin>
     </a-row>
-    <a-modal v-model="editModal_visible" title="课程管理" @ok="edit_submit">
+    <a-modal
+      width="800px"
+      v-model="editModal_visible"
+      title="课程管理"
+      @ok="edit_submit"
+    >
       <!--  -->
       <div>
         <a-table
           bordered
           :data-source="dataSource.curriculum"
           :columns="courseMan_column"
+          :pagination="{
+            'show-less-items': true,
+            'show-size-changer': true,
+            'show-quick-jumper': true,
+            'hide-on-single-page': true,
+          }"
         >
           <template slot="operation" slot-scope="text, record">
             <a-popconfirm
@@ -48,6 +59,7 @@
             </a-popconfirm>
           </template>
         </a-table>
+        <br />
         <a-button class="editable-add-btn" @click="handleAdd"> 添加 </a-button>
       </div>
       <a-form
@@ -347,6 +359,16 @@ export default {
     handleAdd() {
       // console.log("edit_message-----");
       // console.log(this.edit_message);
+      if (
+        this.edit_message.class_id._id == "" ||
+        this.edit_message.date == "" ||
+        this.edit_message.room_id._id == "" ||
+        this.edit_message.order.length == 0 ||
+        this.edit_message.odd_or_even == ""
+      ) {
+        this.$message.error("请将信息填写完整");
+        return;
+      }
       let temp = this.dataSource.curriculum;
       // console.log("----dataSource-----")
       // console.log(this.dataSource)
@@ -427,35 +449,41 @@ export default {
       this.getRooms(payload);
       // }
     },
-    // async 
+    // async
     getRooms(payload) {
       const url =
         "/pc/v1/rooms/getRoomByCampusOrBuilding" +
         "?building_id=" +
         payload.building_id;
 
-        this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
-        // console.log(response);
-        this.rooms = response.data.data.rooms;
-         }).catch((error)=>{
-           console.log(error)
-         })
+      this.$store
+        .dispatch("admin/getTreeByURL", url)
+        .then((response) => {
+          // console.log(response);
+          this.rooms = response.data.data.rooms;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       // const { data } = await axiosInstance.get(url);
       // this.rooms = data.data.rooms;
       // console.log("data rooms------")
       // console.log(data.data.rooms)
     },
-    // async 
+    // async
     spaceList() {
       let queryString = "";
       const url = "/pc/v1/campus" + queryString;
-              this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
-        // console.log(response);
-        this.campusList = response.data.data.campus;
-         }).catch((error)=>{
-           console.log(error)
-         })
+      this.$store
+        .dispatch("admin/getTreeByURL", url)
+        .then((response) => {
+          // console.log(response);
+          this.campusList = response.data.data.campus;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // try {
       //   const { data } = await axiosInstance.get(url);
       //   this.campusList = data.data.campus;
@@ -466,8 +494,6 @@ export default {
       // }
     },
     edit(record) {
-      // console.log("---record---");
-      // console.log(record);
       this.refresh += 1;
       this.edit_message.lesson_id = record.lesson_id;
       this.classes = record.classes;
