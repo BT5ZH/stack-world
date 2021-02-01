@@ -143,6 +143,9 @@ const mutation = {
   updateLessonNames(state, params) {
     state.lessonNames = params.map((item) => item.name);
   },
+  updateSetHomeworks(state, params) {
+    state.updateSetHomeworks = params;
+  },
   updatequestionBank(state, params) {
     state.questionBank = params;
   },

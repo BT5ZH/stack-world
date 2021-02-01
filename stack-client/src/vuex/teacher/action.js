@@ -124,6 +124,16 @@ const action = {
       console.error(error);
     }
   },
+  async getSetHomeworksByLessonID({ commit }, { lesson_id }) {
+    try {
+      const requestData = { lesson_id };
+      const url = "pc/v1/sethomeworks/getSetHomeworkByLessonID";
+      const { data } = await axios.post(url, requestData);
+      commit("updateSetHomeworks", data.Homeworks);
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async getCourseInfo({ commit }, lesson_id) {
     try {
       const url = "/pc/v1/lessons/getCourseInfoByLessonID";
