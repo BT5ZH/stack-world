@@ -4,13 +4,7 @@
       <teacher-header></teacher-header>
     </a-layout-header>
     <a-layout-content>
-      <a-layout>
-        <a-layout-sider width="50px"> </a-layout-sider>
-        <a-layout-content>
-          <router-view />
-        </a-layout-content>
-        <a-layout-sider width="100px"> </a-layout-sider>
-      </a-layout>
+      <router-view />
     </a-layout-content>
   </a-layout>
 </template>
@@ -23,8 +17,15 @@ export default {
 </script>
 
 <style>
-.ant-layout,
-.ant-layout-header,
+.ant-layout {
+  background: #fff;
+  height: 100%;
+}
+
+.ant-layout-header {
+  background: #fff;
+}
+
 .ant-layout-sider {
   background: #fff;
 }

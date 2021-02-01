@@ -1,11 +1,10 @@
 <template>
   <a-collapse default-active-key="1" :bordered="false">
     <a-collapse-panel :header="coursename" key="1">
-      <a-row type="flex" justify="center">
-        <a-button block type="primary" @click="addcourse(prepareNumber)">
-          添加课时
-        </a-button>
-      </a-row>
+      <a-button block type="primary" @click="addcourse(prepareNumber)">
+        添加课时
+      </a-button>
+
       <a-list :data-source="coursehours">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
           <a-input
