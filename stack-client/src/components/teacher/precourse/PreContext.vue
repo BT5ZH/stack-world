@@ -1,245 +1,294 @@
 <template>
-  <div style="height: 100%">
-    <a-row
-      type="flex"
-      justify="space-between"
-      align="middle"
-      style="background: #f9f0fa; padding: 20px"
-    >
-      <a-col :span="6" style="display: flex; align-items: center">
-        <h3>共{{ courseHours }}(学时)✖️ 50分钟/学时</h3>
-        <!-- <a-input v-model="form.time" style="width: 80%" /> -->
-      </a-col>
-      <a-col :span="14" style="display: flex; align-items: center">
-        <span>描述：</span>
-        <a-textarea
-          placeholder="本节课重难点"
-          v-model="form.desc1"
-          :auto-size="{ minRows: 2, maxRows: 2 }"
-          style="width: 80%"
-        />
-      </a-col>
-      <a-col :span="4">
-        <a-button type="primary" @click="save"> 保存 </a-button>
-        <!-- <a-row type="flex" justify="end" class="header-btn">
-          <a-space>
-            <a-button type="primary" @click="componentId = 'PreResource'">
+  <div class="csp">
+    <div class="cspH">
+      <div
+        class="cspH--tag"
+        :class="[{ 'cspH--tag--default': showTag[0] }]"
+        @click="tagChange(0)"
+      >
+        备课详情
+      </div>
+      <div
+        class="cspH--tag"
+        :class="[{ 'cspH--tag--default': showTag[1] }]"
+        @click="tagChange(1)"
+      >
+        课程资源
+      </div>
+      <div
+        class="cspH--tag"
+        :class="[{ 'cspH--tag--default': showTag[2] }]"
+        @click="tagChange(2)"
+      >
+        课程试题
+      </div>
+    </div>
+    <div class="cspC">
+      <div class="cspC--tag" v-if="showTag[0]">
+        <a-row
+          type="flex"
+          justify="space-between"
+          align="middle"
+          style="background: #f9f0fa; padding: 20px"
+        >
+          <a-col :span="6" style="display: flex; align-items: center">
+            <h3>{{ courseHours }}(学时)✖️ 50分钟/学时</h3>
+            <!-- <a-input v-model="form.time" style="width: 80%" /> -->
+          </a-col>
+          <a-col :span="14" style="display: flex; align-items: center">
+            <span>描述：</span>
+            <a-input
+              placeholder="本节课重难点"
+              v-model="form.desc1"
+              style="width: 80%"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-button type="primary" @click="save"> 保存 </a-button>
+            <!-- <a-row type="flex" justify="end" class="header-btn">
+              <a-space>
+                <a-button type="primary" @click="componentId = 'PreResource'">
+                  上传资源
+                </a-button>
+                
+              </a-space>
+            </a-row> -->
+            <!-- <br /> -->
+            <!-- <a-row type="flex" justify="end" v-if="!publish"
+              >已选择PPT：{{ ppt.name }}
+            </a-row>
+            <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
+          </a-col>
+        </a-row>
+        <a-modal
+          title="选择ppt"
+          v-model="pptvisible"
+          :zIndex="10001"
+          width="40%"
+        >
+          <a-radio-group name="radioGroup" v-model="ppt">
+            <a-radio
+              :style="radioStyle"
+              v-for="(item, index) in pptsource"
+              :key="item.id"
+              :value="item"
+            >
+              <a :href="item.url" target="_blink">
+                {{ index + 1 }}. {{ item.name }}</a
+              >
+            </a-radio>
+          </a-radio-group>
+          <a-row type="flex" justify="center">
+            <a-pagination
+              class="pagination"
+              :total="pptsource.length"
+              :show-quick-jumper="true"
+            ></a-pagination>
+          </a-row>
+          <template #footer>
+            <a-button type="primary" @click="selectppt"> 确定 </a-button>
+          </template>
+        </a-modal>
+        <a-row class="box">
+          <a-row type="flex" justify="end" style="padding: 20px">
+            <a-col>
+              <a-radio-group button-style="solid">
+                <a-space>
+                  <a-radio-button @click="addsteps"> 添加事件 </a-radio-button>
+                  &nbsp;&nbsp;
+                  <a-radio-button @click="changesteps">
+                    修改事件
+                  </a-radio-button>
+                  &nbsp;&nbsp;
+                  <a-radio-button @click="deletesteps">
+                    删除事件
+                  </a-radio-button>
+                </a-space>
+              </a-radio-group>
+            </a-col>
+          </a-row>
+          <a-modal
+            title="修改事件"
+            v-model="changevisible"
+            @ok="changeOk"
+            @cancel="changeClose"
+            :zIndex="10001"
+            width="40%"
+          >
+            <a-row type="flex" align="middle">
+              <a-col :span="15">
+                修改耗时：
+                <a-input-number
+                  id="inputNumber"
+                  v-model="time"
+                  :min="1"
+                  :max="1000"
+                />分钟
+              </a-col>
+              <a-col>
+                已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
+              </a-col>
+            </a-row>
+            <br />
+            <div>
+              <a-radio-group
+                v-model="componentId"
+                default-value="PreTeaching"
+                button-style="solid"
+                size="small"
+              >
+                <a-space>
+                  <a-radio-button value="PreTeaching"> 讲课 </a-radio-button>
+                  <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
+                  <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
+                  <a-radio-button value="PreVote"> 投票 </a-radio-button>
+                  <a-radio-button value="PreRandomSign">
+                    随机点名
+                  </a-radio-button>
+                  <a-radio-button value="PreSign"> 签到 </a-radio-button>
+                  <a-popover trigger="hover">
+                    <template slot="content">
+                      <p>视频,word,pdf,excel,图片等</p>
+                    </template>
+                    <a-radio-button value="PreDocument">
+                      文件下发
+                    </a-radio-button>
+                  </a-popover>
+                  <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
+                  <a-radio-button value="PreHomework">
+                    布置作业
+                  </a-radio-button>
+                </a-space>
+              </a-radio-group>
+            </div>
+            <br />
+            <a-alert
+              type="error"
+              message="添加失败，超过设置总时间，请重试！"
+              banner
+              v-show="show"
+            />
+          </a-modal>
+          <a-modal
+            title="选择事件"
+            v-model="modalvisible"
+            @ok="handleOk"
+            @cancel="modalClose"
+            :zIndex="10001"
+            width="40%"
+          >
+            <a-row type="flex" align="middle">
+              <a-col :span="15">
+                耗时：
+                <a-input-number
+                  id="inputNumber"
+                  v-model="time"
+                  :min="1"
+                  :max="1000"
+                />分钟
+              </a-col>
+              <a-col>
+                已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
+              </a-col>
+            </a-row>
+            <br />
+            <div>
+              <a-radio-group
+                v-model="componentId"
+                button-style="solid"
+                size="small"
+              >
+                <a-space>
+                  <a-radio-button value="PreTeaching"> 讲课 </a-radio-button>
+                  <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
+                  <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
+                  <a-radio-button value="PreVote"> 投票 </a-radio-button>
+                  <a-radio-button value="PreSign"> 签到 </a-radio-button>
+                  <a-radio-button value="PreRandomSign">
+                    随机点名
+                  </a-radio-button>
+                  <a-popover trigger="hover">
+                    <template slot="content">
+                      <p>视频,word,pdf,excel,图片等</p>
+                    </template>
+                    <a-radio-button value="PreDocument">
+                      文件下发
+                    </a-radio-button>
+                  </a-popover>
+                  <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
+                  <!-- <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>PreRandomSign -->
+                </a-space>
+              </a-radio-group>
+            </div>
+            <br />
+            <a-alert
+              type="error"
+              message="添加失败，超过设置总时间，请重试！"
+              banner
+              v-show="show"
+            />
+          </a-modal>
+          <a-row
+            justify="space-between"
+            type="flex"
+            align="middle"
+            class="steptype"
+          >
+            <a-col :span="24" @contextmenu.prevent="deletesteps">
+              <a-steps
+                v-if="steps"
+                size="small"
+                progress-dot
+                v-model="current"
+                @change="addChange"
+              >
+                <a-step
+                  v-for="(step, index) in steps"
+                  :key="index"
+                  :title="step.title"
+                  :description="step.description"
+                />
+              </a-steps>
+            </a-col>
+          </a-row>
+          <br />
+          <br />
+          <a-row class="contextstyle">
+            <div v-if="isempty" />
+            <component
+              @selectppt="pptvisible = true"
+              :is="componentId"
+              v-else
+            ></component>
+          </a-row>
+        </a-row>
+      </div>
+      <div class="cspC--tag" v-if="showTag[1]">
+        <div class="resourceBlock" style="background: #f9f0fa; padding: 20px">
+          <div :span="4">
+            <a-button type="primary" @click="uploadVisible = true">
               上传资源
             </a-button>
-            
-          </a-space>
-        </a-row> -->
-        <!-- <br /> -->
-        <!-- <a-row type="flex" justify="end" v-if="!publish"
-          >已选择PPT：{{ ppt.name }}
-        </a-row>
-        <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
-      </a-col>
-    </a-row>
-    <a-modal title="选择ppt" v-model="pptvisible" :zIndex="10001" width="40%">
-      <a-radio-group name="radioGroup" v-model="ppt">
-        <a-radio
-          :style="radioStyle"
-          v-for="(item, index) in pptsource"
-          :key="item.id"
-          :value="item"
+          </div>
+          <br />
+          <local-uploader :visible.sync="uploadVisible"></local-uploader>
+          <resource-list></resource-list>
+        </div>
+      </div>
+      <div class="cspC--tag" v-if="showTag[2]">
+        <div
+          class="resourceBlock"
+          style="background: #f9f0fa; padding: 20px; margin-top: 20px"
         >
-          <a :href="item.url" target="_blink">
-            {{ index + 1 }}. {{ item.name }}</a
-          >
-        </a-radio>
-      </a-radio-group>
-      <a-row type="flex" justify="center">
-        <a-pagination
-          class="pagination"
-          :total="pptsource.length"
-          :show-quick-jumper="true"
-        ></a-pagination>
-      </a-row>
-      <template #footer>
-        <a-button type="primary" @click="selectppt"> 确定 </a-button>
-      </template>
-    </a-modal>
-    <a-row class="box">
-      <a-row type="flex" justify="end" style="padding: 20px">
-        <a-col>
-          <a-radio-group button-style="solid">
-            <a-space>
-              <a-radio-button @click="addsteps"> 添加事件 </a-radio-button>
-              &nbsp;&nbsp;
-              <a-radio-button @click="changesteps"> 修改事件 </a-radio-button>
-              &nbsp;&nbsp;
-              <a-radio-button @click="deletesteps"> 删除事件 </a-radio-button>
-            </a-space>
-          </a-radio-group>
-        </a-col>
-      </a-row>
-      <a-modal
-        title="修改事件"
-        v-model="changevisible"
-        @ok="changeOk"
-        @cancel="changeClose"
-        :zIndex="10001"
-        width="40%"
-      >
-        <a-row type="flex" align="middle">
-          <a-col :span="15">
-            修改耗时：
-            <a-input-number
-              id="inputNumber"
-              v-model="time"
-              :min="1"
-              :max="1000"
-            />分钟
-          </a-col>
-          <a-col>
-            已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
-          </a-col>
-        </a-row>
-        <br />
-        <div>
-          <a-radio-group
-            v-model="componentId"
-            default-value="PreTeaching"
-            button-style="solid"
-            size="small"
-          >
-            <a-space>
-              <a-radio-button value="PreTeaching"> 讲课 </a-radio-button>
-              <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
-              <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
-              <a-radio-button value="PreVote"> 投票 </a-radio-button>
-              <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
-              <a-radio-button value="PreSign"> 签到 </a-radio-button>
-              <a-popover trigger="hover">
-                <template slot="content">
-                  <p>视频,word,pdf,excel,图片等</p>
-                </template>
-                <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
-              </a-popover>
-              <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
-              <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>
-            </a-space>
-          </a-radio-group>
+          <div :span="4">
+            <a-button type="primary" @click="questionVisible = true">
+              导入试题
+            </a-button>
+          </div>
+          <add-question :visible.sync="questionVisible"></add-question>
+          <question-list></question-list>
         </div>
-        <br />
-        <a-alert
-          type="error"
-          message="添加失败，超过设置总时间，请重试！"
-          banner
-          v-show="show"
-        />
-      </a-modal>
-      <a-modal
-        title="选择事件"
-        v-model="modalvisible"
-        @ok="handleOk"
-        @cancel="modalClose"
-        :zIndex="10001"
-        width="40%"
-      >
-        <a-row type="flex" align="middle">
-          <a-col :span="15">
-            耗时：
-            <a-input-number
-              id="inputNumber"
-              v-model="time"
-              :min="1"
-              :max="1000"
-            />分钟
-          </a-col>
-          <a-col>
-            已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
-          </a-col>
-        </a-row>
-        <br />
-        <div>
-          <a-radio-group
-            v-model="componentId"
-            button-style="solid"
-            size="small"
-          >
-            <a-space>
-              <a-radio-button value="PreTeaching"> 讲课 </a-radio-button>
-              <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
-              <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
-              <a-radio-button value="PreVote"> 投票 </a-radio-button>
-              <a-radio-button value="PreSign"> 签到 </a-radio-button>
-              <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
-              <a-popover trigger="hover">
-                <template slot="content">
-                  <p>视频,word,pdf,excel,图片等</p>
-                </template>
-                <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
-              </a-popover>
-              <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
-              <!-- <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>PreRandomSign -->
-            </a-space>
-          </a-radio-group>
-        </div>
-        <br />
-        <a-alert
-          type="error"
-          message="添加失败，超过设置总时间，请重试！"
-          banner
-          v-show="show"
-        />
-      </a-modal>
-      <a-row
-        justify="space-between"
-        type="flex"
-        align="middle"
-        class="steptype"
-      >
-        <a-col :span="24" @contextmenu.prevent="deletesteps">
-          <a-steps
-            v-if="steps"
-            size="small"
-            progress-dot
-            v-model="current"
-            @change="addChange"
-          >
-            <a-step
-              v-for="(step, index) in steps"
-              :key="index"
-              :title="step.title"
-              :description="step.description"
-            />
-          </a-steps>
-        </a-col>
-      </a-row>
-      <br />
-      <br />
-      <a-row class="contextstyle">
-        <div v-if="isempty" />
-        <component
-          @selectppt="pptvisible = true"
-          :is="componentId"
-          v-else
-        ></component>
-      </a-row>
-    </a-row>
-    <div class="resourceBlock" style="background: #f9f0fa; padding: 20px">
-      <div :span="4">
-        <a-button type="primary" @click="uploadVisible = true">
-          上传资源
-        </a-button>
       </div>
-      <br />
-      <local-uploader :visible.sync="uploadVisible"></local-uploader>
-      <resource-list></resource-list>
-    </div>
-    <div
-      class="resourceBlock"
-      style="background: #f9f0fa; padding: 20px; margin-top: 20px"
-    >
-      <div :span="4">
-        <a-button type="primary" @click="questionVisible = true">
-          导入试题
-        </a-button>
-      </div>
-      <add-question :visible.sync="questionVisible"></add-question>
-      <question-list></question-list>
     </div>
   </div>
 </template>
@@ -298,6 +347,7 @@ export default {
         time: 50,
       },
       show: false,
+      showTag: [true, false, false],
       time: 10,
       oldtime: 0,
       sumtime: 0,
@@ -530,6 +580,22 @@ export default {
         },
       });
     },
+    tagChange(key) {
+      switch (key) {
+        case 0:
+          this.showTag = [true, false, false];
+          break;
+        case 1:
+          this.showTag = [false, true, false];
+          break;
+        case 2:
+          this.showTag = [false, false, true];
+          break;
+
+        default:
+          break;
+      }
+    },
   },
   watch: {
     curCourseHour(value) {
@@ -596,6 +662,7 @@ export default {
 
 .box {
   background: #f9f0fa;
+  height: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -619,9 +686,39 @@ export default {
 .header-btn .ant-btn {
   margin: 0 5px;
 }
-/* .resourceBlock {
-  margin-top: 20px;
-  background-color: #f9f0fa;
-} */
+.csp {
+  height: 100%;
+}
+.cspH {
+  margin-bottom: 10px;
+  background: #f9f0fa;
+  display: flex;
+}
+.cspH--tag {
+  width: 100px;
+  padding: 10px;
+  font-size: 16px;
+  color: #6d757a;
+  /* border-bottom: 2px solid #ccc; */
+  cursor: pointer;
+}
+.cspH--tag--default {
+  color: #222222;
+  border-bottom: 3px solid #ccc;
+}
+.cspH--tag:hover {
+  width: 100px;
+  padding: 10px;
+  /* border-bottom: 2px solid #ccc; */
+}
+.cspC {
+  height: 100%;
+  /* background: #6d757ae6; */
+  display: flex;
+  flex-direction: column;
+}
+.cspC--tag {
+  height: 100%;
+}
 </style>
 <style></style>

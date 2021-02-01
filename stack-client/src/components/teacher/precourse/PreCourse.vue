@@ -1,10 +1,10 @@
 <template>
   <a-row type="flex" align="top" class="courseslider">
     <!-- :style="{ height: containerHeight }" -->
-    <a-col :span="4" class="sider">
+    <a-col :span="4" class="pre pre--sider">
       <pre-collapse></pre-collapse>
     </a-col>
-    <a-col :span="20">
+    <a-col :span="20" class="pre">
       <pre-context></pre-context>
     </a-col>
   </a-row>
@@ -31,9 +31,11 @@ export default {
   /* height: calc(100% - 64px); */
   height: 100%;
 }
-.sider {
+.pre {
   overflow-y: auto;
   height: 100%;
+}
+.pre--sider {
   background: #19191a;
 }
 </style>
