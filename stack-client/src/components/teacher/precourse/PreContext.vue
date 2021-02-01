@@ -540,6 +540,10 @@ export default {
       this.modalvisible = false;
     },
     changesteps() {
+      if (this.steps.length == 0) {
+        this.$message.error("当前没有事件，请先添加事件");
+        return;
+      }
       this.sumtime = 0;
       this.steps.map((item) => {
         this.sumtime += item.description.split("分钟")[0] - 0;
@@ -585,6 +589,10 @@ export default {
       this.changevisible = false;
     },
     deletesteps() {
+      if (this.steps.length == 0) {
+        this.$message.error("当前没有事件，请先添加事件");
+        return;
+      }
       const that = this;
       this.$confirm({
         title: "确定删除此事件吗?",
