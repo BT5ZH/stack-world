@@ -68,12 +68,21 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      courseIndex: undefined,
       prepareNumber: this.$route.query.prepareNumber,
       coursehours: [],
     };
   },
   methods: {
     courseclick(index) {
+      if (this.courseIndex != undefined) {
+        let oldCourse = document.getElementById(this.courseIndex);
+        oldCourse.className = "ant-list-item";
+      }
+      let course = document.getElementById(index);
+      this.courseIndex = index;
+      // course.className = "ant-menu-item ant-menu-item-selected";
+      course.className = "couseSelected";
       this.$store.commit("teacher/updateCurCourseHour", index);
     },
     editcourse(index) {
@@ -188,9 +197,14 @@ export default {
 
 <style scoped>
 .coursename {
+  font-size: 20px;
+  margin-right: 50px;
   cursor: pointer;
 }
-
+.couseSelected {
+  font-size: 20px;
+  background-color: skyblue;
+}
 .btn-area {
   position: absolute;
   bottom: 0;

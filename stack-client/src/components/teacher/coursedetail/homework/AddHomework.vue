@@ -205,7 +205,9 @@ export default {
         .then(({ data }) => {
           if (data.status === "success") {
             this.$message.success("添加作业成功");
-            this.$router.push({ query: { homeworkRefresh: this.refresh-- } });
+            this.$router.push({
+              query: { ...this.$route.query, homeworkRefresh: --this.refresh },
+            });
             //this.$emit("update:visible", false);
           }
         })
