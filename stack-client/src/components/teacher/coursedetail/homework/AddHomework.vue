@@ -127,7 +127,7 @@ export default {
       curPage: 1,
       pageSize: 6,
       selectedResource:[],
-      deadLine:""
+      deadLine:"2100-12-31 00:00"//默认值，以防教师布置作业时，没有设定时间
     };
   },
   computed: {

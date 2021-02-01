@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: homeworkList.length,
-          pageSize: 2,
+          pageSize: 5,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
@@ -65,6 +65,7 @@ export default {
         dataIndex: "deadline",
         //scopedSlots: { customRender: "key_word" },
         align: "center",
+        width: "15%",
       },
       {
         title: "类型",
@@ -96,7 +97,16 @@ export default {
       return this.$store.state.teacher.questionBank;
     },
     homeworkList(){
-      return this.$store.state.teacher.updateSetHomeworks;
+      let temp = this.$store.state.teacher.updateSetHomeworks;
+      temp = temp.map(item=>{
+        let task_type="课后作业"
+        if(item.task_type==="preview") task_type="课前预习"
+        return{
+          ...item,
+           task_type:task_type
+        }
+      })
+      return temp;
     },
    
   },

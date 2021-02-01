@@ -22,6 +22,13 @@
       >
         课程试题
       </div>
+        <div
+        class="cspH--tag"
+        :class="[{ 'cspH--tag--default': showTag[3] }]"
+        @click="tagChange(3)"
+      >
+        课程作业
+      </div>
     </div>
     <div class="cspC">
       <div class="cspC--tag" v-if="showTag[0]">
@@ -289,6 +296,21 @@
           <question-list></question-list>
         </div>
       </div>
+
+      <div class="cspC--tag" v-if="showTag[3]">
+        <div
+          class="resourceBlock"
+          style="background: #f9f0fa; padding: 20px; margin-top: 20px"
+        >
+          <div :span="4">
+            <a-button type="primary" @click="homeworkVisible = true">
+              布置作业
+            </a-button>
+          </div>
+          <add-homework :visible.sync="homeworkVisible"></add-homework>
+          <homework-list></homework-list>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -306,12 +328,15 @@ import PreTest from "./preselect/PreTest.vue";
 
 import LocalUploader from "@/components/teacher/coursedetail/resource/Local";
 import AddQuestion from "@/components/teacher/coursedetail/question/AddQuestion";
+import AddHomework from "@/components/teacher/coursedetail/homework/AddHomework";
 import ResourceList from "./ResourceList";
 import QuestionList from "./QuestionList";
+import HomeworkList from "./HomeworkList";
 import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
 import fileUploader from "@/utils/S3FileUploader";
+//import AddHomework from '../coursedetail/homework/AddHomework.vue';
 
 export default {
   components: {
@@ -325,8 +350,10 @@ export default {
     LocalUploader,
     ResourceList,
     QuestionList,
+    HomeworkList,
     AddQuestion,
     PreRandomSign,
+    AddHomework,
     // PreResource,
     // PreHomework,
   },
@@ -381,6 +408,7 @@ export default {
       componentId: "",
       uploadVisible: false,
       questionVisible: false,
+      homeworkVisible: false,
     };
   },
   computed: {
@@ -411,6 +439,7 @@ export default {
     ...mapState({
       uid: (state) => state.public.uid,
       nodes: (state) => state.teacher.precourse.nodes,
+      curCourseHour: (state) => state.teacher.precourse.curCourseHour,
     }),
     lesson_id() {
       return this.$route.query.lessonId;
@@ -583,15 +612,17 @@ export default {
     tagChange(key) {
       switch (key) {
         case 0:
-          this.showTag = [true, false, false];
+          this.showTag = [true, false, false], false;
           break;
         case 1:
-          this.showTag = [false, true, false];
+          this.showTag = [false, true, false], false;
           break;
         case 2:
-          this.showTag = [false, false, true];
+          this.showTag = [false, false, true, false];
           break;
-
+        case 3:
+          this.showTag = [false, false, false, true];
+          break;
         default:
           break;
       }

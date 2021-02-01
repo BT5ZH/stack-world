@@ -16,8 +16,8 @@ const setHomeworkSchema = new mongoose.Schema(
     number_of_time: { type: Number, required: true, min: 0 },
     //teacher_id: { type: mongoose.Schema.ObjectId, ref: "User" },
     title:{ type: String , required: [true, "each homework or preview must have a name"],},
-    content: { type: String },
-    attachment_url: { type: String },
+    content: { type: String ,default:""},
+    attachment_url: { type: String ,default:""},
     resource_id:{
       type:String,
       ref:"Resource"

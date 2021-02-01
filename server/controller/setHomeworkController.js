@@ -31,31 +31,27 @@ exports.getAllSetHomework = catchAsync(async (req, res, next) => {
 });
 
 exports.createSetHomework = catchAsync(async (req, res, next) => {
-  // const oldHomework = await SetHomework.findOne({
-  //   lesson_id: req.body.lesson_id,
-  //   number_of_time: req.body.number_of_time,
-  // });
-  // if (!oldHomework) {
-    if(req.body.deadline===undefined || req.body.deadline===null){
+    if( req.body.deadline==="2100-12-31 00:00" || req.body.deadline===undefined || req.body.deadline===null){
       let timeZone = 8;
       let offset_GMT = new Date().getTimezoneOffset();
-      var nowDate = new Date().getTime();
-      var now = new Date(
-           nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
-     );
-     req.body.deadline = now.setTime(now.getTime()+72*60*60*1000)
+      let nowDate = new Date().getTime();
+      let now = new Date(nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000);
+      req.body.deadline = now.setTime(now.getTime()+120*60*60*1000)
 
     }
-    // else{
-    //   let timeZone = 8;
-    //   let offset_GMT = req.body.deadline.getTimezoneOffset();
-    //   var nowDate = req.body.deadline.getTime();
-    //   var now = new Date(
-    //        nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
-    //  );
-    //  req.body.deadline = now.setTime(now.getTime())
-    // }
-    console.log("+++++++++++++++"+req.body.deadline)  
+    else{
+      let endTime = new Date(Date.parse(req.body.deadline));
+      console.log("+++++++++++++++"+req.body.deadline)  
+      console.log("+++++++++++++++"+endTime)  
+      let timeZone = 8;
+      let offset_GMT = endTime.getTimezoneOffset();
+      let nowDate = endTime.getTime();
+      let now = new Date(
+            nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
+      );
+      req.body.deadline = now//.setTime(now.getTime())
+      console.log("+++++++++++++++"+req.body.deadline)  
+    }
     const newSetHomework = await SetHomework.create(req.body);
     if (!newSetHomework) {
       return next(new AppError("作业创建失败", 500));
@@ -109,13 +105,22 @@ exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
   }
   Homeworks = Homeworks.map((item) => {
     let deadLine=item.deadline.toISOString().substring(0, 10)+" "+item.deadline.toISOString().substring(11, 16)
-    
+    let resource_name
+    let resource_id
+    if(item.resource_id===undefined || item.resource_id===null) {
+      resource_name=" ";
+      resource_id=" "
+    }
+    else {
+      resource_name=item.resource_id.name
+      resource_id=item.resource_id._id
+    }
     return{
       _id:item._id,
       title:item.title,
       content:item.content,
-      attachment:item.resource_id.name,
-      resource_id:item.resource_id._id,
+      attachment:resource_name,
+      resource_id:resource_id,
       number_of_time:item.number_of_time+1,
       task_type:item.task_type,
       deadline:deadLine,
