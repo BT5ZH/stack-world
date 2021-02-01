@@ -138,7 +138,7 @@ export default {
   mounted() {
     this.getSpaceTree();
     this.getTreeList();
-    this.$store.dispatch("public/getCurrentSchoolYear");
+    this.$store.dispatch("public/getCurrentSchoolYear",this.orgName);
   },
     
   methods: {

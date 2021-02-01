@@ -124,11 +124,12 @@ export default {
     },
     ...mapState({
       school_year:(state)=>state.public.school_year,
+      org_name:(state)=>state.public.org_name,
     }),
   },
   mounted() {
     // console.log(this.lessonList)
-    this.$store.dispatch("public/getCurrentSchoolYear");
+    this.$store.dispatch("public/getCurrentSchoolYear",this.org_name);
   },
   methods: {
     handleSearch(e) {

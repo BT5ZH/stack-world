@@ -18,8 +18,19 @@ const setHomeworkSchema = new mongoose.Schema(
 
     content: { type: String },
     attachment_url: { type: String },
+    resource_id:{
+      type:String,
+      ref:"Resource"
+    },
 
     endTime: { type: Date },
+    
+    hw_type: {
+      type: String,
+      enum: ["after", "before"],
+      default: "after",
+    },
+
   },
   { _id: false }
 );

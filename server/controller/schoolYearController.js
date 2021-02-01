@@ -47,8 +47,9 @@ exports.getAllSchoolYear = catchAsync(async (req, res) => {
   
 });
 exports.getCurrentSchoolYear = catchAsync(async (req, res, next) => {
-    const syInfo = await SchoolYear.findOne({ current: "t" });
 
+    const syInfo = await SchoolYear.findOne({ current: "t" ,org_name:req.body.org_name});
+ 
     if (!syInfo) {
       return next(new AppError("无当前学年数据", 404));
     }

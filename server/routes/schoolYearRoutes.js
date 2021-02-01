@@ -5,8 +5,8 @@ const authController = require("../controller/authController");
 const router = express.Router({ mergeParams: true });
 
 router
-  .route("/")
-  .get(authController.protect, schoolYearController.getCurrentSchoolYear);
+  .route("/getCurrentSchoolYear")
+  .post(authController.protect, schoolYearController.getCurrentSchoolYear);
   //.post(authController.protect, schoolYearController.createSchoolYear);
 
 router
