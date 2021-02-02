@@ -68,6 +68,7 @@
 
 <script>
 import axios from "@/utils/axios";
+import moment from "moment";
 import { mapState, mapGetters } from "vuex";
 const sources = [];
 export default {
@@ -127,10 +128,13 @@ export default {
       curPage: 1,
       pageSize: 6,
       selectedResource: [],
-      deadLine: "2100-12-31 00:00", //默认值，以防教师布置作业时，没有设定时间
+      deadLine: moment().add('days',5).format('YYYY-MM-DD HH:MM'), 
     };
   },
   computed: {
+    // deadLine(){
+    //   return moment().add('days',5).format('YYYY-MM-DD HH:MM')//默认值为五天后，以防教师布置作业时，没有设定时间
+    // },
     selectedsource() {
       return this.sources.filter((item) => item.selected);
     },
@@ -170,10 +174,11 @@ export default {
     },
   },
   methods: {
+    moment,
     onChange(value, dateString) {
       console.log("Selected Time: ", value);
       console.log("Formatted Selected Time: ", dateString);
-      this.deadLine = dateString;
+      this.deadLine = moment(dateString).format('YYYY-MM-DD HH:MM')
     },
     onOk(value) {
       console.log("onOk: ", value);

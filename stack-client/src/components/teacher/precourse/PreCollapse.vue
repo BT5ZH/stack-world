@@ -197,13 +197,14 @@ export default {
 
 <style scoped>
 .coursename {
-  font-size: 20px;
+  font-size: 16px;
   margin-right: 50px;
   cursor: pointer;
 }
 .couseSelected {
-  font-size: 20px;
-  background-color: skyblue;
+  font-size: 18px;
+  margin-left: 50px;
+  
 }
 .btn-area {
   position: absolute;

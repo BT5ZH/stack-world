@@ -23,7 +23,7 @@ const setHomeworkSchema = new mongoose.Schema(
       ref:"Resource"
     },
 
-    deadline: { type: Date },
+    deadline: { type: String },
     
     task_type: {
       type: String,
