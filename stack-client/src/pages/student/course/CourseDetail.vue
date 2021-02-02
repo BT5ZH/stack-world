@@ -189,6 +189,10 @@ export default {
   mounted() {
     socket.createInstance("student", this, this.lessonId);
     this.initLiveClient();
+    //-----qichao edits for homework
+    let lesson_id= this.$route.query.lessonId;
+    this.$store.dispatch("student/getHomeworkList", { lesson_id });
+    //-----qichao
   },
   computed: {
     ...mapState({

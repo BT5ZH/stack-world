@@ -196,13 +196,15 @@ export default {
 
     submitAddHomework() {
       let task_type = "homework";
+      let resource_id = "not selected"
       if (this.homeworkForm.type === 1) task_type = "preview";
+      if(this.selectedResource.length===1) resource_id=this.selectedResource[0]
       axios
         .post("pc/v1/sethomeworks", {
           lesson_id: this.$route.query.lessonId,
           title: this.homeworkForm.title,
           content: this.homeworkForm.content,
-          resource_id: this.selectedResource[0],
+          resource_id: resource_id,
           task_type: task_type,
           number_of_time: Number.parseInt(this.curCourseHour),
           deadline: this.deadLine,

@@ -1,3 +1,4 @@
+const Resource = require("../models/resourceModel");
 const SetHomework = require("../models/setHomeworkModel");
 const catchAsync = require("../utils/catchAsync");
 
@@ -52,6 +53,15 @@ exports.createSetHomework = catchAsync(async (req, res, next) => {
     //   req.body.deadline = now//.setTime(now.getTime())
     //   console.log("+++++++++++++++"+req.body.deadline)  
     // }
+    // let resource
+    // if(req.body.resource_id!="not selected"){
+    //    resource = await Resource.findById(req.body.resource_id).select(' url');
+    //    if(!resource){
+    //     return next(new AppError("作业创建失败,因为包含的资源不存在", 500));
+    //   }
+    //   //req.body.rsType = resource.rsType;
+    //   req.body.attachment_url = resource.url;
+    // }
     const newSetHomework = await SetHomework.create(req.body);
     if (!newSetHomework) {
       return next(new AppError("作业创建失败", 500));
@@ -88,7 +98,7 @@ exports.getSetHomeworkByID = catchAsync(async (req, res, next) => {
 });
 exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
   console.log("-----"+req.body.lesson_id)
-  let Homeworks = await SetHomework.find({lesson_id:req.body.lesson_id})
+  let data = await SetHomework.find({lesson_id:req.body.lesson_id})
   .populate({
     path: 'lesson_id',
     select: ['_id', 'course_id'],
@@ -99,15 +109,15 @@ exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
     // model: 'Student'
     }
   })
-  .populate('resource_id','name')
-  if (!Homeworks) {
-    return next(new AppError("该作业布置不存在", 404));
+  .populate('resource_id','name url rsType')
+  if (!data) {
+    return next(new AppError("该作业不存在", 404));
   }
-  Homeworks = Homeworks.map((item) => {
+  let Homeworks = data.map((item) => {
     //let deadLine=item.deadline.toISOString().substring(0, 10)+" "+item.deadline.toISOString().substring(11, 16)
     let resource_name
     let resource_id
-    if(item.resource_id===undefined || item.resource_id===null) {
+    if(item.resource_id===undefined || item.resource_id===null || item.resource_id=== "not selected") {
       resource_name=" ";
       resource_id=" "
     }
@@ -128,9 +138,27 @@ exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
       course_name:item.lesson_id.course_id.name
     }
   });
+  let homeworkList = data.map((item) => {
+    let attachment_url=" "
+    if(item.resource_id!=null){
+      attachment_url = item.resource_id.url;
+    }
+    return{
+        hid: item._id,
+        lid: item.lesson_id._id,
+        cid: item.lesson_id.course_id.id,
+        isFinish:false,////
+        resType:0,//配合前端展示需要的一个参数
+        title: '第'+(item.number_of_time+1)+'次课作业:'+item.title,
+        content: item.content,
+        attachment_url: attachment_url,
+        task_type:item.task_type,
+        deadline:item.deadline,
+    }
+  });
   res.status(200).json({
     status: "success",
-      Homeworks,
+      Homeworks,homeworkList
   });
 });
 exports.getSetHomeworkByLessonIDandNumber = catchAsync(async (req, res, next) => {

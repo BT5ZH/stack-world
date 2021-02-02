@@ -89,26 +89,26 @@ const action = {
     // }));
     commit("updateResList", resList);
   },
-  async getHomeworkList({ commit }, id) {
-    const postData = { lesson_id: id };
+  async getHomeworkList({ commit },  { lesson_id } ){
+    const postData = { lesson_id};
     const { data } = await axios.post(
       "/pc/v1/sethomeworks/getSetHomeworkByLessonID",
       postData
     );
     errorHandler(data, "getHomeworkList");
     // console.log(data.Homeworks)
-    let homeworkList = data.Homeworks;
+    let homeworkList = data.homeworkList;
     if (homeworkList.length != 0) {
-      homeworkList = homeworkList.map((item) => ({
-        hid: item._id,
-        lid: item.lesson_id._id,
-        cid: item.lesson_id.course_id._id,
-        isFinish:false,
-        resType:0,
-        title: '第'+item.number_of_time+'课作业',
-        content: item.content,
-        attachment_url: item.attachment_url,
-      }));
+      // homeworkList = homeworkList.map((item) => ({
+      //   hid: item._id,
+      //   lid: item.lesson_id._id,
+      //   cid: item.lesson_id.course_id._id,
+      //   isFinish:false,
+      //   resType:0,
+      //   title: '第'+item.number_of_time+'课作业',
+      //   content: item.content,
+      //   attachment_url: item.attachment_url,
+      // }));
       commit("updateHomeworkList", homeworkList);
     }
   },

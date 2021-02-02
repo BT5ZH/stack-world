@@ -198,7 +198,7 @@ export default {
 <style scoped>
 .coursename {
   font-size: 16px;
-  margin-left: 10px; */
+  margin-left: 10px; 
   cursor: pointer;
 }
 .couseSelected {
