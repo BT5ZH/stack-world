@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const SubmitHomework = require("./submitHomeworkModel");
 
 const setHomeworkSchema = new mongoose.Schema(
   {
@@ -35,7 +36,7 @@ const setHomeworkSchema = new mongoose.Schema(
   },
   { _id: false }
 );
-setHomeworkSchema.index({ lesson_id: 1, number_of_time: 1 }, { unique: true });
+setHomeworkSchema.index({ lesson_id: 1, number_of_time: 1, task_type: 1}, { unique: true });
 const SetHomework = mongoose.model("SetHomework", setHomeworkSchema);
 
 module.exports = SetHomework;

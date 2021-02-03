@@ -1,6 +1,7 @@
 const Resource = require("../models/resourceModel");
 const SetHomework = require("../models/setHomeworkModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("./../utils/appError");
 
 exports.getAllSetHomework = catchAsync(async (req, res, next) => {
   // BUILD QUERY
@@ -160,7 +161,204 @@ exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
     status: "success",
       Homeworks,homeworkList
   });
+});//getSetAndSubmitHomeworkForStuByLessonID
+exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(async (req, res, next) => {
+  try {
+    const data = await SetHomework.aggregate([
+      {
+        $match: { lesson_id: req.body.lesson_id},
+      },
+      
+      {
+        $lookup: {
+          from: "resources",
+          localField: "resource_id",
+          foreignField: "_id",
+          as: "belongedToRecource",
+        },
+      },
+      {
+        $lookup: {
+          from: "submithomeworks",
+          localField: "_id",
+          foreignField: "homework_id",
+          as: "belongedToSubmitHW",
+        },
+      },
+      // {
+      //   $match: { _id: req.body.homework_id},
+      // },
+      {
+        $match: { "belongedToSubmitHW.student_id": req.body.student_id},
+      },
+      {
+        $project: {
+         _id:1,
+         course_id:1,
+         resource_id:1,
+         lesson_id:1,
+         title:1,
+         number_of_time:1,
+         content: 1,
+         attachment_url: 1,
+         task_type:1,
+         deadline:1,
+         "belongedToSubmitHW.content": 1,
+         "belongedToSubmitHW.comments": 1,
+         "belongedToSubmitHW.score": 1,
+         "belongedToSubmitHW.flg": 1,
+         "belongedToRecource.url":1,
+         "belongedToRecource.name":1
+        },
+      },
+    ]);
+    if (data.length===0) {
+      return next(new AppError("该作业不存在", 404));
+    }
+    let homeworkList = data.map((item) => {
+      let attachment_url="none"
+      if(item.belongedToRecource.length!=0){
+        attachment_url = item.belongedToRecource[0].url;
+      }
+
+      let comments=" ";
+      let score=0;
+      let flg=0;
+      let answer=" ";
+      if(item.belongedToSubmitHW.length!=0){
+        comments = item.belongedToSubmitHW[0].comments;
+        score = item.belongedToSubmitHW[0].score;
+        flg =item.belongedToSubmitHW[0].flg;
+        answer = item.belongedToSubmitHW[0].content;
+      }
+
+      // let resType=0;
+      // if(item.task_type==='homework') 
+      //    resType=1;
+    
+      return{
+          hid: item._id,
+          lid: item.lesson_id,
+          //cid: item.lesson_id.course_id.id,
+          isFinish:false,////
+          resType:0,
+          title: '第'+(item.number_of_time+1)+'次课作业:'+item.title,
+          content: item.content,
+          attachment_url: attachment_url,
+          task_type:item.task_type,
+          deadline:item.deadline,
+          comments:comments,
+          score:score,
+          flg:flg,
+          answer:answer
+      }
+    });
+    //let homework=data[0]
+    res.status(200).json({
+      status: "success",
+      homeworkList,
+    });
+  } catch (err) {
+    console.log(err)
+  }
 });
+exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(async (req, res, next) => {
+  try {
+    const data = await SetHomework.aggregate([
+      {
+        $lookup: {
+          from: "resources",
+          localField: "resource_id",
+          foreignField: "_id",
+          as: "belongedToRecource",
+        },
+      },
+      {
+        $lookup: {
+          from: "submithomeworks",
+          localField: "_id",
+          foreignField: "homework_id",
+          as: "belongedToSubmitHW",
+        },
+      },
+      {
+        $match: { _id: req.body.homework_id},
+      },
+      {
+        $match: { "belongedToSubmitHW.student_id": req.body.student_id},
+      },
+      {
+        $project: {
+         _id:1,
+         course_id:1,
+         resource_id:1,
+         lesson_id:1,
+         title:1,
+         number_of_time:1,
+         content: 1,
+         attachment_url: 1,
+         task_type:1,
+         deadline:1,
+         "belongedToSubmitHW.content": 1,
+         "belongedToSubmitHW.comments": 1,
+         "belongedToSubmitHW.score": 1,
+         "belongedToSubmitHW.flg": 1,
+         "belongedToRecource.url":1,
+         "belongedToRecource.name":1
+        },
+      },
+    ]);
+    if (!data) {
+      return next(new AppError("该作业不存在", 404));
+    }
+    data = data.map((item) => {
+      let attachment_url=" "
+      if(item.belongedToRecource.length!=0){
+        attachment_url = item.belongedToRecource[0].url;
+      }
+
+      let comments=" ";
+      let score=0;
+      let flg=0;
+      let answer=" ";
+      if(item.belongedToSubmitHW.length!=0){
+        comments = item.belongedToSubmitHW[0].comments;
+        score = item.belongedToSubmitHW[0].score;
+        flg =item.belongedToSubmitHW[0].flg;
+        answer = item.belongedToSubmitHW[0].content;
+      }
+
+      let resType=0;
+      if(item.task_type==='homework') 
+         resType=1;
+    
+      return{
+          hid: item._id,
+          lid: item.lesson_id,
+          //cid: item.lesson_id.course_id.id,
+          isFinish:false,////
+          resType:resType,
+          title: '第'+(item.number_of_time+1)+'次课作业:'+item.title,
+          content: item.content,
+          attachment_url: attachment_url,
+          task_type:item.task_type,
+          deadline:item.deadline,
+          comments:comments,
+          score:score,
+          flg:flg,
+          answer:answer
+      }
+    });
+    let homework=data[0]
+    res.status(200).json({
+      status: "success",
+        homework
+    });
+  } catch (err) {
+    console.log(err)
+  }
+});
+
 exports.getSetHomeworkByLessonIDandNumber = catchAsync(async (req, res, next) => {
   const Homework = await SetHomework.find({lesson_id:req.body.lesson_id,number_of_time:req.body.number_of_time})
   .populate({

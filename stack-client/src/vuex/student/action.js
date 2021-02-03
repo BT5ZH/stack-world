@@ -89,10 +89,10 @@ const action = {
     // }));
     commit("updateResList", resList);
   },
-  async getHomeworkList({ commit },  { lesson_id } ){
-    const postData = { lesson_id};
+  async getHomeworkList({ commit },  { lesson_id ,student_id} ){
+    const postData = { lesson_id,student_id};
     const { data } = await axios.post(
-      "/pc/v1/sethomeworks/getSetHomeworkByLessonID",
+      "/pc/v1/sethomeworks/getSetAndSubmitHomeworkForStuByLessonID",
       postData
     );
     errorHandler(data, "getHomeworkList");

@@ -12,7 +12,14 @@ router
 router
   .route("/getSetHomeworkByLessonID")
   .post(authController.protect, setHomeworkController.getSetHomeworksByLessonID);
+router
+  .route("/getSetAndSubmitHomeworkForStuByLessonID")
+  .post(authController.protect, setHomeworkController.getSetAndSubmitHomeworkForStuByLessonID);  
 
+router
+  .route("/getSetAndSubmitHomeworkForStuByHomewrokID")
+  .post(authController.protect, setHomeworkController.getSetAndSubmitHomeworkForStuByHomewrokID);
+  
 router
   .route("/getSetHomeworkByLessonIDandNumber")
   .post(authController.protect, setHomeworkController.getSetHomeworkByLessonIDandNumber);

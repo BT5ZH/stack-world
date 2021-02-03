@@ -18,8 +18,8 @@ const submitHomeworkSchema = new mongoose.Schema(
       ref: 'User',
     },
 
-    content: { type: String, default: "答："},
-    attachment_url: { type: String },
+    content: { type: String, default: "未答"},
+    attachment_url: { type: String , default: " "},
 
     comments: { type: String, default: "未评"},
     score: { type: Number, default: 0 },
