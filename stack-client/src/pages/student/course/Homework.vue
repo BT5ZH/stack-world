@@ -43,7 +43,7 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-model-item label="答题框">
+      <a-form-model-item label="答题区域">
         <a-textarea
           :disabled="disableCommentsArea"
           placeholder="请输入答案"
@@ -61,7 +61,7 @@
         >
         </a-textarea>
       </a-form-model-item>
-      <a-form-model-item label="分数">
+      <a-form-model-item label="作业分数">
         <a-input disabled v-model="homeworkForm.score">
           <a-icon slot="prefix" type="user" />
           <a-tooltip slot="suffix" title="Extra information">
@@ -70,7 +70,7 @@
         </a-input>
       </a-form-model-item>
 
-      <a-form-model-item label=" ">
+      <a-form-model-item label="本次操作">
         <a-radio-group v-model="homeworkForm.type">
           <a-radio :value="1">暂存</a-radio>
           <a-radio :value="2">提交</a-radio>

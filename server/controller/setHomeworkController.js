@@ -235,14 +235,16 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(async (req, res, ne
       let isFinished=false;
       if(flg!=0) 
          isFinished=true;
-    
+      let title = '第'+(item.number_of_time+1)+'次课作业  '+item.title;
+      if(item.task_type==="preview")
+         title = '第'+(item.number_of_time+1)+'次课预习  '+item.title;
       return{
           hid: item._id,
           lid: item.lesson_id,
           //cid: item.lesson_id.course_id.id,
           isFinish:isFinished,////
           resType:0,
-          title: '第'+(item.number_of_time+1)+'次课作业:'+item.title,
+          title: title,
           content: item.content,
           attachment_url: attachment_url,
           task_type:item.task_type,
