@@ -232,15 +232,15 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(async (req, res, ne
         answer = item.belongedToSubmitHW[0].content;
       }
 
-      // let resType=0;
-      // if(item.task_type==='homework') 
-      //    resType=1;
+      let isFinished=false;
+      if(flg!=0) 
+         isFinished=true;
     
       return{
           hid: item._id,
           lid: item.lesson_id,
           //cid: item.lesson_id.course_id.id,
-          isFinish:false,////
+          isFinish:isFinished,////
           resType:0,
           title: '第'+(item.number_of_time+1)+'次课作业:'+item.title,
           content: item.content,
