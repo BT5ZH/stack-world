@@ -401,16 +401,26 @@ exports.updateSetHomework = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+//this function will trigger the model middleware 'setHomeworkSchema.pre("remove", { query: true }, async function (doc) {...}'
 exports.deleteSetHomework = catchAsync(async (req, res, next) => {
-  const setHomework = await SetHomework.findByIdAndDelete(req.params.id);
+  // const setHomework = await SetHomework.findByIdAndDelete(req.params.id);
+
+  // if (!setHomework) {
+  //   return next(new AppError("该作业布置不存在", 404));
+  // }
+
+  // res.status(204).json({
+  //   status: "success",
+  //   data: null,
+  // });
+  const setHomework = await SetHomework.findById(req.params.id);
 
   if (!setHomework) {
-    return next(new AppError("该作业布置不存在", 404));
+    return next(new AppError("该作业不存在", 404));
   }
-
+  await setHomework.remove();
   res.status(204).json({
     status: "success",
-    data: null,
+    setHomework,
   });
 });

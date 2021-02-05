@@ -24,7 +24,10 @@ router
 router
   .route("/getLessonsByClassID")
   .post(authController.protect, lessonController.getLessonsByClassID);
-
+router
+  .route("/getStudentsByLessonID")
+  .post(authController.protect, lessonController.getStudentsByLessonID);
+  
   
 router
   .route("/getLessonByCourseIDandTeacherID")

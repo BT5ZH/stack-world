@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const Lesson = require("../models/lessonModel");
+const Class = require("../models/classModel");
 const SubmitHomework = require("./submitHomeworkModel");
 
 const setHomeworkSchema = new mongoose.Schema(
@@ -37,6 +39,42 @@ const setHomeworkSchema = new mongoose.Schema(
   { _id: false }
 );
 setHomeworkSchema.index({ lesson_id: 1, number_of_time: 1, task_type: 1}, { unique: true });
+
+setHomeworkSchema.post("save", async function (doc) {
+  try{
+    let data = await Lesson.findOne({_id:doc.lesson_id}).select("classes")
+    .populate({
+      path: 'classes',
+      select: ['_id'],
+
+      populate:{
+        path: 'students',
+        select: ['_id']
+      }
+    });
+
+    data = data.classes;
+    let students=[]
+    for(let i=0;i<data.length;i++)
+      for(let j=0;j<data[i].students.length;j++)
+          students.push(data[i].students[j]._id)
+    
+    for(let i=0; i<students.length; i++){
+        const newHomewrok = await SubmitHomework.create(
+          { 
+            homework_id: doc._id, 
+            student_id:students[i]
+          }
+        );
+    }
+  }catch(err){console.log(err)}
+});
+setHomeworkSchema.pre("remove", { query: true }, async function (doc) {
+  try{ 
+        await SubmitHomework.deleteMany({homework_id:this._id});
+        //in future, based on which conditions, when the teacher deletes one homework
+  }catch(err){console.log(err)}
+});
 const SetHomework = mongoose.model("SetHomework", setHomeworkSchema);
 
 module.exports = SetHomework;
