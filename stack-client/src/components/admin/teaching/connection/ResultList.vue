@@ -130,8 +130,8 @@
         <a-form-model-item label="周几">
           <!-- <a-input v-model="form.title" /> -->
           <a-select v-model="edit_message.date">
-            <a-select-option v-for="course_date in dateData" :key="course_date">
-              {{ course_date }}
+            <a-select-option v-for="course_date in dateData" :key="course_date.data">
+              {{ course_date.show }}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -157,7 +157,15 @@ import axiosInstance from "@/utils/axios";
 import { mapState } from "vuex";
 
 // 编辑信息
-const dateData = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const dateData = [
+  { show: "星期一", data: "Mon" },
+  { show: "星期二", data: "Tue" },
+  { show: "星期三", data: "Wed" },
+  { show: "星期四", data: "Thu" },
+  { show: "星期五", data: "Fri" },
+  { show: "星期六", data: "Sat" },
+  { show: "星期日", data: "Sun" },
+];
 
 const columns = [
   {
@@ -364,7 +372,7 @@ export default {
         this.edit_message.date == "" ||
         this.edit_message.room_id._id == "" ||
         this.edit_message.order.length == 0 ||
-        this.edit_message.odd_or_even == ""
+        this.edit_message.odd_or_even === ""
       ) {
         this.$message.error("请将信息填写完整");
         return;
