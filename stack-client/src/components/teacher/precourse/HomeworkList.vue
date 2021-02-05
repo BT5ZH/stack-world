@@ -88,13 +88,17 @@ export default {
       inputValue: "",
       addVisible: false,
       selectedHomeworks: [],
+     // add_refresh:0,
+      del_refresh:0
     };
   },
   computed: {
-    refresh() {
-      if (this.$route.query.homeworkRefresh)
-        return this.$route.query.homeworkRefresh;
+    add_refresh() {
+      
+      if (this.$route.query.add_Refresh)
+        return this.$route.query.add_Refresh;
       else return 0;
+   
     },
     questionBank() {
       return this.$store.state.teacher.questionBank;
@@ -113,7 +117,10 @@ export default {
     },
   },
   watch: {
-    refresh(val) {
+    del_refresh(val) {
+      this.loadHomeworks();
+    },
+    add_refresh(val) {
       this.loadHomeworks();
     },
   },
@@ -129,8 +136,7 @@ export default {
       this.$store.dispatch("teacher/getSetHomeworksByLessonID", { lesson_id });
     },
     async deleteHomework(record) {
-      console.log("---record---");
-      console.log(record);
+
       await this.showDeleteConfirm(record._id);
 
       // record=null
@@ -153,7 +159,7 @@ export default {
             await axiosInstance.delete(url);
             that.$message.info("删除成功！");
 
-            that.refresh += 1;
+            that.del_refresh += 1;
           } catch (err) {
             console.log(err);
             that.$message.error("删除失败，请重试！");

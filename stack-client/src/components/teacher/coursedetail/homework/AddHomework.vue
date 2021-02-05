@@ -213,7 +213,7 @@ export default {
           if (data.status === "success") {
             this.$message.success("添加作业成功");
             this.$router.push({
-              query: { ...this.$route.query, homeworkRefresh: --this.refresh },
+              query: { ...this.$route.query, add_Refresh: ++this.refresh },
             });
             //this.$emit("update:visible", false);
           }
