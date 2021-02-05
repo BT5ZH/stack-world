@@ -55,7 +55,7 @@
       <a-form-model-item label="老师评语">
         <a-textarea
           disabled
-          placeholder="老师什么都没说..."
+          placeholder="老师未给出评阅意见..."
           :auto-size="{ minRows: 4, maxRows: 8 }"
           v-model="homeworkForm.comments"
         >
@@ -215,7 +215,7 @@ export default {
 
 <style>
 .downloadHomework {
-  margin-left: 70%;
+  margin-left: 72%;
 }
 .homeworkDescribe p {
   font-size: 15px;

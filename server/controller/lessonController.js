@@ -63,6 +63,31 @@ exports.getOneLessonByID = catchAsync(async (req, res, next) => {
     },
   });
 });
+exports.getStudentsByLessonID = catchAsync(async (req, res, next) =>{
+  let data = await Lesson.findOne({_id:req.body.lesson_id}).select("classes")
+  .populate({
+    path: 'classes',
+    select: ['_id'],
+
+    populate:{
+      path: 'students',
+      select: ['_id']
+    }
+  });
+  if (!data) {
+    return next(new AppError("该课不存在", 404));
+  }
+  data = data.classes;
+  let students=[]
+  for(let i=0;i<data.length;i++)
+    for(let j=0;j<data[i].students.length;j++)
+        students.push(data[i].students[j]._id)
+  
+  res.status(200).json({
+    status: "success",
+    students
+  });
+});
 exports.getCourseInfoByLessonID = catchAsync(async (req, res, next) => {
   console.log(req.query.lesson_id);
   const data = await Lesson.findOne({ _id: req.query.lesson_id })

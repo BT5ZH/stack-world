@@ -163,7 +163,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+//this function will trigger the model middleware 'roomSchema.pre("remove", { query: true }, async function (doc) {...}'
 exports.deleteRoom = catchAsync(async (req, res, next) => {
   //const room = await Room.findByIdAndDelete(req.params.id);
   const room = await Room.findById(req.params.id);
@@ -172,7 +172,7 @@ exports.deleteRoom = catchAsync(async (req, res, next) => {
   if (!room) {
     return next(new AppError("该空间不存在", 404));
   }
-  await room.remove();
+  await room.remove(); 
   res.status(204).json({
     status: "success",
     room,
