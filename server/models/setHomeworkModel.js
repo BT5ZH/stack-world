@@ -58,15 +58,13 @@ setHomeworkSchema.post("save", async function (doc) {
     for(let i=0;i<data.length;i++)
       for(let j=0;j<data[i].students.length;j++)
           students.push(data[i].students[j]._id)
-    
-    for(let i=0; i<students.length; i++){
-        const newHomewrok = await SubmitHomework.create(
-          { 
-            homework_id: doc._id, 
-            student_id:students[i]
-          }
-        );
-    }
+    students=students.map((item)=>{
+      return{
+        homework_id:doc._id,
+        student_id:item
+      }
+    });
+    const newHomewrok = await SubmitHomework.insertMany(students );
   }catch(err){console.log(err)}
 });
 setHomeworkSchema.pre("remove", { query: true }, async function (doc) {
