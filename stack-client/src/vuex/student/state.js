@@ -24,7 +24,7 @@ const state = {
     race: { start: false, question: {} },
     file: { fileList: [] },
     ask: {},
-    randomSign: { start: false, endTime: 0, randomStudent: "" }
+    randomSign: { start: false, endTime: 0, randomStudent: "" },
   },
   //student
   //首页目录分区
@@ -81,7 +81,11 @@ const state = {
     //     style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
     // },
   ],
-  courseDetailMenu: [{ title: "资料" }, { title: "课堂" }, { title: "作业" }],
+  courseDetailMenu: [
+    { title: "预习资料" },
+    { title: "课堂活动" },
+    { title: "课后作业" },
+  ],
   classMenu: [
     {
       id: 1,
