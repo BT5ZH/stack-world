@@ -30,7 +30,7 @@ const prepareLessonRouter = require("./routes/prepareRoutes");
 const lessonRouter = require("./routes/lessonRoutes");
 const schoolYearRouter = require("./routes/schoolYearRoutes");
 const timeTableRouter = require("./routes/timeTableRoutes");
-const setHomeworkRouter = require("./routes/setHomeworkRoutes");
+const setHomeworkRouter = require("./routes/homeworkRoutes");
 const submitHomeworkRouter = require("./routes/submitHomeworkRoutes");
 const questionRouter = require("./routes/questionRoutes");
 
