@@ -7,7 +7,7 @@
 
       <div id="local_stream"></div>
       <div class="btn-area">
-        <a-button @click="joinLiveRoom" type="primary">加入教室</a-button>
+        <a-button @click="createStream" type="primary">开启本地</a-button>
         <a-button @click="startLive" type="primary">开始授课</a-button>
         <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
       </div>
@@ -93,20 +93,6 @@ export default {
     },
   },
   methods: {
-    getUserSig() {
-      return axios
-        .post("/pc/v1/activities/user_sig", {
-          user_id: this.uid,
-        })
-        .then(({ data }) => {
-          if (!data.userSig) throw "no sig in response";
-          this.createClient(data.sdkAppId, data.userSig);
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message.error("获取直播Token失败");
-        });
-    },
     createClient(sdkAppId, userSig) {
       this.client = TRTC.createClient({
         mode: "live",
@@ -116,57 +102,30 @@ export default {
         useStringRoomId: true,
       });
     },
-    joinLiveRoom() {
-      let joinRoom = (client, roomId) => {
-        client
-          .join({ roomId, role: "anchor" })
-          .catch((error) => {
-            this.$notification.error({
-              message: "温馨提示",
-              description: "未能成功进入教室，请刷新后重试",
-            });
-          })
-          .then(() => {
-            // this.$notification.success({
-            //   message: "温馨提示",
-            //   description: "成功进入教室，系统正在播放您的声音",
-            // });
-            this.roomDisabled = true;
-          });
-      };
-      if (!this.localStream) {
-        this.createStream();
-        this.getUserSig().then(() => {
-          joinRoom(this.client, this.lessonId);
-        });
-      }
-      joinRoom(this.client, this.lessonId);
-    },
-    createStream() {
+    async createStream() {
       const localStream = TRTC.createStream({
         userId: this.uid,
         audio: true,
         video: true,
       });
-      this.localStream = localStream;
-      localStream
-        .initialize()
-        .catch((error) => {
-          this.$message.error("找不到可用直播设备");
-          // TODO give some tips
-          //   switch (error.name) {
-          //     case "NotReadableError":
-          //       this.$message.error("找不到可用的音视频设备");
-          //       break;
-          //     default:
-          //       console.error(error);
-          //       break;
-          //   }
-        })
-        .then(() => {
-          console.log("初始化本地流成功");
-          localStream.play("local_stream");
-        });
+      try {
+        const result = await localStream.initialize();
+        console.log("初始化本地流成功");
+        localStream.play("local_stream");
+        this.localStream = localStream;
+      } catch (error) {
+        console.log(error);
+        this.$message.error("找不到可用直播设备");
+        // TODO give some tips
+        //   switch (error.name) {
+        //     case "NotReadableError":
+        //       this.$message.error("找不到可用的音视频设备");
+        //       break;
+        //     default:
+        //       console.error(error);
+        //       break;
+        //   }
+      }
     },
     closeLiveRoom() {
       this.$store.commit("teacher/clearOnlineList");
@@ -175,7 +134,7 @@ export default {
         .then(() => {
           this.localStream.close();
           this.localStream = null;
-          console.error("退房成功 ");
+          console.success("退房成功 ");
           // 退房成功，可再次调用client.join重新进房开启新的通话。
         })
         .catch((error) => {
@@ -183,28 +142,47 @@ export default {
           // 错误不可恢复，需要刷新页面。
         });
     },
-    startLive() {
-      this.client
-        .publish(this.localStream)
-        .catch((error) => {
-          console.error("本地流发布失败 " + error);
-          this.$message.error("找不到可用直播设备");
-        })
-        .then(() => {
-          this.$notification.success({
-            message: "温馨提示",
-            description: "成功进入教室，系统正在播放您的声音",
-          });
-          console.log("本地流发布成功");
-          this.$message.info("可以观看直播啦");
+    async startLive() {
+      try {
+        // 1) 获取直播TOKEN
+        const { data } = await axios.post("/pc/v1/activities/user_sig", {
+          user_id: this.uid,
         });
+        if (!data.userSig) throw "no sig in response";
+        console.log(data);
+        // 2) 初始化直播客户端
+        this.client = TRTC.createClient({
+          mode: "live",
+          sdkAppId: data.sdkAppId,
+          userId: this.uid,
+          userSig: data.userSig,
+          useStringRoomId: true,
+        });
+        // 3) 初始化直播房间
+        const connectAction = await this.client.join({
+          roomId: this.lessonId,
+          role: "anchor",
+        });
+        console.log(connectAction);
+        this.roomDisabled = true;
+        // 4) 向房间发布实时音视频流
+        const publishAction = await this.client.publish(this.localStream);
+        console.log(publishAction);
+        console.log("本地流发布成功");
+        this.$message.info("成功进入教室，系统正在播放您的声音");
+      } catch (error) {
+        console.log(error);
+        // this.$notification.error({
+        //   message: "温馨提示",
+        //   description: "本地流发布失败",
+        // });
+        //     console.error("本地流发布失败 " + error);
+        //     this.$message.error("找不到可用直播设备");
+      }
     },
-    joinRoom() {},
   },
   mounted() {
     this.$store.commit("teacher/clearOnlineList");
-    this.createStream();
-    this.getUserSig();
     this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
   },
 };

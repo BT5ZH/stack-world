@@ -136,14 +136,14 @@ export default {
     initLiveClient() {
       axios
         .post("/pc/v1/activities/user_sig", {
-          user_id: this.uid,
+          user_id: this.userId,
         })
         .then(({ data }) => {
           if (!data.userSig) throw "no sig in response";
           this.client = TRTC.createClient({
             mode: "live",
             sdkAppId: data.sdkAppId,
-            userId: this.uid,
+            userId: this.userId,
             userSig: data.userSig,
             useStringRoomId: true,
           });
