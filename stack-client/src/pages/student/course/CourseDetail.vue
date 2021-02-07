@@ -191,13 +191,14 @@ export default {
     this.initLiveClient();
     //-----qichao edits for homework
     let lesson_id = this.$route.query.lessonId;
-    let student_id = this.studentId;
+    let student_id = this.userId;
 
     this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
     //-----qichao
   },
   computed: {
     ...mapState({
+      userId: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
       courseDetailMenu: (state) => state.student.courseDetailMenu,
       classMenu: (state) => state.student.classMenu,
