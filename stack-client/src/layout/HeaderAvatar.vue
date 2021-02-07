@@ -18,12 +18,14 @@
       >
         {{ avatarValue }}
       </a-avatar>
-      <div  style="
+      <div
+        style="
           position: absolute;
           top: 2rem;
           right: 3rem;
           vertical-align: middle;
-        ">
+        "
+      >
         <a-button @click="quitLogin" type="link">退出登录</a-button>
       </div>
     </a-page-header>
@@ -41,7 +43,8 @@ export default {
   },
   methods: {
     quitLogin() {
-    //   this.$store.commit("student/clearStorage");
+      // this.$store.commit("student/clearStorage");
+      this.$store.commit("public/clearStorage");
       localStorage.clear();
       sessionStorage.clear();
       this.$router.push({ name: "index" });

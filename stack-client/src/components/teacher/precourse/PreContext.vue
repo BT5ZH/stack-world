@@ -70,7 +70,6 @@
         <a-modal
           title="选择ppt"
           v-model="pptvisible"
-          :zIndex="10001"
           width="40%"
         >
           <a-radio-group name="radioGroup" v-model="ppt">
@@ -119,7 +118,6 @@
             v-model="changevisible"
             @ok="changeOk"
             @cancel="changeClose"
-            :zIndex="10001"
             width="40%"
           >
             <a-row type="flex" align="middle">
@@ -181,7 +179,6 @@
             v-model="modalvisible"
             @ok="handleOk"
             @cancel="modalClose"
-            :zIndex="10001"
             width="40%"
           >
             <a-row type="flex" align="middle">
@@ -461,7 +458,6 @@ export default {
           if (!this.ppt.id) {
             this.$info({
               title: "讲课必须要有ppt哦",
-              zIndex: 10001,
             });
             return;
           }
@@ -470,7 +466,6 @@ export default {
         if (!this.judgeNodesBlank(nodes)) {
           this.$info({
             title: "请将活动信息填写完整",
-            zIndex: 10001,
           });
           return;
         }
@@ -482,7 +477,6 @@ export default {
         // if (this.$store.state.nodes == []) {
         //   this.$info({
         //     title: "请注意先暂存事件",
-        //     zIndex: 10001,
         //   });
         // }
         this.$store.dispatch("teacher/updateCourseHour", {
@@ -607,7 +601,6 @@ export default {
         okText: "确定",
         okType: "danger",
         cancelText: "取消",
-        zIndex: 10001,
         onOk() {
           try {
             let time = that.steps[that.current].description.split("分钟")[0];
@@ -667,8 +660,6 @@ export default {
   watch: {
     curCourseHour(value) {
       try {
-        console.log("value");
-        console.log(value);
         if (value == undefined) {
           return;
         }
@@ -704,7 +695,6 @@ export default {
           return { title: titletag, description: time };
         });
       } catch (err) {
-        console.log("err");
         console.log(err);
       }
     },

@@ -62,6 +62,7 @@ export default {
       }
     },
     quitLogin() {
+      this.$store.commit("public/clearStorage");
       this.$store.commit("super/clearStorage");
       this.$store.commit("teacher/clearStorage");
       localStorage.clear();
