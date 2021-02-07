@@ -92,8 +92,8 @@ export default {
           localStorage.setItem("tk", token);
           axios.defaults.headers["Authorization"] = "Bearer " + token;
           const navigateUrl = this.updatePublicVuexData(data.data);
-            this.spin_status = false;
-            this.$router.push(navigateUrl);
+          this.spin_status = false;
+          this.$router.push(navigateUrl);
         })
         .catch((err) => {
           this.spin_status = false;
@@ -107,7 +107,16 @@ export default {
         oid: context.org_id,
         uid: context._id,
         photo: context.photo,
-        ...context,
+        email: context.email,
+        studentId: context.user_id,
+        entryYear: context.entry_year,
+        majorName: context.major_name,
+        userName: context.name,
+        orgName: context.org_name,
+        classesId: context.class_id,
+        resources: context.resources,
+        subOrgName: context.subOrg_name,
+        title: context.title,
       };
       this.$store.commit("public/updateIdList", publicVuexData);
       return this.userMap[context.role]["index"];

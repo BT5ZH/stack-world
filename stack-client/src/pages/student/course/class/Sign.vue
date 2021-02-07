@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
-      user_id: (state) => state.public.user_id,
+      studentId: (state) => state.public.studentId,
       major_name: (state) => state.public.major_name,
       name: (state) => state.public.name,
       openRooms: (state) => state.student.openRooms,
@@ -54,7 +54,7 @@ export default {
           actionType: "sign",
           roomId: channel,
           data: {
-            studentId: this.user_id,
+            studentId: this.studentId,
             studentName: this.name,
           },
         });
