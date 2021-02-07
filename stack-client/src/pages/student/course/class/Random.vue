@@ -18,13 +18,12 @@ export default {
     },
   },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
-      user_id: (state) => state.public.user_id,
+      studentId: (state) => state.public.studentId,
       name: (state) => state.public.name,
       openRooms: (state) => state.student.openRooms,
       randomSign: (state) => state.student.interaction.randomSign,
@@ -50,7 +49,7 @@ export default {
         actionType: "randomSign",
         roomId: channel,
         data: {
-          studentId: this.user_id,
+          studentId: this.studentId,
           studentName: this.name,
         },
       });

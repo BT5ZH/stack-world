@@ -110,7 +110,7 @@ export default {
   },
   computed: {
     ...mapState({
-      studentId: (state) => state.public.user_id,
+      studentId: (state) => state.public.studentId,
       studentName: (state) => state.public.name,
       uid: (state) => state.public.uid,
       courseList: (state) => state.student.courseList,

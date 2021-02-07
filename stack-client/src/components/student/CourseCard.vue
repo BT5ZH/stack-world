@@ -35,7 +35,8 @@ export default {
   },
   computed: {
     ...mapState({
-      studentId: (state) => state.public.user_id,
+      userId: (state) => state.public._id,
+      studentId: (state) => state.public.studentId,
       studentName: (state) => state.public.name,
     }),
   },
