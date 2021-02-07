@@ -190,15 +190,15 @@ export default {
     socket.createInstance("student", this, this.lessonId);
     this.initLiveClient();
     //-----qichao edits for homework
-    let lesson_id= this.$route.query.lessonId;
+    let lesson_id = this.$route.query.lessonId;
     let student_id = this.studentId;
 
-    this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id});
+    this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
     //-----qichao
   },
   computed: {
     ...mapState({
-      studentId: (state) => state.public.uid,
+      studentId: (state) => state.public.user_id,
       courseDetailMenu: (state) => state.student.courseDetailMenu,
       classMenu: (state) => state.student.classMenu,
       resList: (state) => state.student.resList,
