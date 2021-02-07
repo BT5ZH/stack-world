@@ -53,9 +53,7 @@ export default {
       userMenu: (state) => state.student.userMenu,
     }),
   },
-  mounted() {
-    // socket.createInstance("student", this);
-  },
+  mounted() {},
 };
 </script>
 
