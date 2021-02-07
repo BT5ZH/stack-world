@@ -74,7 +74,6 @@
         </a-select>
         <h3 style="color: #666; margin-top: 20px">
           选择课时后，系统将会拉取对应的备课数据
-          {{ lessonNames }}
         </h3>
       </div>
       <template #footer>
