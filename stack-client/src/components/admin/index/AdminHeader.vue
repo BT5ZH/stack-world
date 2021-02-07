@@ -10,6 +10,7 @@
 export default {
   methods: {
     quitLogin() {
+      this.$store.commit("public/clearStorage");
       this.$store.commit("super/clearStorage");
       this.$store.commit("admin/clearStorage");
       localStorage.clear();

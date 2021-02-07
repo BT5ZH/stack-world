@@ -56,7 +56,7 @@
       </div>
     </a-row>
 
-    <a-modal v-model="lessonVisible">
+    <a-modal :zIndex="0" v-model="lessonVisible">
       <div style="padding: 50px 0">
         <a-select
           style="width: 100%"
@@ -117,8 +117,12 @@ export default {
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.org_name,
       teacherName: (state) => state.public.name,
-      lessonNames: (state) => state.teacher.lessonNames,
+      // lessonNames: (state) => state.teacher.lessonNames,
     }),
+    lessonNames() {
+      console.log(this.$store.state.teacher.lessonNames);
+      return this.$store.state.teacher.lessonNames;
+    },
     ...mapGetters({
       todayCourses: "teacher/todayCourses",
       weekBadages: "teacher/weekBadages",
