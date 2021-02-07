@@ -76,13 +76,11 @@ export default {
   methods: {
     courseclick(index) {
       if (this.courseIndex != undefined) {
-        let oldCourse = document.getElementById(this.courseIndex);
-        oldCourse.className = "ant-list-item";
+        // 未点击按钮回复从前颜色
+        document.getElementById(this.courseIndex).style.color = "white";
       }
-      let course = document.getElementById(index);
+      document.getElementById(index).style.color = "#1890ff";
       this.courseIndex = index;
-      // course.className = "ant-menu-item ant-menu-item-selected";
-      course.className = "couseSelected";
       this.$store.commit("teacher/updateCurCourseHour", index);
     },
     editcourse(index) {
@@ -198,15 +196,16 @@ export default {
 <style scoped>
 .coursename {
   font-size: 16px;
-  margin-left: 10px; 
+  margin-left: 10px;
   cursor: pointer;
 }
-.couseSelected {
+/* .couseSelected {
   font-size: 16px;
+  padding: 12px 0;
   font-weight: 1000;
   background-color: #757677;
   color: #faf606;
-}
+} */
 .btn-area {
   position: absolute;
   bottom: 0;

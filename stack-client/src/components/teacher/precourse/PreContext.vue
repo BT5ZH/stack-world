@@ -22,7 +22,7 @@
       >
         课程试题
       </div>
-        <div
+      <div
         class="cspH--tag"
         :class="[{ 'cspH--tag--default': showTag[3] }]"
         @click="tagChange(3)"
@@ -439,7 +439,7 @@ export default {
     ...mapState({
       uid: (state) => state.public.uid,
       nodes: (state) => state.teacher.precourse.nodes,
-      curCourseHour: (state) => state.teacher.precourse.curCourseHour,
+      // curCourseHour: (state) => state.teacher.precourse.curCourseHour,
     }),
     lesson_id() {
       return this.$route.query.lessonId;
@@ -458,13 +458,21 @@ export default {
       try {
         // 判断有无讲课以及有无ppt
         if (this.lecture) {
-          if (this.ppt.id == "") {
+          if (!this.ppt.id) {
             this.$info({
               title: "讲课必须要有ppt哦",
               zIndex: 10001,
             });
             return;
           }
+        }
+        let nodes = this.$store.state.teacher.nodes;
+        if (!this.judgeNodesBlank(nodes)) {
+          this.$info({
+            title: "请将活动信息填写完整",
+            zIndex: 10001,
+          });
+          return;
         }
         this.$store.commit("teacher/updateCourseHourInfo", {
           time: this.form.time,
@@ -620,10 +628,10 @@ export default {
     tagChange(key) {
       switch (key) {
         case 0:
-          this.showTag = [true, false, false], false;
+          (this.showTag = [true, false, false]), false;
           break;
         case 1:
-          this.showTag = [false, true, false], false;
+          (this.showTag = [false, true, false]), false;
           break;
         case 2:
           this.showTag = [false, false, true, false];
@@ -635,10 +643,32 @@ export default {
           break;
       }
     },
+    judgeNodesBlank(nodes) {
+      let judgeStatus = true;
+      nodes.forEach((element1) => {
+        if (
+          element1.tag !== "Teach" &&
+          element1.tag !== "Sign" &&
+          element1.tag !== "randomSign"
+        ) {
+          element1.vote.forEach((element2) => {
+            element2.options.forEach((item) => {
+              if (item == "") {
+                judgeStatus = false;
+                return;
+              }
+            });
+          });
+        }
+      });
+      return judgeStatus;
+    },
   },
   watch: {
     curCourseHour(value) {
       try {
+        console.log("value");
+        console.log(value);
         if (value == undefined) {
           return;
         }
@@ -651,7 +681,6 @@ export default {
           Teach: "讲课",
           Test: "随堂测试",
           Dispatch: "文件下发",
-          // Homework: "布置作业",
         };
         this.current = 0;
         const { PPT, description, duration, name, nodes } = value;
@@ -675,6 +704,7 @@ export default {
           return { title: titletag, description: time };
         });
       } catch (err) {
+        console.log("err");
         console.log(err);
       }
     },
