@@ -15,9 +15,10 @@
         </div>
         <div class="card_rectangle--row">
             <a-tag :color="item.isFinish?'green':'orange'">
-                {{item.isFinish?'已完成':'未完成'}}
+                <!-- {{item.isFinish?'已完成':'未完成'}} -->
+                {{finished}}
             </a-tag>
-            <span>2020-7-19 10:26</span>
+            <span>请在{{item.deadline}}之前完成</span>
         </div>
     </div>
 </template>
@@ -35,6 +36,16 @@
         },
         mounted() {
         },
+        computed: {
+          finished() {
+            let temp = this.item.isFinish?'已完成':'未完成'
+            if(this.item.task_type==='preview')
+                temp = '点击下载预习资料'
+           
+            return temp
+               
+            },
+        },
         methods: {
             handleRes(item){
                 if(item.resType==1){
@@ -42,7 +53,7 @@
                 }else if(item.resType==2){
                     this.jmpVideo(item);
                 }else{
-                    this.isClick==0? this.download(item): this.jmpHomework(item);
+                    this.isClick==0? this.download(item.attachment_url): this.jmpHomework(item);
                 }
             },
             jmpTest(item){
@@ -54,8 +65,8 @@
             jmpHomework(item){
                 this.$router.push({ path: this.$route.path + '/homework',query: { title: item.title,id: item.hid } });
             },
-            download(){
-                window.open("https://tse1-mm.cn.bing.net/th?id=OIP.cbZhKMlh-W8pVvfypGmqJwAAAA&w=208&h=160&c=8&rs=1&qlt=90&dpr=2&pid=3.1&rm=2");
+            download(url){
+                window.open(url);
             }
         }
     }

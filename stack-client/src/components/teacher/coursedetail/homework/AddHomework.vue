@@ -197,31 +197,40 @@ export default {
     submitAddHomework() {
       let task_type = "homework";
       let resource_id = "not selected"
-      if (this.homeworkForm.type === 1) task_type = "preview";
+      let flg =1;
       if(this.selectedResource.length===1) resource_id=this.selectedResource[0]
-      axios
-        .post("pc/v1/sethomeworks", {
-          lesson_id: this.$route.query.lessonId,
-          title: this.homeworkForm.title,
-          content: this.homeworkForm.content,
-          resource_id: resource_id,
-          task_type: task_type,
-          number_of_time: Number.parseInt(this.curCourseHour),
-          deadline: this.deadLine,
-        })
-        .then(({ data }) => {
-          if (data.status === "success") {
-            this.$message.success("添加作业成功");
-            this.$router.push({
-              query: { ...this.$route.query, add_Refresh: ++this.refresh },
-            });
-            //this.$emit("update:visible", false);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message.error("添加作业失败");
-        });
+      if (this.homeworkForm.type === 1) {
+        task_type = "preview";
+        if(resource_id === "not selected"){
+          flg=0;
+          this.$message.error("请选择预习资源！");
+        }
+      }
+      if(flg===1){
+        axios
+          .post("pc/v1/sethomeworks", {
+            lesson_id: this.$route.query.lessonId,
+            title: this.homeworkForm.title,
+            content: this.homeworkForm.content,
+            resource_id: resource_id,
+            task_type: task_type,
+            number_of_time: Number.parseInt(this.curCourseHour),
+            deadline: this.deadLine,
+          })
+          .then(({ data }) => {
+            if (data.status === "success") {
+              this.$message.success("添加作业成功");
+              this.$router.push({
+                query: { ...this.$route.query, add_Refresh: ++this.refresh },
+              });
+              //this.$emit("update:visible", false);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            this.$message.error("添加作业失败");
+          });
+      }
     },
     getResourceIconUrl(rsType) {
       let iconMap = new Map([

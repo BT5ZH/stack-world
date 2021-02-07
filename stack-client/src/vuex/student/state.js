@@ -195,9 +195,9 @@ const state = {
   ],
   resList: [
     //0 可下载资源，1 试卷，2 可在线看的视频
-    { id: "r00", resType: 0, isFinish: false, title: "PPT", isFav: true },
-    { id: "r01", resType: 1, isFinish: true, title: "quiz", isFav: false },
-    { id: "r02", resType: 2, isFinish: false, title: "MP4", isFav: true },
+    // { id: "r00", resType: 0, isFinish: false, title: "PPT", isFav: true },
+    // { id: "r01", resType: 1, isFinish: true, title: "quiz", isFav: false },
+    // { id: "r02", resType: 2, isFinish: false, title: "MP4", isFav: true },
   ],
   homeworkList: [
     // {

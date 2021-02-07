@@ -40,16 +40,16 @@ export default {
       // },
       {
         title: "题目",
-        align: "center",
+        align: "left",
         dataIndex: "title",
-        ellipsis: true,
+        //ellipsis: true, 
         width: "18%",
       },
       {
         title: "内容",
         dataIndex: "content",
         //scopedSlots: { customRender: "grade" },
-        align: "center",
+        align: "left",
         width: "35%",
       },
       {

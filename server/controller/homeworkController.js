@@ -168,7 +168,7 @@ exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
 exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
   async (req, res, next) => {
     try {
-      const data = await SetHomework.aggregate([
+      let data = await SetHomework.aggregate([
         {
           $match: { lesson_id: req.body.lesson_id },
         },
@@ -213,13 +213,14 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
             "belongedToSubmitHW.flg": 1,
             "belongedToRecource.url": 1,
             "belongedToRecource.name": 1,
+            "belongedToRecource.rsType":1,
           },
         },
       ]);
       if (data.length === 0) {
         return next(new AppError("该作业不存在", 404));
       }
-      let homeworkList = data.map((item) => {
+      data = data.map((item) => {
         let attachment_url = "none";
         if (item.belongedToRecource.length != 0) {
           attachment_url = item.belongedToRecource[0].url;
@@ -259,10 +260,17 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
           answer: answer,
         };
       });
-      //let homework=data[0]
+      let resList=[]
+      let homeworkList=[]
+      for(let i=0;i<data.length;i++){
+          if(data[i].task_type==="preview")
+            resList.push(data[i]);
+          else 
+            homeworkList.push(data[i])
+      }
       res.status(200).json({
         status: "success",
-        homeworkList,
+        homeworkList,resList
       });
     } catch (err) {
       console.log(err);
@@ -313,6 +321,7 @@ exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(
             "belongedToSubmitHW.flg": 1,
             "belongedToRecource.url": 1,
             "belongedToRecource.name": 1,
+            "belongedToRecource.rsType":1,
           },
         },
       ]);

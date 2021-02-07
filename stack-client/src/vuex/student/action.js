@@ -98,7 +98,8 @@ const action = {
     errorHandler(data, "getHomeworkList");
     // console.log(data.Homeworks)
     let homeworkList = data.homeworkList;
-    if (homeworkList.length != 0) {
+    let resList=data.resList;
+    // if (homeworkList.length != 0) {
       // homeworkList = homeworkList.map((item) => ({
       //   hid: item._id,
       //   lid: item.lesson_id._id,
@@ -110,7 +111,8 @@ const action = {
       //   attachment_url: item.attachment_url,
       // }));
       commit("updateHomeworkList", homeworkList);
-    }
+      commit("updateResList", resList);
+    //}
   },
   async getFavResList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
