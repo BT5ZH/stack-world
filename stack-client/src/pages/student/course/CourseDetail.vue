@@ -15,15 +15,17 @@
     </a-row>
     <div class="course_content" v-if="isClick == 0">
       <a-empty v-if="resList.length == 0" />
-      <leftSlider
+      <!-- <leftSlider -->
+      <resCard
         v-else
         v-for="item in resList"
-        :key="item.id"
+        :key="item.hid"
         :item="item"
         :isClick="isClick"
         :courseId="courseId"
       >
-      </leftSlider>
+      </resCard>
+      <!-- </leftSlider> -->
     </div>
     <div class="course_content" v-if="isClick == 1">
       <!-- <div v-if="courseStart"> -->
@@ -107,7 +109,7 @@ import axios from "@/utils/axios";
 export default {
   name: "CourseHome",
   components: {
-    leftSlider,
+    //leftSlider,
     resCard,
     gridView4,
     sign,
