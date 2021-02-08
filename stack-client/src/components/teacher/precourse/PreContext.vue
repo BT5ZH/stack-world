@@ -52,19 +52,6 @@
           </a-col>
           <a-col :span="4">
             <a-button type="primary" @click="save"> 保存 </a-button>
-            <!-- <a-row type="flex" justify="end" class="header-btn">
-              <a-space>
-                <a-button type="primary" @click="componentId = 'PreResource'">
-                  上传资源
-                </a-button>
-                
-              </a-space>
-            </a-row> -->
-            <!-- <br /> -->
-            <!-- <a-row type="flex" justify="end" v-if="!publish"
-              >已选择PPT：{{ ppt.name }}
-            </a-row>
-            <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
           </a-col>
         </a-row>
         <a-modal title="选择ppt" v-model="pptvisible" width="40%">

@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: sourceList.length,
-          pageSize,
+          pageSize: 10,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
