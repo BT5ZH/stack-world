@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: sourceList.length,
-          pageSize: 2,
+          pageSize,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
@@ -22,51 +22,7 @@
           <a-button type="link" @click="download(record)">查看</a-button>
         </template>
       </a-table>
-      <!-- <a-col :span="4" v-for="(source, index) in sourceList" :key="index">
-        <a-card style="margin-top: 15px" size="small">
-          <template #title>
-            <img
-              slot="cover"
-              alt="example"
-              :src="source.src"
-              width="40px"
-              height="40px"
-            />
-            <span>{{ source.sourceName }}</span>
-          </template>
-
-          <template #extra>
-            <a-checkbox @change="onChange"></a-checkbox>
-          </template>
-
-          <template v-if="source.tags.length">
-            <span v-for="tag in source.tags" :key="tag">
-              <a-tag color="#2db7f5" :key="tag" style="margin: 6px">
-                {{ tag }}
-              </a-tag>
-            </span>
-          </template>
-
-          <template v-else>
-            <p align="center">暂无标签</p>
-          </template>
-
-          <template #actions class="ant-card-actions">
-            <a-button type="link" @click="download(source)">查看</a-button>
-          </template>
-        </a-card>
-      </a-col> -->
     </a-row>
-
-    <!-- <a-row type="flex" justify="start" style="margin-top: 50px">
-      <a-pagination
-        class="pagination"
-        :total="sourceList.length"
-        :pageSize="pageSize"
-        hideOnSinglePage="true"
-        @change="pageChange"
-      ></a-pagination>
-    </a-row> -->
   </a-row>
 </template>
 
@@ -108,7 +64,7 @@ export default {
       inputValue: "",
       localVisible: false,
       curPage: 1,
-      pageSize: 6,
+      pageSize: 50,
     };
   },
   computed: {
@@ -192,8 +148,7 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <style>
 .ant-upload {

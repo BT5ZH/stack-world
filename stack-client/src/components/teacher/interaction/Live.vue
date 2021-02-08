@@ -134,7 +134,7 @@ export default {
         .then(() => {
           this.localStream.close();
           this.localStream = null;
-          console.success("退房成功 ");
+          console.log("退房成功 ");
           // 退房成功，可再次调用client.join重新进房开启新的通话。
         })
         .catch((error) => {

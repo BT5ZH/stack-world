@@ -117,7 +117,6 @@ export default {
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.org_name,
       teacherName: (state) => state.public.userName,
-      // lessonNames: (state) => state.teacher.lessonNames,
     }),
     lessonNames() {
       console.log(this.$store.state.teacher.lessonNames);

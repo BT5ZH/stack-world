@@ -189,7 +189,7 @@ export default {
     this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
-    socket.createInstance("student", this, this.lessonId);
+    // socket.createInstance("student", this, this.lessonId);
     this.initLiveClient();
     //-----qichao edits for homework
     let lesson_id = this.$route.query.lessonId;
