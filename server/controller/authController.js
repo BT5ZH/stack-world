@@ -41,7 +41,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email })
     .select("+password")
-    .populate({ path: "organization", select: "_id" }); //.select("+password")
+    .populate({ path: "organization", select: "_id" });
 
   const orgEntity = await Organization.findOne({
     organizationName: user.org_name,
@@ -52,6 +52,25 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError("Incorrect email or password", 401));
   }
 
+  //用...无法进行对象拷贝
+
+  const filteredUser = {
+    class_id: user.class_id,
+    title: user.title,
+    photo: user.photo,
+    role: user.role,
+    entry_year: user.entry_year,
+    _id: user._id,
+    name: user.name,
+    user_id: user.user_id,
+    org_name: user.org_name,
+    email: user.email,
+    subOrg_name: user.subOrg_name,
+    major_name: user.major_name,
+    resources: user.resources,
+    org_id: user.org_id,
+  };
+
   // 3) If everything ok, send token to client
   // createSendToken(user, 200, req, res);
 
@@ -61,7 +80,7 @@ exports.login = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     token,
-    data: user,
+    data: filteredUser,
   });
 });
 

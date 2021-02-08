@@ -1,9 +1,8 @@
 const mutation = {
-  change_Tree_spin_status(state,status){
-    // console.log(state.Tree_spin_status)
+  change_Tree_spin_status(state, status) {
     state.Tree_spin_status = status;
   },
-  change_spin_status(state,status){
+  change_spin_status(state, status) {
     state.spin_status = status;
   },
   updateSessionStorage(key, value) {
@@ -21,7 +20,6 @@ const mutation = {
     state.temp = params;
   },
   getClassTable(state, payload) {
-    // console.log(payload);
     state.classTable = payload;
   },
   getSchoolInfo(state, payload) {

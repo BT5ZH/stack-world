@@ -37,7 +37,6 @@ const action = {
       const url = "pc/v1/lessons/getLessonsByTeacherID";
       const requestData = { teacher_id };
       const { data } = await axios.post(url, requestData);
-      console.log("data.abstractInfo-----");
       console.log(data.abstractInfo);
       commit("updateTeacherCourses", data.abstractInfo);
     } catch (error) {
@@ -118,7 +117,7 @@ const action = {
     queryString = "?" + queryString.slice(0, -1);
     const url = "/pc/v1/questions" + queryString;
     try {
-      const {data} = await axios.get(url);
+      const { data } = await axios.get(url);
       commit("updatequestionBank", data.questions);
     } catch (error) {
       console.error(error);

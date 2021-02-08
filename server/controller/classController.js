@@ -45,11 +45,11 @@ exports.createClass = catchAsync(async (req, res, next) => {
 
 exports.getClass = catchAsync(async (req, res, next) => {
   const classEntity = await Class.findOne({ _id: req.params.id })
-  // .populate({
-  //   path: "studentList",
-  //   select: "user_id name phone _id",
-  // });
-  .populate('students','user_id name phone _id');
+    // .populate({
+    //   path: "studentList",
+    //   select: "user_id name phone _id",
+    // });
+    .populate("students", "user_id name phone _id");
 
   if (!classEntity) {
     return next(new AppError("该班级不存在", 404));
@@ -88,12 +88,6 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
     studentsInClass.students.length != null
   ) {
     for (let i = 0; i < studentsInClass.students.length; i++) {
-      // let index = students.indexOf(studentsInClass.students[i]);
-      // if (index > -1) {
-      //   students.splice(index, 1);
-      // }
-      // console.log("test");
-      // console.log(students);
       let index = studentIds.indexOf(studentsInClass.students[i]);
       if (index > -1) {
         studentIds.splice(index, 1);
@@ -101,12 +95,6 @@ exports.getStudentsNotInOneClass = catchAsync(async (req, res) => {
       }
     }
   }
-  // let result = [];
-  // for (let i = 0; i < students.length; i++) {
-  //   let student = await User.findById(students[i]).select("_id user_id name");
-  //   console.log("------(((((((((((((---------)))))))))))))--------------"+i);
-  //   result.push(student);
-  // }
   let result = students;
   res.status(200).json({
     status: "success",
@@ -131,7 +119,6 @@ exports.updateClass = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteClass = catchAsync(async (req, res, next) => {
-  
   const classEntity = await Class.findByIdAndDelete(req.params.id);
 
   if (!classEntity) {
