@@ -18,12 +18,11 @@ exports.getAllCourses = catchAsync(async (req, res) => {
     /\b(gte|gt|lte|le)\b/g,
     (match) => `$${match}`
   );
-  // console.log(queryString);
+
   const query = Course.find(JSON.parse(queryString));
-  // console.log(query);
+
   // EXECUTE QUERY
   const courses = await query;
-  // console.log(courses);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -83,7 +82,6 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
  */
 exports.batchAddCourses = catchAsync(async (req, res, next) => {
   const courses = req.body;
-  console.log(courses);
   if (!courses || courses.length == 0) {
     return next(new AppError("用户列表为空或无数据", 404));
   }
@@ -95,24 +93,6 @@ exports.batchAddCourses = catchAsync(async (req, res, next) => {
 });
 // 传id删除
 exports.deleteOneCourse = catchAsync(async (req, res) => {
-  // try {
-  //   var del = await Course.deleteOne({ _id: req.params._id });
-  //   if ((del.deletedCount = 1)) {
-  //     res.status(200).json({
-  //       status: true,
-  //       message: "success",
-  //     });
-  //   } else {
-  //     res.status(500).json({
-  //       status: false,
-  //       message: "false",
-  //     });
-  //   }
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(404).json({ status: false, message: err });
-  // }
-
   const result = await Lesson.findOne({ course_id: req.params._id });
   if (result) {
     return next(new AppError("该课程已经被分配，不能删除", 500));
@@ -142,7 +122,6 @@ exports.batchDeleteCourses = catchAsync(async (req, res) => {
       message: "success",
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ status: false, message: err });
   }
 });
