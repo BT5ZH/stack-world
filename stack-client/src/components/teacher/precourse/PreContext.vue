@@ -67,11 +67,7 @@
             <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
           </a-col>
         </a-row>
-        <a-modal
-          title="选择ppt"
-          v-model="pptvisible"
-          width="40%"
-        >
+        <a-modal title="选择ppt" v-model="pptvisible" width="40%">
           <a-radio-group name="radioGroup" v-model="ppt">
             <a-radio
               :style="radioStyle"
@@ -422,6 +418,10 @@ export default {
       }
       return lecture_status;
     },
+    coursePPT() {
+      if (this.curCourseHour.PPT) return this.curCourseHour.PPT;
+      else return {};
+    },
     isempty() {
       if (this.current == -1) {
         return true;
@@ -455,7 +455,8 @@ export default {
       try {
         // 判断有无讲课以及有无ppt
         if (this.lecture) {
-          if (!this.ppt.id) {
+          // this.ppt是界面选择的，coursePPT是数据库里调的
+          if (!this.ppt.id && !this.coursePPT.name) {
             this.$info({
               title: "讲课必须要有ppt哦",
             });
