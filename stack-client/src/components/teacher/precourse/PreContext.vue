@@ -593,8 +593,15 @@ export default {
           try {
             let time = that.steps[that.current].description.split("分钟")[0];
             that.sumtime -= time;
+            console.log("that.steps[that.current]");
+            console.log(that.steps[that.current]);
+            if (that.steps[that.current].title === "讲课") {
+              // 删除ppt
+              that.$store.commit("teacher/updatePPT", {});
+            }
             that.steps.splice(that.current, 1);
             that.$store.commit("teacher/deleteNode", that.current);
+
             that.current = that.steps.length - 1;
             that.addChange(that.current);
           } catch (err) {

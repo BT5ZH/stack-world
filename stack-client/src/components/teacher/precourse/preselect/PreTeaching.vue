@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card title="讲课" class="setcard"> ppt: {{ this.ppt.PPT.name }} </a-card>
+    <a-card title="讲课" class="setcard"> ppt: {{ this.ppt.name }} </a-card>
 
     <br />
     <a-button type="primary" @click="on_pptvisible"> 选择PPT </a-button>
@@ -21,7 +21,7 @@ export default {
     }),
     ppt() {
       if (this.$store.state.teacher.courseHours[this.curCourseHour])
-        return this.$store.state.teacher.courseHours[this.curCourseHour];
+        return this.$store.state.teacher.courseHours[this.curCourseHour].PPT;
       else return "";
     },
   },
