@@ -38,13 +38,13 @@ export default {
     multiQues,
   },
   mounted() {
-    console.log("daat----")
-    console.log(this.raceData.question)
+    console.log("daat----");
+    console.log(this.raceData.question);
   },
   computed: {
     ...mapState({
       raceData: (state) => state.student.interaction.race,
-      studentName: (state) => state.public.name,
+      studentName: (state) => state.public.userName,
     }),
     lessonId() {
       return this.$route.query.lessonId;
@@ -63,7 +63,7 @@ export default {
           ...data,
           studentName: this.studentName,
           limit: this.raceData.limit,
-          question:this.raceData.question
+          question: this.raceData.question,
         },
       });
     },

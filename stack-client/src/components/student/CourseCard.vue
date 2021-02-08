@@ -37,7 +37,7 @@ export default {
     ...mapState({
       userId: (state) => state.public._id,
       studentId: (state) => state.public.studentId,
-      studentName: (state) => state.public.name,
+      studentName: (state) => state.public.userName,
     }),
   },
   mounted() {

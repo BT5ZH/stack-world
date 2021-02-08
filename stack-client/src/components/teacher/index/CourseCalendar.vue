@@ -116,7 +116,7 @@ export default {
       courseCalendar: (state) => state.teacher.courseCalendar,
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.org_name,
-      teacherName: (state) => state.public.name,
+      teacherName: (state) => state.public.userName,
       // lessonNames: (state) => state.teacher.lessonNames,
     }),
     lessonNames() {

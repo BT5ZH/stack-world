@@ -28,7 +28,7 @@ export default {
       uid: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
       major_name: (state) => state.public.major_name,
-      name: (state) => state.public.name,
+      name: (state) => state.public.userName,
       openRooms: (state) => state.student.openRooms,
       signState: (state) => state.student.interaction.sign,
     }),

@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapState({
-      teacher_name: (state) => state.public.name,
+      teacher_name: (state) => state.public.userName,
     }),
   },
   methods: {

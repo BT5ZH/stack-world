@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     ...mapState({
-      studentName: (state) => state.public.name,
+      studentName: (state) => state.public.userName,
       pickData: (state) => state.student.interaction.ask,
     }),
     lessonId() {
@@ -63,7 +63,11 @@ export default {
         actionType: "ask",
         role: "student",
         roomId: this.lessonId,
-        data: { ...data, student: this.studentName,question:this.pickData.question },
+        data: {
+          ...data,
+          student: this.studentName,
+          question: this.pickData.question,
+        },
       });
     },
   },

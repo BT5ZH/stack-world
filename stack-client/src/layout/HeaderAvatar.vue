@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapState({
-      userName: (state) => state.public.name,
+      userName: (state) => state.public.userName,
       user: (state) => state.student.user,
     }),
   },

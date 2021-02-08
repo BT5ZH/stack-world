@@ -24,7 +24,7 @@ export default {
     ...mapState({
       uid: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
-      name: (state) => state.public.name,
+      name: (state) => state.public.userName,
       openRooms: (state) => state.student.openRooms,
       randomSign: (state) => state.student.interaction.randomSign,
     }),
