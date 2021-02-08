@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: tableData.length,
-          pageSize: 2,
+          pageSize: 10,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
@@ -110,13 +110,25 @@ export default {
       addVisible: false,
     };
   },
+  watch: {
+    refresh() {
+      const lesson_id = this.$route.query.lessonId;
+      const teacher_id = this.$store.state.public.uid;
+      this.$store.dispatch("teacher/getquestionBank", {
+        lesson_id,
+        teacher_id,
+      });
+    },
+  },
   computed: {
+    refresh(){
+      if(this.$route.query.addQuestion_refresh) return this.$route.query.addQuestion_refresh;
+      else return 0;
+    },
     questionBank() {
       return this.$store.state.teacher.questionBank;
     },
     tableData() {
-      console.log("this.questionBank");
-      console.log(this.questionBank);
       if (!this.questionBank) return [];
       let temp = this.questionBank.map((item, index) => ({
         index: index + 1,

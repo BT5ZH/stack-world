@@ -125,10 +125,8 @@ export default {
       inputVisible: false,
       inputValue: "",
       localVisible: false,
-      curPage: 1,
-      pageSize: 6,
       selectedResource: [],
-      deadLine: moment().add('days',5).format('YYYY-MM-DD HH:MM'), 
+      deadLine: moment().add("days", 5).format("YYYY-MM-DD HH:MM"),
     };
   },
   computed: {
@@ -152,9 +150,6 @@ export default {
     },
     sourceList() {
       if (!this.resourceList) return [];
-      let pageEnd = this.curPage * this.pageSize;
-      let pageStart = pageEnd - this.pageSize;
-
       let temp = this.resourceList.map((item) => {
         let src = this.getResourceIconUrl(item.rsType);
         return {
@@ -163,14 +158,12 @@ export default {
           src: require("@/assets/img/SVGS/" + src + ".svg"),
         };
       });
-      if (!this.inputValue) return temp.slice(pageStart, pageEnd);
-      return temp
-        .filter(
-          (item) =>
-            item.sourceName.includes(this.inputValue) ||
-            item.tags.some((tag) => tag.includes(this.inputValue))
-        )
-        .slice(pageStart, pageEnd);
+      if (!this.inputValue) return temp;
+      return temp.filter(
+        (item) =>
+          item.sourceName.includes(this.inputValue) ||
+          item.tags.some((tag) => tag.includes(this.inputValue))
+      );
     },
   },
   methods: {
@@ -178,7 +171,7 @@ export default {
     onChange(value, dateString) {
       console.log("Selected Time: ", value);
       console.log("Formatted Selected Time: ", dateString);
-      this.deadLine = moment(dateString).format('YYYY-MM-DD HH:MM')
+      this.deadLine = moment(dateString).format("YYYY-MM-DD HH:MM");
     },
     onOk(value) {
       console.log("onOk: ", value);
@@ -196,17 +189,18 @@ export default {
 
     submitAddHomework() {
       let task_type = "homework";
-      let resource_id = "not selected"
-      let flg =1;
-      if(this.selectedResource.length===1) resource_id=this.selectedResource[0]
+      let resource_id = "not selected";
+      let flg = 1;
+      if (this.selectedResource.length === 1)
+        resource_id = this.selectedResource[0];
       if (this.homeworkForm.type === 1) {
         task_type = "preview";
-        if(resource_id === "not selected"){
-          flg=0;
+        if (resource_id === "not selected") {
+          flg = 0;
           this.$message.error("请选择预习资源！");
         }
       }
-      if(flg===1){
+      if (flg === 1) {
         axios
           .post("pc/v1/sethomeworks", {
             lesson_id: this.$route.query.lessonId,

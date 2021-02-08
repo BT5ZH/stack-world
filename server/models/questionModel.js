@@ -40,7 +40,8 @@ const questionSchema = new mongoose.Schema({
     analysis: {
         type: String,
     },
-    knowledge: {//知识点
+    // 此处拼写错误不能修改哦。。。没得办法，将错就错。。。
+    knowlege: {//知识点
         type: String,
     },
     grade: {//难度
