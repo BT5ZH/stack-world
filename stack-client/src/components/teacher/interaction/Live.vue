@@ -38,18 +38,14 @@
               >
               <span class="onlineInfo-body-li-time">{{ item.enterTime }}</span>
               <span class="onlineInfo-body-li-flag">
-                <b v-if="item.role !== 'teacher'">{{ item.signStatus }}</b>
+                <b v-if="item.role !== 'teacher'">🐾</b>
                 <b v-else>🔥</b></span
               >
             </li>
           </ul>
         </div>
       </div>
-      <!-- <a-list item-layout="horizontal" :data-source="audienceList">
-        <template #renderItem="item">
-          <a-list-item> {{ item.studentName }} </a-list-item>
-        </template>
-      </a-list> -->
+      <!-- {{ item.signStatus }}-->
     </div>
   </div>
 </template>
