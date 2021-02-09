@@ -9,7 +9,8 @@
       <div class="btn-area">
         <a-button @click="createStream" type="primary">开启本地</a-button>
         <a-button @click="startLive" type="primary">开始授课</a-button>
-        <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
+        <a-button @click="closeLiveRoom" type="danger">结束直播</a-button>
+        <a-button type="danger">结束授课</a-button>
       </div>
     </div>
 
