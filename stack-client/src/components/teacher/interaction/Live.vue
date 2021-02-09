@@ -7,10 +7,12 @@
 
       <div id="local_stream"></div>
       <div class="btn-area">
-        <a-button @click="createStream" type="primary">开启本地</a-button>
-        <a-button @click="startLive" type="primary">开始授课</a-button>
-        <a-button @click="closeLiveRoom" type="danger">结束直播</a-button>
-        <a-button type="danger">结束授课</a-button>
+        <a-space>
+          <a-button @click="createStream" type="primary">开启本地</a-button>
+          <a-button @click="startLive" type="primary">开始授课</a-button>
+          <a-button @click="closeLiveRoom" type="danger">结束直播</a-button>
+          <a-button @click="closeRoom" type="danger">结束授课</a-button>
+        </a-space>
       </div>
     </div>
 
@@ -145,12 +147,25 @@ export default {
           this.localStream.close();
           this.localStream = null;
           console.log("退房成功 ");
+          // 修改教室状态为using
+          let room_id = this.$route.query.room_id;
+          let status = "using";
+          this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
           // 退房成功，可再次调用client.join重新进房开启新的通话。
         })
         .catch((error) => {
           console.error("退房失败 " + error);
           // 错误不可恢复，需要刷新页面。
         });
+    },
+    async closeRoom() {
+      let room_id = this.$route.query.room_id;
+      let status = "avaliable";
+      await this.$store.dispatch("teacher/updateRoomStatus", {
+        room_id,
+        status,
+      });
+      this.$message.info("退出成功");
     },
     async startLive() {
       try {
@@ -180,6 +195,10 @@ export default {
         console.log(publishAction);
         console.log("本地流发布成功");
         this.$message.info("成功进入教室，系统正在播放您的声音");
+        // 将教室状态修改为living
+        let status = "living";
+        let room_id = this.$route.query.room_id;
+        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
       } catch (error) {
         console.log(error);
         // this.$notification.error({
@@ -310,7 +329,13 @@ ul li {
 }
 
 #local_stream {
-  height: 400px;
+  /* 屏幕宽度，在这改 */
+  --width: 630px;
+  --height: 400px;
+  width: var(--width);
+  height: var(--height);
+  background-image: url("../../../assets/img/video/直播.png");
+  background-size: var(--width) var(--height);
 }
 
 .btn-area {

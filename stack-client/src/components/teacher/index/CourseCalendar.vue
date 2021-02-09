@@ -117,9 +117,9 @@ export default {
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.orgName,
       teacherName: (state) => state.public.userName,
+      // room_id:(state) =>
     }),
     lessonNames() {
-      console.log(this.$store.state.teacher.lessonNames);
       return this.$store.state.teacher.lessonNames;
     },
     ...mapGetters({
@@ -144,6 +144,11 @@ export default {
       this.$store.commit("teacher/updateToday", { day, title });
     },
     classBegin() {
+      // 修改教室状态为using
+      let room_id = this.curCourse.room_id;
+      let status = "using";
+      this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+
       let course = this.curCourse;
       const config = { params: { activityID: course.lessonId } };
       const requestData = {
@@ -162,7 +167,11 @@ export default {
           }
           this.$router.push({
             name: "interaction_index",
-            query: { lessonId: course.lessonId, name: this.curLesson },
+            query: {
+              lessonId: course.lessonId,
+              name: this.curLesson,
+              room_id: this.curCourse.room_id,
+            },
           });
         })
         .catch((err) => {

@@ -144,6 +144,15 @@ const action = {
       console.error(error);
     }
   },
+  // 修改教室状态,传入新的教室状态和教室id
+  async updateRoomStatus({ commit }, params) {
+    try {
+      const url = `pc/v1/rooms/${params.room_id}`;
+      await axios.patch(url, { room_status: params.status });
+    } catch (err) {
+      console.error(err);
+    }
+  },
 };
 
 export default action;

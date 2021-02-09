@@ -30,14 +30,6 @@
     <div class="course_content" v-if="isClick == 1">
       <!-- <div v-if="courseStart"> -->
       <div class="">
-        <!-- <video /> -->
-        <!-- <video
-          id="remote_stream"
-          style="width: 100%"
-          controlsList="nodownload"
-          controls
-        >
-        </video> -->
         <div id="remote_stream"></div>
 
         <a-divider></a-divider>
