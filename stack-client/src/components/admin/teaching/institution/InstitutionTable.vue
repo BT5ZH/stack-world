@@ -226,7 +226,7 @@ export default {
     ...mapState({
       Tree_spin_status: (state) => state.admin.Tree_spin_status,
       spin_status: (state) => state.admin.spin_status,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
       oid: (state) => state.public.oid,
     }),
   },
@@ -264,7 +264,7 @@ export default {
       // console.log(url);
       try {
         // this.treeSpin_status = true;
-        this.$store.dispatch("admin/change_Tree_spin_status",true)
+        this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance.get(url);
         this.$store.dispatch("admin/change_Tree_spin_status", false);
         // console.log("---spin---");
@@ -442,7 +442,7 @@ export default {
         });
       this.editModal_visible = false;
     },
-    onChange(data,label) {
+    onChange(data, label) {
       // console.log(data)
       let payload = {};
       if (data.slice(-1) == "#") {
@@ -458,7 +458,7 @@ export default {
         this.getClassesFromCondition(payload);
         // console.log(payload);
       }
-      this.value = label
+      this.value = label;
     },
     async getClassesFromCondition(payload) {
       // 按条件检索班级

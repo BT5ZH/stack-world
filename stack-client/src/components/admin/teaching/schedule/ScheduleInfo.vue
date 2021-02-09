@@ -103,9 +103,9 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      Card_spin_status:false,
+      Card_spin_status: false,
       // 选择
-      year: "",//moment().year(),
+      year: "", //moment().year(),
       semester: "1",
       style: "place",
       value: "",
@@ -124,23 +124,23 @@ export default {
       // let lastyear = year - 1;
       // let nextyear = year + 1;
       // return [lastyear.toString(), year.toString(), nextyear.toString()];
-      return [this.school_year]
+      return [this.school_year];
     },
     ...mapState({
       uid: (state) => state.public.uid,
       Tree_spin_status: (state) => state.admin.Tree_spin_status,
       spin_status: (state) => state.admin.spin_status,
       oid: (state) => state.public.oid,
-      orgName: (state) => state.public.org_name,
-       school_year:(state)=>state.public.school_year,
+      orgName: (state) => state.public.orgName,
+      school_year: (state) => state.public.school_year,
     }),
   },
   mounted() {
     this.getSpaceTree();
     this.getTreeList();
-    this.$store.dispatch("public/getCurrentSchoolYear",this.orgName);
+    this.$store.dispatch("public/getCurrentSchoolYear", this.orgName);
   },
-    
+
   methods: {
     // 地点树
     async getSpaceTree() {
@@ -269,10 +269,10 @@ export default {
         this.semester;
       try {
         // this.$store.dispatch("admin/change_spin_status", true);
-        this.Card_spin_status = true
+        this.Card_spin_status = true;
         const { data } = await axiosInstance.get(url);
         // this.$store.dispatch("admin/change_spin_status", false);
-        this.Card_spin_status = false
+        this.Card_spin_status = false;
         // console.log("---data---")
         // console.log(data)
         // console.log(data.rooms.rooms);

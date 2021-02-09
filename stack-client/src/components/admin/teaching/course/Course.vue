@@ -103,7 +103,7 @@ export default {
       spin_status: (state) => state.admin.spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
     }),
   },
   mounted() {
@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     // async
-     getTreeData() {
+    getTreeData() {
       let queryString = this.orgName;
       const url = "/pc/v1/courses/courseTree?org_name=" + queryString;
       // console.log(url);
@@ -170,7 +170,7 @@ export default {
       // }
     },
 
-    // async 
+    // async
     getCoursesFromCondition(payload, type) {
       let queryString = "";
       Object.keys(payload).forEach((key) => {
@@ -179,19 +179,22 @@ export default {
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/courses" + queryString;
 
-      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
-        console.log("--------- courses--------");
-        console.log(response);
-              if (type == 1) {
-          this.courseList = response.data.courses;
-          // console.log(this.courseList);
-        } else if (type == 2) {
-          this.courseList2 = response.data.courses;
-          // console.log(this.courseList2);
-        }
-      }).catch((error)=>{
-        console.log(error)
-      })
+      this.$store
+        .dispatch("admin/getTreeByURLwithSpin", url)
+        .then((response) => {
+          console.log("--------- courses--------");
+          console.log(response);
+          if (type == 1) {
+            this.courseList = response.data.courses;
+            // console.log(this.courseList);
+          } else if (type == 2) {
+            this.courseList2 = response.data.courses;
+            // console.log(this.courseList2);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       // console.log(url);
       // try {

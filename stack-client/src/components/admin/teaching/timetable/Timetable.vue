@@ -1,6 +1,5 @@
 <template>
   <a-row class="container">
-   
     <a-col :span="2"></a-col>
     <a-col :span="19">
       <timetable-list class="timetable-list"></timetable-list>
@@ -19,16 +18,12 @@ export default {
     ...mapState({
       oid: (state) => state.public.oid,
       uid: (state) => state.public.uid,
-      org_name:(state)=>state.public.org_name,
+      org_name: (state) => state.public.orgName,
     }),
   },
-   mounted() {
-
+  mounted() {
     //this.$store.dispatch("public/getOrgnizationName", this.oid);
   },
-  
-  
-  
 };
 </script>
 

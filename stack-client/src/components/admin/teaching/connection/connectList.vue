@@ -120,16 +120,16 @@ export default {
     yearList() {
       //let year = moment().year();
       //return [year - 1, year, year + 1];
-      return [this.school_year]
+      return [this.school_year];
     },
     ...mapState({
-      school_year:(state)=>state.public.school_year,
-      org_name:(state)=>state.public.org_name,
+      school_year: (state) => state.public.school_year,
+      org_name: (state) => state.public.orgName,
     }),
   },
   mounted() {
     // console.log(this.lessonList)
-    this.$store.dispatch("public/getCurrentSchoolYear",this.org_name);
+    this.$store.dispatch("public/getCurrentSchoolYear", this.org_name);
   },
   methods: {
     handleSearch(e) {

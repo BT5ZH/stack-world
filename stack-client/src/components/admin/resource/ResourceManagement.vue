@@ -55,24 +55,28 @@
       >
         <!-- <a-table :columns="columns" :data-source="resourceList"> -->
         <a-table
-            :pagination="{
-              total: resourceList.length,
-              //pageSizeOptions: pageSize,
-              pageSize:5,
-              'show-less-items': true,
-              'show-size-changer': true,
-              'show-quick-jumper': true,
-              'hide-on-single-page': true,
-            }"
-            :bordered="true"
-            :columns="columns"
-            :data-source="resourceList"
-          >
-          <span slot="action" slot-scope="text,record">
+          :pagination="{
+            total: resourceList.length,
+            //pageSizeOptions: pageSize,
+            pageSize: 5,
+            'show-less-items': true,
+            'show-size-changer': true,
+            'show-quick-jumper': true,
+            'hide-on-single-page': true,
+          }"
+          :bordered="true"
+          :columns="columns"
+          :data-source="resourceList"
+        >
+          <span slot="action" slot-scope="text, record">
             <!-- <a>下载 一 {{ record.name }}</a> -->
-             <a @click="download(record)">下载</a>
+            <a @click="download(record)">下载</a>
             <a-divider type="vertical" />
-            <a @click="deleteResource(record._id)" v-show="isShowDeleteButton==='yes'">删除</a>
+            <a
+              @click="deleteResource(record._id)"
+              v-show="isShowDeleteButton === 'yes'"
+              >删除</a
+            >
           </span>
         </a-table>
       </a-layout-content>
@@ -162,29 +166,29 @@ export default {
       currentCollege: "",
       currentTeacher: "",
       refresh: 0,
-      isShowDeleteButton:'yes1'
+      isShowDeleteButton: "yes1",
       //pageSize: ["10", "20", "30", "50", "100"],
     };
   },
   watch: {
     refresh(val) {
-      this.getResources(this.currentCollege, this.currentTeacher)
-    }
+      this.getResources(this.currentCollege, this.currentTeacher);
+    },
   },
   methods: {
     collegeChange(value) {
       console.log(`Selected: ${value}`);
       // if switch close, just check resource of college
       this.currentCollege = value;
-      this.isShowDeleteButton = 'no'
+      this.isShowDeleteButton = "no";
       //if switch open, do NOTHING
       this.getTeacherName(this.currentCollege);
-      this.getResourcesOfSubOrg(this.currentCollege)
+      this.getResourcesOfSubOrg(this.currentCollege);
     },
     peopleChange(value) {
       console.log(`Selected: ${value}`);
       this.currentTeacher = value;
-      this.isShowDeleteButton = 'yes'
+      this.isShowDeleteButton = "yes";
       //if switch open, check out resource of people in college
       this.getResources(this.currentCollege, this.currentTeacher);
     },
@@ -210,18 +214,19 @@ export default {
         cancelText: "取消",
         zIndex: 10001,
         onOk() {
-          try{
-            that.$store.dispatch("admin/deleteResourceById", resourceId)
-            .then(res => {
-               console.log(`res------:${res}`)
-               that.refresh+=1
-            })
-           .catch(err=>{
-               console.log(err);
-            })
-          }catch(err){
-               console.log(err);
-            }
+          try {
+            that.$store
+              .dispatch("admin/deleteResourceById", resourceId)
+              .then((res) => {
+                console.log(`res------:${res}`);
+                that.refresh += 1;
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } catch (err) {
+            console.log(err);
+          }
         },
         onCancel() {
           // console.log("Cancel");
@@ -248,29 +253,32 @@ export default {
     //     this.peopleSwitch = true;
     //   }
     // },
-    getResourcesOfSubOrg(subOrgName){
-       this.$store.dispatch("admin/getResourcesOfOneCollege", 
-       {
-         org_name:this.org_name,
-         subOrg_name:subOrgName
-       })
-       .then(res => {
+    getResourcesOfSubOrg(subOrgName) {
+      this.$store
+        .dispatch("admin/getResourcesOfOneCollege", {
+          org_name: this.org_name,
+          subOrg_name: subOrgName,
+        })
+        .then((res) => {
           this.resourceList = res.data.allResources;
         })
-        .catch(err=>{
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
-    // async 
+    // async
     getSubOrgsName() {
-      const orgId = this.oid;///////////////
+      const orgId = this.oid; ///////////////
       const url = "/pc/v1/organizations/" + orgId + "/suborgs";
-      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
-        // console.log(response);
-      this.sugOrgList = response.data.subOrgs;
-      }).catch((error)=>{
-        console.log(error)
-      })
+      this.$store
+        .dispatch("admin/getTreeByURLwithSpin", url)
+        .then((response) => {
+          // console.log(response);
+          this.sugOrgList = response.data.subOrgs;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // try {
       //   const { data } = await axiosInstance.get(url);
       //   console.log("---------1----------------");
@@ -281,7 +289,7 @@ export default {
       //   console.log(err);
       // }
     },
-    // async 
+    // async
     getTeacherName(subOrgName) {
       // const orgId="5facabb2cf3bb2002b4b3f38"
       const queryObject = {
@@ -293,17 +301,20 @@ export default {
       Object.keys(queryObject).forEach((key) => {
         queryString += key + "=" + queryObject[key] + "&";
       });
-  
+
       queryString = "?" + queryString.slice(0, -1);
-   
+
       const url = "/pc/v1/users/multipleUsers" + queryString;
       // console.log(url);
-      this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
-        // console.log(response);
-        this.instructorList = response.data.teachers;
-         }).catch((error)=>{
-           console.log(error)
-         })
+      this.$store
+        .dispatch("admin/getTreeByURLwithSpin", url)
+        .then((response) => {
+          // console.log(response);
+          this.instructorList = response.data.teachers;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // try {
       //   const { data } = await axiosInstance.get(url);
       //   this.instructorList = data.teachers;
@@ -315,11 +326,10 @@ export default {
       // }
     },
     async getResources(college, teacher) {
-     
       const queryObject = {
         //org_name: this.org_name,
         //subOrg_name: college,
-        authorId: teacher,////////////////////////////
+        authorId: teacher, ////////////////////////////
       };
       let queryString = "";
       Object.keys(queryObject).forEach((key) => {
@@ -327,13 +337,16 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/resources" + queryString;
-      this.$store.dispatch("admin/getTreeByURL",url).then((response) =>{
-        // console.log("---------");
-      // console.log(response);
-      this.resourceList = response.data.resources;
-      }).catch((error)=>{
-        console.log(error)
-      })
+      this.$store
+        .dispatch("admin/getTreeByURL", url)
+        .then((response) => {
+          // console.log("---------");
+          // console.log(response);
+          this.resourceList = response.data.resources;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // try {
       //   const { data } = await axiosInstance.get(url);
       //   this.resourceList = data.resources;
@@ -347,10 +360,10 @@ export default {
     ...mapState({
       oid: (state) => state.public.oid,
       uid: (state) => state.public.uid,
-      org_name:(state)=>state.public.org_name,
+      org_name: (state) => state.public.orgName,
     }),
   },
-  created: function() {},
+  created: function () {},
   mounted() {
     this.getSubOrgsName();
     this.getTeacherName();

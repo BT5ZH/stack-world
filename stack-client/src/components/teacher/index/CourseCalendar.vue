@@ -115,7 +115,7 @@ export default {
       uid: (state) => state.public.uid,
       courseCalendar: (state) => state.teacher.courseCalendar,
       today: (state) => state.teacher.today,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
       teacherName: (state) => state.public.userName,
     }),
     lessonNames() {
