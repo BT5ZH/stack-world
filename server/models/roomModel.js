@@ -53,6 +53,11 @@ const roomSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       required: [true, "A room must belong to one campus"],
     },
+    room_status: {
+      type: String,
+      enum: ["using", "avaliable", "living"],
+      default: "avaliable",
+    },
     // 以下两个数据 插入数据时忽略
     ////////////////////////////////////////////////////
     section: {

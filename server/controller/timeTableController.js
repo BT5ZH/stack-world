@@ -122,7 +122,7 @@ exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
     .populate("course_id", "name -_id")
     .populate("teacher_id", "user_id name -_id")
     .populate("curriculum.class_id", "class_name -_id")
-    .populate("curriculum.room_id", "room_number -_id");
+    .populate("curriculum.room_id", "room_number _id");
 
   if (!data || data.length === 0) {
     return next(new AppError("该课表不存在", 404));
@@ -588,10 +588,10 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
     ) {
       return next(new AppError("当前时刻无课程安排", 404));
     }
-     
+
     let result = data.map((item) => {
       return {
-        lesson_id:item.lesson_id,
+        lesson_id: item.lesson_id,
         course_name: item.course_id.name,
         teacher_name: item.teacher_id.name,
         teacher_number: item.teacher_id.user_id,
