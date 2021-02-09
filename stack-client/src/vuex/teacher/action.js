@@ -34,7 +34,7 @@ const action = {
   },
   async getTeacherCourses({ commit }, teacher_id) {
     try {
-      const url = "pc/v1/lessons/getLessonsByTeacherID";
+      const url = "pc/v1/lessons/lessons";
       const requestData = { teacher_id };
       const { data } = await axios.post(url, requestData);
       console.log(data.abstractInfo);
@@ -57,6 +57,7 @@ const action = {
     try {
       const url = "/pc/v1/activities/online_list";
       const { data } = await axios.get(`${url}/${lesson_id}`);
+      console.log(data.data);
       if (data.status) {
         commit("updateOnlineList", data.data);
       }

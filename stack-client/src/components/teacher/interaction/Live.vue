@@ -31,11 +31,15 @@
               v-for="item in audienceList"
               :key="item.studentName"
             >
-              <span class="onlineInfo-body-li-name">{{
-                item.studentName
-              }}</span>
-              <span class="onlineInfo-body-li-time">01-24 17:40</span>
-              <span class="onlineInfo-body-li-flag">{{ item.signStatus }}</span>
+              <span class="onlineInfo-body-li-name">
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+              >
+              <span class="onlineInfo-body-li-time">{{ item.enterTime }}</span>
+              <span class="onlineInfo-body-li-flag">
+                <b v-if="item.role !== 'teacher'">{{ item.signStatus }}</b>
+                <b v-else>🔥</b></span
+              >
             </li>
           </ul>
         </div>
@@ -52,6 +56,7 @@
 <script>
 import TRTC from "trtc-js-sdk";
 import axios from "@/utils/axios";
+import * as socket from "@/utils/socket";
 import { mapState } from "vuex";
 
 export default {
@@ -70,6 +75,8 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      teacherId: (state) => state.public.studentId,
+      teacherName: (state) => state.public.userName,
       onlineList: (state) => state.teacher.onlineList,
       signList: (state) => state.teacher.signList,
     }),
@@ -81,7 +88,13 @@ export default {
             item.signStatus = "是";
           }
         });
-        return { signStatus: item.signStatus, studentName: item.studentName };
+        return {
+          signStatus: item.signStatus,
+          studentName: item.studentName,
+          enterTime: item.enterTime,
+          role: item.role,
+          studentId: item.studentId,
+        };
       });
       return audienceList;
     },
@@ -232,6 +245,7 @@ export default {
 .onlineInfo .onlineInfo-body .onlineInfo-body-list ul {
   list-style: none;
   outline: none;
+  padding-left: 0;
 }
 .onlineInfo .onlineInfo-body .onlineInfo-body-list ul li {
   font-size: 12px;

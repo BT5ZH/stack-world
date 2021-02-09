@@ -1,9 +1,7 @@
 <template>
   <div>
     <div style="padding-top: 20px">
-      <a-button @click="$router.push({ name: 'teacher_index' })" type="link">
-        返回首页
-      </a-button>
+      <a-button @click="backHome" type="link"> 返回首页 </a-button>
     </div>
     <div style="margin: 20px 30px 0 30px">
       <div>
@@ -95,6 +93,15 @@ export default {
     };
   },
   methods: {
+    backHome() {
+      socket.sendEvent("joinRoom", {
+        actionType: "leave",
+        role: "teacher",
+        roomId: this.lessonId,
+        data: { studentId: this.teacherId },
+      });
+      this.$router.push({ name: "teacher_index" });
+    },
     eventChange(value) {
       this.curEvent = value;
       this.$store.commit("teacher/updateCurActivity", {
@@ -263,6 +270,8 @@ export default {
       onlineList: (state) => state.teacher.onlineList,
       signList: (state) => state.teacher.signList,
       uid: (state) => state.public.uid,
+      teacherName: (state) => state.public.userName,
+      teacherId: (state) => state.public.studentId,
       nodes: (state) => state.teacher.precourse.nodes,
     }),
     steps() {
@@ -287,7 +296,7 @@ export default {
         actionType: "enter",
         role: "teacher",
         roomId: this.lessonId,
-        data: { teacherId: this.uid },
+        data: { studentId: this.teacherId, studentName: this.teacherName },
       });
       socket.sendEvent("public", {
         actionType: "classBegin",

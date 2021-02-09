@@ -37,7 +37,7 @@ const mutation = {
   },
   updateAskResult(state, params) {
     if (params) {
-      state.ask_answer = params
+      state.ask_answer = params;
     } else {
       console.error("学生端未返回数据");
     }
@@ -88,10 +88,10 @@ const mutation = {
       });
   },
   clearOnlineList(state) {
-    state.onlineList = []
+    state.onlineList = [];
   },
   addRandomStudent(state, randomStudent) {
-    state.randomStudent = randomStudent
+    state.randomStudent = randomStudent;
   },
   updateCurActivity(state, params) {
     state.curActivity = params;
@@ -109,8 +109,8 @@ const mutation = {
         description: "",
         duration: 50,
         name: "",
-        nodes: []
-      })
+        nodes: [],
+      });
     }
     state.curCourseHour = params;
     state.nodes = state.courseHours[params].nodes;
