@@ -128,7 +128,7 @@ export default {
       } catch (error) {
         console.log(error);
         this.$message.error("找不到可用直播设备");
-        // TODO give some tips
+        // TODO 处理所有类型错误
         //   switch (error.name) {
         //     case "NotReadableError":
         //       this.$message.error("找不到可用的音视频设备");
@@ -139,33 +139,37 @@ export default {
         //   }
       }
     },
-    closeLiveRoom() {
-      this.$store.commit("teacher/clearOnlineList");
-      this.client
-        .leave()
-        .then(() => {
-          this.localStream.close();
-          this.localStream = null;
-          console.log("退房成功 ");
-          // 修改教室状态为using
-          let room_id = this.$route.query.room_id;
-          let status = "using";
-          this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
-          // 退房成功，可再次调用client.join重新进房开启新的通话。
-        })
-        .catch((error) => {
-          console.error("退房失败 " + error);
-          // 错误不可恢复，需要刷新页面。
-        });
+    async closeLiveRoom() {
+      try {
+        const leaveResult = await this.client.leave();
+        console.log(leaveResult);
+        this.localStream.close();
+        this.localStream = null;
+        console.log("退房成功 ");
+        // 修改教室状态为using
+        const room_id = this.$route.query.room_id;
+        const status = "using";
+        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+        // 退房成功，可再次调用client.join重新进房开启新的通话。
+      } catch (error) {
+        console.error("退房失败 " + error);
+        // 错误不可恢复，需要刷新页面。
+      }
     },
     async closeRoom() {
-      let room_id = this.$route.query.room_id;
-      let status = "avaliable";
+      // 1）更改房间使用状态
+      this.$store.dispatch("teacher/clearRoomMembers", {
+        channelId: this.$route.query.lessonId,
+      });
+      const room_id = this.$route.query.room_id;
+      const status = "avaliable";
       await this.$store.dispatch("teacher/updateRoomStatus", {
         room_id,
         status,
       });
+      // 2）保存本次课教学活动 TODO
       this.$message.info("退出成功");
+      // 3) 页面跳转返回主页 TODO
     },
     async startLive() {
       try {

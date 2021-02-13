@@ -2,40 +2,58 @@ const mongoose = require("mongoose");
 
 const activitySchema = new mongoose.Schema(
   {
-    activityID: {
+    activity_id: {
       type: String,
-      required: [true, "class must have an activityID"],
-      unique: true,
+      required: [true, "activity must have an activity_id"],
     },
-    activityNumber: {
+    activity_index: {
       type: Number,
-      required: [true, "class must have an activityNumber"],
+      required: [true, "activity must have an activity_index"],
     },
-    activityLocation: {
+    activity_location: {
       type: String,
-      required: [true, "class must have an activityLocation"],
+      required: [true, "activity must have an activity_location"],
     },
-    activityStatus: {
+    activity_location_id: {
       type: String,
-      enum: ["preparing", "running", "finished"],
+      required: [true, "activity must have an activity_location_id"],
     },
-    activityStartTime: {
+    // activity_status: {
+    //   type: String,
+    //   enum: ["preparing", "running", "finished"],
+    // },
+    start_time: {
       type: Date,
       default: Date.now(),
     },
-    activityEndTime: {
+    end_time: {
       type: Date,
     },
-    onlineStudentsNumber: {
-      type: Number,
+    org_name: { type: String, required: true },
+    sub_org_name: { type: String, required: true },
+    teacher_name: { type: String, required: true },
+    phases: {
+      type: [
+        {
+          phase_time: { type: Number },
+          phase_type: { type: String, enum: ["sign", "vote", "test", "call"] },
+        },
+      ],
     },
-    org: { type: String, required: true },
-    subOrg: { type: String, required: true },
-    liveContent: { type: String },
-    teacher: { type: String, required: true },
-    attendance: {
-      list: { type: Array },
-      rate: { type: String },
+    sign_data: {
+      type: [
+        {
+          total_number: { type: Number },
+          real_number: { type: Number },
+          class_name: { type: String },
+          class_list: {
+            studentId: { type: String },
+            studentName: { type: String },
+            enterTime: { type: Date },
+            signed: { type: String },
+          },
+        },
+      ],
     },
   },
   {

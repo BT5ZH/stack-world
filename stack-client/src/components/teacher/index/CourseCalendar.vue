@@ -60,13 +60,14 @@
       <div style="padding: 50px 0">
         <a-select
           style="width: 100%"
-          v-model="curLesson"
+          v-model="lessonName"
           placeholder="请选择即将授课的课时"
+          @change="selectChange"
           allowClear
         >
           <a-select-option
-            :value="name"
-            v-for="name in lessonNames"
+            v-for="(name, index) in lessonNames"
+            :value="`${index}:${name}`"
             :key="name"
           >
             {{ name }}
@@ -78,7 +79,10 @@
       </div>
       <template #footer>
         <a-button @click="lessonVisible = false">取消</a-button>
-        <a-button @click="classBegin" type="primary" :disabled="!curLesson"
+        <a-button
+          @click="classBegin"
+          type="primary"
+          :disabled="activityIndex == undefined"
           >开始上课</a-button
         >
       </template>
@@ -106,8 +110,9 @@ export default {
     return {
       oneWeek,
       lessonVisible: false,
-      curLesson: undefined,
+      lessonName: undefined,
       curCourse: undefined,
+      activityIndex: undefined,
     };
   },
   computed: {
@@ -116,6 +121,7 @@ export default {
       courseCalendar: (state) => state.teacher.courseCalendar,
       today: (state) => state.teacher.today,
       orgName: (state) => state.public.orgName,
+      subOrgName: (state) => state.public.subOrgName,
       teacherName: (state) => state.public.userName,
       // room_id:(state) =>
     }),
@@ -128,6 +134,14 @@ export default {
     }),
   },
   methods: {
+    selectChange(value) {
+      console.log(value);
+      let s_index = value.split(":")[0];
+      let s_name = value.split(":")[1];
+
+      this.activityIndex = s_index;
+      this.lessonName = s_name;
+    },
     initOneWeek() {
       let instance = moment().weekday(0);
       this.oneWeek.forEach((item, index) => {
@@ -144,32 +158,37 @@ export default {
       this.$store.commit("teacher/updateToday", { day, title });
     },
     classBegin() {
-      // 修改教室状态为using
-      let room_id = this.curCourse.room_id;
-      let status = "using";
+      // 1）修改教室状态为using
+      const room_id = this.curCourse.room_id;
+      const status = "using";
       this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
 
-      let course = this.curCourse;
-      const config = { params: { activityID: course.lessonId } };
-      const requestData = {
-        activityID: course.lessonId,
-        activityNumber: 2,
-        activityLocation: course.roomName,
-        org: this.orgName,
-        subOrg: "计算机科学学院",
-        teacher: this.teacherName,
+      // 2）初始化教学活动数据
+      // let course = this.curCourse;
+      // const config = { params: { activityID: course.lessonId } };
+      const payload = {
+        activity_id: this.curCourse.lessonId,
+        activity_index: this.activityIndex,
+        activity_location: this.curCourse.roomName,
+        activity_location_id: this.curCourse.room_id,
+        org_name: this.orgName,
+        sub_org_name: this.subOrgName,
+        teacher_name: this.teacherName,
       };
       axios
-        .post("pc/v1/activities", requestData, config)
+        .post("pc/v1/activities", payload)
         .then(({ data }) => {
-          if (!data.data.activityID) {
-            throw "create room fail";
-          }
+          // 成功初始化教学活动数据
+          // if (!data.data.activityID) {
+          //   throw "create room fail";
+          // }
+          console.log("成功初始化教学活动数据");
+          console.log(data);
           this.$router.push({
             name: "interaction_index",
             query: {
-              lessonId: course.lessonId,
-              name: this.curLesson,
+              lessonId: this.curCourse.lessonId,
+              name: this.lessonName,
               room_id: this.curCourse.room_id,
             },
           });

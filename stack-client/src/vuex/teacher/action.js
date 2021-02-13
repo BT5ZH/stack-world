@@ -105,6 +105,7 @@ const action = {
       const requestData = { teacher_id, lesson_id };
       const url = "pc/v1/prepares/getOnePrepareLesson";
       const { data } = await axios.post(url, requestData);
+      console.log(data);
       commit("updateLessonNames", data.names);
     } catch (error) {
       console.error(error);
@@ -149,6 +150,19 @@ const action = {
     try {
       const url = `pc/v1/rooms/${params.room_id}`;
       await axios.patch(url, { room_status: params.status });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  async clearRoomMembers({ commit }, payload) {
+    try {
+      const url = `pc/v1/activities/online_list/${payload.channelId}`;
+      const delResult = await axios.delete(url);
+      console.log(delResult);
+      if (delResult.status == 200) {
+        console.log("更改成功");
+        commit("clearOnlineList");
+      }
     } catch (err) {
       console.error(err);
     }
