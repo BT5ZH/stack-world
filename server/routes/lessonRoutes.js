@@ -7,16 +7,16 @@ router
   .get(authController.protect, lessonController.getCourseInfoByLessonID);
 router
   .route("/")
-  .get(authController.protect,lessonController.getAllLessons)
-  .post(authController.protect,lessonController.createLesson);
- 
+  .get(authController.protect, lessonController.getAllLessons)
+  .post(authController.protect, lessonController.createLesson);
+
 router
   .route("/:lesson_id")
   .get(authController.protect, lessonController.getOneLessonByID)
   .patch(authController.protect, lessonController.updateLesson)
   .delete(authController.protect, lessonController.deleteLesson);
 router
-  .route("/getLessonsByTeacherID")
+  .route("/lessons")
   .post(authController.protect, lessonController.getLessonsByTeacherID);
 router
   .route("/getLessonsByCourseID")
@@ -27,11 +27,13 @@ router
 router
   .route("/getStudentsByLessonID")
   .post(authController.protect, lessonController.getStudentsByLessonID);
-  
-  
+
 router
   .route("/getLessonByCourseIDandTeacherID")
-  .post(authController.protect,lessonController.getLessonByCourseIDandTeacherID);
+  .post(
+    authController.protect,
+    lessonController.getLessonByCourseIDandTeacherID
+  );
 router
   .route("/getLessonByCourseIDandClassID")
   .post(authController.protect, lessonController.getLessonByCourseIDandClassID);

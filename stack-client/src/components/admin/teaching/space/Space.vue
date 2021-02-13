@@ -133,7 +133,7 @@ export default {
       spin_status: (state) => state.admin.spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
     }),
   },
   methods: {

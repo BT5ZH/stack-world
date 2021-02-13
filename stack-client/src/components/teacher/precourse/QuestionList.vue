@@ -30,7 +30,7 @@
         </template>
         <template #key_word="key_word">
           <a-tag v-for="(item, index) in key_word" :key="index" color="#2db7f5">
-            {{ item }}0
+            {{ item }}
           </a-tag>
         </template>
         <template #knowledge="knowledge">
@@ -38,7 +38,7 @@
             v-for="(item, index) in knowledge"
             :key="index"
             color="#87d068"
-          >
+          > 
             {{ item }}
           </a-tag>
         </template>
@@ -110,13 +110,25 @@ export default {
       addVisible: false,
     };
   },
+  watch: {
+    refresh() {
+      const lesson_id = this.$route.query.lessonId;
+      const teacher_id = this.$store.state.public.uid;
+      this.$store.dispatch("teacher/getquestionBank", {
+        lesson_id,
+        teacher_id,
+      });
+    },
+  },
   computed: {
+    refresh(){
+      if(this.$route.query.addQuestion_refresh) return this.$route.query.addQuestion_refresh;
+      else return 0;
+    },
     questionBank() {
       return this.$store.state.teacher.questionBank;
     },
     tableData() {
-      console.log("this.questionBank");
-      console.log(this.questionBank);
       if (!this.questionBank) return [];
       let temp = this.questionBank.map((item, index) => ({
         index: index + 1,

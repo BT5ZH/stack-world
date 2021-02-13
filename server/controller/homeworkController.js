@@ -97,7 +97,6 @@ exports.getSetHomeworkByID = catchAsync(async (req, res, next) => {
   });
 });
 exports.getSetHomeworksByLessonID = catchAsync(async (req, res, next) => {
-  console.log("-----" + req.body.lesson_id);
   let data = await SetHomework.find({ lesson_id: req.body.lesson_id })
     .populate({
       path: "lesson_id",
@@ -213,7 +212,7 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
             "belongedToSubmitHW.flg": 1,
             "belongedToRecource.url": 1,
             "belongedToRecource.name": 1,
-            "belongedToRecource.rsType":1,
+            "belongedToRecource.rsType": 1,
           },
         },
       ]);
@@ -260,17 +259,16 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
           answer: answer,
         };
       });
-      let resList=[]
-      let homeworkList=[]
-      for(let i=0;i<data.length;i++){
-          if(data[i].task_type==="preview")
-            resList.push(data[i]);
-          else 
-            homeworkList.push(data[i])
+      let resList = [];
+      let homeworkList = [];
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].task_type === "preview") resList.push(data[i]);
+        else homeworkList.push(data[i]);
       }
       res.status(200).json({
         status: "success",
-        homeworkList,resList
+        homeworkList,
+        resList,
       });
     } catch (err) {
       console.log(err);
@@ -321,7 +319,7 @@ exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(
             "belongedToSubmitHW.flg": 1,
             "belongedToRecource.url": 1,
             "belongedToRecource.name": 1,
-            "belongedToRecource.rsType":1,
+            "belongedToRecource.rsType": 1,
           },
         },
       ]);

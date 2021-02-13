@@ -76,6 +76,7 @@ export default {
         grade: 2,
         analysis: "",
         stem_type: "wenzi",
+        refresh: 0,
         // TODO 把 knowlege
       },
       optionLength: 2,
@@ -117,6 +118,12 @@ export default {
           if (data.status === "success") {
             this.$message.success("添加试题成功");
             this.$emit("update:visible", false);
+            this.$router.push({
+              query: {
+                ...this.$route.query,
+                addQuestion_refresh: ++this.refresh,
+              },
+            });
           }
         })
         .catch((err) => {

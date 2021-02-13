@@ -34,10 +34,9 @@ const action = {
   },
   async getTeacherCourses({ commit }, teacher_id) {
     try {
-      const url = "pc/v1/lessons/getLessonsByTeacherID";
+      const url = "pc/v1/lessons/lessons";
       const requestData = { teacher_id };
       const { data } = await axios.post(url, requestData);
-      console.log("data.abstractInfo-----");
       console.log(data.abstractInfo);
       commit("updateTeacherCourses", data.abstractInfo);
     } catch (error) {
@@ -58,6 +57,7 @@ const action = {
     try {
       const url = "/pc/v1/activities/online_list";
       const { data } = await axios.get(`${url}/${lesson_id}`);
+      console.log(data.data);
       if (data.status) {
         commit("updateOnlineList", data.data);
       }
@@ -105,6 +105,7 @@ const action = {
       const requestData = { teacher_id, lesson_id };
       const url = "pc/v1/prepares/getOnePrepareLesson";
       const { data } = await axios.post(url, requestData);
+      console.log(data);
       commit("updateLessonNames", data.names);
     } catch (error) {
       console.error(error);
@@ -118,7 +119,7 @@ const action = {
     queryString = "?" + queryString.slice(0, -1);
     const url = "/pc/v1/questions" + queryString;
     try {
-      const {data} = await axios.get(url);
+      const { data } = await axios.get(url);
       commit("updatequestionBank", data.questions);
     } catch (error) {
       console.error(error);
@@ -142,6 +143,28 @@ const action = {
       commit("updateCourseInfo", info);
     } catch (error) {
       console.error(error);
+    }
+  },
+  // 修改教室状态,传入新的教室状态和教室id
+  async updateRoomStatus({ commit }, params) {
+    try {
+      const url = `pc/v1/rooms/${params.room_id}`;
+      await axios.patch(url, { room_status: params.status });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  async clearRoomMembers({ commit }, payload) {
+    try {
+      const url = `pc/v1/activities/online_list/${payload.channelId}`;
+      const delResult = await axios.delete(url);
+      console.log(delResult);
+      if (delResult.status == 200) {
+        console.log("更改成功");
+        commit("clearOnlineList");
+      }
+    } catch (err) {
+      console.error(err);
     }
   },
 };

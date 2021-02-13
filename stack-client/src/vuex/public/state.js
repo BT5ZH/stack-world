@@ -2,8 +2,6 @@ const state = {
   role: "",
   // org id 学校
   oid: "",
-  //Org name
-  org_name:"",
   // sub org id 学院
   sid: "",
   // major id 专业
@@ -14,7 +12,7 @@ const state = {
   uid: "",
   photo: "",
   //school year
-  school_year:"",
+  school_year: "",
 };
 
 export default state;

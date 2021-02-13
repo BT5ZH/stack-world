@@ -5,7 +5,6 @@ const action = {
     commit("change_spin_status", status);
   },
   async change_Tree_spin_status({ commit }, status) {
-    // console.log(status)
     commit("change_Tree_spin_status", status);
   },
   getResourcesOfOneCollege({ commit }, { org_name, subOrg_name }) {
@@ -15,7 +14,6 @@ const action = {
       axios
         .post(url, requestData)
         .then((res) => {
-          console.log(res);
           resolve(res);
         })
         .catch((err) => {
@@ -45,8 +43,6 @@ const action = {
       axios
         .get(url)
         .then((response) => {
-          // console.log("result:");
-          // console.log(response);
           resolve(response);
           commit("change_spin_status", false);
         })
@@ -65,8 +61,6 @@ const action = {
       axios
         .get(url)
         .then((response) => {
-          // console.log("result:");
-          // console.log(response);
           resolve(response);
         })
         .catch((err) => {

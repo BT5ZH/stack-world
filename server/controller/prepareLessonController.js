@@ -75,14 +75,15 @@ exports.getOnePrepareLesson = catchAsync(async (req, res) => {
     names,
   });
 });
-exports.getOneClassByName = catchAsync(async (req, res) => {
+exports.getOneClassByName = catchAsync(async (req, res, next) => {
   // var data = await PrepareLesson.findOne({
   //   //lesson_id: lesson_id,
   //   //teacher_id: teacher_id,
   //   one_class:{$elemMatch:{ name: { $eq: name }}}
 
   // })
-
+  console.log("getOneClassByName++++");
+  console.log(req.body);
   var data = await PrepareLesson.aggregate([
     { $unwind: "$one_class" },
     { $match: { teacher_id: req.body.teacher_id } },

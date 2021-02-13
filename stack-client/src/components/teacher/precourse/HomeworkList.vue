@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: homeworkList.length,
-          pageSize: 5,
+          pageSize: 10,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
@@ -42,7 +42,7 @@ export default {
         title: "题目",
         align: "left",
         dataIndex: "title",
-        //ellipsis: true, 
+        //ellipsis: true,
         width: "18%",
       },
       {
@@ -88,23 +88,20 @@ export default {
       inputValue: "",
       addVisible: false,
       selectedHomeworks: [],
-     // add_refresh:0,
-      del_refresh:0
+      del_refresh: 0,
     };
   },
   computed: {
     add_refresh() {
-      
-      if (this.$route.query.add_Refresh)
-        return this.$route.query.add_Refresh;
+      if (this.$route.query.add_Refresh) return this.$route.query.add_Refresh;
       else return 0;
-   
     },
     questionBank() {
       return this.$store.state.teacher.questionBank;
     },
     homeworkList() {
       let temp = this.$store.state.teacher.updateSetHomeworks;
+      if (!temp) return [];
       temp = temp.map((item) => {
         let task_type = "课后作业";
         if (item.task_type === "preview") task_type = "课前预习";
@@ -136,7 +133,6 @@ export default {
       this.$store.dispatch("teacher/getSetHomeworksByLessonID", { lesson_id });
     },
     async deleteHomework(record) {
-
       await this.showDeleteConfirm(record._id);
 
       // record=null
@@ -158,7 +154,6 @@ export default {
           try {
             await axiosInstance.delete(url);
             that.$message.info("删除成功！");
-
             that.del_refresh += 1;
           } catch (err) {
             console.log(err);

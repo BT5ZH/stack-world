@@ -18,6 +18,7 @@ const getter = {
             lessonId,
             className: rc.class_id.class_name,
             roomName: rc.room_id.room_number,
+            room_id:rc.room_id._id,
             date: rc.date,
             oddEven: rc.odd_or_even,
             order: rc.order.join("、"),

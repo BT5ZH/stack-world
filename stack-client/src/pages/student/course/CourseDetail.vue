@@ -30,16 +30,7 @@
     <div class="course_content" v-if="isClick == 1">
       <!-- <div v-if="courseStart"> -->
       <div class="">
-        <!-- <video /> -->
-        <!-- <video
-          id="remote_stream"
-          style="width: 100%"
-          controlsList="nodownload"
-          controls
-        >
-        </video> -->
         <div id="remote_stream"></div>
-
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
 
@@ -167,6 +158,12 @@ export default {
             this.client.subscribe(event.stream);
           });
           this.client.on("stream-subscribed", (event) => {
+            // 删除可能出现的多余播放器
+            let player = document.getElementById("remote_stream");
+            // console.log("player");
+            // console.log(player);
+            player.innerHTML = "";
+            // 开始播放
             event.stream.play("remote_stream");
           });
         });
@@ -189,7 +186,7 @@ export default {
     this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
-    socket.createInstance("student", this, this.lessonId);
+    // socket.createInstance("student", this, this.lessonId);
     this.initLiveClient();
     //-----qichao edits for homework
     let lesson_id = this.$route.query.lessonId;

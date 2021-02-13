@@ -7,23 +7,19 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
   const queryObj = { ...req.query };
   const excludedFields = ["page", "sort", "limit", "fields"];
   excludedFields.forEach((el) => delete queryObj[el]);
-
   // 2) Advanced filtering
   let queryString = JSON.stringify(queryObj);
   queryString = queryString.replace(
     /\b(gte|gt|lte|le)\b/g,
     (match) => `$${match}`
   );
-  // console.log(queryString);
   const query = QuesBank.find(JSON.parse(queryString));
-
   // EXECUTE QUERY
   const questions = await query;
-
   // SEND RESPONSE
   res.status(200).json({
     status: "success",
-      questions,
+    questions,
   });
 });
 // exports.getQuesBankByID = async (req, res) => {
@@ -39,13 +35,13 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
 // };
 // exports.getQuesBankByDepartAndBranch = async (req, res) => {
 //   try{
-//         const data = await QuesBank.aggregate([ 
+//         const data = await QuesBank.aggregate([
 //             {$match: {depart_id:req.body.depart_id}},
 //             {$match: {branch_id:req.body.branch_id}},
 //             //{$match: {grade:req.query.grade}},
-//             //{$sample: { size: req.query.amount}}, 
+//             //{$sample: { size: req.query.amount}},
 //             //{$project:{ _id:0,ques_id:1 }}
-          
+
 //         ]);
 //         res.status(200).json({
 //             status: "success",
@@ -65,13 +61,13 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
 //               branch_id:req.body.branch_id
 //         });
 //     }else{
-//         data = await QuesBank.aggregate([ 
+//         data = await QuesBank.aggregate([
 //             {$match: {depart_id:req.body.depart_id}},
 //             {$match: {branch_id:req.body.branch_id}},
 //             {$match: {grade:req.body.grade}},
-//             {$sample: { size: req.body.amount}}, 
+//             {$sample: { size: req.body.amount}},
 //             //{$project:{ _id:0,ques_id:1 }}
-          
+
 //         ]);
 //     }
 //     res.status(200).json({
@@ -85,9 +81,9 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
 //fuzzy search based on the stem.
 exports.getLikeQuestion = async (req, res) => {
   try {
-     var reg = new RegExp(req.body.stem);
-     const result = await QuesBank.find({'statement.stem':{$regex: reg}});
-     res.status(200).json({
+    var reg = new RegExp(req.body.stem);
+    const result = await QuesBank.find({ "statement.stem": { $regex: reg } });
+    res.status(200).json({
       status: "success",
       result,
     });

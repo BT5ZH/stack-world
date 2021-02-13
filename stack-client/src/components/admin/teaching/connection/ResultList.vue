@@ -130,7 +130,10 @@
         <a-form-model-item label="周几">
           <!-- <a-input v-model="form.title" /> -->
           <a-select v-model="edit_message.date">
-            <a-select-option v-for="course_date in dateData" :key="course_date.data">
+            <a-select-option
+              v-for="course_date in dateData"
+              :key="course_date.data"
+            >
               {{ course_date.show }}
             </a-select-option>
           </a-select>
@@ -296,7 +299,7 @@ export default {
   },
   computed: {
     ...mapState({
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
       spin_status: (state) => state.admin.spin_status,
     }),
   },

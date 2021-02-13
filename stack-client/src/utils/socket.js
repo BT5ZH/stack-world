@@ -4,8 +4,10 @@ import studentListeners from "./studentSocket";
 import teacherListeners from "./teacherSocket";
 
 const SOCKET_DEV_URL = "http://localhost:3050";
+
 const SOCKET_PROD_URL =
   "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn";
+
 const SOCKET_PROD_URL_S = "https://test.w-click.cn";
 const client = io(SOCKET_DEV_URL, {});
 
@@ -30,6 +32,7 @@ function receiveIntercepter(channel, data) {
  */
 export function createInstance(role, that, lessonId) {
   if (client.disconnected) {
+    console.log("第一步");
     return new Promise((resolve, reject) => {
       client.on("connect", () => {
         console.info(`socket connection established, id is${client.id}`);
@@ -39,6 +42,7 @@ export function createInstance(role, that, lessonId) {
       client.on("connect_error", () => reject("conntected error"));
     });
   } else {
+    console.log("第二步");
     return new Promise((resolve, reject) => {
       console.info(`socket connection already established, id is${client.id}`);
       loadListeners(role, that, lessonId);
@@ -58,9 +62,10 @@ function loadListeners(role, that, lessonId) {
   let listeners = {};
   if (role === "student") {
     listeners = studentListeners(lessonId);
+    console.log("第三步: 学生");
   } else if (role === "teacher") {
     listeners = teacherListeners(lessonId);
-    // console.log(listeners);
+    console.log("第三步: 老师");
   } else {
     const msg =
       `[utils-socket] invalid role, ${role}` +
@@ -68,6 +73,7 @@ function loadListeners(role, that, lessonId) {
     console.error(msg);
   }
   Object.keys(listeners).forEach((channel) => {
+    console.log("第四步：channel" + channel);
     client.off(channel);
     client.on(channel, (eventData) => {
       receiveIntercepter(channel, eventData);

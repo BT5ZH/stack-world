@@ -52,26 +52,9 @@
           </a-col>
           <a-col :span="4">
             <a-button type="primary" @click="save"> 保存 </a-button>
-            <!-- <a-row type="flex" justify="end" class="header-btn">
-              <a-space>
-                <a-button type="primary" @click="componentId = 'PreResource'">
-                  上传资源
-                </a-button>
-                
-              </a-space>
-            </a-row> -->
-            <!-- <br /> -->
-            <!-- <a-row type="flex" justify="end" v-if="!publish"
-              >已选择PPT：{{ ppt.name }}
-            </a-row>
-            <a-row type="flex" justify="end" v-else>请选择PPT </a-row> -->
           </a-col>
         </a-row>
-        <a-modal
-          title="选择ppt"
-          v-model="pptvisible"
-          width="40%"
-        >
+        <a-modal title="选择ppt" v-model="pptvisible" width="40%">
           <a-radio-group name="radioGroup" v-model="ppt">
             <a-radio
               :style="radioStyle"
@@ -432,6 +415,10 @@ export default {
       }
       return lecture_status;
     },
+    coursePPT() {
+      if (this.curCourseHour.PPT) return this.curCourseHour.PPT;
+      else return {};
+    },
     isempty() {
       if (this.current == -1) {
         return true;
@@ -520,7 +507,8 @@ export default {
       try {
         // 判断有无讲课以及有无ppt
         if (this.lecture) {
-          if (!this.ppt.id) {
+          // this.ppt是界面选择的，coursePPT是数据库里调的
+          if (!this.ppt.id && !this.coursePPT.name) {
             this.$info({
               title: "讲课必须要有ppt哦",
             });
@@ -670,8 +658,15 @@ export default {
           try {
             let time = that.steps[that.current].description.split("分钟")[0];
             that.sumtime -= time;
+            console.log("that.steps[that.current]");
+            console.log(that.steps[that.current]);
+            if (that.steps[that.current].title === "讲课") {
+              // 删除ppt
+              that.$store.commit("teacher/updatePPT", {});
+            }
             that.steps.splice(that.current, 1);
             that.$store.commit("teacher/deleteNode", that.current);
+
             that.current = that.steps.length - 1;
             that.addChange(that.current);
           } catch (err) {

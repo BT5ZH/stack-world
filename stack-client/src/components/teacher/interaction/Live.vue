@@ -7,9 +7,12 @@
 
       <div id="local_stream"></div>
       <div class="btn-area">
-        <a-button @click="createStream" type="primary">开启本地</a-button>
-        <a-button @click="startLive" type="primary">开始授课</a-button>
-        <a-button @click="closeLiveRoom" type="danger">结束授课</a-button>
+        <a-space>
+          <a-button @click="createStream" type="primary">开启本地</a-button>
+          <a-button @click="startLive" type="primary">开始授课</a-button>
+          <a-button @click="closeLiveRoom" type="danger">结束直播</a-button>
+          <a-button @click="closeRoom" type="danger">结束授课</a-button>
+        </a-space>
       </div>
     </div>
 
@@ -31,20 +34,20 @@
               v-for="item in audienceList"
               :key="item.studentName"
             >
-              <span class="onlineInfo-body-li-name">{{
-                item.studentName
-              }}</span>
-              <span class="onlineInfo-body-li-time">01-24 17:40</span>
-              <span class="onlineInfo-body-li-flag">{{ item.signStatus }}</span>
+              <span class="onlineInfo-body-li-name">
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+              >
+              <span class="onlineInfo-body-li-time">{{ item.enterTime }}</span>
+              <span class="onlineInfo-body-li-flag">
+                <b v-if="item.role !== 'teacher'">🐾</b>
+                <b v-else>🔥</b></span
+              >
             </li>
           </ul>
         </div>
       </div>
-      <!-- <a-list item-layout="horizontal" :data-source="audienceList">
-        <template #renderItem="item">
-          <a-list-item> {{ item.studentName }} </a-list-item>
-        </template>
-      </a-list> -->
+      <!-- {{ item.signStatus }}-->
     </div>
   </div>
 </template>
@@ -52,6 +55,7 @@
 <script>
 import TRTC from "trtc-js-sdk";
 import axios from "@/utils/axios";
+import * as socket from "@/utils/socket";
 import { mapState } from "vuex";
 
 export default {
@@ -70,6 +74,8 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      teacherId: (state) => state.public.studentId,
+      teacherName: (state) => state.public.userName,
       onlineList: (state) => state.teacher.onlineList,
       signList: (state) => state.teacher.signList,
     }),
@@ -81,7 +87,13 @@ export default {
             item.signStatus = "是";
           }
         });
-        return { signStatus: item.signStatus, studentName: item.studentName };
+        return {
+          signStatus: item.signStatus,
+          studentName: item.studentName,
+          enterTime: item.enterTime,
+          role: item.role,
+          studentId: item.studentId,
+        };
       });
       return audienceList;
     },
@@ -116,7 +128,7 @@ export default {
       } catch (error) {
         console.log(error);
         this.$message.error("找不到可用直播设备");
-        // TODO give some tips
+        // TODO 处理所有类型错误
         //   switch (error.name) {
         //     case "NotReadableError":
         //       this.$message.error("找不到可用的音视频设备");
@@ -127,20 +139,37 @@ export default {
         //   }
       }
     },
-    closeLiveRoom() {
-      this.$store.commit("teacher/clearOnlineList");
-      this.client
-        .leave()
-        .then(() => {
-          this.localStream.close();
-          this.localStream = null;
-          console.success("退房成功 ");
-          // 退房成功，可再次调用client.join重新进房开启新的通话。
-        })
-        .catch((error) => {
-          console.error("退房失败 " + error);
-          // 错误不可恢复，需要刷新页面。
-        });
+    async closeLiveRoom() {
+      try {
+        const leaveResult = await this.client.leave();
+        console.log(leaveResult);
+        this.localStream.close();
+        this.localStream = null;
+        console.log("退房成功 ");
+        // 修改教室状态为using
+        const room_id = this.$route.query.room_id;
+        const status = "using";
+        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+        // 退房成功，可再次调用client.join重新进房开启新的通话。
+      } catch (error) {
+        console.error("退房失败 " + error);
+        // 错误不可恢复，需要刷新页面。
+      }
+    },
+    async closeRoom() {
+      // 1）更改房间使用状态
+      this.$store.dispatch("teacher/clearRoomMembers", {
+        channelId: this.$route.query.lessonId,
+      });
+      const room_id = this.$route.query.room_id;
+      const status = "avaliable";
+      await this.$store.dispatch("teacher/updateRoomStatus", {
+        room_id,
+        status,
+      });
+      // 2）保存本次课教学活动 TODO
+      this.$message.info("退出成功");
+      // 3) 页面跳转返回主页 TODO
     },
     async startLive() {
       try {
@@ -170,6 +199,10 @@ export default {
         console.log(publishAction);
         console.log("本地流发布成功");
         this.$message.info("成功进入教室，系统正在播放您的声音");
+        // 将教室状态修改为living
+        let status = "living";
+        let room_id = this.$route.query.room_id;
+        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
       } catch (error) {
         console.log(error);
         // this.$notification.error({
@@ -232,6 +265,7 @@ export default {
 .onlineInfo .onlineInfo-body .onlineInfo-body-list ul {
   list-style: none;
   outline: none;
+  padding-left: 0;
 }
 .onlineInfo .onlineInfo-body .onlineInfo-body-list ul li {
   font-size: 12px;
@@ -299,7 +333,13 @@ ul li {
 }
 
 #local_stream {
-  height: 400px;
+  /* 屏幕宽度，在这改 */
+  --width: 630px;
+  --height: 400px;
+  width: var(--width);
+  height: var(--height);
+  background-image: url("../../../assets/img/video/直播.png");
+  background-size: var(--width) var(--height);
 }
 
 .btn-area {

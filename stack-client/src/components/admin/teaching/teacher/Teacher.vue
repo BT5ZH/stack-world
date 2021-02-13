@@ -232,7 +232,7 @@ export default {
   },
   computed: {
     ...mapState({
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
       oid: (state) => state.public.oid,
       role: (state) => state.public.role,
     }),
@@ -510,7 +510,7 @@ export default {
           org_name: this.orgName,
           subOrg_name: dataArray[0],
           title: secString,
-          role:role,
+          role: role,
         };
         // console.log(payload);
         this.getTeacherList(payload);

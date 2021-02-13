@@ -1,6 +1,6 @@
 <template>
   <div>
-   <a-row class="btn-area"></a-row>
+    <a-row class="btn-area"></a-row>
     <a-spin :spinning="spin_status" tip="Loading...">
       <a-table
         rowKey="_id"
@@ -16,14 +16,16 @@
         :row-selection="{
           selectedRowKeys: selectedSchoolyears,
           onChange: onSelectChange,
-          type:'radio'
+          type: 'radio',
         }"
         :columns="columns"
         :data-source="schoolyearList"
       >
         <template #operation="record">
           <a-button type="link" @click="editSchoolyear(record)">编辑</a-button>
-          <a-button type="link" @click="deleteSchoolyear(record)">删除</a-button>
+          <a-button type="link" @click="deleteSchoolyear(record)"
+            >删除</a-button
+          >
         </template>
       </a-table>
     </a-spin>
@@ -47,7 +49,7 @@
         </a-form-model-item>
         <a-form-model-item label="专业">
            <a-input v-model="form.title" /> -->
-          <!-- <a-select v-model="edit_class.major_name">
+    <!-- <a-select v-model="edit_class.major_name">
             <a-select-option
               v-for="item in major_names"
               :key="item._id"
@@ -89,7 +91,7 @@ export default {
       visible: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      
+
       formRules: {
         add_class_name: [{ required: true, message: "班级名不能为空" }],
       },
@@ -138,19 +140,17 @@ export default {
     ...mapState({
       Tree_spin_status: (state) => state.admin.Tree_spin_status,
       spin_status: (state) => state.admin.spin_status,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
       oid: (state) => state.public.oid,
     }),
   },
   created() {
     this.getSchoolYeardata();
   },
-  mounted() {
- 
-  },
+  mounted() {},
   watch: {
     child_refresh(val) {
-      this.refresh = this.child_refresh
+      this.refresh = this.child_refresh;
     },
     refresh(val) {
       this.getSchoolYeardata();
@@ -164,7 +164,7 @@ export default {
         queryString += key + "=" + queryObject[key] + "&";
       });
       queryString = "?" + queryString.slice(0, -1);
-      const url = "/pc/v1/schoolyears/getAllSchoolYears"+ queryString;
+      const url = "/pc/v1/schoolyears/getAllSchoolYears" + queryString;
       try {
         // this.spin_status = true;
         this.$store.dispatch("admin/change_spin_status", true);
@@ -173,19 +173,18 @@ export default {
         this.$store.dispatch("admin/change_spin_status", false);
         // console.log("---data---");
         // console.log(data.data.classes);
-        this.schoolyearList = data.sy.map(item=>{
-          let current = '是'
-          if(item.current==="f") current = '否'
+        this.schoolyearList = data.sy.map((item) => {
+          let current = "是";
+          if (item.current === "f") current = "否";
 
-          return{
+          return {
             ...item,
-            current:current,
-          }
+            current: current,
+          };
         });
         // this.schoolyearList.map((item) => {
         //   item.studentNum = item.students.length;
         // });
-     
       } catch (err) {
         console.log(err);
       }
@@ -195,8 +194,7 @@ export default {
     onSelectChange(selectedKeys) {
       // 表格信息的选中
       this.selectedSchoolyears = selectedKeys;
-      console.log(this.selectedSchoolyears)
-      
+      console.log(this.selectedSchoolyears);
     },
     handle() {
       this.$store.commit("changeState", true);
@@ -207,36 +205,36 @@ export default {
       console.log("---record---");
       console.log(record);
       await this.showDeleteConfirm(record._id);
-      record=null
+      record = null;
       this.$emit("showSelected", record);
     },
     showDeleteConfirm(id) {
       // console.log(deleteList);
       var that = this;
       this.$confirm({
-            title: "确认删除吗",
-            content: "数据删除后不可恢复",
-            okText: "确定",
-            okType: "danger",
-            cancelText: "取消",
-            async onOk() {
-              // console.log(deleteList);
-              //post deleteList
-              const url = "/pc/v1/schoolyears/" + id;
-              try {
-                await axiosInstance.delete(url);
-                that.$message.info("删除成功！");
-                
-                that.refresh += 1;
-              } catch (err) {
-                console.log(err);
-                that.$message.error("删除失败，请重试！");
-              }
-            },
-            onCancel() {
-              // console.log("Cancel");
-            },
-          });
+        title: "确认删除吗",
+        content: "数据删除后不可恢复",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        async onOk() {
+          // console.log(deleteList);
+          //post deleteList
+          const url = "/pc/v1/schoolyears/" + id;
+          try {
+            await axiosInstance.delete(url);
+            that.$message.info("删除成功！");
+
+            that.refresh += 1;
+          } catch (err) {
+            console.log(err);
+            that.$message.error("删除失败，请重试！");
+          }
+        },
+        onCancel() {
+          // console.log("Cancel");
+        },
+      });
     },
     // 查看详情并进行编辑
     editSchoolyear(record) {
@@ -250,7 +248,6 @@ export default {
       // // console.log(this.edit_class);
     },
     edit_submit() {
-   
       // const requestData = {
       //   org_name: this.orgName,
       //   subOrg_name: this.edit_class.subOrg_name,
@@ -271,7 +268,7 @@ export default {
       //   });
       // this.editModal_visible = false;
     },
-    onChange(data,label) {
+    onChange(data, label) {
       // console.log(data)
       // let payload = {};
       // if (data.slice(-1) == "#") {
@@ -289,7 +286,6 @@ export default {
       // }
       // this.value = label
     },
-    
   },
 };
 </script>

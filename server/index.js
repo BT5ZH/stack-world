@@ -67,7 +67,7 @@ const prodOptionsS = {
   },
 };
 
-const io = require("socket.io")(server, prodOptionsS);
+const io = require("socket.io")(server, devOptions);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
@@ -90,6 +90,11 @@ io.on("connection", (socket) => {
       switch (data.actionType) {
         case "enter":
           socket.join(roomChannel);
+          socketOP.enterHandler(roomChannel, data.data, data.role);
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "leave":
+          socketOP.leaveHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
@@ -130,7 +135,7 @@ io.on("connection", (socket) => {
       switch (data.actionType) {
         case "enter":
           socket.join(roomChannel);
-          socketOP.enterHandler(roomChannel, data.data);
+          socketOP.enterHandler(roomChannel, data.data, data.role);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "leave":

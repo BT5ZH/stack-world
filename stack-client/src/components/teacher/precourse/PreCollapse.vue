@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     courseclick(index) {
-      if (this.courseIndex != undefined) {
+      if (this.courseIndex !== undefined) {
         // 未点击按钮回复从前颜色
         document.getElementById(this.courseIndex).style.color = "white";
       }
@@ -113,6 +113,8 @@ export default {
           if (this.$store.state.teacher.courseHours.length) {
             this.$store.commit("teacher/updateCurCourseHour", index - 1);
           }
+          // 如果删除的是选中的课时，则取消选中课时记录
+          if (index == this.courseIndex) this.courseIndex = undefined;
         })
         .catch((err) => {
           console.error(err);

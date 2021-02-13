@@ -37,7 +37,7 @@ const mutation = {
   },
   updateAskResult(state, params) {
     if (params) {
-      state.ask_answer = params
+      state.ask_answer = params;
     } else {
       console.error("学生端未返回数据");
     }
@@ -88,10 +88,10 @@ const mutation = {
       });
   },
   clearOnlineList(state) {
-    state.onlineList = []
+    state.onlineList = [];
   },
-  addRandomStudent(state,randomStudent){
-    state.randomStudent = randomStudent
+  addRandomStudent(state, randomStudent) {
+    state.randomStudent = randomStudent;
   },
   updateCurActivity(state, params) {
     state.curActivity = params;
@@ -102,7 +102,16 @@ const mutation = {
     state.nodes = state.courseHours[state.curCourseHour].nodes;
   },
   updateCurCourseHour(state, params) {
-    if (state.courseHours[params].nodes == undefined) return
+    // 在新建课时时，为他的相应信息赋值
+    if (state.courseHours[params] === undefined) {
+      state.courseHours.push({
+        PPT: {},
+        description: "",
+        duration: 50,
+        name: "",
+        nodes: [],
+      });
+    }
     state.curCourseHour = params;
     state.nodes = state.courseHours[params].nodes;
   },

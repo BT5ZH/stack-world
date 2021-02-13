@@ -60,7 +60,7 @@ export default {
       Tree_spin_status: (state) => state.admin.Tree_spin_status,
       uid: (state) => state.public.uid,
       oid: (state) => state.public.oid,
-      orgName: (state) => state.public.org_name,
+      orgName: (state) => state.public.orgName,
     }),
   },
   mounted() {
@@ -68,18 +68,21 @@ export default {
     // this.getCourses();
   },
   methods: {
-    // async 
+    // async
     getTreeData() {
       let queryString = this.oid;
       const url = "/pc/v1/organizations/" + queryString + "/tree";
       // console.log(url);
-        this.$store.dispatch("admin/getTreeByURLwithSpin",url).then((response) =>{
-        console.log("---------connect---------");
-        console.log(response);
-        this.treeData = response.data.tree;
-         }).catch((error)=>{
-           console.log(error)
-         })
+      this.$store
+        .dispatch("admin/getTreeByURLwithSpin", url)
+        .then((response) => {
+          console.log("---------connect---------");
+          console.log(response);
+          this.treeData = response.data.tree;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // try {
       //   this.$store.dispatch("admin/change_spin_status", true);
       //   const { data } = await axiosInstance.get(url);
