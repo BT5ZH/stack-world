@@ -91,3 +91,37 @@ exports.getMemberListInLesson = function (req, res, next) {
     res.send({ status: true, data });
   });
 };
+exports.clearMembersOfLesson = function (req, res, next) {
+  const channelId = req.params.lesson_id;
+  // redisClient.hgetall(roomId).
+  redisClient.hgetall(channelId, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.send({ status: false, msg: "get online list fail" });
+    }
+    // data = data || {};
+    console.log(data);
+
+    const result = Object.keys(data)
+      .filter((item) => {
+        return data[item].startsWith("{");
+      })
+      .map((key) => {
+        let info = JSON.parse(data[key]);
+        return info;
+      });
+    console.log(result);
+    result.forEach((item) => {
+      redisClient.hdel(channelId, item.studentId);
+    });
+    // redisClient.hgetall(roomId, (err, data) => {
+    //   if (err) {
+    //     console.error(err);
+    //     res.send({ status: false, msg: "get online list fail" });
+    //   }
+    //   console.log("删除之后");
+    //   console.log(data);
+    // });
+    res.send({ status: "success" });
+  });
+};
