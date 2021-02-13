@@ -46,7 +46,7 @@ const TeacherPreCourse = () =>
   import("@/components/teacher/precourse/PreCourse");
 
 // -----------------------  student router  -------------------------------
-const landPage = () => import("@/pages/LandingPage.vue");
+// const landPage = () => import("@/pages/LandingPage.vue");
 const studentHome = () => import("@/pages/student/StudentHomePage.vue");
 const studentNavigator = () =>
   import("@/pages/student/StudentNavigatorPage.vue");
@@ -206,10 +206,10 @@ export const routes = [
       },
     ],
   },
-  {
-    path: "/signin",
-    component: landPage,
-  },
+  // {
+  //   path: "/signin",
+  //   component: landPage,
+  // },
   {
     path: "/student/home",
     component: studentHome,
@@ -288,10 +288,10 @@ export const routes = [
         path: "message",
         component: message,
       },
-      {
-        path: "live",
-        component: live,
-      },
+      // {
+      //   path: "live",
+      //   component: live,
+      // },
     ],
   },
   {

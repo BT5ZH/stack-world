@@ -387,6 +387,8 @@ exports.getTimeTableFromClassID = catchAsync(async (req, res, next) => {
   });
 });
 exports.getTimeTableFromLessonID = catchAsync(async (req, res, next) => {
+  console.log("getTimeTableFromLessonID " + "=====");
+  console.log(req.body);
   const data = await TimeTable.find({ lesson_id: req.body.lesson_id })
     //.populate("course_id", "name -_id")
     //.populate("teacher_id", "user_id name -_id")

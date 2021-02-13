@@ -110,8 +110,8 @@ export default {
       });
     },
     navigateToEvent(eventIndex) {
-      // console.log("---step---");
-      // console.log(this.steps[eventIndex]);
+      console.log("---step---");
+      console.log(this.steps[eventIndex]);
       const event = this.steps[eventIndex];
       this[`send${event.type}Event`]();
     },
@@ -121,6 +121,9 @@ export default {
         role: "teacher",
         roomId: this.lessonId,
       });
+    },
+    sendteachEvent() {
+      console.log("授课过程");
     },
     sendtestEvent() {
       const testList = this.nodes[this.curEvent].vote;

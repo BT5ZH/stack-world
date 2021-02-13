@@ -26,15 +26,20 @@ let default_listeners = {
 
 let lesson_listeners = {
   sign(data, that) {
+    console.log("学生收到签到信号");
     that.$store.commit("student/updateInteraction", {
       name: "sign",
       params: { start: true, endTime: Date.now() + 60000 },
     });
-  }, 
+  },
   randomSign(data, that) {
     that.$store.commit("student/updateInteraction", {
       name: "randomSign",
-      params: { start: true, endTime: Date.now() + 60000,randomStudent:data.studentList },
+      params: {
+        start: true,
+        endTime: Date.now() + 60000,
+        randomStudent: data.studentList,
+      },
     });
   },
   pick(data, that) {

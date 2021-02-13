@@ -186,19 +186,29 @@ export default {
     this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
-    // socket.createInstance("student", this, this.lessonId);
+    // 初始化WEB socket 管道
+    socket.createInstance("student", this, this.lessonId);
+
+    socket.sendEvent("joinRoom", {
+      actionType: "enter",
+      role: "student",
+      roomId: this.lessonId,
+      data: { studentId: this.studentId, studentName: this.studentName },
+    });
+
+    // 初始化腾讯实时音视频
     this.initLiveClient();
-    //-----qichao edits for homework
+
+    // 获取学生作业数据
     let lesson_id = this.$route.query.lessonId;
     let student_id = this.userId;
-
     this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
-    //-----qichao
   },
   computed: {
     ...mapState({
       userId: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
+      studentName: (state) => state.public.userName,
       courseDetailMenu: (state) => state.student.courseDetailMenu,
       classMenu: (state) => state.student.classMenu,
       resList: (state) => state.student.resList,

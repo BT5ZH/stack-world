@@ -41,16 +41,17 @@ export default {
     }),
   },
   mounted() {
-    socket.createInstance("student", this);
+    // socket.createInstance("student", this);
   },
   methods: {
     jmpRoute(item) {
-      socket.sendEvent("joinRoom", {
-        actionType: "enter",
-        role: "student",
-        roomId: item.lesson_id,
-        data: { studentId: this.studentId, studentName: this.studentName },
-      });
+      console.log("courseCard+++");
+      // socket.sendEvent("joinRoom", {
+      //   actionType: "enter",
+      //   role: "student",
+      //   roomId: item.lesson_id,
+      //   data: { studentId: this.studentId, studentName: this.studentName },
+      // });
       this.$router.push({
         path: "/student/course/" + item.course_id,
         query: { title: item.course_name, lessonId: item.lesson_id },
