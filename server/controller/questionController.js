@@ -1,6 +1,7 @@
 const QuesBank = require("../models/questionModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const Question = require("../models/questionModel");
 
 exports.getAllQuestions = catchAsync(async (req, res, next) => {
   const queryObj = { ...req.query };
@@ -116,62 +117,20 @@ exports.deleteQuestion = catchAsync(async (req, res, next) => {
     data,
   });
 });
+//----qichao adds this function on 2021-2-9-------
+exports.createMultipleQuestions = catchAsync(async (req, res) => {
+  const multipleQues = req.body;
 
-// exports.importQuessToProfessionalBank = async(req,res) =>{ 
-//   try{
-//     let data = req.body;
-//     // console.log("professionalBankData:",data)
-//       for(let i=0,j=0;i<data.length;i++){
-//         let ques = new QuesBank();  
+  console.log("++++++++");
+  console.log(multipleQues);
+  if (!multipleQues || multipleQues.length == 0) {
+    return next(new AppError("试题列表为空或无数据", 404));
+  }
+  const result = await QuesBank.insertMany(multipleQues);
 
-//         let departId = await Depart.findOne({ depart_name:data[i].depart_name},'_id');
-//         let branchId = await Branch.findOne({ branch_name:data[i].branch_name},'_id');
-//         ques.depart_id = departId._id;
-//         ques.branch_id = branchId._id;
-//         ques.statement = {
-//             stem: data[i].stem,
-//             options: data[i].options.split('$'),
-//             right_answer:data[i].right_answer,
-//         }
- 
-//         if("undefined" == typeof data[i].analysis || data[i].analysis===null)
-//             ques.analysis='';
-//         else
-//             ques.analysis = data[i].analysis;
-//         if("undefined" == typeof data[i].knowlege || data[i].knowlege===null)
-//             ques.knowlege='';
-//         else
-//             ques.knowlege = data[i].knowlege;
-     
-//         ques.grade = data[i].grade;
-
-//         var images,voices,videos;
-//         if(data[i].images==null)
-//             images=[];
-//         else 
-//             images = data[i].images.split('$')
-//         if(data[i].voices==null)
-//             voices=[];
-//         else
-//            voices=data[i].voices.split('$')
-//         if(data[i].videos==null)
-//            videos=[];
-//         else
-//            videos=data[i].videos.split('$')
-//         ques.attachment = {
-//             image:images,
-//             voice:voices,
-//             video:videos,
-      
-//         }
-//         await ques.save();
-        
-       
-//       }res.status(200).json({
-//         status: "success",
-//       });
-     
-//   } catch (err) {
-//         res.status(404).json({ status: "fail", message: err });console.log(err)
-//   }
-// }
+  res.status(201).json({
+    status: "success",
+    //result,
+  });
+});
+//-----------------------------------------------

@@ -286,8 +286,10 @@
         >
           <div :span="4">
             <a-button type="primary" @click="questionVisible = true">
-              导入试题
-            </a-button>
+              添加试题
+            </a-button>&nbsp;&nbsp;
+            <a-button type="primary" @click="bulkImport_visible = true">
+              批量导入</a-button>
           </div>
           <add-question :visible.sync="questionVisible"></add-question>
           <question-list></question-list>
@@ -309,8 +311,13 @@
         </div>
       </div>
     </div>
+    <div>
+      <batch-add-question :visible.sync="bulkImport_visible"></batch-add-question>
+    </div>
   </div>
+  
 </template>
+
 <script>
 // import PreHomework from "./preselect/PreHomework.vue";PreRandomSign
 import PreTeaching from "./preselect/PreTeaching.vue";
@@ -322,7 +329,6 @@ import PreRandomSign from "./preselect/PreRandomSign.vue";
 import PreDocument from "./preselect/PreDocument.vue";
 import PreTest from "./preselect/PreTest.vue";
 // import PreResource from "./preselect/PreResource";
-
 import LocalUploader from "@/components/teacher/coursedetail/resource/Local";
 import AddQuestion from "@/components/teacher/coursedetail/question/AddQuestion";
 import AddHomework from "@/components/teacher/coursedetail/homework/AddHomework";
@@ -333,6 +339,7 @@ import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
 import fileUploader from "@/utils/S3FileUploader";
+import BatchAddQuestion from './BatchAddQuestion.vue';
 //import AddHomework from '../coursedetail/homework/AddHomework.vue';
 
 export default {
@@ -351,12 +358,15 @@ export default {
     AddQuestion,
     PreRandomSign,
     AddHomework,
+    BatchAddQuestion,
     // PreResource,
     // PreHomework,
   },
   data() {
     return {
       // 讲课标记
+      bulkImport_visible: false,
+      upload_url: "",
       courseHours: this.$route.query.courseHours,
       radioStyle: {
         display: "block",
@@ -446,6 +456,61 @@ export default {
     },
   },
   methods: {
+    ////-------the follow section added by qichao
+    // showDeleteConfirm(deleteList) {
+    //   console.log(deleteList);
+    //   deleteList.length == 0
+    //     ? this.$message.info("请选中要删除的项")
+    //     : this.$confirm({
+    //         title: "确认删除吗",
+    //         content: "数据删除后不可恢复",
+    //         okText: "确定",
+    //         okType: "danger",
+    //         cancelText: "取消",
+    //         onOk() {
+    //           console.log(deleteList);
+    //           //post deleteList
+    //         },
+    //         onCancel() {
+    //           console.log("Cancel");
+    //         },
+    //       });
+    // },
+    // //bulk import
+    // download() {
+    //   let url = ""; //输入模板下载url
+    //   window.open(url);
+    // },
+    // //上传批量导入表格
+    // handleChange(info) {
+    //   this.upload_url = ""; //上传地址
+    //   if (info.file.status !== "uploading") {
+    //     console.log(info.file, info.fileList);
+    //   }
+    //   if (info.file.status === "done") {
+    //     this.$message.success(`${info.file.name} 上传成功`);
+    //   } else if (info.file.status === "error") {
+    //     this.$message.error(`${info.file.name} 上传失败.`);
+    //   }
+    // },
+    // //点击上传文件
+    // bulkimportSubmit() {},
+    // parseExcelData() {
+    //   xlsxParser(this.fileList[0], {
+    //     dataCb: async (data) => {
+    //       console.log("extracted data: ", data);
+    //       try {
+    //         const result = await axios.post("/pc/v1/users/multipleUsers", data);
+    //         console.log(result);
+    //         this.$message.success("批量导入成功");
+    //       } catch (error) {
+    //         console.log(error);
+    //         this.$message.error("批量导入失败");
+    //       }
+    //     },
+    //   });
+    // },
+  ////-------the upper section is added by qichao-----------------------------
     selectppt() {
       const ppt = { name: this.ppt.name, rsId: this.ppt.id, url: this.ppt.url };
       this.$store.commit("teacher/updatePPT", ppt);
@@ -779,5 +844,6 @@ export default {
 .cspC--tag {
   height: 100%;
 }
+
 </style>
 <style></style>

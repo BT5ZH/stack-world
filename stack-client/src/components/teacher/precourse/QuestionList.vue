@@ -7,7 +7,7 @@
         bordered
         :pagination="{
           total: tableData.length,
-          pageSize: 2,
+          pageSize: 10,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
@@ -30,7 +30,7 @@
         </template>
         <template #key_word="key_word">
           <a-tag v-for="(item, index) in key_word" :key="index" color="#2db7f5">
-            {{ item }}
+            {{ item }}0
           </a-tag>
         </template>
         <template #knowledge="knowledge">
@@ -62,9 +62,9 @@ export default {
       },
       {
         title: "题目",
-        align: "center",
+        align: "left",
         scopedSlots: { customRender: "stem" },
-        ellipsis: true,
+       // ellipsis: true,
         width: "30%",
       },
       {
@@ -122,8 +122,8 @@ export default {
         index: index + 1,
         grade: item.grade,
         question_type: item.question_type,
-        key_word: item.key_word.split(" "),
-        knowledge: item.knowlege.split(" "),
+        key_word: item.key_word,//.split(" "),
+        knowledge: item.knowlege,//.split(" "),
         // TODO 把 knowlege 改为 knowledge
         analysis: item.analysis,
         statement: item.statement,

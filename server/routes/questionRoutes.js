@@ -8,7 +8,9 @@ router
   .route("/")
   .get(authController.protect, questionController.getAllQuestions) 
   .post(authController.protect, questionController.createQuestion); 
-
+router
+  .route("/multipleQuestions")
+  .post(authController.protect,questionController.createMultipleQuestions);
 // router
 //   .route("/:id")
 //   .get(authController.protect, questionController.getQuestion) 
