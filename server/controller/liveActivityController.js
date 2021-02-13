@@ -7,44 +7,52 @@ const AppError = require("./../utils/appError");
 const TLSSigAPIv2 = require("tls-sig-api-v2");
 
 exports.createActivity = catchAsync(async (req, res, next) => {
-  // BUILD QUERY
-  // 1) Filtering
-  const queryObj = { ...req.query };
-  const excludedFields = ["page", "sort", "limit", "fields"];
-  excludedFields.forEach((el) => delete queryObj[el]);
+  // // BUILD QUERY
+  // // 1) Filtering
+  // const queryObj = { ...req.query };
+  // const excludedFields = ["page", "sort", "limit", "fields"];
+  // excludedFields.forEach((el) => delete queryObj[el]);
 
-  // 2) Advanced filtering
-  let queryString = JSON.stringify(queryObj);
-  queryString = queryString.replace(
-    /\b(gte|gt|lte|le)\b/g,
-    (match) => `$${match}`
-  );
+  // // 2) Advanced filtering
+  // let queryString = JSON.stringify(queryObj);
+  // queryString = queryString.replace(
+  //   /\b(gte|gt|lte|le)\b/g,
+  //   (match) => `$${match}`
+  // );
 
   const payload = req.body;
   console.log(payload);
-  const lessonId = payload.activityID;
-  const lessonNumber = payload.activityNumber;
-  const teacherName = payload.teacher;
+  const lessonId = payload.activity_id;
+  const lessonNumber = payload.activity_index;
+  const teacherName = payload.teacher_name;
+
+  // activity_location: course.roomName,
+  // org_name: this.orgName,
+  // sub_org_name: this.subOrgName,
 
   redisClient.hset(lessonId, lessonNumber, teacherName, redis.print);
   redisClient.hget(lessonId, lessonNumber, redis.print);
-  console.log("connect");
+  console.log(req.body);
+  console.log("connect+++++++");
+  console.log(payload);
 
-  // let query = { /* query */ };
-  // let update = {expire: new Date()};
-  let options = { upsert: true, new: true, setDefaultsOnInsert: true };
-  let data = await Activity.findOneAndUpdate(
-    JSON.parse(queryString),
-    payload,
-    options
-  );
-
-  // const newActivity = await Activity.create(req.body);
-
-  res.status(200).json({
+  const newActivity = await Activity.create(payload);
+  res.status(201).json({
     status: "success",
-    data,
+    data: newActivity,
   });
+
+  // let options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  // let data = await Activity.findOneAndUpdate(
+  //   JSON.parse(queryString),
+  //   payload,
+  //   options
+  // );
+
+  // res.status(200).json({
+  //   status: "success",
+  //   data,
+  // });
 });
 
 exports.genUserSig = catchAsync(async (req, res, next) => {
