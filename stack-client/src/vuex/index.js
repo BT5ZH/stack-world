@@ -7,6 +7,11 @@ import SuperGetter from "./super/getter";
 import SuperMutation from "./super/mutation";
 import SuperState from "./super/state";
 
+import patrolAction from "./patrol/action";
+import patrolGetter from "./patrol/getter";
+import patrolMutation from "./patrol/mutation";
+import patrolState from "./patrol/state";
+
 import AdminAction from "./admin/action";
 import AdminGetter from "./admin/getter";
 import AdminMutation from "./admin/mutation";
@@ -43,6 +48,14 @@ const AdminModule = {
   getters: { ...AdminGetter },
 };
 
+const patrolModule = {
+  namespaced: true,
+  state: () => ({ ...patrolState }),
+  mutations: { ...patrolMutation },
+  actions: { ...patrolAction },
+  getters: { ...patrolGetter },
+};
+
 const TeacherModule = {
   namespaced: true,
   state: () => ({ ...TeacherState }),
@@ -70,6 +83,7 @@ const PublicModule = {
 const store = new Vuex.Store({
   modules: {
     admin: AdminModule,
+    patrol: patrolModule,
     super: SuperModule,
     teacher: TeacherModule,
     student: StudentModule,
