@@ -113,6 +113,8 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "sign":
+          console.log("收到了老师发送签到的命令");
+          console.log("收到了老师发送签到的命令" + roomChannel);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "randomSign":

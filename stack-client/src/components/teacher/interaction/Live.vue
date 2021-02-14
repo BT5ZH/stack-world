@@ -168,6 +168,9 @@ export default {
         status,
       });
       // 2）保存本次课教学活动 TODO
+
+      // 2-1）保存签到活动
+
       this.$message.info("退出成功");
       // 3) 页面跳转返回主页 TODO
     },

@@ -46,7 +46,7 @@ const TeacherPreCourse = () =>
   import("@/components/teacher/precourse/PreCourse");
 
 // -----------------------  student router  -------------------------------
-const landPage = () => import("@/pages/LandingPage.vue");
+// const landPage = () => import("@/pages/LandingPage.vue");
 const studentHome = () => import("@/pages/student/StudentHomePage.vue");
 const studentNavigator = () =>
   import("@/pages/student/StudentNavigatorPage.vue");
@@ -87,6 +87,11 @@ const InteractionIndex = () => import("@/components/teacher/interaction/Index");
 // const InteractionTest = () => import("@/components/teacher/interaction/Test");
 // const InteractionFile = () => import("@/components/teacher/interaction/File");
 // const InteractionQues = () => import("@/components/teacher/interaction/Ques");
+
+// ----------------  patrol router --------------------------
+const patrolRoute = () => import("@/components/patrol/index.vue");
+const patrolMessage = () => import("@/components/patrol/patrolMessage.vue")
+const Detailed = () => import("@/components/patrol/patrolDetailed.vue");
 
 export const routes = [
   {
@@ -206,10 +211,10 @@ export const routes = [
       },
     ],
   },
-  {
-    path: "/signin",
-    component: landPage,
-  },
+  // {
+  //   path: "/signin",
+  //   component: landPage,
+  // },
   {
     path: "/student/home",
     component: studentHome,
@@ -288,10 +293,10 @@ export const routes = [
         path: "message",
         component: message,
       },
-      {
-        path: "live",
-        component: live,
-      },
+      // {
+      //   path: "live",
+      //   component: live,
+      // },
     ],
   },
   {
@@ -308,6 +313,14 @@ export const routes = [
       // { path: "test", component: InteractionTest, name: "interaction_test" },
       // { path: "file", component: InteractionFile, name: "interaction_file" },
       // { path: "ques", component: InteractionQues, name: "interaction_ques" },
+    ],
+  },
+  {
+    path: "/patrol",
+    component: patrolRoute,
+    children: [
+      { path: "", component: patrolMessage, name: "patrolMessage" },
+      { path: "detail", component: Detailed, name: "patrol_detailed" },
     ],
   },
 ];

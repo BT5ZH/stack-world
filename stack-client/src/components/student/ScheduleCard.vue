@@ -105,7 +105,7 @@ export default {
     });
   },
   mounted() {
-    // socket.createInstance("student", this);
+    socket.createInstance("student", this);
     this.getCourse();
   },
   computed: {
@@ -162,6 +162,7 @@ export default {
       // console.log(this.currentList);
     },
     jmpRoute(item) {
+      console.log("scheduleCard+++");
       socket.sendEvent("joinRoom", {
         actionType: "enter",
         role: "student",
