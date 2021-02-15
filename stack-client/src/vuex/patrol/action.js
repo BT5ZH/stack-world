@@ -39,7 +39,11 @@ const action = {
             commit("updatePatrolTree", treeData)
             commit("updatePatrolMessage", data);
         } catch (err) {
-            console.log(err);
+            // 如果报错为巡课信息为空，则将巡课信息与巡课树改为空
+            // 存在出错信息判断问题
+            commit("updatePatrolMessage", [])
+            commit("updatePatrolTree", [])
+            console.error(err);
         }
     }
 };
