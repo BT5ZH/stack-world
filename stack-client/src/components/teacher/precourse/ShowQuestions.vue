@@ -148,7 +148,10 @@ export default {
   },  
   mounted() {
     let paper_id = this.paper_id;
-    this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
+    console.log("-----------------------");
+    console.log(paper_id);
+    if(paper_id!="")
+        this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
   },
 };
 </script>
