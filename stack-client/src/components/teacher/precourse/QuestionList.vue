@@ -1,4 +1,5 @@
 <template>
+ <div>
   <a-row>
     <a-row class="table-area">
       <a-table
@@ -7,12 +8,17 @@
         bordered
         :pagination="{
           total: tableData.length,
-          pageSize: 10,
+          pageSize: 5,
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
-        rowKey="index"
+        :row-selection="{
+          selectedRowKeys: selectedQues,
+          onChange: onSelectChange,
+        }"
+        rowKey="id"
       >
+       
         <template #stem="record">
           <span>
             {{ record.stem_type === "wenzi" ? record.statement.stem : "图片" }}
@@ -48,10 +54,35 @@
       </a-table>
     </a-row>
   </a-row>
+  <br>
+  <a-button class='generate-paper' @click="reset"> 重   置</a-button>&nbsp;&nbsp;
+  <a-button type="primary" @click="generatePaper">创建试卷</a-button>
+  <br><br>
+  <div v-show="paperVisible" class='paper-elements'>
+    <a-input class="paper-title-size" v-model="paperTitle" placeholder="请输入试卷标题..." ></a-input> &nbsp;
+    <a-input class="paper-duration-size" v-model="paperDuration" placeholder="请输入考试时长(分钟),默认值为30" ></a-input> &nbsp;&nbsp;
+    <a-date-picker
+        show-time
+        placeholder="选择提交截止日期"
+        @change="onChange"
+        @ok="onOk"
+    />&nbsp;&nbsp;
+    <a-button type="danger" @click="submit">提交</a-button>
+  </div>
+  <paper-list
+      :child_refresh="paperRefresh"
+  ></paper-list>
+  
+ </div>         
 </template>
 
 <script>
+import moment from "moment";
+import axios from "@/utils/axios";
+import PaperList from './PaperList.vue';
 export default {
+  components: { PaperList },
+  
   data() {
     const columns = [
       {
@@ -93,11 +124,11 @@ export default {
         scopedSlots: { customRender: "knowledge" },
         align: "center",
       },
-      {
-        title: "分析",
-        dataIndex: "analysis",
-        align: "center",
-      },
+      // {
+      //   title: "分析",
+      //   dataIndex: "analysis",
+      //   align: "center",
+      // },
       // {
       //   title: "操作",
       //   align: "center",
@@ -106,8 +137,14 @@ export default {
     ];
     return {
       columns,
+      paperRefresh:0,
       inputValue: "",
       addVisible: false,
+      selectedQues :[],
+      paperVisible:false,
+      paperTitle:"",
+      paperDuration: "",
+      deadLine: "",//moment().add("days", 5).format("YYYY-MM-DD HH:MM"),
     };
   },
   watch: {
@@ -118,6 +155,9 @@ export default {
         lesson_id,
         teacher_id,
       });
+    },
+    paperRefresh(val) {
+   
     },
   },
   computed: {
@@ -131,6 +171,7 @@ export default {
     tableData() {
       if (!this.questionBank) return [];
       let temp = this.questionBank.map((item, index) => ({
+        id:item._id,
         index: index + 1,
         grade: item.grade,
         question_type: item.question_type,
@@ -149,11 +190,75 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    moment,
+    reset(){
+      this.selectedQues = []
+      
+    },
+    generatePaper(){
+      if( this.selectedQues.length===0)
+         this.$message.error("请先选择试题");
+      else{
+         this.paperVisible=true;
+      }
+    },
+    submit(){
+      if(this.paperTitle === "" || this.deadLine==="") 
+        this.$message.error("请输入试卷标题和截止日期");
+      else{
+        let duration = Number.parseInt(this.paperDuration);
+        if(isNaN(duration)===true) duration=30
+
+        axios
+          .post("pc/v1/questions/paper", {
+            lesson_id: this.$route.query.lessonId,
+            title: this.paperTitle,
+            deadline: this.deadLine,
+            questions: this.selectedQues,
+            duration: duration,
+            
+          })
+          .then(({ data }) => {
+            if (data.status === "success") {
+              this.$message.success("试卷创建成功");
+              //this.$emit("update:visible", false);
+              // this.$router.push({
+              //   query: {
+              //     ...this.$route.query,
+               ++this.paperRefresh;
+              //   },
+              // });
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            this.$message.error("试卷创建失败");
+          });
+      }
+    },
+  
+    // 表格选择
+    onSelectChange(selectedKeys) {
+      // 表格信息的选中
+      this.selectedQues = selectedKeys;
+      console.log(this.selectedQues);
+    },
+ 
+    onChange(value, dateString) {
+      console.log("Selected Time: ", value);
+      console.log("Formatted Selected Time: ", dateString);
+      this.deadLine = moment(dateString).format("YYYY-MM-DD HH:MM");
+    },
+    onOk(value) {
+      console.log("onOk: ", value);
+    },
+  },
   mounted() {
     const lesson_id = this.$route.query.lessonId;
     const teacher_id = this.$store.state.public.uid;
     this.$store.dispatch("teacher/getquestionBank", { lesson_id, teacher_id });
+
   },
 };
 </script>
@@ -162,4 +267,22 @@ export default {
 .table-area {
   margin-top: 20px;
 }
+.generate-paper {
+  margin-left: 85%;
+}
+.paper-title-size{
+  width:500px
+}
+.paper-elements {
+  margin-left: 10%; margin-top: 10px;
+}
+.paper-duration-size{
+  width:250px
+}
 </style>
+
+
+
+
+
+

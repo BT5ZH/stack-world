@@ -125,12 +125,33 @@ const action = {
       console.error(error);
     }
   },
+  async getquestionBankByPaperID({ commit },{ paper_id }) {
+    try {
+      const requestData = { paper_id };
+      const url = "pc/v1/questions/paper/getquestionBankByPaperID";
+      const { data } = await axios.post(url, requestData);
+      commit("updateQuesOfPaper", data.questions);
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async getSetHomeworksByLessonID({ commit }, { lesson_id }) {
     try {
       const requestData = { lesson_id };
       const url = "pc/v1/sethomeworks/getSetHomeworkByLessonID";
       const { data } = await axios.post(url, requestData);
       commit("updateSetHomeworks", data.Homeworks);
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  
+  async getPapersByLessonID({ commit }, { lesson_id }) {
+    try {
+      const requestData = { lesson_id };
+      const url = "pc/v1/questions/paper/getPapersByLessonID";
+      const { data } = await axios.post(url, requestData);
+      commit("updatePapers", data.papers);
     } catch (err) {
       console.error(err);
     }

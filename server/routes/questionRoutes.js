@@ -11,6 +11,19 @@ router
 router
   .route("/multipleQuestions")
   .post(authController.protect,questionController.createMultipleQuestions);
+router
+  .route("/paper")
+  .post(authController.protect, questionController.createPaper); 
+router
+  .route("/paper/getPapersByLessonID")
+  .post(authController.protect, questionController.getPapersByLessonID) ;
+
+router
+  .route("/paper/getquestionBankByPaperID")
+  .post(authController.protect, questionController.getquestionBankByPaperID) ;
+router
+  .route("/paper/:id")
+  .delete(authController.protect, questionController.deletePaper) ;
 // router
 //   .route("/:id")
 //   .get(authController.protect, questionController.getQuestion) 

@@ -155,6 +155,12 @@ const mutation = {
   updateSetHomeworks(state, params) {
     state.updateSetHomeworks = params;
   },
+  updatePapers(state, params) {
+    state.updatePapers = params;
+  },
+  updateQuesOfPaper(state, params) {
+    state.questionOfPaper = params;
+  },
   updatequestionBank(state, params) {
     state.questionBank = params;
   },

@@ -21,7 +21,8 @@ const state = {
   nodes: [],
   nodeindex: 0,
   sources: [],
-  questionBank: [],
+  questionBank:[],
+  questionOfPaper:[],
   // courseinfo
   courseInfo: {},
 };
