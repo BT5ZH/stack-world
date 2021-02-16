@@ -10,8 +10,7 @@
               align="center"
               @click="switchToday(item.day, item.titleEn)"
               :style="{
-                background:
-                  item.titleEn === today.title ? '#13c2c2' : '#409EFF',
+                background: item.titleEn === today.title ? '#13c2c2' : '#409EFF',
               }"
               >{{ item.day }}</span
             >
@@ -44,9 +43,7 @@
           <span>{{ item.roomName }}</span>
         </a-col>
         <a-col :span="3">
-          <a-button @click="popSelectModal(item)" type="primary"
-            >开始上课</a-button
-          >
+          <a-button @click="popSelectModal(item)" type="primary">开始上课</a-button>
         </a-col>
       </a-row>
     </a-row>
@@ -161,7 +158,11 @@ export default {
       // 1）修改教室状态为using
       const room_id = this.curCourse.room_id;
       const status = "using";
-      this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+      this.$store.dispatch("teacher/updateRoomStatus", {
+        room_id,
+        status,
+        lessonId: this.curCourse.lessonId,
+      });
 
       // 2）初始化教学活动数据
       // let course = this.curCourse;

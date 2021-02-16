@@ -170,7 +170,7 @@ const action = {
   async updateRoomStatus({ commit }, params) {
     try {
       const url = `pc/v1/rooms/${params.room_id}`;
-      await axios.patch(url, { room_status: params.status });
+      await axios.patch(url, { room_status: params.status, living_lessonID: params.lessonId });
     } catch (err) {
       console.error(err);
     }

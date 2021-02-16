@@ -12,7 +12,7 @@
           <a-menu-item
             v-for="major in SubOrg.childMenu"
             :key="major.showName"
-            @click="menuSelect"
+            @click="menuSelect({ subOrg: SubOrg.showName, major: major.showName })"
             >{{ major.showName }}</a-menu-item
           >
         </a-sub-menu>
@@ -27,32 +27,32 @@
         <span>教室名</span>
         <span></span>
       </li>
-      <li v-for="item in liveRooms" :key="item.lessonID">
+      <li v-for="item in liveRooms" :key="item.lesson_id">
         <a-popover>
           <template slot="content">
-            <p>{{ item.lessonName }}</p>
+            <p>{{ item.course.name }}</p>
           </template>
-          <span>{{ item.lessonName }}</span>
+          <span>{{ item.course.name }}</span>
         </a-popover>
         <a-popover>
           <template slot="content">
-            <p>{{ item.teacherName }}</p>
+            <p>{{ item.teacher.name }}</p>
           </template>
-          <span>{{ item.teacherName }}</span>
+          <span>{{ item.teacher.name }}</span>
         </a-popover>
         <a-popover>
           <template slot="content">
-            <p>{{ item.className }}</p>
+            <p>{{ item.class.class_name }}</p>
           </template>
-          <span>{{ item.className }}</span>
+          <span>{{ item.class.class_name }}</span>
         </a-popover>
         <a-popover>
           <template slot="content">
-            <p>{{ item.roomName }}</p>
+            <p>{{ item.room.room_number }}</p>
           </template>
-          <span>{{ item.roomName }}</span>
+          <span>{{ item.room.room_number }}</span>
         </a-popover>
-        <a @click="goLook(item.lessonID)">巡课</a>
+        <a @click="goLook(item.lesson_id)">巡课</a>
       </li>
     </ul>
   </div>
@@ -64,50 +64,15 @@ import axiosInstance from "@/utils/axios";
 export default {
   data() {
     return {
-      treeData: [
-        {
-          showName: "计算机科学学院",
-          childMenu: [
-            { showName: "软件工程" },
-            { showName: "人工智能" },
-            { showName: "网络安全" },
-          ],
-        },
-      ],
-      liveRooms: [
-        {
-          lessonID: "001",
-          lessonName: "软件工程导论",
-          teacherName: "张莉",
-          className: "软工1901",
-          roomName: "文津楼1201",
-        },
-        {
-          lessonID: "002",
-          lessonName: "计算机组成原理",
-          teacherName: "李莉",
-          className: "软工1901",
-          roomName: "文津楼1305",
-        },
-      ],
+      menuData: {},
     };
   },
-  mounted() {},
+  mounted() {
+    this.$store.dispatch("patrol/getPatrolMessage", this.orgName);
+  },
   methods: {
-    async getTreeData() {
-      let queryString = this.orgName;
-      const url = "/pc/v1/classes/classTree?org_name=" + queryString;
-      try {
-        const { data } = await axiosInstance.get(url);
-        this.treeData = data.data;
-        console.log("this.treeData");
-        console.log(this.treeData);
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    menuSelect(e) {
-      console.log("click" + e);
+    menuSelect(params) {
+      this.menuData = params;
     },
     goLook(lessonID) {
       this.$router.push({
@@ -117,8 +82,17 @@ export default {
     },
   },
   computed: {
+    liveRooms() {
+      if (!this.menuData.subOrg) return this.patrolMessage;
+      else
+        return this.patrolMessage.filter((item) => {
+          return item.subOrg == this.menuData.subOrg && item.major == this.menuData.major;
+        });
+    },
     ...mapState({
       orgName: (state) => state.public.orgName,
+      patrolMessage: (state) => state.patrol.patrolMessage,
+      treeData: (state) => state.patrol.patrolTree,
     }),
   },
 };

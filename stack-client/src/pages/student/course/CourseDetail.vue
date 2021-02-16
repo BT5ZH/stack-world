@@ -4,9 +4,7 @@
       <a-col :span="8" :key="index" v-for="(item, index) in courseDetailMenu">
         <!-- 菜单栏 -->
         <button
-          :class="
-            isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'
-          "
+          :class="isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'"
           @click="changeNav(index)"
         >
           {{ item.title }}

@@ -35,8 +35,7 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName
-                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{ item.enterTime }}</span>
               <span class="onlineInfo-body-li-flag">
@@ -147,9 +146,11 @@ export default {
         this.localStream = null;
         console.log("退房成功 ");
         // 修改教室状态为using
-        const room_id = this.$route.query.room_id;
-        const status = "using";
-        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+        this.$store.dispatch("teacher/updateRoomStatus", {
+          room_id: this.$route.query.room_id,
+          status: "using",
+          lessonId: this.$route.query.lessonId,
+        });
         // 退房成功，可再次调用client.join重新进房开启新的通话。
       } catch (error) {
         console.error("退房失败 " + error);
@@ -161,11 +162,10 @@ export default {
       this.$store.dispatch("teacher/clearRoomMembers", {
         channelId: this.$route.query.lessonId,
       });
-      const room_id = this.$route.query.room_id;
-      const status = "avaliable";
       await this.$store.dispatch("teacher/updateRoomStatus", {
-        room_id,
-        status,
+        room_id: this.$route.query.room_id,
+        status: "avaliable",
+        lessonId: null,
       });
       // 2）保存本次课教学活动 TODO
 
@@ -203,9 +203,11 @@ export default {
         console.log("本地流发布成功");
         this.$message.info("成功进入教室，系统正在播放您的声音");
         // 将教室状态修改为living
-        let status = "living";
-        let room_id = this.$route.query.room_id;
-        this.$store.dispatch("teacher/updateRoomStatus", { room_id, status });
+        this.$store.dispatch("teacher/updateRoomStatus", {
+          room_id: this.$route.query.room_id,
+          status: "living",
+          lessonId: this.$route.query.lessonId,
+        });
       } catch (error) {
         console.log(error);
         // this.$notification.error({

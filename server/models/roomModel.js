@@ -58,6 +58,8 @@ const roomSchema = new mongoose.Schema(
       enum: ["using", "avaliable", "living"],
       default: "avaliable",
     },
+    // 正在直播的课程号
+    living_lessonID: String,
     // 以下两个数据 插入数据时忽略
     ////////////////////////////////////////////////////
     section: {

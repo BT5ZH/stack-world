@@ -23,19 +23,12 @@
           <template #operation="record">
             <a @click="edit(record)">编辑</a>
             &nbsp;&nbsp;
-            <a @click="relieve(record)" v-on:click="$emit('refresh')"
-              >解除关联</a
-            >
+            <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
           </template>
         </a-table>
       </a-spin>
     </a-row>
-    <a-modal
-      width="800px"
-      v-model="editModal_visible"
-      title="课程管理"
-      @ok="edit_submit"
-    >
+    <a-modal width="800px" v-model="editModal_visible" title="课程管理" @ok="edit_submit">
       <!--  -->
       <div>
         <a-table
@@ -62,11 +55,7 @@
         <br />
         <a-button class="editable-add-btn" @click="handleAdd"> 添加 </a-button>
       </div>
-      <a-form
-        :modal="edit_message"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 12 }"
-      >
+      <a-form :modal="edit_message" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-model-item label="班级">
           <a-select
             style="width: 100%"
@@ -130,10 +119,7 @@
         <a-form-model-item label="周几">
           <!-- <a-input v-model="form.title" /> -->
           <a-select v-model="edit_message.date">
-            <a-select-option
-              v-for="course_date in dateData"
-              :key="course_date.data"
-            >
+            <a-select-option v-for="course_date in dateData" :key="course_date.data">
               {{ course_date.show }}
             </a-select-option>
           </a-select>
@@ -275,6 +261,8 @@ export default {
       rooms: [],
       value1: "单周",
       flag: "",
+      // 添加状态
+      AddStatus: false,
       // 编辑
       editModal_visible: false,
       edit_message: {
@@ -344,32 +332,16 @@ export default {
           };
         });
         this.dataSource.curriculum = middle;
-        // console.log("---dataSource---")
-        // console.log(this.dataSource.curriculum)
       } catch (err) {
         this.dataSource = {};
         console.log(err);
       }
-      // console.log(lesson_id)
     },
-    // onCellChange(key, dataIndex, value) {
-    //   const dataSource = [...this.dataSource.curriculum];
-    //   const target = dataSource.find((item) => item.key === key);
-    //   if (target) {
-    //     target[dataIndex] = value;
-    //     this.dataSource.curriculum = dataSource;
-    //   }
-    // },
     onDelete(key) {
-      // console.log("----key----");
-      // console.log(this.dataSource.curriculum);
-      // this.dataSource.curriculum.splice(key-1,1)
       let temp = this.dataSource.curriculum;
       this.dataSource.curriculum = temp.filter((item) => item.key !== key);
     },
     handleAdd() {
-      // console.log("edit_message-----");
-      // console.log(this.edit_message);
       if (
         this.edit_message.class_id._id == "" ||
         this.edit_message.date == "" ||
@@ -381,13 +353,10 @@ export default {
         return;
       }
       let temp = this.dataSource.curriculum;
-      // console.log("----dataSource-----")
-      // console.log(this.dataSource)
       // 拼单双周
       this.edit_message.week = "全周";
       if (this.edit_message.odd_or_even === 1) this.edit_message.week = "单周";
-      else if (this.edit_message.odd_or_even === 2)
-        this.edit_message.week = "双周";
+      else if (this.edit_message.odd_or_even === 2) this.edit_message.week = "双周";
       // 拼楼层
       this.edit_message.room_id.building_name = this.edit_message.address_text;
       // 添加
@@ -408,9 +377,8 @@ export default {
         },
         week: this.edit_message.week,
       };
-      // console.log("-----newData-----")
-      // console.log(newData)
-      // console.log(this.dataSource.curriculum != null);
+      // 添加状态，如果没有添加，提交时会有提示；
+      this.AddStatus = true;
       if (this.dataSource.curriculum != null) {
         newData.key = this.dataSource.curriculum.length + 1;
         this.dataSource.curriculum = [...temp, Object.assign({}, newData)];
@@ -418,9 +386,6 @@ export default {
         newData.key = 1;
         this.dataSource = { curriculum: [Object.assign({}, newData)] };
       }
-      // console.log(Object.assign({}, newData));
-      // console.log("----dataSource.curriculum----")
-      // console.log(this.dataSource.curriculum)
     },
     // 编辑
     room_change(record) {
@@ -429,11 +394,8 @@ export default {
           this.edit_message.room_id.room_number = item.room_number;
         }
       });
-      // console.log(this.edit_message.room_id);
     },
     Class_change(record) {
-      // console.log(record);
-      // console.log(this.classes);
       let change_room = this.classes.map((item) => {
         if (item._id === record) {
           this.edit_message.class_id.class_name = item.class_name;
@@ -451,36 +413,26 @@ export default {
           this.edit_message.room_id.campus_name = item.campus_name;
         }
       });
-      // console.log(dataArray);
       payload = {
         campus_id: dataArray[0],
         building_id: dataArray[1],
       };
-      // console.log(payload);
       this.getRooms(payload);
       // }
     },
     // async
     getRooms(payload) {
       const url =
-        "/pc/v1/rooms/getRoomByCampusOrBuilding" +
-        "?building_id=" +
-        payload.building_id;
+        "/pc/v1/rooms/getRoomByCampusOrBuilding" + "?building_id=" + payload.building_id;
 
       this.$store
         .dispatch("admin/getTreeByURL", url)
         .then((response) => {
-          // console.log(response);
           this.rooms = response.data.data.rooms;
         })
         .catch((error) => {
           console.log(error);
         });
-
-      // const { data } = await axiosInstance.get(url);
-      // this.rooms = data.data.rooms;
-      // console.log("data rooms------")
-      // console.log(data.data.rooms)
     },
     // async
     spaceList() {
@@ -489,20 +441,11 @@ export default {
       this.$store
         .dispatch("admin/getTreeByURL", url)
         .then((response) => {
-          // console.log(response);
           this.campusList = response.data.data.campus;
         })
         .catch((error) => {
           console.log(error);
         });
-      // try {
-      //   const { data } = await axiosInstance.get(url);
-      //   this.campusList = data.data.campus;
-      //   console.log("-----campusList-----")
-      //   console.log(this.campusList);
-      // } catch (err) {
-      //   console.log(err);
-      // }
     },
     edit(record) {
       this.refresh += 1;
@@ -512,75 +455,71 @@ export default {
       // 编辑
     },
     edit_submit() {
-      // console.log("-----dataSource-----");
-      // console.log(this.dataSource);
-      if (this.dataSource._id == null) {
-        // 无timetable，创建一个
-        let request = {
-          lesson_id: this.edit_message.lesson_id,
-          curriculum: this.dataSource.curriculum,
-        };
-        let temp = request.curriculum;
-        const url = "/pc/v1/timetables";
-        request.curriculum = temp.map((item) => {
-          return {
-            class_id: item.class_id._id,
-            room_id: item.room_id._id,
-            odd_or_even: item.odd_or_even,
-            order: item.order,
-            date: item.date,
-          };
-        });
-        // console.log("---request---");
-        // console.log(request);
-        axiosInstance
-          .post(url, request)
-          .then((res) => {
-            this.$message.info("提交成功");
-          })
-          .catch((err) => {
-            this.$message.error("提交失败");
-            console.log(err);
-          });
-        this.dataSource = [];
-        this.editModal_visible = false;
-      } else {
-        let request = {
-          _id: this.dataSource._id,
-          curriculum: this.dataSource.curriculum,
-        };
-        let temp = request.curriculum;
-        request.curriculum = temp.map((item) => {
-          return {
-            class_id: item.class_id._id,
-            room_id: item.room_id._id,
-            odd_or_even: item.odd_or_even,
-            order: item.order,
-            date: item.date,
-          };
-        });
-        const url = "/pc/v1/timetables/" + request._id;
-        // console.log("---request---");
-        // console.log(request);
-        const { data } = axiosInstance
-          .patch(url, { curriculum: request.curriculum })
-          .then((res) => {
-            // console.log("----upateData----")
-            // console.log(data);
-            this.$message.info("提交成功");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        (this.dataSource = []), (this.editModal_visible = false);
+      if (!this.AddStatus) {
+        this.$message.error("当前信息无变化，请仔细检查待提交表格");
+        return;
       }
+      if (this.dataSource.curriculum)
+        if (this.dataSource._id == null) {
+          // 无timetable，创建一个
+          let request = {
+            lesson_id: this.edit_message.lesson_id,
+            curriculum: this.dataSource.curriculum,
+          };
+          let temp = request.curriculum;
+          const url = "/pc/v1/timetables";
+          request.curriculum = temp.map((item) => {
+            return {
+              class_id: item.class_id._id,
+              room_id: item.room_id._id,
+              odd_or_even: item.odd_or_even,
+              order: item.order,
+              date: item.date,
+            };
+          });
+          axiosInstance
+            .post(url, request)
+            .then((res) => {
+              this.$message.info("提交成功");
+            })
+            .catch((err) => {
+              this.$message.error("提交失败");
+              console.log(err);
+            });
+          this.dataSource = [];
+          this.editModal_visible = false;
+        } else {
+          let request = {
+            _id: this.dataSource._id,
+            curriculum: this.dataSource.curriculum,
+          };
+          let temp = request.curriculum;
+          request.curriculum = temp.map((item) => {
+            return {
+              class_id: item.class_id._id,
+              room_id: item.room_id._id,
+              odd_or_even: item.odd_or_even,
+              order: item.order,
+              date: item.date,
+            };
+          });
+          const url = "/pc/v1/timetables/" + request._id;
+          const { data } = axiosInstance
+            .patch(url, { curriculum: request.curriculum })
+            .then((res) => {
+              this.$message.info("提交成功");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          (this.dataSource = []), (this.editModal_visible = false);
+        }
     },
     relieve({ lesson_id }) {
       const url = `/pc/v1/lessons/${lesson_id}`;
       axiosInstance
         .delete(url)
         .then(({ data }) => {
-          // console.log(data);
           const { status } = data;
           if (status) throw "relieve course success";
           this.$message.success("解除关联成功");
