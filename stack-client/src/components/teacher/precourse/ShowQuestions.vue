@@ -4,7 +4,7 @@
     :visible="visible"
     title="试题信息"
     @ok="handleOk"
-    width="35%"
+    width="60%"
     @cancel="handleOk"
   >
      <a-row class="table-area">
@@ -24,10 +24,10 @@
        
         <template #stem="record">
           <span>
-            {{ record.stem_type === "wenzi" ? record.statement.stem : "图片" }}
+            {{  record.statement.stem  }}
           </span>
         </template>
-        <template #grade="grade">
+        <!-- <template #grade="grade">
           <a-tag color="#87d068" v-if="grade === 1">简单</a-tag>
           <a-tag color="#2db7f5" v-else-if="grade === 2">适中</a-tag>
           <a-tag color="#f50000" v-else>困难</a-tag>
@@ -36,7 +36,7 @@
           <span>
             {{ type === 1 ? "主观题" : type === 2 ? "单选题" : "多选题" }}
           </span>
-        </template>
+        </template> -->
        
       </a-table>
     </a-row>
@@ -62,6 +62,10 @@ export default {
       type: Number,
       default: 0,
     },
+    queStems:{
+      type:String,
+      required:true,
+    },
   },
   data() {
     const columns = [
@@ -69,30 +73,30 @@ export default {
         title: "序号",
         dataIndex: "index",
         align: "center",
-        width: 80,
+        width: "10%",
       },
       {
-        title: "题目",
+        title: "题 目",
         align: "left",
         dataIndex: "stem",
         //scopedSlots: { customRender: "stem" },
        // ellipsis: true,
-        width: "30%",
+        width: "70%",
       },
-      {
-        title: "难度",
-        dataIndex: "grade",
-        scopedSlots: { customRender: "grade" },
-        align: "center",
-        width: 80,
-      },
-      {
-        title: "题型",
-        dataIndex: "question_type",
-        scopedSlots: { customRender: "question_type" },
-        align: "center",
-        width: 80,
-      },
+      // {
+      //   title: "难度",
+      //   dataIndex: "grade",
+      //   scopedSlots: { customRender: "grade" },
+      //   align: "center",
+      //   width: 80,
+      // },
+      // {
+      //   title: "题型",
+      //   dataIndex: "question_type",
+      //   scopedSlots: { customRender: "question_type" },
+      //   align: "center",
+      //   width: 80,
+      // },
     ];
     return {
       refresh: 0,
@@ -117,24 +121,33 @@ export default {
     },
 
     tableData() {
-      if (!this.$store.state.teacher.questionOfPaper) return [];
-      let temp = this.$store.state.teacher.questionOfPaper.map((item, index) => ({
-        //id:item._id,
+      // if (!this.$store.state.teacher.questionOfPaper) return [];
+      // let temp = this.$store.state.teacher.questionOfPaper.map((item, index) => ({
+      //   //id:item._id,
+      //   index: index + 1,
+      //   grade: item.grade,
+      //   question_type: item.question_type,
+      //   stem: item.stem,
+      // }));
+      // return temp;
+      if (!this.queStems) return [];
+      let temp= this.queStems.split("$$")
+
+      temp = temp.map((item, index) => ({
         index: index + 1,
-        grade: item.grade,
-        question_type: item.question_type,
-        stem: item.stem,
+        stem: item,
+       
       }));
+      
       return temp;
-    
     },
   },
-  watch: {
-    paper_ques_refresh(val) {
-       let paper_id = this.paper_id;
-       this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
-    },
-  },
+  // watch: {
+  //   paper_ques_refresh(val) {
+  //      let paper_id = this.paper_id;
+  //      this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
+  //   },
+  // },
   methods: {
    
     onOk(value) {
@@ -142,16 +155,16 @@ export default {
     },
     handleOk() {
       this.$emit('update:visible', false);
-      this.$store.state.teacher.questionOfPaper=[]
+      //this.$store.state.teacher.questionOfPaper=[]
     },
 
   },  
   mounted() {
-    let paper_id = this.paper_id;
-    console.log("-----------------------");
-    console.log(paper_id);
-    if(paper_id!="")
-        this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
+    // let paper_id = this.paper_id;
+    // console.log("-----------------------");
+    // console.log(paper_id);
+    // if(paper_id!="")
+    //     this.$store.dispatch("teacher/getquestionBankByPaperID", { paper_id });
   },
 };
 </script>

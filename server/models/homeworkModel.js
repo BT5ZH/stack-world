@@ -47,6 +47,7 @@ setHomeworkSchema.index(
 
 setHomeworkSchema.post("save", async function (doc) {
   try {
+    //find all the students based on lesson_id
     let data = await Lesson.findOne({ _id: doc.lesson_id })
       .select("classes")
       .populate({
@@ -70,6 +71,7 @@ setHomeworkSchema.post("save", async function (doc) {
         student_id: item,
       };
     });
+    /////////////////////////////////////////////////////////////
     const newHomewrok = await SubmitHomework.insertMany(students);
   } catch (err) {
     console.log(err);

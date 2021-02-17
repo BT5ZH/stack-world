@@ -24,7 +24,10 @@
       <show-questions 
         :paper_ques_refresh="pqfresh" 
         :visible.sync="showques_visible" 
-        :paper_id="paper_id"></show-questions>
+        :paper_id="paper_id"
+        :queStems="questions"
+        >
+      </show-questions>
     </div>
   </a-row>
   
@@ -88,6 +91,7 @@ export default {
       del_refresh: 0,
       showques_visible:false,
       paper_id:"",
+      questions:"",
       pqfresh:0
     };
   },
@@ -130,6 +134,12 @@ export default {
     },
     async viewQuesInfo(record){
       this.paper_id = record.paper_id;
+      this.questions=record.questions[0]+"$$";
+      for(let i=1;i<record.questions.length;i++){
+          this.questions = this.questions+record.questions[i]+"$$";
+      }
+      this.questions = this.questions.slice(0,this.questions.length-2)
+ 
       this.pqfresh=this.pqfresh+1;
       //console.log("***fatther paperid---:"+this.paper_id);
       this.showques_visible=true  

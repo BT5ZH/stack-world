@@ -1,7 +1,6 @@
 const QuesBank = require("../models/questionModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const Question = require("../models/questionModel");
 const Paper = require("../models/paperModel");
 
 exports.getAllQuestions = catchAsync(async (req, res, next) => {
@@ -118,8 +117,6 @@ exports.deleteQuestion = catchAsync(async (req, res, next) => {
 exports.createMultipleQuestions = catchAsync(async (req, res) => {
   const multipleQues = req.body;
 
-  console.log("++++++++");
-  console.log(multipleQues);
   if (!multipleQues || multipleQues.length == 0) {
     return next(new AppError("试题列表为空或无数据", 404));
   }
@@ -130,7 +127,8 @@ exports.createMultipleQuestions = catchAsync(async (req, res) => {
     //result,
   });
 });
-//------paper----------
+//////////////////////////////////////////////////////////////
+//---------------------paper-----------------------
 exports.createPaper = catchAsync(async (req, res, next) => {
   const data = await Paper.create(req.body);
   if (!data) {
@@ -142,17 +140,29 @@ exports.createPaper = catchAsync(async (req, res, next) => {
   });
 });
 exports.deletePaper = catchAsync(async (req, res, next) => {
-  console.log("------->"+req.params.id);
-  const data = await Paper.findOneAndDelete({_id:req.params.id});
+ 
+  // const data = await Paper.findOneAndDelete({_id:req.params.id});
 
-  if (!data) {
+  // if (!data) {
+  //   return next(new AppError("该试卷不存在", 404));
+  // }
+  // res.status(204).json({
+  //   status: "success",
+  //   //data,
+  // });
+
+  const paper = await Paper.findById(req.params.id);
+
+  if (!paper) {
     return next(new AppError("该试卷不存在", 404));
   }
+  await paper.remove();
   res.status(204).json({
     status: "success",
-    //data,
+    paper,
   });
 });
+
 exports.getPapersByLessonID = catchAsync(async (req, res, next) => {
     const data = await Paper.find({ lesson_id:req.body.lesson_id })
     .populate('questions','statement.stem');
@@ -205,5 +215,5 @@ exports.getquestionBankByPaperID = catchAsync(async (req, res, next) => {
   });
 
 });
-//------paper----------
-//-----------------------------------------------
+//-----------------------paper------------------------------
+/////////////////////////////////////////////////////////////////////////
