@@ -57,6 +57,7 @@ const courseHome = () => import("@/pages/student/course/CourseHome.vue");
 const courseDetail = () => import("@/pages/student/course/CourseDetail.vue");
 const videoPage = () => import("@/pages/student/course/Video.vue");
 const homework = () => import("@/pages/student/course/Homework.vue");
+const exam = () => import("@/pages/student/course/Exam.vue");
 
 const userProfile = () => import("@/pages/student/user/UserProfile.vue");
 const password = () => import("@/pages/student/user/Password.vue");
@@ -270,6 +271,10 @@ export const routes = [
           {
             path: "homework",
             component: homework,
+          },
+          {
+            path: "exam/:id",
+            component: exam,
           },
         ],
       },

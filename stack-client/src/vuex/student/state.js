@@ -73,19 +73,15 @@ const state = {
       route: "password",
       style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
     },
-    // {
-    //     id: 3,
-    //     name: '消息',
-    //     icon: 'message',
-    //     route: 'message',
-    //     style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
-    // },
+    {
+      id: 3,
+      name: "督导巡课",
+      icon: "message",
+      route: "message",
+      style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
+    },
   ],
-  courseDetailMenu: [
-    { title: "预习资料" },
-    { title: "课堂活动" },
-    { title: "课后作业" },
-  ],
+
   classMenu: [
     {
       id: 1,
@@ -144,7 +140,6 @@ const state = {
     //   style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
     // },
   ],
-
   classList: [],
   courseList: [
     // {
@@ -198,6 +193,40 @@ const state = {
     // { id: "r00", resType: 0, isFinish: false, title: "PPT", isFav: true },
     // { id: "r01", resType: 1, isFinish: true, title: "quiz", isFav: false },
     // { id: "r02", resType: 2, isFinish: false, title: "MP4", isFav: true },
+  ],
+  examList: [
+    {
+      id: "b8e0ac50-000",
+      isFinish: false,
+      resType: 0,
+      title: "examination 1",
+      task_type: "exam",
+      deadline: "2021-02-19 14:02",
+      score: 0,
+      questions: [
+        {
+          content: "question 1",
+          options: [
+            { value: "A", text: "aaaaa" },
+            { value: "B", text: "bbbbb" },
+            { value: "C", text: "ccccc" },
+            { value: "D", text: "ddddd" },
+          ],
+          answer: ["A"],
+        },
+        {
+          content: "question 2",
+          options: [
+            { value: "A", text: "aaaaa" },
+            { value: "B", text: "bbbbb" },
+            { value: "C", text: "ccccc" },
+            { value: "D", text: "ddddd" },
+            { value: "E", text: "eeeee" },
+          ],
+          answer: ["A", "E"],
+        },
+      ],
+    },
   ],
   homeworkList: [
     // {
