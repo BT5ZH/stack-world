@@ -192,10 +192,14 @@
       // 初始化腾讯实时音视频
       this.initLiveClient();
 
-      // 获取学生作业数据
+      // 获取作业数据
       let lesson_id = this.$route.query.lessonId;
       let student_id = this.userId;
       this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
+
+      // 获取试卷数据
+      this.$store.dispatch("student/getExamList", { lesson_id, student_id });
+      
     },
     computed: {
       ...mapState({

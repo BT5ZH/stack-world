@@ -195,38 +195,39 @@ const state = {
     // { id: "r02", resType: 2, isFinish: false, title: "MP4", isFav: true },
   ],
   examList: [
-    {
-      id: "b8e0ac50-000",
-      isFinish: false,
-      resType: 0,
-      title: "examination 1",
-      task_type: "exam",
-      deadline: "2021-02-19 14:02",
-      score: 0,
-      questions: [
-        {
-          content: "question 1",
-          options: [
-            { value: "A", text: "aaaaa" },
-            { value: "B", text: "bbbbb" },
-            { value: "C", text: "ccccc" },
-            { value: "D", text: "ddddd" },
-          ],
-          answer: ["A"],
-        },
-        {
-          content: "question 2",
-          options: [
-            { value: "A", text: "aaaaa" },
-            { value: "B", text: "bbbbb" },
-            { value: "C", text: "ccccc" },
-            { value: "D", text: "ddddd" },
-            { value: "E", text: "eeeee" },
-          ],
-          answer: ["A", "E"],
-        },
-      ],
-    },
+    // {
+    //   id: "b8e0ac50-000",
+    //   isFinish: false,
+    //   resType: 0,
+    //   title: "examination 1",
+    //   task_type: "exam",
+    //   deadline: "2021-02-19 14:02",
+    //   score: 0,
+    //   questions: [
+    //     {
+    //       content: "question 1",
+    //       options: [
+    //         { value: "A", text: "aaaaa" },
+    //         { value: "B", text: "bbbbb" },
+    //         { value: "C", text: "ccccc" },
+    //         { value: "D", text: "ddddd" },
+    //       ],
+    //       answer: ["A"],
+    //     },
+    //     {
+    //       content: "question 2",
+    //       options: [
+    //         { value: "A", text: "aaaaa" },
+    //         { value: "B", text: "bbbbb" },
+    //         { value: "C", text: "ccccc" },
+    //         { value: "D", text: "ddddd" },
+    //         { value: "E", text: "eeeee" },
+    //       ],
+    //       answer: ["A", "E"],
+    //     },
+    //   ],
+    // },
+
   ],
   homeworkList: [
     // {

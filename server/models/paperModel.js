@@ -56,9 +56,12 @@ paperSchema.post("save", async function (doc) {
     for( let i = 0;i<doc.questions.length;i++){
       let ques_id=doc.questions[i];
       let quesInfo = await QuesBank.findById(ques_id).select('statement');
+      let stem = quesInfo.statement.stem;
       let right_answer = quesInfo.statement.right_answer;
+      let options=quesInfo.statement.options;
       let student_answer='Z';
-      let oneQues = {ques_id,student_answer,right_answer};
+      let oneQues = {ques_id,stem,options,right_answer,student_answer};
+ 
       questions.push(oneQues);
     }
     students = students.map((item) => {

@@ -215,5 +215,81 @@ exports.getquestionBankByPaperID = catchAsync(async (req, res, next) => {
   });
 
 });
+exports.getExamInfoForStuByLessonID = catchAsync(
+  async (req, res, next) => {
+    try {
+      console.log("--->"+req.body.student_id);
+      const data = await Paper.aggregate([
+        {
+          $match: { lesson_id: req.body.lesson_id },
+        },
+        {
+          $lookup: {
+            from: "studentpapers",
+            localField: "_id",
+            foreignField: "paper_id",
+            as: "belongedToStuPaper",
+          },
+        },
+        {$unwind:"$belongedToStuPaper"},
+   
+        {
+          $match: { "belongedToStuPaper.student_id": req.body.student_id },
+        },
+        {
+          $project: {
+            _id: 1,
+            //course_id: 1,
+            lesson_id: 1,
+            title: 1,
+            //content: 1,
+            //questions:1,
+            duration: 1,
+            deadline: 1,
+            "belongedToStuPaper.is_finished": 1,
+            "belongedToStuPaper.questions": 1,
+            "belongedToStuPaper.score": 1,
+            "belongedToStuPaper.begin_time": 1,
+            "belongedToStuPaper.submit_time": 1,
+          },
+        },
+      ]);
+      if (data.length === 0) {
+        return next(new AppError("该课程下试卷不存在", 404));
+      }
+      let examList = data.map((item) => {
+        let isFinished = false;
+        let score = 0;
+
+        if (item.belongedToStuPaper != null) {
+          score = item.belongedToStuPaper.score;
+          isFinished = item.belongedToStuPaper.is_finished;
+        }
+
+        return {
+          id: item._id,
+          lid: item.lesson_id,
+          isFinish: isFinished, ////
+          resType: 0,
+          title: item.title,
+          //content: item.content,
+          questions: item.belongedToStuPaper.questions,
+          task_type: "exam",
+          deadline: item.deadline,
+          score: score,
+        
+        };
+      });
+      
+      res.status(200).json({
+        status: "success",
+        examList
+  
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 //-----------------------paper------------------------------
 /////////////////////////////////////////////////////////////////////////

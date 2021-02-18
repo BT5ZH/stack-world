@@ -24,7 +24,7 @@ const submitHomeworkSchema = new mongoose.Schema(
     comments: { type: String, default: "未评"},
     score: { type: Number, default: 0 },
 
-    flg: { type: Number, default: 0 },
+    flg: { type: Number, default: 0 },//flg=0 means the student just saves the homework,flg=1 means submit the homework to teacher
   },
   { _id: false }
 );

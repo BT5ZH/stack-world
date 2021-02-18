@@ -24,6 +24,13 @@ const mutation = {
     }
     throw "[vuex-student-mutation] homeworkList type error!";
   },
+  updateExamList(state, params) {
+    if (Array.isArray(params)) {
+      state.examList = params;
+      return null;
+    }
+    throw "[vuex-student-mutation] homeworkList type error!";
+  },
   updateFavResList(state, params) {
     if (Array.isArray(params)) {
       state.favResList = params;

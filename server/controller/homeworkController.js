@@ -188,9 +188,7 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
             as: "belongedToSubmitHW",
           },
         },
-        // {
-        //   $match: { _id: req.body.homework_id},
-        // },
+        {$unwind:"$belongedToSubmitHW"},
         {
           $match: { "belongedToSubmitHW.student_id": req.body.student_id },
         },
@@ -229,13 +227,18 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
         let score = 0;
         let flg = 0;
         let answer = " ";
-        if (item.belongedToSubmitHW.length != 0) {
-          comments = item.belongedToSubmitHW[0].comments;
-          score = item.belongedToSubmitHW[0].score;
-          flg = item.belongedToSubmitHW[0].flg;
-          answer = item.belongedToSubmitHW[0].content;
+        // if (item.belongedToSubmitHW.length != 0) {
+        //   comments = item.belongedToSubmitHW[0].comments;
+        //   score = item.belongedToSubmitHW[0].score;
+        //   flg = item.belongedToSubmitHW[0].flg;
+        //   answer = item.belongedToSubmitHW[0].content;
+        // }
+        if (item.belongedToSubmitHW != null) {
+          comments = item.belongedToSubmitHW.comments;
+          score = item.belongedToSubmitHW.score;
+          flg = item.belongedToSubmitHW.flg;
+          answer = item.belongedToSubmitHW.content;
         }
-
         let isFinished = false;
         if (flg != 0) isFinished = true;
         let title =
@@ -298,6 +301,7 @@ exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(
         {
           $match: { _id: req.body.homework_id },
         },
+        {$unwind:"$belongedToSubmitHW"},
         {
           $match: { "belongedToSubmitHW.student_id": req.body.student_id },
         },
@@ -336,13 +340,13 @@ exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(
         let score = 0;
         let flg = 0;
         let answer = " ";
-        if (item.belongedToSubmitHW.length != 0) {
-          comments = item.belongedToSubmitHW[0].comments;
-          score = item.belongedToSubmitHW[0].score;
-          flg = item.belongedToSubmitHW[0].flg;
-          answer = item.belongedToSubmitHW[0].content;
-        }
 
+        if (item.belongedToSubmitHW != null) {
+          comments = item.belongedToSubmitHW.comments;
+          score = item.belongedToSubmitHW.score;
+          flg = item.belongedToSubmitHW.flg;
+          answer = item.belongedToSubmitHW.content;
+        }
         let resType = 0;
         if (item.task_type === "homework") resType = 1;
 
@@ -371,8 +375,7 @@ exports.getSetAndSubmitHomeworkForStuByHomewrokID = catchAsync(
     } catch (err) {
       console.log(err);
     }
-  }
-);
+});
 
 exports.getSetHomeworkByLessonIDandNumber = catchAsync(
   async (req, res, next) => {

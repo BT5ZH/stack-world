@@ -22,6 +22,10 @@ router
   .route("/paper/getquestionBankByPaperID")
   .post(authController.protect, questionController.getquestionBankByPaperID) ;
 router
+  .route("/paper/getExamInfoForStuByLessonID")
+  .post(authController.protect, questionController.getExamInfoForStuByLessonID) ;
+  
+router
   .route("/paper/:id")
   .delete(authController.protect, questionController.deletePaper) ;
 // router

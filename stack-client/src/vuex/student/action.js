@@ -125,6 +125,77 @@ const action = {
     commit("updateResList", resList);
     //}
   },
+  async getExamList({ commit }, { lesson_id, student_id }) {
+    const postData = { lesson_id, student_id };
+    const { data } = await axios.post(
+      "/pc/v1/questions/paper/getExamInfoForStuByLessonID",
+      postData
+    );
+    errorHandler(data, "getExamList");
+    // console.log(data.Homeworks)
+    let examList = data.examList.map((item)=>{
+      return{
+        id:item.id,
+        lid:item.lid,
+        isFinish:item.isFinish,
+        resType:0,
+        title:item.title,
+        task_type:item.task_type,
+        deadline:item.deadline,
+        score:item.score,
+        quesitons:item.questions.map((n)=>{
+          let options=[]
+          var num = 65;//"A"的ASCII值
+          
+          for(let i=0;i<n.options.length;i++){
+              let value=String.fromCharCode(num+i); 
+              let text=n.options[i]
+              options.push({value,text})
+          }
+          return{
+            content:n.stem,
+            options:options,
+            answer:n.right_answer.split(""),
+            student_answer:n.student_answer
+          }
+        })
+      }
+    });
+    commit("updateExamList", examList);
+
+     // {
+    //   id: "b8e0ac50-000",
+    //   isFinish: false,
+    //   resType: 0,
+    //   title: "examination 1",
+    //   task_type: "exam",
+    //   deadline: "2021-02-19 14:02",
+    //   score: 0,
+    //   questions: [
+    //     {
+    //       content: "question 1",
+    //       options: [
+    //         { value: "A", text: "aaaaa" },
+    //         { value: "B", text: "bbbbb" },
+    //         { value: "C", text: "ccccc" },
+    //         { value: "D", text: "ddddd" },
+    //       ],
+    //       answer: ["A"],
+    //     },
+    //     {
+    //       content: "question 2",
+    //       options: [
+    //         { value: "A", text: "aaaaa" },
+    //         { value: "B", text: "bbbbb" },
+    //         { value: "C", text: "ccccc" },
+    //         { value: "D", text: "ddddd" },
+    //         { value: "E", text: "eeeee" },
+    //       ],
+    //       answer: ["A", "E"],
+    //     },
+    //   ],
+    // },
+  },
   async getFavResList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
     errorHandler(data, "getFavResList");

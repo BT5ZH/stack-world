@@ -25,6 +25,14 @@ const studentpaperSchema = new mongoose.Schema({
               type: mongoose.Schema.Types.String,
               ref:"Question",
             },
+            stem:{
+              type: String,
+            },
+            options:[
+              {
+                type: String,
+              }
+            ],
             student_answer:{
               type: String,
               default:'Z',

@@ -1,6 +1,6 @@
 <template>
     <div style="padding: 2rem">
-        <a-empty v-if="quesList.length == null" description="暂无提问" />
+        <a-empty v-if="quesList.length == null" description="暂无试题" />
         <a-list v-else item-layout="vertical" size="large">
             <a-list-item v-for='(item,index) in quesList' :key='index'>
                 <multi-ques v-if="item.answer.length!=1" :item="item">
@@ -38,7 +38,9 @@
         mounted() {
             let id = this.$route.params.id;
             this.quesList = this.examList[this.examList.findIndex((item) => item.id)].questions;
-            console.log(this.quesList)
+            // console.log(this.examList);
+
+            // console.log(this.quesList)
         },
         computed: {
             ...mapState({
