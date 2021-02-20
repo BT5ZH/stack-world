@@ -206,6 +206,7 @@ export default {
     let student_id = this.userId;
     this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
 
+<<<<<<< HEAD
     // 获取试卷数据
     this.$store.dispatch("student/getExamList", { lesson_id, student_id });
   },
@@ -223,6 +224,36 @@ export default {
     }),
     courseStart() {
       return this.openRooms.some((item) => item === this.lessonId);
+=======
+      // 获取试卷数据
+      this.$store.dispatch("student/getExamList", { lesson_id, student_id });
+     
+    },
+    computed: {
+      ...mapState({
+        userId: (state) => state.public.uid,
+        studentId: (state) => state.public.studentId,
+        studentName: (state) => state.public.userName,
+        classMenu: (state) => state.student.classMenu,
+        resList: (state) => state.student.resList,
+        examList: (state) => state.student.examList,
+        classList: (state) => state.student.classList,
+        homeworkList: (state) => state.student.homeworkList,
+        openRooms: (state) => state.student.openRooms,
+      }),
+      courseStart() {
+        return this.openRooms.some((item) => item === this.lessonId);
+      },
+    },
+    beforeRouteLeave(to, from, next) {
+      socket.sendEvent("joinRoom", {
+        actionType: "leave",
+        role: "student",
+        roomId: this.lessonId,
+        data: { studentId: this.studentId },
+      });
+      next();
+>>>>>>> 946556b9e8b0c8e171a636c16cbb412eb029667f
     },
   },
   beforeRouteLeave(to, from, next) {

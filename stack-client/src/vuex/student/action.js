@@ -143,7 +143,7 @@ const action = {
         task_type:item.task_type,
         deadline:item.deadline,
         score:item.score,
-        quesitons:item.questions.map((n)=>{
+        questions:item.questions.map((n)=>{
           let options=[]
           var num = 65;//"A"的ASCII值
           
@@ -153,6 +153,7 @@ const action = {
               options.push({value,text})
           }
           return{
+            id:n.ques_id,
             content:n.stem,
             options:options,
             answer:n.right_answer.split(""),
@@ -162,39 +163,24 @@ const action = {
       }
     });
     commit("updateExamList", examList);
-
-     // {
-    //   id: "b8e0ac50-000",
-    //   isFinish: false,
-    //   resType: 0,
-    //   title: "examination 1",
-    //   task_type: "exam",
-    //   deadline: "2021-02-19 14:02",
-    //   score: 0,
-    //   questions: [
-    //     {
-    //       content: "question 1",
-    //       options: [
-    //         { value: "A", text: "aaaaa" },
-    //         { value: "B", text: "bbbbb" },
-    //         { value: "C", text: "ccccc" },
-    //         { value: "D", text: "ddddd" },
-    //       ],
-    //       answer: ["A"],
-    //     },
-    //     {
-    //       content: "question 2",
-    //       options: [
-    //         { value: "A", text: "aaaaa" },
-    //         { value: "B", text: "bbbbb" },
-    //         { value: "C", text: "ccccc" },
-    //         { value: "D", text: "ddddd" },
-    //         { value: "E", text: "eeeee" },
-    //       ],
-    //       answer: ["A", "E"],
-    //     },
-    //   ],
-    // },
+  },
+  async updateStudentPaper({ commit }, { paper_id, student_id, ques_id,student_answer,score}) {
+    const postData = { paper_id, student_id, ques_id,student_answer,score};
+    const { data } = await axios.post(
+      "/pc/v1/questions/paper/updateStudentPaper",
+      postData
+    );
+    errorHandler(data, "updateStudentPaper");
+    
+  },
+  async updateExamPaperStatus({ commit }, { paper_id, student_id, is_finished}) {
+    const postData = { paper_id, student_id, is_finished};
+    const { data } = await axios.post(
+      "/pc/v1/questions/paper/updateExamPaperStatus",
+      postData
+    );
+    errorHandler(data, "updateExamPaperStatus");
+    
   },
   async getFavResList({ commit }) {
     const { data } = await axios.get("/pc/v1/organizations");
@@ -206,6 +192,8 @@ const action = {
     }));
     commit("updateResList", favResList);
   },
+  
+
 };
 
 export default action;

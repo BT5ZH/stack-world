@@ -2,6 +2,7 @@ const QuesBank = require("../models/questionModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Paper = require("../models/paperModel");
+const Studentpaper = require("../models/studentpaperModel");
 
 exports.getAllQuestions = catchAsync(async (req, res, next) => {
   const queryObj = { ...req.query };
@@ -218,7 +219,6 @@ exports.getquestionBankByPaperID = catchAsync(async (req, res, next) => {
 exports.getExamInfoForStuByLessonID = catchAsync(
   async (req, res, next) => {
     try {
-      console.log("--->"+req.body.student_id);
       const data = await Paper.aggregate([
         {
           $match: { lesson_id: req.body.lesson_id },
@@ -291,5 +291,61 @@ exports.getExamInfoForStuByLessonID = catchAsync(
     }
   }
 );
+exports.updateStudentPaper = catchAsync(async (req, res, next) => {
+  const data = await Studentpaper.findOne({paper_id:req.body.paper_id,student_id:req.body.student_id}).select('questions');
+  if (!data) {
+    return next(new AppError("该试卷不存在", 404));
+  }
+  let questions = data.questions
+
+  for(let i=0;i<questions.length;i++){
+    if(questions[i].ques_id===req.body.ques_id){
+      questions[i].student_answer = req.body.student_answer;
+      break;
+    }
+  }
+  req.body.questions = questions;
+
+  const studentpaper = await Studentpaper.findOneAndUpdate(
+    {paper_id:req.body.paper_id,student_id:req.body.student_id},
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+   );
+
+  if (!studentpaper) {
+    return next(new AppError("该试卷不存在", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      studentpaper,
+    },
+  });
+
+});
+exports.updateExamPaperStatus = catchAsync(async (req, res, next) => {
+  const studentpaper = await Studentpaper.findOneAndUpdate(
+    {paper_id:req.body.paper_id,student_id:req.body.student_id},
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+   );
+
+  if (!studentpaper) {
+    return next(new AppError("该试卷不存在", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      studentpaper,
+    },
+  });
+
+});
 //-----------------------paper------------------------------
 /////////////////////////////////////////////////////////////////////////

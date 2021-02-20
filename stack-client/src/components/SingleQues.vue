@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{ item.content }}</p>
+    <p>{{index}}.&nbsp;{{ item.content }}</p>
     <a-radio-group v-model="value" @change="onChange" :value="value">
       <a-radio
         :style="radioStyle"
@@ -15,11 +15,15 @@
     <a-button
       :disabled="disabled"
       @click="submitAnswer"
-      style="width: 100%; margin-top: 20px"
+      style=" margin-top: 20px; "
       type="primary"
     >
       {{ btnText }}
     </a-button>
+    <br>
+    <div style="margin-top: 10px" v-show="answerVisible" >
+      正确答案：{{item.answer[0]}}&nbsp;&nbsp;|&nbsp;&nbsp;提交答案：{{item.student_answer==='Z'?"未选":item.student_answer}}
+    </div>
   </div>
 </template>
 
@@ -33,8 +37,18 @@ export default {
     },
     btnText: {
       type: String,
-      default: "提交答案",
+      default: "确 定",
     },
+    //////added the index by qichao//////
+    index:{
+      type:Number,
+      default: 0,
+    },
+    submited:{
+      type:Boolean,
+      default:false,
+    }
+    ////////////////////////////////////
   },
   data() {
     return {
@@ -44,6 +58,7 @@ export default {
         height: "30px",
         lineHeight: "30px",
       },
+      //answerVisible:false,
     };
   },
   methods: {
@@ -55,8 +70,37 @@ export default {
       this.$emit("submit", {
         id: this.item.id,
         answer: this.value,
+
       });
+      ///////////////////////////////////
+      this.stuDoQuestion();// added by qichao
+      ///////////////////////////////////
+    },
+    ///////////added by qichao/////////////
+    stuDoQuestion(){
+      if(this.value!=""){
+        this.$emit("submitExam", {
+          id: this.item.id,
+          answer: this.value,
+          right_answer:this.item.answer[0]
+        });
+        this.item.student_answer=this.value;
+        this.disabled=true;
+      }else
+        this.$message.error("请先选择选项");
+    },
+    ///////////added by qichao/////////////
+  },
+  computed:{
+    answerVisible() {
+      if(this.submited) return true;
+      else return false;
     },
   },
+  mounted(){
+   // if(this.disabled) this.answerVisible=true;
+    if (this.item.student_answer!='Z') this.disabled= true;
+    
+  }
 };
 </script>

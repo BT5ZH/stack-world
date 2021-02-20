@@ -132,6 +132,7 @@ const action = {
       const { data } = await axios.post(url, requestData);
       commit("updateQuesOfPaper", data.questions);
     } catch (err) {
+      commit("updateQuesOfPaper", []);
       console.error(err);
     }
   },
@@ -142,6 +143,7 @@ const action = {
       const { data } = await axios.post(url, requestData);
       commit("updateSetHomeworks", data.Homeworks);
     } catch (err) {
+      commit("updateSetHomeworks", []);
       console.error(err);
     }
   },
@@ -151,8 +153,11 @@ const action = {
       const requestData = { lesson_id };
       const url = "pc/v1/questions/paper/getPapersByLessonID";
       const { data } = await axios.post(url, requestData);
+     
       commit("updatePapers", data.papers);
     } catch (err) {
+
+      commit("updatePapers", []);
       console.error(err);
     }
   },
