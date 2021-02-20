@@ -18,6 +18,10 @@ router
   .post(authController.protect, liveActivityController.genUserSig);
 
 router
+  .route("/activity_data/:activity_id")
+  .patch(authController.protect, liveActivityController.saveActivity);
+
+router
   .route("/online_list/:lesson_id")
   .get(authController.protect, socketOP.getMemberListInLesson)
   .delete(authController.protect, socketOP.clearMembersOfLesson);

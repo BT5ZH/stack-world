@@ -58,6 +58,27 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+exports.getClassList = catchAsync(async (req, res) => {
+  const nameList = req.body.curRealStudents;
+
+  console.log("班级学生列表");
+  console.log(nameList);
+  const result = await User.find({ _id: { $in: nameList } }).select(
+    "_id user_id role name "
+  );
+  //   console.log(query);
+  // EXECUTE QUERY
+  // const users = await query;
+  console.log("获取班级学生列表");
+  console.log(result);
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    data: result,
+  });
+});
+
 exports.getUser = catchAsync(async (req, res) => {
   //const user = await User.findById(req.params.id);
   const user = await User.findOne({ _id: req.params.id });

@@ -10,7 +10,8 @@
               align="center"
               @click="switchToday(item.day, item.titleEn)"
               :style="{
-                background: item.titleEn === today.title ? '#13c2c2' : '#409EFF',
+                background:
+                  item.titleEn === today.title ? '#13c2c2' : '#409EFF',
               }"
               >{{ item.day }}</span
             >
@@ -43,7 +44,9 @@
           <span>{{ item.roomName }}</span>
         </a-col>
         <a-col :span="3">
-          <a-button @click="popSelectModal(item)" type="primary">开始上课</a-button>
+          <a-button @click="popSelectModal(item)" type="primary"
+            >开始上课</a-button
+          >
         </a-col>
       </a-row>
     </a-row>
@@ -120,6 +123,10 @@ export default {
       orgName: (state) => state.public.orgName,
       subOrgName: (state) => state.public.subOrgName,
       teacherName: (state) => state.public.userName,
+      realStudents: (state) => {
+        // this.dispatch("teacher/getRealStudentsList",state.teacher.curRealStudents)
+        state.teacher.curRealStudents;
+      },
       // room_id:(state) =>
     }),
     lessonNames() {
@@ -164,6 +171,32 @@ export default {
         lessonId: this.curCourse.lessonId,
       });
 
+      // 1-1）设置当前上课的班级
+      let selectedDate = this.today.title;
+      console.log("今天的日期: " + selectedDate);
+      console.log(selectedDate);
+      let curclassId = "";
+      let curclassName = "";
+      this.courseCalendar.forEach((item) => {
+        if (this.curCourse.lessonId == item.lessonId) {
+          console.log("找到了课表里的课程: " + item.lessonId);
+          item.curriculum.forEach((temp) => {
+            if (selectedDate == temp.date) {
+              console.log("找到了课程的日期: " + temp.date);
+              curclassId = temp.class_id._id;
+              curclassName = temp.class_id.class_name;
+              this.$store.dispatch("teacher/setRealStudent", {
+                curRealStudents: temp.class_id.students,
+              });
+            }
+          });
+        }
+      });
+      this.$store.dispatch("teacher/setCurClass", {
+        curclassId,
+        curclassName,
+      });
+
       // 2）初始化教学活动数据
       // let course = this.curCourse;
       // const config = { params: { activityID: course.lessonId } };
@@ -184,7 +217,12 @@ export default {
           //   throw "create room fail";
           // }
           console.log("成功初始化教学活动数据");
-          console.log(data);
+          console.log(data.data);
+          // 获取当前教学活动ID非课程lessonId
+          this.$store.dispatch("teacher/setCurActivityID", {
+            curActivityID: data.data._id,
+          });
+          console.log("成功设置教学活动ID");
           this.$router.push({
             name: "interaction_index",
             query: {

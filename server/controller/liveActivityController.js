@@ -26,6 +26,26 @@ exports.createActivity = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.saveActivity = catchAsync(async (req, res, next) => {
+  const payload = req.body;
+  console.log("connect+++++++");
+  console.log(payload);
+  const activityId = payload.activity_id;
+  const signData = payload.sign_data;
+
+  const updatedResult = await Activity.findOneAndUpdate(
+    activityId,
+    { sign_data: signData },
+    {
+      new: true,
+    }
+  );
+  res.status(200).json({
+    status: "success",
+    data: updatedResult,
+  });
+});
+
 exports.genUserSig = catchAsync(async (req, res, next) => {
   const appid = process.env.LIVE_APP_ID;
   const secret = process.env.LIVE_SECRET_KEY;

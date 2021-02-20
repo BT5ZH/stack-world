@@ -46,11 +46,17 @@ const activitySchema = new mongoose.Schema(
           total_number: { type: Number },
           real_number: { type: Number },
           class_name: { type: String },
+          class_id: { type: String },
           class_list: {
-            studentId: { type: String },
-            studentName: { type: String },
-            enterTime: { type: Date },
-            signed: { type: String },
+            type: [
+              {
+                studentId: { type: String },
+                studentName: { type: String },
+                enterTime: { type: String }, // 需要改成日期类型
+                signStatus: { type: String },
+                role: { type: String },
+              },
+            ],
           },
         },
       ],

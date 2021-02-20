@@ -90,6 +90,25 @@ const mutation = {
   clearOnlineList(state) {
     state.onlineList = [];
   },
+
+  setCurActivityID(state, payload) {
+    console.log("setCurActivityID mutation :");
+    console.log(payload);
+    state.curActivityID = payload.curActivityID;
+  },
+
+  setCurClass(state, payload) {
+    state.curclassId = payload.curclassId;
+    state.curclassName = payload.curclassName;
+  },
+
+  setRealStudent(state, payload) {
+    // 把班级应到学生列表写入STORE
+    console.log("把班级应到学生列表写入STORE");
+    console.log(payload);
+    state.curRealStudents = payload;
+  },
+
   addRandomStudent(state, randomStudent) {
     state.randomStudent = randomStudent;
   },

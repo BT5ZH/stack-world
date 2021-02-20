@@ -35,9 +35,12 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
-              <span class="onlineInfo-body-li-time">{{ item.enterTime }}</span>
+              <span class="onlineInfo-body-li-time">{{
+                item.enterTime | timeFormatter
+              }}</span>
               <span class="onlineInfo-body-li-flag">
                 <b v-if="item.role !== 'teacher'">🐾</b>
                 <b v-else>🔥</b></span
@@ -73,6 +76,9 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      curActivityID: (state) => state.teacher.curActivityID,
+      curclassName: (state) => state.teacher.curclassName,
+      curclassId: (state) => state.teacher.curclassId,
       teacherId: (state) => state.public.studentId,
       teacherName: (state) => state.public.userName,
       onlineList: (state) => state.teacher.onlineList,
@@ -158,6 +164,20 @@ export default {
       }
     },
     async closeRoom() {
+      // 2）保存本次课教学活动 TODO
+      let signedDataArray = [];
+      let sData = {
+        total_number: this.onlineList.length,
+        real_number: this.audienceList.length,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        class_list: this.audienceList,
+      };
+      signedDataArray.push(sData);
+      await this.$store.dispatch("teacher/saveActivityData", {
+        curActivityID: this.curActivityID,
+        signedData: signedDataArray,
+      });
       // 1）更改房间使用状态
       this.$store.dispatch("teacher/clearRoomMembers", {
         channelId: this.$route.query.lessonId,
@@ -167,9 +187,6 @@ export default {
         status: "avaliable",
         lessonId: null,
       });
-      // 2）保存本次课教学活动 TODO
-
-      // 2-1）保存签到活动
 
       this.$message.info("退出成功");
       // 3) 页面跳转返回主页 TODO
@@ -222,6 +239,12 @@ export default {
   mounted() {
     this.$store.commit("teacher/clearOnlineList");
     this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
+  },
+  filters: {
+    timeFormatter(value) {
+      console.log(value);
+      return value.trim().split(" ")[1];
+    },
   },
 };
 </script>

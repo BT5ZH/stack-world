@@ -124,17 +124,17 @@ exports.getPatrolMessage = catchAsync(async (req, res, next) => {
     .populate("teacher_id", "name")
     .populate("curriculum.class_id", "class_name")
     .populate("curriculum.room_id", "room_number room_status living_lessonID")
-    .select("_id course_id teacher_id curriculum lesson_id ")
+    .select("_id course_id teacher_id curriculum lesson_id ");
 
   // 数据处理(只选取living的教室)
   if (data || data.length !== 0) {
     //学院判断,因为timeTable表没有org属性
-    data = data.filter(child => {
+    data = data.filter((child) => {
       return child.course_id.org_name == req.params.orgName;
-    })
-    data = data.filter(x => {
+    });
+    data = data.filter((x) => {
       let status = false;
-      x.curriculum.forEach(item => {
+      x.curriculum.forEach((item) => {
         if (!item.room_id) return;
         if (item.room_id.room_status == "living") {
           if (item.room_id.living_lessonID !== x.lesson_id) {
@@ -142,11 +142,12 @@ exports.getPatrolMessage = catchAsync(async (req, res, next) => {
             return;
           }
           status = true;
+        } else {
+          status = false;
         }
-        else { status = false; }
-      })
+      });
       return status;
-    })
+    });
   }
 
   if (!data || data.length === 0) {
@@ -157,13 +158,13 @@ exports.getPatrolMessage = catchAsync(async (req, res, next) => {
     status: "success",
     data,
   });
-})
+});
 
 exports.getTimeTableFromTeacherID = catchAsync(async (req, res, next) => {
   const data = await TimeTable.find({ teacher_id: req.body.teacher_id })
     .populate("course_id", "name -_id")
     .populate("teacher_id", "user_id name -_id")
-    .populate("curriculum.class_id", "class_name -_id")
+    .populate("curriculum.class_id", "class_name _id students")
     .populate("curriculum.room_id", "room_number _id");
 
   if (!data || data.length === 0) {

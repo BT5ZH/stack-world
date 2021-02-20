@@ -9,9 +9,9 @@ function formatDate(time) {
     hour = date.getHours(),
     min = date.getMinutes(),
     sec = date.getSeconds();
-  var newTime = hour + ":" + min + ":" + sec;
-  // var newTime =
-  //   year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+  // var newTime = hour + ":" + min + ":" + sec;
+  var newTime =
+    year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
   return newTime;
 }
 

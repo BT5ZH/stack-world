@@ -163,48 +163,6 @@ exports.addStudents = catchAsync(async (req, res, next) => {
     data: newStudents,
   });
 });
-/*
-exports.updateStudents = catchAsync(async (req, res, next) => {
-  const leftStudents = req.body.students;
-  const classEntity = await Class.find({ _id: req.params.id });
-  classEntity.forEach((item) => {
-    leftStudents.forEach((stu, i) => {
-      item.students.forEach((arr, index) => {
-        console.log(arr._id + "%%%%%%%" + stu._id);
-        console.log(arr._id == stu._id);
-        if (arr._id == stu._id) {
-          arr.studentID = stu.studentID;
-          arr.studentName = stu.studentName;
-          arr.remark = stu.remark;
-        }
-      });
-    });
-  });
-
-  console.log(classEntity);
-  const result = await Class.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      $set: {
-        students: classEntity[0].students,
-      },
-    },
-    {
-      new: true,
-      upsert: true,
-    }
-  );
-
-  if (!result) {
-    return next(new AppError("更新班级学生列表信息出错", 404));
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      students: result.students,
-    },
-  });
-});*/
 
 //edit by chaos
 exports.updateStudents = catchAsync(async (req, res, next) => {
@@ -246,7 +204,6 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteStudents = catchAsync(async (req, res, next) => {
-  console.log("---req---");
   console.log(req.body);
   const multiStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(

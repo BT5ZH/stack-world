@@ -28,6 +28,7 @@ router
 router.route("/admin").post(userController.createAdmin);
 router.route("/teacher").post(userController.createTeacher);
 router.route("/student").post(userController.createStudent);
+router.route("/classList").post(userController.getClassList);
 
 router
   .route("/multipleUsers")
@@ -37,19 +38,18 @@ router
 router
   .route("/allOrgAdmin")
   .get(authController.protect, userController.getOrgTeachers);
-router 
+router
   .route("/getTeachersBySubOrgName")
   .post(authController.protect, userController.getTeachersBySubOrgName);
-router 
+router
   .route("/getUsersBySubOrgAndSortByTitle")
   .get(authController.protect, userController.getUsersBySubOrgAndSortByTitle);
-  
+
 router
   .route("/:id")
   .get(userController.getUser)
   .patch(authController.protect, userController.updateUser)
   .delete(userController.deleteUser)
   .post(authController.protect, userController.updateUserRecords);
-
 
 module.exports = router;

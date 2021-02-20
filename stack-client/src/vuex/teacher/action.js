@@ -125,7 +125,7 @@ const action = {
       console.error(error);
     }
   },
-  async getquestionBankByPaperID({ commit },{ paper_id }) {
+  async getquestionBankByPaperID({ commit }, { paper_id }) {
     try {
       const requestData = { paper_id };
       const url = "pc/v1/questions/paper/getquestionBankByPaperID";
@@ -145,7 +145,7 @@ const action = {
       console.error(err);
     }
   },
-  
+
   async getPapersByLessonID({ commit }, { lesson_id }) {
     try {
       const requestData = { lesson_id };
@@ -170,7 +170,10 @@ const action = {
   async updateRoomStatus({ commit }, params) {
     try {
       const url = `pc/v1/rooms/${params.room_id}`;
-      await axios.patch(url, { room_status: params.status, living_lessonID: params.lessonId });
+      await axios.patch(url, {
+        room_status: params.status,
+        living_lessonID: params.lessonId,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -186,6 +189,43 @@ const action = {
       }
     } catch (err) {
       console.error(err);
+    }
+  },
+  async saveActivityData({ commit }, payload) {
+    console.log(payload);
+    try {
+      const url = `pc/v1/activities/activity_data/${payload.curActivityID}`;
+
+      await axios.patch(url, {
+        sign_data: payload.signedData,
+        activity_id: payload.curActivityID,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  // 当前活动ID写入STORE，方便后续使用
+  setCurActivityID({ commit }, payload) {
+    console.log("setCurActivityID action :");
+    console.log(payload);
+    commit("setCurActivityID", payload);
+  },
+  // 当前被授课班级ID写入STORE，方便后续使用
+  setCurClass({ commit }, payload) {
+    commit("setCurClass", payload);
+  },
+  //
+  async setRealStudent({ commit }, payload) {
+    console.log("获取上课学生列表");
+    // console.log(payload);
+
+    try {
+      const url = `pc/v1/users/classList`;
+      const { data } = await axios.post(url, payload);
+      console.log(data);
+      commit("setRealStudent", data.data);
+    } catch (error) {
+      console.log(error);
     }
   },
 };
