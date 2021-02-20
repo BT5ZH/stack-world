@@ -167,6 +167,7 @@ exports.addStudents = catchAsync(async (req, res, next) => {
 //edit by chaos
 exports.updateStudents = catchAsync(async (req, res, next) => {
   console.log("添加学生方法1");
+  let result = {};
 
   const newStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(
@@ -185,21 +186,30 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
   );
 
   if (!classEntity) {
-    return next(new AppError("该班级不存在", 404));
+    // return next(new AppError("该班级不存在", 404));
+    result = {
+      message: "班级数据为空",
+      res_code: "res_404",
+    };
+  } else {
+    const updatedStudent = await User.updateMany(
+      { _id: { $in: newStudents } },
+      {
+        $push: {
+          class_id: req.body.class_id,
+        },
+      }
+    );
+    console.log(updatedStudent);
+    result = {
+      message: "有班级数据",
+      res_code: "res_200",
+    };
   }
-
-  const updatedStudent = await User.updateMany(
-    { _id: { $in: newStudents } },
-    {
-      $push: {
-        class_id: req.body.class_id,
-      },
-    }
-  );
-  console.log(updatedStudent);
 
   res.status(200).json({
     status: "success",
+    result,
   });
 });
 
@@ -352,6 +362,7 @@ exports.getClassesByMajorName = catchAsync(async (req, res, next) => {
 //edit by gongheng 12-31
 // 得到班级查找树的数据
 exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
+  let result = {};
   const data = await Class.aggregate([
     { $match: { org_name: req.query.org_name } },
     {
@@ -362,12 +373,18 @@ exports.putSubOrgAndMajorIntoTree = catchAsync(async (req, res, next) => {
     },
   ]);
   if (data.length === 0 || !data) {
-    return next(new AppError("课程不存在", 500));
+    // return next(new AppError("课程不存在", 500));
+    result = {
+      message: "班级树形数据为空",
+      res_code: "res_404",
+    };
+  } else {
+    result = data;
   }
   console.log(data);
   res.status(200).json({
     status: "success",
-    data,
+    result,
   });
 });
 // 按前端所给条件(学院，专业)获取数据
