@@ -14,7 +14,8 @@ const userSchema = new mongoose.Schema(
       default: uuid.v1,
     },
     user_id: { type: String },
-    class_id: [{ type: String }],
+    // 此处不需要特意定义成数组，只要用$push，自然会变成数组
+    class_id: { type: String },
     title: {
       type: String,
       enum: ["student", "lecturer", "professor", "vice-professor"],
