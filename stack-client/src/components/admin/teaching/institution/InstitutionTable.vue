@@ -64,12 +64,7 @@
       </a-table>
     </a-spin>
     <!-- 添加班级对话框 -->
-    <a-modal
-      v-model="visible"
-      title="添加"
-      @ok="hideModal"
-      :maskClosable="false"
-    >
+    <a-modal v-model="visible" title="添加" @ok="hideModal" :maskClosable="false">
       <a-form-model
         :model="addclass"
         :label-col="labelCol"
@@ -103,21 +98,14 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="班级名" prop="add_class_name">
-          <a-input
-            placeholder="请输入班级名"
-            v-model="addclass.add_class_name"
-          ></a-input>
+          <a-input placeholder="请输入班级名" v-model="addclass.add_class_name"></a-input>
         </a-form-model-item>
         <!-- 学生怎么加？？？ -->
       </a-form-model>
     </a-modal>
     <!-- 编辑对话框 -->
     <a-modal v-model="editModal_visible" title="编辑班级" @ok="edit_submit">
-      <a-form
-        :modal="edit_class"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 12 }"
-      >
+      <a-form :modal="edit_class" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-model-item label="学院">
           <a-select v-model="subOrg_name">
             <a-select-option
@@ -274,6 +262,7 @@ export default {
         // console.log(data.data);
         this.treeData = data.data;
       } catch (err) {
+        this.$store.dispatch("admin/change_Tree_spin_status", false);
         console.log(err);
       }
     },
@@ -281,8 +270,7 @@ export default {
       // 按获取专业
       // console.log(queryString)
       // console.log(this.orgName)
-      const url =
-        "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
+      const url = "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
       try {
         const { data } = await axiosInstance.get(url);
         // console.log(data)
@@ -320,6 +308,7 @@ export default {
         // console.log("-----classList-----")
         // console.log(this.classList)
       } catch (err) {
+        this.$store.dispatch("admin/change_spin_status", false);
         console.log(err);
       }
     },
