@@ -24,6 +24,12 @@ router
 router
   .route("/paper/getExamInfoForStuByLessonID")
   .post(authController.protect, questionController.getExamInfoForStuByLessonID) ;
+router
+  .route("/paper/updateStudentPaper")
+  .post(authController.protect, questionController.updateStudentPaper) ;
+router
+  .route("/paper/updateExamPaperStatus")
+  .post(authController.protect, questionController.updateExamPaperStatus) ;
   
 router
   .route("/paper/:id")

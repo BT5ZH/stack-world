@@ -23,8 +23,11 @@ const state = {
   sources: [],
   questionBank:[],
   questionOfPaper:[],
+  updatePapers:[],
+  updateSetHomeworks:[],
   // courseinfo
   courseInfo: {},
+  
 };
 
 export default state;

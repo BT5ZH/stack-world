@@ -145,9 +145,7 @@ export default {
       this.showques_visible=true  
     },
     async deletePaper(record) {
-      console.log("------delete id = "+record.paper_id);
       await this.showDeleteConfirm(record.paper_id);
-      
     },
     showDeleteConfirm(id) {
       var that = this;

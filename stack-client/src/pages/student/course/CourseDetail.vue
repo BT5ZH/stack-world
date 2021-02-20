@@ -199,7 +199,7 @@
 
       // 获取试卷数据
       this.$store.dispatch("student/getExamList", { lesson_id, student_id });
-      
+     
     },
     computed: {
       ...mapState({

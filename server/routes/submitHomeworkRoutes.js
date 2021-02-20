@@ -17,9 +17,7 @@ router
   .route("/:id")
   .get(authController.protect, submitHomeworkController.getSubmitHomework)
   .patch(authController.protect, submitHomeworkController.updateSubmitHomework)
-  .delete(
-    authController.protect,
-    submitHomeworkController.deleteSubmitHomework
+  .delete(authController.protect, submitHomeworkController.deleteSubmitHomework
   );
 
 module.exports = router;
