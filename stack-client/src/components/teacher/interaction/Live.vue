@@ -82,6 +82,7 @@ export default {
       teacherId: (state) => state.public.studentId,
       teacherName: (state) => state.public.userName,
       onlineList: (state) => state.teacher.onlineList,
+      realStudents: (state) => state.teacher.curRealStudents,
       signList: (state) => state.teacher.signList,
     }),
     audienceList() {
@@ -165,13 +166,41 @@ export default {
     },
     async closeRoom() {
       // 2）保存本次课教学活动 TODO
+      let finalList = [];
+      this.realStudents.forEach((real) => {
+        let finalStatus = {};
+        let flag = false;
+        this.audienceList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            finalStatus = {
+              _id: real._id,
+              studentId: online.studentId,
+              studentName: online.studentName,
+              enterTime: online.enterTime,
+              signStatus: online.signStatus,
+            };
+            flag = true;
+            finalList.push(finalStatus);
+          }
+        });
+        if (flag == false) {
+          finalStatus = {
+            _id: real._id,
+            studentId: real.user_id,
+            studentName: real.name,
+            enterTime: "",
+            signStatus: "",
+          };
+          finalList.push(finalStatus);
+        }
+      });
       let signedDataArray = [];
       let sData = {
-        total_number: this.onlineList.length,
-        real_number: this.audienceList.length,
+        total_number: this.realStudents.length,
+        real_number: this.audienceList.length - 1,
         class_name: this.curclassName,
         class_id: this.curclassId,
-        class_list: this.audienceList,
+        class_list: finalList,
       };
       signedDataArray.push(sData);
       await this.$store.dispatch("teacher/saveActivityData", {

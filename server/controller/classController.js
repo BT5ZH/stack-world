@@ -169,10 +169,12 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
   console.log("添加学生方法1");
   let result = {};
 
+  let classID = req.body.class_id;
+
   const newStudents = req.body.students;
   const classEntity = await Class.findOneAndUpdate(
     {
-      _id: req.body.class_id,
+      _id: classID,
     },
     {
       $addToSet: {
@@ -196,7 +198,7 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
       { _id: { $in: newStudents } },
       {
         $push: {
-          class_id: req.body.class_id,
+          class_id: classID,
         },
       }
     );
@@ -216,6 +218,8 @@ exports.updateStudents = catchAsync(async (req, res, next) => {
 exports.deleteStudents = catchAsync(async (req, res, next) => {
   console.log(req.body);
   const multiStudents = req.body.students;
+  console.log("删除学生列表");
+  console.log(multiStudents);
   const classEntity = await Class.findOneAndUpdate(
     {
       _id: req.params.id,

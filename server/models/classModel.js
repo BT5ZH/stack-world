@@ -1,13 +1,7 @@
 const mongoose = require("mongoose");
-const uuid = require("uuid");
 
 const classSchema = new mongoose.Schema(
   {
-    _id: {
-      type: String,
-      required: [true, "you must tell us your class_id"],
-      default: uuid.v1,
-    },
     class_name: {
       type: String,
       default: "专业名-20XX级-1班 ",

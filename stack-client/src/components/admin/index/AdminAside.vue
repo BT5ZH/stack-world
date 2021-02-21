@@ -4,6 +4,7 @@
     theme="dark"
     @click="route_to"
     :default-open-keys="['teaching']"
+    style="min-height: 100%"
   >
     <a-menu-item key="admin_resource">
       <a-icon type="arrow-up" />

@@ -50,6 +50,7 @@ const activitySchema = new mongoose.Schema(
           class_list: {
             type: [
               {
+                _id: { type: String },
                 studentId: { type: String },
                 studentName: { type: String },
                 enterTime: { type: String }, // 需要改成日期类型

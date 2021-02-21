@@ -4,8 +4,8 @@
       <admin-header />
     </a-layout-header>
     <a-layout>
-      <a-layout-sider width="200px">
-        <admin-aside />
+      <a-layout-sider>
+        <admin-aside width="200px" />
       </a-layout-sider>
       <a-layout-content>
         <router-view />
