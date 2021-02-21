@@ -36,9 +36,33 @@ const activitySchema = new mongoose.Schema(
       type: [
         {
           phase_time: { type: Number },
-          phase_type: { type: String, enum: ["sign", "vote", "test", "call"] },
+          // phase_type: { type: String, enum: ["sign", "vote", "test", "call"] },
+          // 此处不需要枚举，因为存储内容在前端限制了。如果枚举以后添加活动麻烦
+          phase_type: { type: String },
         },
       ],
+    },
+    // 抢答
+    race_data:
+    {
+      // 抢答学生的信息
+      race_students: [
+        {
+          studentID: String,
+          studentName: String,
+          student_answer: String,
+        }
+      ],
+      // 问题信息
+      race_question: {
+        title: String,
+        options: [{
+          text: String,
+          value: String
+        }],
+        question_type: Number,
+        right_answer: String,
+      }
     },
     sign_data: {
       type: [

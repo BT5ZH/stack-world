@@ -39,12 +39,13 @@ export default {
   },
   mounted() {
     console.log("daat----");
-    console.log(this.raceData.question);
+    console.log(this.raceData);
   },
   computed: {
     ...mapState({
       raceData: (state) => state.student.interaction.race,
       studentName: (state) => state.public.userName,
+      studentID: (state) => state.public.uid,
     }),
     lessonId() {
       return this.$route.query.lessonId;
@@ -62,10 +63,13 @@ export default {
         data: {
           ...data,
           studentName: this.studentName,
+          studentID: this.studentID,
           limit: this.raceData.limit,
           question: this.raceData.question,
         },
       });
+      //一人不得反复提交
+      this.raceData.start = false;
     },
   },
 };

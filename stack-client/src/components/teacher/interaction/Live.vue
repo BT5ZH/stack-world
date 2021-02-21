@@ -35,8 +35,7 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName
-                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter
@@ -76,6 +75,7 @@ export default {
   computed: {
     ...mapState({
       uid: (state) => state.public.uid,
+      precourse: (state) => state.teacher.precourse,
       curActivityID: (state) => state.teacher.curActivityID,
       curclassName: (state) => state.teacher.curclassName,
       curclassId: (state) => state.teacher.curclassId,
@@ -84,6 +84,7 @@ export default {
       onlineList: (state) => state.teacher.onlineList,
       realStudents: (state) => state.teacher.curRealStudents,
       signList: (state) => state.teacher.signList,
+      raceList: (state) => state.teacher.raceList,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -166,59 +167,93 @@ export default {
     },
     async closeRoom() {
       // 2）保存本次课教学活动 TODO
-      let finalList = [];
-      this.realStudents.forEach((real) => {
-        let finalStatus = {};
-        let flag = false;
-        this.audienceList.forEach((online) => {
-          if (real.user_id == online.studentId && online.role != "teacher") {
+      // race
+      try {
+        // 2）保存本次课教学活动 TODO
+        // 本次课活动列表
+        this.precourse.nodes.forEach((node) => {
+          if (node.tag === "Race") {
+            let race_students = this.raceList.map((raceData) => {
+              return {
+                studentID: raceData.studentID,
+                studentName: raceData.studentName,
+                student_answer: raceData.answer,
+              };
+            });
+            let race_question = {
+              title: this.raceList[0].question.content,
+              options: this.raceList[0].question.options,
+              question_type: this.raceList[0].question.type,
+              right_answer: this.raceList[0].question.right_answer,
+            };
+            let request = { race_students, race_question };
+            this.$store.dispatch("teacher/saveActivityMessage", {
+              curActivityID: this.curActivityID,
+              request,
+            });
+          }
+        });
+        // if (this.precourse !== null) return;
+        // // race
+        // console.log("err");
+
+        // sign
+        let finalList = [];
+        this.realStudents.forEach((real) => {
+          let finalStatus = {};
+          let flag = false;
+          this.audienceList.forEach((online) => {
+            if (real.user_id == online.studentId && online.role != "teacher") {
+              finalStatus = {
+                _id: real._id,
+                studentId: online.studentId,
+                studentName: online.studentName,
+                enterTime: online.enterTime,
+                signStatus: online.signStatus,
+              };
+              flag = true;
+              finalList.push(finalStatus);
+            }
+          });
+          if (flag == false) {
             finalStatus = {
               _id: real._id,
-              studentId: online.studentId,
-              studentName: online.studentName,
-              enterTime: online.enterTime,
-              signStatus: online.signStatus,
+              studentId: real.user_id,
+              studentName: real.name,
+              enterTime: "",
+              signStatus: "",
             };
-            flag = true;
             finalList.push(finalStatus);
           }
         });
-        if (flag == false) {
-          finalStatus = {
-            _id: real._id,
-            studentId: real.user_id,
-            studentName: real.name,
-            enterTime: "",
-            signStatus: "",
-          };
-          finalList.push(finalStatus);
-        }
-      });
-      let signedDataArray = [];
-      let sData = {
-        total_number: this.realStudents.length,
-        real_number: this.audienceList.length - 1,
-        class_name: this.curclassName,
-        class_id: this.curclassId,
-        class_list: finalList,
-      };
-      signedDataArray.push(sData);
-      await this.$store.dispatch("teacher/saveActivityData", {
-        curActivityID: this.curActivityID,
-        signedData: signedDataArray,
-      });
-      // 1）更改房间使用状态
-      this.$store.dispatch("teacher/clearRoomMembers", {
-        channelId: this.$route.query.lessonId,
-      });
-      await this.$store.dispatch("teacher/updateRoomStatus", {
-        room_id: this.$route.query.room_id,
-        status: "avaliable",
-        lessonId: null,
-      });
-
-      this.$message.info("退出成功");
-      // 3) 页面跳转返回主页 TODO
+        let signedDataArray = [];
+        let sData = {
+          total_number: this.realStudents.length,
+          real_number: this.audienceList.length - 1,
+          class_name: this.curclassName,
+          class_id: this.curclassId,
+          class_list: finalList,
+        };
+        signedDataArray.push(sData);
+        await this.$store.dispatch("teacher/saveActivityData", {
+          curActivityID: this.curActivityID,
+          signedData: signedDataArray,
+        });
+        // 1）更改房间使用状态
+        this.$store.dispatch("teacher/clearRoomMembers", {
+          channelId: this.$route.query.lessonId,
+        });
+        await this.$store.dispatch("teacher/updateRoomStatus", {
+          room_id: this.$route.query.room_id,
+          status: "avaliable",
+          lessonId: null,
+        });
+        this.$message.info("退出成功");
+        // 3) 页面跳转返回主页 TODO
+      } catch (err) {
+        console.log(err);
+        this.$message.error("信息保存失败");
+      }
     },
     async startLive() {
       try {

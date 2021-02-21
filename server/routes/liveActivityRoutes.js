@@ -22,6 +22,10 @@ router
   .patch(authController.protect, liveActivityController.saveActivity);
 
 router
+  .route("/activityMessage/:activity_id")
+  .patch(authController.protect, liveActivityController.saveActivityMessage);
+
+router
   .route("/online_list/:lesson_id")
   .get(authController.protect, socketOP.getMemberListInLesson)
   .delete(authController.protect, socketOP.clearMembersOfLesson);

@@ -153,7 +153,7 @@ const action = {
       const requestData = { lesson_id };
       const url = "pc/v1/questions/paper/getPapersByLessonID";
       const { data } = await axios.post(url, requestData);
-     
+
       commit("updatePapers", data.papers);
     } catch (err) {
 
@@ -196,11 +196,22 @@ const action = {
       console.error(err);
     }
   },
+  async saveActivityMessage({ commit }, payload) {
+    try {
+      console.log(payload);
+      const url = `pc/v1/activities/activityMessage/${payload.curActivityID}`;
+      const data = await axios.patch(url, {
+        request:payload.request
+      });
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async saveActivityData({ commit }, payload) {
     console.log(payload);
     try {
       const url = `pc/v1/activities/activity_data/${payload.curActivityID}`;
-
       await axios.patch(url, {
         sign_data: payload.signedData,
         activity_id: payload.curActivityID,

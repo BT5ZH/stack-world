@@ -26,6 +26,20 @@ exports.createActivity = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.saveActivityMessage = catchAsync(async (req, res, next) => {
+  console.log(req.body.request);
+  const activityId = req.params.activity_id
+  await Activity.updateMany(
+    { _id: activityId },
+    {
+      race_data: req.body.request,
+    }
+  );
+  res.status(200).json({
+    status: "success",
+  });
+});
+
 exports.saveActivity = catchAsync(async (req, res, next) => {
   const payload = req.body;
   console.log("connect+++++++");

@@ -3,19 +3,12 @@
     <a-col :span="18" :push="3">
       <h1 class="sign-title">抢答结果</h1>
       <div v-if="raceList.length != 0">
-        <div class="teacher_question">
-          问题:&nbsp;{{ raceList[0].question.stem }}
-        </div>
+        <div class="teacher_question">问题:&nbsp;{{ raceList[0].question.stem }}</div>
         <div class="teacher_question">
           正确答案:&nbsp;{{ raceList[0].question.right_answer }}
         </div>
       </div>
-      <a-list
-        size="small"
-        bordered
-        :data-source="raceList"
-        v-if="raceList.length"
-      >
+      <a-list size="small" bordered :data-source="raceList" v-if="raceList.length">
         <template #renderItem="item">
           <a-list-item>
             <span class="name"> {{ item.studentName }} </span>
@@ -42,8 +35,7 @@ export default {
       raceList: (state) => state.teacher.raceList,
     }),
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {},
 };
 </script>
