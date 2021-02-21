@@ -62,6 +62,13 @@ const activitySchema = new mongoose.Schema(
         },
       ],
     },
+    vote_data: {
+      type: [
+        {
+          total_number: { type: Number },
+        },
+      ],
+    },
   },
   {
     toJSON: { virtuals: true },
