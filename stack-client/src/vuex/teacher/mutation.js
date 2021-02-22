@@ -40,7 +40,17 @@ const mutation = {
     console.log(params);
     if (params) {
       if (!state.ask_answer[0]) state.ask_answer = [];
-      state.ask_answer.push(params);
+      var repeatStatus = false;
+      state.ask_answer.forEach(item => {
+        if (item.studentId === params.studentId) {
+          repeatStatus = true;
+          item.answer = params.answer;
+        }
+      })
+      if (repeatStatus) {
+        return;
+      } else
+        state.ask_answer.push(params)
     } else {
       console.error("学生端未返回数据");
     }

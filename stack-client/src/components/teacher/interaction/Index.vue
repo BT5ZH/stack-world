@@ -29,26 +29,18 @@
                 <a-col :span="18">
                   <h2>{{ steps[curEvent].desc }}</h2>
                 </a-col>
-                <a-col :span="2">
-                  <a-button
-                    shape="circle"
-                    size="large"
-                    @click="navigateToEvent(curEvent)"
-                  >
-                    <a-icon type="right-circle" style="font-size: 40px" />
-                  </a-button>
+                <a-col :span="4">
+                  <a-space>
+                    <a-button @click="navigateToEvent(curEvent)"> 发送信息 </a-button>
+                    <a-button @click="showResult"> 显示结果 </a-button>
+                  </a-space>
                 </a-col>
               </a-row>
             </div>
           </div>
 
           <div class="event-steps">
-            <a-steps
-              size="small"
-              progress-dot
-              v-model="curEvent"
-              @change="eventChange"
-            >
+            <a-steps size="small" progress-dot v-model="curEvent" @change="eventChange">
               <a-step
                 v-for="(step, index) in steps"
                 :key="index"
@@ -60,9 +52,15 @@
         </div>
       </div>
 
-      <div class="interactive">
+      <a-drawer
+        placement="right"
+        @close="resultClose"
+        :closable="false"
+        :visible="resultVisible"
+        :width="512"
+      >
         <result></result>
-      </div>
+      </a-drawer>
     </div>
   </div>
 </template>
@@ -90,6 +88,7 @@ export default {
         pick: { name: "提问", desc: "请同学回答问题" },
         randomsign: { name: "随机点名", desc: "请同学签到" },
       },
+      resultVisible: false,
       curEvent: -1,
     };
   },
@@ -109,6 +108,13 @@ export default {
         curType: this.steps[this.curEvent].type,
         curIndex: this.curEvent,
       });
+    },
+    showResult() {
+      console.log("result");
+      this.resultVisible = true;
+    },
+    resultClose() {
+      this.resultVisible = false;
     },
     navigateToEvent(eventIndex) {
       console.log("---step---");
