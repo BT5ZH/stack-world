@@ -70,6 +70,7 @@
 <script>
 import * as socket from "@/utils/socket";
 import axios from "@/utils/axios";
+import randomID from "@/utils/randomString";
 import { mapState } from "vuex";
 import TeacherLive from "./Live";
 import Result from "./Result";
@@ -134,18 +135,6 @@ export default {
         roomId: this.lessonId,
         data: [
           {
-            id: "YH83CP",
-            stem: "中国传统佳节“中秋节”是那一天？",
-            type: "subject",
-            multiple: false,
-            options: [
-              "农历八月十五",
-              "一月一日",
-              "农历三月初七",
-              "和龙舟节是一天",
-            ],
-          },
-          {
             id: "1U7GVC0",
             stem: "操作系统的目标有哪些？",
             type: "subject",
@@ -166,7 +155,7 @@ export default {
           start: true,
           limit,
           question: {
-            id: "YH83CP",
+            id: randomID.idCreator(6, 16),
             stem: raceData.title,
             type: raceData.question_type,
             right_answer: raceData.right_answer,
@@ -208,7 +197,7 @@ export default {
         role: "teacher",
         roomId: this.lessonId,
         data: voteList.map((item, index) => ({
-          id: `YH83CP${index}`,
+          id: `AH83CP${index}`,
           stem: item.title,
           type: 2,
           multiple: false,
@@ -227,7 +216,7 @@ export default {
         data: {
           start: true,
           question: {
-            id: "YH83CP",
+            id: randomID.idCreator(6, 16),
             stem: askData.title,
             type: askData.question_type,
             multiple: false,
