@@ -19,8 +19,9 @@
 </template>
 
 <script>
-import singleQues from "../../../../components/SingleQues.vue";
-import multiQues from "../../../../components/MultiQues.vue";
+import singleQues from "@/components/SingleQues.vue";
+import multiQues from "@//components/MultiQues.vue";
+import * as UTILS from "@/utils/utils";
 import { mapState } from "vuex";
 
 export default {
@@ -59,7 +60,16 @@ export default {
 
   methods: {
     submitAnswer(data) {
-      // console.log(this.value);
+      //获得当前东八区的时间，并赋值给 now
+      let timeZone = 8;
+      let offset_GMT = new Date().getTimezoneOffset();
+      var nowDate = new Date().getTime();
+      var now = new Date(
+        nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
+      );
+
+      const answerTime = UTILS.formatDate(now);
+
       this.socket.sendEvent("joinRoom", {
         actionType: "ask",
         role: "student",
@@ -67,9 +77,10 @@ export default {
         studentId: this.studentId,
         data: {
           ...data,
-          student: this.studentName,
+          studentName: this.studentName,
           studentId: this.studentId,
           question: this.pickData.question,
+          answerTime: answerTime,
         },
       });
     },

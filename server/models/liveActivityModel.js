@@ -36,9 +36,8 @@ const activitySchema = new mongoose.Schema(
       type: [
         {
           phase_time: { type: Number },
-          // phase_type: { type: String, enum: ["sign", "vote", "test", "call"] },
           // 此处不需要枚举，因为存储内容在前端限制了。如果枚举以后添加活动麻烦
-          phase_type: { type: String },
+          phase_type: { type: String }, //暂时不添加枚举
         },
       ],
     },
@@ -91,6 +90,7 @@ const activitySchema = new mongoose.Schema(
                 enterTime: { type: String }, // 需要改成日期类型
                 signStatus: { type: String },
                 role: { type: String },
+                joinFlag: { type: Boolean },
               },
             ],
           },
@@ -114,6 +114,7 @@ const activitySchema = new mongoose.Schema(
                 answerTime: { type: String }, // 需要改成日期类型
                 answerSelection: { type: String },
                 answerResult: { type: Boolean },
+                joinFlag: { type: Boolean },
               },
             ],
           },

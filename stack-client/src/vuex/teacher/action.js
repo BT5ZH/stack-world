@@ -196,6 +196,7 @@ const action = {
     }
   },
   async saveActivityMessage({ commit }, payload) {
+    console.log("保存数据第一步：saveActivityMessage");
     try {
       console.log(payload);
       const url = `pc/v1/activities/activityMessage/${payload.curActivityID}`;
@@ -211,11 +212,7 @@ const action = {
     console.log(payload);
     try {
       const url = `pc/v1/activities/activity_data/${payload.curActivityID}`;
-      await axios.patch(url, {
-        sign_data: payload.signedData,
-        question_data: payload.questionData,
-        activity_id: payload.curActivityID,
-      });
+      await axios.patch(url, payload);
     } catch (err) {
       console.error(err);
     }

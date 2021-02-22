@@ -170,8 +170,6 @@ export default {
             title: item.stem,
           };
         });
-        // console.log("vote---");
-        // console.log(vote);
         this.$store.commit("teacher/updateNodevote", vote);
         this.$message.info("暂存成功");
       } catch (err) {

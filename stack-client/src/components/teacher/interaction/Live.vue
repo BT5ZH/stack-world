@@ -71,6 +71,9 @@ export default {
       pagination: {
         pageSize: 6,
       },
+
+      signedDataArray: [],
+      questionDataArray: [],
     };
   },
   computed: {
@@ -115,6 +118,16 @@ export default {
       return this.audienceList.length;
     },
   },
+  filters: {
+    timeFormatter(value) {
+      console.log(value);
+      return value.trim().split(" ")[1];
+    },
+  },
+  mounted() {
+    this.$store.commit("teacher/clearOnlineList");
+    this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
+  },
   methods: {
     createClient(sdkAppId, userSig) {
       this.client = TRTC.createClient({
@@ -148,184 +161,6 @@ export default {
         //       console.error(error);
         //       break;
         //   }
-      }
-    },
-    async closeLiveRoom() {
-      try {
-        const leaveResult = await this.client.leave();
-        console.log(leaveResult);
-        this.localStream.close();
-        this.localStream = null;
-        console.log("退房成功 ");
-        // 修改教室状态为using
-        this.$store.dispatch("teacher/updateRoomStatus", {
-          room_id: this.$route.query.room_id,
-          status: "using",
-          lessonId: this.$route.query.lessonId,
-        });
-        // 退房成功，可再次调用client.join重新进房开启新的通话。
-      } catch (error) {
-        console.error("退房失败 " + error);
-        // 错误不可恢复，需要刷新页面。
-      }
-    },
-    async closeRoom() {
-      // 2）保存本次课教学活动 TODO
-      // race
-      try {
-        // 2）保存本次课教学活动 TODO
-        // 本次课活动列表
-        // 将所有事件包在request中，一次传给后端
-        var request = {};
-        this.precourse.nodes.forEach((node) => {
-          if (node.tag === "Race") {
-            if (!request.race_data) request.race_data = [];
-            let race_students = this.raceList.map((raceData) => {
-              return {
-                studentID: raceData.studentID,
-                studentName: raceData.studentName,
-                student_answer: raceData.answer,
-              };
-            });
-            let race_question = {
-              title: this.raceList[0].question.content,
-              options: this.raceList[0].question.options,
-              question_type: this.raceList[0].question.type,
-              right_answer: this.raceList[0].question.right_answer,
-            };
-            request.race_data.push({ race_students, race_question });
-          }
-          if (node.tag === "randomSign") {
-            console.log(this.randomSignList);
-            if (!request.randomSign_data) request.randomSign_data = [];
-            console.log(this.randomStudents);
-            this.randomStudents.forEach((student) => {
-              student.signStatus = "未签到";
-              this.randomSignList.forEach((randomData) => {
-                if (student.studentName === randomData.studentName) {
-                  student.signStatus = "已签到";
-                }
-              });
-            });
-            request.randomSign_data = this.randomStudents;
-          }
-        });
-        this.$store.dispatch("teacher/saveActivityMessage", {
-          curActivityID: this.curActivityID,
-          request,
-        });
-        if (this.precourse !== null) return;
-        // race
-        console.log("err");
-
-        // **************保存签到数据
-        let finalList = [];
-        this.realStudents.forEach((real) => {
-          let finalStatus = {};
-          let flag = false;
-          this.audienceList.forEach((online) => {
-            if (real.user_id == online.studentId && online.role != "teacher") {
-              finalStatus = {
-                _id: real._id,
-                studentId: online.studentId,
-                studentName: online.studentName,
-                enterTime: online.enterTime,
-                signStatus: online.signStatus,
-              };
-              flag = true;
-              finalList.push(finalStatus);
-            }
-          });
-          if (flag == false) {
-            finalStatus = {
-              _id: real._id,
-              studentId: real.user_id,
-              studentName: real.name,
-              enterTime: "",
-              signStatus: "",
-            };
-            finalList.push(finalStatus);
-          }
-        });
-        let signedDataArray = [];
-        let sData = {
-          total_number: this.realStudents.length,
-          real_number: this.audienceList.length - 1,
-          class_name: this.curclassName,
-          class_id: this.curclassId,
-          class_list: finalList,
-        };
-        signedDataArray.push(sData);
-        await this.$store.dispatch("teacher/saveActivityData", {
-          curActivityID: this.curActivityID,
-          signedData: signedDataArray,
-        });
-
-        // **************保存提问数据
-        let questionAnswersData = [];
-        this.realStudents.forEach((real) => {
-          let questionStatus = {};
-          let flag = false;
-          this.questionsDataList.forEach((online) => {
-            if (real.user_id == online.studentId && online.role != "teacher") {
-              questionStatus = {
-                questionId: online.questionId,
-                studentId: online.studentId,
-                studentName: online.studentName,
-                answerSelection: online.answerSelection,
-                answerResult: online.answerResult,
-              };
-              flag = true;
-              finalList.push(finalStatus);
-            }
-          });
-          if (flag == false) {
-            questionStatus = {
-              questionId: online.questionId,
-              studentId: real.user_id,
-              studentName: real.name,
-              enterTime: "",
-              signStatus: "",
-            };
-            questionAnswersData.push(questionStatus);
-          }
-        });
-        let questionDataArray = [];
-        let questionData = {
-          total_number: this.realStudents.length,
-          real_number: this.questionsDataList.length - 1,
-          class_name: this.curclassName,
-          class_id: this.curclassId,
-          class_list: finalList,
-        };
-        questionDataArray.push(questionData);
-        await this.$store.dispatch("teacher/saveActivityData", {
-          curActivityID: this.curActivityID,
-          signedData: questionDataArray,
-        });
-
-        // 1）更改房间使用状态
-        this.$store.dispatch("teacher/clearRoomMembers", {
-          channelId: this.$route.query.lessonId,
-        });
-        await this.$store.dispatch("teacher/updateRoomStatus", {
-          room_id: this.$route.query.room_id,
-          status: "avaliable",
-          lessonId: null,
-        });
-        // this.$message.info("退出成功");
-        console.log("成功退出教室");
-        // 3) 页面跳转返回主页 TODO
-        socket.sendEvent("joinRoom", {
-          actionType: "leave",
-          role: "teacher",
-          roomId: this.lessonId,
-          data: { studentId: this.teacherId },
-        });
-        this.$router.push({ name: "teacher_index" });
-      } catch (err) {
-        console.log(err);
-        this.$message.error("信息保存失败");
       }
     },
     async startLive() {
@@ -372,15 +207,213 @@ export default {
         //     this.$message.error("找不到可用直播设备");
       }
     },
-  },
-  mounted() {
-    this.$store.commit("teacher/clearOnlineList");
-    this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
-  },
-  filters: {
-    timeFormatter(value) {
-      console.log(value);
-      return value.trim().split(" ")[1];
+
+    async closeLiveRoom() {
+      try {
+        const leaveResult = await this.client.leave();
+        console.log(leaveResult);
+        this.localStream.close();
+        this.localStream = null;
+        console.log("退房成功 ");
+        // 修改教室状态为using
+        this.$store.dispatch("teacher/updateRoomStatus", {
+          room_id: this.$route.query.room_id,
+          status: "using",
+          lessonId: this.$route.query.lessonId,
+        });
+        // 退房成功，可再次调用client.join重新进房开启新的通话。
+      } catch (error) {
+        console.error("退房失败 " + error);
+        // 错误不可恢复，需要刷新页面。
+      }
+    },
+    async closeRoom() {
+      // 2）保存本次课教学活动 TODO
+      // race
+      try {
+        // 2）保存本次课教学活动 TODO
+        // 本次课活动列表
+        // 将所有事件包在request中，一次传给后端
+
+        var request = {};
+        let payload = {};
+        this.precourse.nodes.forEach((node) => {
+          if (node.tag === "Race") {
+            // if (!request.race_data) request.race_data = [];
+            // let race_students = this.raceList.map((raceData) => {
+            //   return {
+            //     studentID: raceData.studentID,
+            //     studentName: raceData.studentName,
+            //     student_answer: raceData.answer,
+            //   };
+            // });
+            // let race_question = {
+            //   title: this.raceList[0].question.content,
+            //   options: this.raceList[0].question.options,
+            //   question_type: this.raceList[0].question.type,
+            //   right_answer: this.raceList[0].question.right_answer,
+            // };
+            // request.race_data.push({ race_students, race_question });
+          }
+          if (node.tag === "randomSign") {
+            // console.log(this.randomSignList);
+            // if (!request.randomSign_data) request.randomSign_data = [];
+            // console.log(this.randomStudents);
+            // this.randomStudents.forEach((student) => {
+            //   student.signStatus = "未签到";
+            //   this.randomSignList.forEach((randomData) => {
+            //     if (student.studentName === randomData.studentName) {
+            //       student.signStatus = "已签到";
+            //     }
+            //   });
+            // });
+            // request.randomSign_data = this.randomStudents;
+          }
+          if (node.tag === "Ask") {
+            this.saveQuestionData();
+            // 先赋值questionData 再清空questionDataArray
+            [...payload.question_data] = this.questionDataArray;
+            this.questionDataArray.length = 0;
+          }
+          if (node.tag === "Sign") {
+            this.saveSignData();
+            // 先赋值signedData 再清空signedDataArray
+            [...payload.sign_Data] = this.signedDataArray;
+            this.signedDataArray.length = 0;
+          }
+        });
+
+        // this.$store.dispatch("teacher/saveActivityMessage", {
+        //   curActivityID: this.curActivityID,
+        //   request,
+        // });
+
+        // if (this.precourse !== null) return;
+        // race
+
+        (payload.curActivityID = this.curActivityID),
+          console.log("最终存储数据");
+
+        await this.$store.dispatch("teacher/saveActivityData", payload);
+
+        // await this.$store.dispatch("teacher/saveActivityData", {
+        //   curActivityID: this.curActivityID,
+        //   questionData: questionDataArray,
+        // });
+
+        // 1）更改房间使用状态
+        // this.$store.dispatch("teacher/clearRoomMembers", {
+        //   channelId: this.$route.query.lessonId,
+        // });
+        // await this.$store.dispatch("teacher/updateRoomStatus", {
+        //   room_id: this.$route.query.room_id,
+        //   status: "avaliable",
+        //   lessonId: null,
+        // });
+
+        console.log("成功退出教室");
+        // 3) 页面跳转返回主页 TODO
+        // socket.sendEvent("joinRoom", {
+        //   actionType: "leave",
+        //   role: "teacher",
+        //   roomId: this.lessonId,
+        //   data: { studentId: this.teacherId },
+        // });
+        // this.$router.push({ name: "teacher_index" });
+      } catch (err) {
+        console.log(err);
+        this.$message.error("信息保存失败");
+      }
+    },
+    saveSignData() {
+      // **************保存签到数据
+      console.log("保存签到数据");
+      let finalList = [];
+      this.realStudents.forEach((real) => {
+        let finalStatus = {};
+        let flag = false;
+        this.audienceList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            finalStatus = {
+              _id: real._id,
+              studentId: online.studentId,
+              studentName: online.studentName,
+              enterTime: online.enterTime,
+              signStatus: online.signStatus,
+              joinFlag: true,
+            };
+            flag = true;
+            finalList.push(finalStatus);
+          }
+        });
+        if (flag == false) {
+          finalStatus = {
+            _id: real._id,
+            studentId: real.user_id,
+            studentName: real.name,
+            enterTime: "",
+            signStatus: "",
+            joinFlag: false,
+          };
+          finalList.push(finalStatus);
+        }
+      });
+      // let signedDataArray = [];
+      let sData = {
+        total_number: this.realStudents.length,
+        real_number: this.audienceList.length - 1,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        class_list: finalList,
+      };
+      this.signedDataArray.push(sData);
+    },
+    saveQuestionData() {
+      // **************保存提问数据
+      let questionAnswersData = [];
+      let join_student_count = 0;
+      this.realStudents.forEach((real) => {
+        let questionStatus = {};
+        let flag = false;
+
+        this.questionsDataList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            questionStatus = {
+              questionId: online.id,
+              studentId: online.studentId,
+              studentName: online.studentName,
+              answerSelection: online.answerSelection,
+              answerTime: online.answerTime,
+              answerResult: online.answerResult,
+              joinFlag: true,
+            };
+            join_student_count++;
+            flag = true;
+            questionAnswersData.push(questionStatus);
+          }
+        });
+        if (flag == false) {
+          questionStatus = {
+            questionId: "",
+            studentId: real.user_id,
+            studentName: real.name,
+            answerSelection: "",
+            answerTime: "",
+            answerResult: false,
+            joinFlag: false,
+          };
+          questionAnswersData.push(questionStatus);
+        }
+      });
+      // let questionDataArray = [];
+      let questionData = {
+        total_number: this.realStudents.length,
+        real_number: join_student_count,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        question_answer_list: questionAnswersData,
+      };
+      this.questionDataArray.push(questionData);
     },
   },
 };

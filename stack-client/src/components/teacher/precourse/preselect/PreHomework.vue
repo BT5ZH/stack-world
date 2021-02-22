@@ -28,17 +28,7 @@ export default {
     return {};
   },
   methods: {
-    node_vote() {
-      // const vote = [
-      //   {
-      //     options: this.cards.options,
-      //     question_type: this.ifshow,
-      //     right_answer: this.rightanswer,
-      //     title: this.cards.title,
-      //   },
-      // ];
-      // this.$store.commit("teacher/updateNodevote", vote);
-    },
+    node_vote() {},
     handleChange(value) {
       console.log(`Selected: ${value}`);
     },

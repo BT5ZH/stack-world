@@ -37,20 +37,20 @@ const mutation = {
   },
   updateAskResult(state, params) {
     console.log("学生端返回的数据是");
-    console.log(params);
     if (params) {
       if (!state.ask_answer[0]) state.ask_answer = [];
       var repeatStatus = false;
-      state.ask_answer.forEach(item => {
+      state.ask_answer.forEach((item) => {
         if (item.studentId === params.studentId) {
           repeatStatus = true;
-          item.answer = params.answer;
+          item.answerSelection = params.answerSelection;
         }
-      })
+      });
       if (repeatStatus) {
         return;
-      } else
-        state.ask_answer.push(params)
+      } else {
+        state.ask_answer.push(params);
+      }
     } else {
       console.error("学生端未返回数据");
     }

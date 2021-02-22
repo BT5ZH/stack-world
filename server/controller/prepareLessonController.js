@@ -239,7 +239,7 @@ exports.getAllPrepareLessons = catchAsync(async (req, res, next) => {
  *                },
  *                time:String,
  *                people_num:Number,
- *                vote:[{title:String,options:[String],right_answer:String,question_type:String,}]
+ *                ***:[{title:String,options:[String],right_answer:String,question_type:String,}]
  *         }
  *        ],
  * }

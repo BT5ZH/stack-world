@@ -32,8 +32,8 @@ const prepareLessonSchema = new mongoose.Schema(
           },
           rsId: {
             type: String,
-            ref: "Resource"
-          }
+            ref: "Resource",
+          },
         },
         duration: {
           type: Number,
@@ -60,10 +60,6 @@ const prepareLessonSchema = new mongoose.Schema(
             },
             time: String,
             people_num: Number,
-            // content:String,
-            // options:[{type:String,}],
-            // right_answer:String,
-            // question_type:String,
             vote: [
               {
                 title: String,

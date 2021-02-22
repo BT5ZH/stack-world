@@ -71,9 +71,14 @@ export default {
     },
     submitAnswer() {
       this.disabled = true;
+      let answer_res = false;
+      if (this.item.right_answer == this.value) {
+        answer_res = true;
+      }
       this.$emit("submit", {
         id: this.item.id,
-        answer: this.value,
+        answerSelection: this.value,
+        answerResult: answer_res,
       });
       ///////////////////////////////////
       this.stuDoQuestion(); // added by qichao

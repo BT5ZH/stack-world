@@ -91,7 +91,7 @@ const InteractionIndex = () => import("@/components/teacher/interaction/Index");
 
 // ----------------  patrol router --------------------------
 const patrolRoute = () => import("@/components/patrol/index.vue");
-const patrolMessage = () => import("@/components/patrol/patrolMessage.vue")
+const patrolMessage = () => import("@/components/patrol/patrolMessage.vue");
 const Detailed = () => import("@/components/patrol/patrolDetailed.vue");
 
 export const routes = [
@@ -311,7 +311,6 @@ export const routes = [
     children: [
       { path: "index", component: InteractionIndex, name: "interaction_index" },
       // { path: "live", component: InteractionLive, name: "interaction_live" },
-      // { path: "vote", component: InteractionVote, name: "interaction_vote" },
       // { path: "pick", component: InteractionPick, name: "interaction_pick" },
       // { path: "race", component: InteractionRace, name: "interaction_race" },
       // { path: "sign", component: InteractionSign, name: "interaction_sign" },

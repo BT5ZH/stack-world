@@ -28,12 +28,9 @@ exports.createActivity = catchAsync(async (req, res, next) => {
 
 exports.saveActivityMessage = catchAsync(async (req, res, next) => {
   console.log(req.body.request);
-  const activityId = req.params.activity_id
+  const activityId = req.params.activity_id;
 
-  await Activity.updateMany(
-    { _id: activityId },
-    req.body.request
-  );
+  await Activity.updateMany({ _id: activityId }, req.body.request);
   res.status(200).json({
     status: "success",
   });
@@ -44,15 +41,40 @@ exports.saveActivity = catchAsync(async (req, res, next) => {
   console.log("connect+++++++");
   console.log(payload);
   const activityId = payload.activity_id;
-  const signData = payload.sign_data;
+  // const signData = payload.sign_data;
+  let dataIn = {};
+  let flag = false;
+  if (payload.hasOwnProperty("sign_data")) {
+    dataIn.sign_data = payload.sign_data;
+    flag = true;
+  } else if (payload.hasOwnProperty("question_data")) {
+    dataIn.question_data = payload.question_data;
+    flag = true;
+  } else if (payload.hasOwnProperty("race_data")) {
+    dataIn.race_data = payload.race_data;
+    flag = true;
+  } else if (payload.hasOwnProperty("randomSign_data")) {
+    dataIn.randomSign_data = payload.randomSign_data;
+    flag = true;
+  }
+  // else if(payload.hasOwnProperty(sign_data)){
+  //   dataIn.sign_data=payload.sign_data;
+  //   flag=true;
+  // }else if(payload.hasOwnProperty(sign_data)){
+  //   dataIn.sign_data=payload.sign_data;
+  //   flag=true;
+  // }else if(payload.hasOwnProperty(sign_data)){
+  //   dataIn.sign_data=payload.sign_data;
+  //   flag=true;
+  // }
 
-  const updatedResult = await Activity.findOneAndUpdate(
-    activityId,
-    { sign_data: signData },
-    {
-      new: true,
-    }
-  );
+  if (flag == false) {
+    return;
+  }
+
+  const updatedResult = await Activity.findOneAndUpdate(activityId, dataIn, {
+    new: true,
+  });
   res.status(200).json({
     status: "success",
     data: updatedResult,
