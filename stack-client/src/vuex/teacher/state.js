@@ -6,13 +6,14 @@ const state = {
   // interaction data
   signList: [],
   randomList: [],
-  ask_answer: {},
+  ask_answer: [],
   testAnswerList: [],
   voteAnswerList: [],
   precourse: {},
   curActivity: "sign",
   onlineList: [],
   randomStudent: "",
+  randomStudents: [],
   raceList: [],
   // precourse data
   courses: [],
@@ -21,13 +22,13 @@ const state = {
   nodes: [],
   nodeindex: 0,
   sources: [],
-  questionBank:[],
-  questionOfPaper:[],
-  updatePapers:[],
-  updateSetHomeworks:[],
+  questionBank: [],
+  questionOfPaper: [],
+  updatePapers: [],
+  updateSetHomeworks: [],
   // courseinfo
   courseInfo: {},
-  
+
 };
 
 export default state;

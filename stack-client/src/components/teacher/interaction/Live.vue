@@ -86,6 +86,8 @@ export default {
       realStudents: (state) => state.teacher.curRealStudents,
       signList: (state) => state.teacher.signList,
       raceList: (state) => state.teacher.raceList,
+      randomSignList: (state) => state.teacher.randomList,
+      randomStudents: (state) => state.teacher.randomStudents,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -172,8 +174,11 @@ export default {
       try {
         // 2）保存本次课教学活动 TODO
         // 本次课活动列表
+        // 将所有事件包在request中，一次传给后端
+        var request = {};
         this.precourse.nodes.forEach((node) => {
           if (node.tag === "Race") {
+            if (!request.race_data) request.race_data = [];
             let race_students = this.raceList.map((raceData) => {
               return {
                 studentID: raceData.studentID,
@@ -187,16 +192,30 @@ export default {
               question_type: this.raceList[0].question.type,
               right_answer: this.raceList[0].question.right_answer,
             };
-            let request = { race_students, race_question };
-            this.$store.dispatch("teacher/saveActivityMessage", {
-              curActivityID: this.curActivityID,
-              request,
+            request.race_data.push({ race_students, race_question });
+          }
+          if (node.tag === "randomSign") {
+            console.log(this.randomSignList);
+            if (!request.randomSign_data) request.randomSign_data = [];
+            console.log(this.randomStudents);
+            this.randomStudents.forEach((student) => {
+              student.signStatus = "未签到";
+              this.randomSignList.forEach((randomData) => {
+                if (student.studentName === randomData.studentName) {
+                  student.signStatus = "已签到";
+                }
+              });
             });
+            request.randomSign_data = this.randomStudents;
           }
         });
-        // if (this.precourse !== null) return;
-        // // race
-        // console.log("err");
+        this.$store.dispatch("teacher/saveActivityMessage", {
+          curActivityID: this.curActivityID,
+          request,
+        });
+        if (this.precourse !== null) return;
+        // race
+        console.log("err");
 
         // sign
         let finalList = [];

@@ -37,7 +37,8 @@ const mutation = {
   },
   updateAskResult(state, params) {
     if (params) {
-      state.ask_answer = params;
+      if (!state.ask_answer[0]) state.ask_answer = [];
+      state.ask_answer.push(params)
     } else {
       console.error("学生端未返回数据");
     }
@@ -111,6 +112,15 @@ const mutation = {
 
   addRandomStudent(state, randomStudent) {
     state.randomStudent = randomStudent;
+    if (!state.randomStudents) state.randomStudents = [];
+    let singleStudent = {};
+    state.curRealStudents.forEach(student => {
+      if (student.name === randomStudent) {
+        singleStudent.studentName = randomStudent;
+        singleStudent.studentID = student.id;
+      }
+    })
+    state.randomStudents.push(singleStudent);
   },
   updateCurActivity(state, params) {
     state.curActivity = params;

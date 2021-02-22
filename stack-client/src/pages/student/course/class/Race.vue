@@ -62,6 +62,7 @@ export default {
         roomId: this.lessonId,
         data: {
           ...data,
+
           studentName: this.studentName,
           studentID: this.studentID,
           limit: this.raceData.limit,
