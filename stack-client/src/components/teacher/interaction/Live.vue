@@ -35,7 +35,8 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter
@@ -248,8 +249,16 @@ export default {
           status: "avaliable",
           lessonId: null,
         });
-        this.$message.info("退出成功");
+        // this.$message.info("退出成功");
+        console.log("成功退出教室");
         // 3) 页面跳转返回主页 TODO
+        socket.sendEvent("joinRoom", {
+          actionType: "leave",
+          role: "teacher",
+          roomId: this.lessonId,
+          data: { studentId: this.teacherId },
+        });
+        this.$router.push({ name: "teacher_index" });
       } catch (err) {
         console.log(err);
         this.$message.error("信息保存失败");
