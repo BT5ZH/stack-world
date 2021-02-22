@@ -70,6 +70,7 @@ export default {
       this.value = [val.pop()];
     },
     submitAnswer() {
+      this.disabled = true;
       this.$emit("submit", {
         id: this.item.id,
         answer: this.value,
@@ -102,7 +103,8 @@ export default {
   },
   mounted() {
     // if(this.disabled) this.answerVisible=true;
-    if (this.item.student_answer && this.item.student_answer != "Z") this.disabled = true;
+    if (this.item.student_answer && this.item.student_answer != "Z")
+      this.disabled = true;
   },
 };
 </script>

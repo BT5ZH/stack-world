@@ -1,4 +1,4 @@
-function idCreator(len, radix) {
+export function idCreator(len, radix) {
   var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
     ""
   );
@@ -21,4 +21,4 @@ function idCreator(len, radix) {
   return temp.join("");
 }
 
-export default idCreator;
+// export default idCreator;

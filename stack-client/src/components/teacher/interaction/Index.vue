@@ -70,7 +70,7 @@
 <script>
 import * as socket from "@/utils/socket";
 import axios from "@/utils/axios";
-import randomID from "@/utils/randomString";
+import * as randomID from "@/utils/randomString";
 import { mapState } from "vuex";
 import TeacherLive from "./Live";
 import Result from "./Result";
@@ -155,7 +155,7 @@ export default {
           start: true,
           limit,
           question: {
-            id: randomID.idCreator(6, 16),
+            // id: randomID.idCreator(6, 16),
             stem: raceData.title,
             type: raceData.question_type,
             right_answer: raceData.right_answer,
@@ -209,6 +209,8 @@ export default {
       const [askData] = this.nodes[this.curEvent].vote;
       // console.log("askData+++++");
       // console.log(askData);
+      let tempID = randomID.idCreator(6, 16);
+      console.log(tempID);
       socket.sendEvent("joinRoom", {
         actionType: "ask",
         role: "teacher",
@@ -216,7 +218,7 @@ export default {
         data: {
           start: true,
           question: {
-            id: randomID.idCreator(6, 16),
+            id: tempID,
             stem: askData.title,
             type: askData.question_type,
             multiple: false,

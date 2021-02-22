@@ -51,26 +51,29 @@ const activitySchema = new mongoose.Schema(
             studentID: String,
             studentName: String,
             student_answer: String,
-          }
+          },
         ],
         // 问题信息
         race_question: {
           title: String,
-          options: [{
-            text: String,
-            value: String
-          }],
+          options: [
+            {
+              text: String,
+              value: String,
+            },
+          ],
           question_type: Number,
           right_answer: String,
-        }
-      }],
+        },
+      },
+    ],
     //随机点名
     randomSign_data: [
       {
         studentID: String,
         studentName: String,
         signStatus: String,
-      }
+      },
     ],
     sign_data: {
       type: [
@@ -94,10 +97,26 @@ const activitySchema = new mongoose.Schema(
         },
       ],
     },
+    // 提问
     vote_data: {
       type: [
         {
           total_number: { type: Number },
+          real_number: { type: Number },
+          class_name: { type: String },
+          class_id: { type: String },
+          question_answer_list: {
+            type: [
+              {
+                questionId: { type: String },
+                studentId: { type: String },
+                studentName: { type: String },
+                answerTime: { type: String }, // 需要改成日期类型
+                answerSelection: { type: String },
+                answerResult: { type: Boolean },
+              },
+            ],
+          },
         },
       ],
     },
