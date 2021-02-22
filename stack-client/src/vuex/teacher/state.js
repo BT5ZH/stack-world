@@ -6,7 +6,7 @@ const state = {
   // interaction data
   signList: [],
   randomList: [],
-  ask_answer: {},
+  ask_answer: [],
   testAnswerList: [],
   voteAnswerList: [],
   precourse: {},
