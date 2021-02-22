@@ -53,7 +53,10 @@
               v-if="ifshow === 2"
               v-model="rightanswer"
             >
-              <a-select-option v-for="index in optionlength" :key=" ENG_CHARS[index - 1]">
+              <a-select-option
+                v-for="index in optionlength"
+                :key="ENG_CHARS[index - 1]"
+              >
                 {{ ENG_CHARS[index - 1] }}
               </a-select-option>
             </a-select>
@@ -64,7 +67,10 @@
               v-else
               v-model="answer"
             >
-              <a-select-option v-for="index in optionlength" :key="ENG_CHARS[index - 1]">
+              <a-select-option
+                v-for="index in optionlength"
+                :key="ENG_CHARS[index - 1]"
+              >
                 {{ ENG_CHARS[index - 1] }}
               </a-select-option>
             </a-select>
@@ -124,7 +130,7 @@ export default {
         if (this.ifshow === 3) {
           this.rightanswer = this.answer.join("");
         }
-        const vote = [
+        const node_contents = [
           {
             options: this.cards.options,
             question_type: this.ifshow,
@@ -132,7 +138,7 @@ export default {
             title: this["editor"].txt.text(),
           },
         ];
-        this.$store.commit("teacher/updateNodevote", vote);
+        this.$store.commit("teacher/updateNodeContents", node_contents);
         this.$message.info("暂存成功");
       } catch (err) {
         this.$message.error("暂存失败");

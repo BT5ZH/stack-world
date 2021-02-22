@@ -162,7 +162,7 @@ export default {
     },
     node_vote() {
       try {
-        const vote = this.selectedsource.map((item, index) => {
+        const node_contents = this.selectedsource.map((item, index) => {
           return {
             options: item.option,
             question_type: item.multiple ? 3 : 2,
@@ -170,7 +170,7 @@ export default {
             title: item.stem,
           };
         });
-        this.$store.commit("teacher/updateNodevote", vote);
+        this.$store.commit("teacher/updateNodeContents", node_contents);
         this.$message.info("暂存成功");
       } catch (err) {
         this.$message.error("暂存失败");

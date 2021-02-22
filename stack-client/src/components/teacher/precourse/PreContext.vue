@@ -269,10 +269,11 @@
         >
           <div :span="4">
             <a-button type="primary" @click="questionVisible = true">
-              添加试题
-            </a-button>&nbsp;&nbsp;
+              添加试题 </a-button
+            >&nbsp;&nbsp;
             <a-button type="primary" @click="bulkImport_visible = true">
-              批量导入</a-button>
+              批量导入</a-button
+            >
           </div>
           <add-question :visible.sync="questionVisible"></add-question>
           <question-list></question-list>
@@ -295,10 +296,11 @@
       </div>
     </div>
     <div>
-      <batch-add-question :visible.sync="bulkImport_visible"></batch-add-question>
+      <batch-add-question
+        :visible.sync="bulkImport_visible"
+      ></batch-add-question>
     </div>
   </div>
-  
 </template>
 
 <script>
@@ -322,7 +324,7 @@ import axios from "@/utils/axios";
 
 import { mapState, mapGetters } from "vuex";
 import fileUploader from "@/utils/S3FileUploader";
-import BatchAddQuestion from './BatchAddQuestion.vue';
+import BatchAddQuestion from "./BatchAddQuestion.vue";
 //import AddHomework from '../coursedetail/homework/AddHomework.vue';
 
 export default {
@@ -497,7 +499,7 @@ export default {
     //     },
     //   });
     // },
-  ////-------the upper section is added by qichao-----------------------------
+    ////-------the upper section is added by qichao-----------------------------
     selectppt() {
       const ppt = { name: this.ppt.name, rsId: this.ppt.id, url: this.ppt.url };
       this.$store.commit("teacher/updatePPT", ppt);
@@ -572,7 +574,7 @@ export default {
           people_num: 3,
           tag: this.eventname[this.componentId],
           time: steptime,
-          vote: [
+          node_contents: [
             {
               options: ["", ""],
               question_type: 2,
@@ -622,7 +624,7 @@ export default {
           people_num: 0,
           tag: this.eventname[this.componentId],
           time: steptime,
-          vote: [
+          node_contents: [
             {
               options: ["", ""],
               question_type: 2,
@@ -704,7 +706,7 @@ export default {
           element1.tag !== "Sign" &&
           element1.tag !== "randomSign"
         ) {
-          element1.vote.forEach((element2) => {
+          element1.node_contents.forEach((element2) => {
             element2.options.forEach((item) => {
               if (item == "") {
                 judgeStatus = false;
@@ -839,6 +841,5 @@ export default {
 .cspC--tag {
   height: 100%;
 }
-
 </style>
 <style></style>

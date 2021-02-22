@@ -83,7 +83,7 @@ export default {
   methods: {
     node_vote() {
       try {
-        const vote = this.cards.map((item, index) => {
+        const node_contents = this.cards.map((item, index) => {
           return {
             options: item.options,
             question_type: null,
@@ -91,7 +91,7 @@ export default {
             title: this["editor" + index].txt.text(),
           };
         });
-        this.$store.commit("teacher/updateNodevote", vote);
+        this.$store.commit("teacher/updateNodeContents", node_contents);
         this.$message.info("暂存成功");
       } catch (err) {
         this.$message.error("暂存失败");
@@ -193,5 +193,4 @@ export default {
 }
 </style>
 
-<style>
-</style>
+<style></style>

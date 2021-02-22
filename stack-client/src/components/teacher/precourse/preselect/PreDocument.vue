@@ -116,7 +116,7 @@ export default {
     node_vote() {
       try {
         let option = this.selectedsource.map((item) => item.courseId);
-        const vote = [
+        const node_contents = [
           {
             options: option,
             question_type: null,
@@ -124,10 +124,10 @@ export default {
             title: "",
           },
         ];
-        this.$store.commit("teacher/updateNodevote", vote);
-        this.$message.info("暂存成功")
+        this.$store.commit("teacher/updateNodeContents", node_contents);
+        this.$message.info("暂存成功");
       } catch (err) {
-        this.$message.error("暂存失败")
+        this.$message.error("暂存失败");
       }
     },
     selectsource() {

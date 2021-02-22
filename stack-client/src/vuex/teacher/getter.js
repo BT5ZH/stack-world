@@ -18,7 +18,7 @@ const getter = {
             lessonId,
             className: rc.class_id.class_name,
             roomName: rc.room_id.room_number,
-            room_id:rc.room_id._id,
+            room_id: rc.room_id._id,
             date: rc.date,
             oddEven: rc.odd_or_even,
             order: rc.order.join("、"),
@@ -56,26 +56,26 @@ const getter = {
     return state.nodes[state.nodeindex];
   },
   getVote(state) {
-    return state.nodes[state.nodeindex].vote.map((item) => ({
+    return state.nodes[state.nodeindex].node_contents.map((item) => ({
       title: item.title,
       options: item.options,
     }));
   },
   getCompete(state) {
-    const vote = state.nodes[state.nodeindex].vote[0];
+    const item = state.nodes[state.nodeindex].node_contents[0];
     return {
       value: state.nodes[state.nodeindex].people_num,
-      title: vote.title,
-      options: vote.options,
-      ifshow: vote.question_type,
-      rightanswer: vote.right_answer,
+      title: item.title,
+      options: item.options,
+      ifshow: item.question_type,
+      rightanswer: item.right_answer,
     };
   },
   getDocument(state) {
-    return state.nodes[state.nodeindex].vote[0].options;
+    return state.nodes[state.nodeindex].node_contents[0].options;
   },
   getTest(state) {
-    return state.nodes[state.nodeindex].vote.map((item) => item.title);
+    return state.nodes[state.nodeindex].node_contents.map((item) => item.title);
   },
   getSources(state) {
     return state.sources.map((item) => {

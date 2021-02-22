@@ -174,9 +174,9 @@ const mutation = {
     state.nodes.splice(params, 1);
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },
-  updateNodevote(state, params) {
+  updateNodeContents(state, params) {
     let node = state.nodes[state.nodeindex];
-    node.vote = params;
+    node.node_contents = params;
     state.nodes.splice(state.nodeindex, 1, node);
     state.courseHours[state.curCourseHour].nodes = state.nodes;
   },

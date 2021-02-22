@@ -60,7 +60,7 @@ const prepareLessonSchema = new mongoose.Schema(
             },
             time: String,
             people_num: Number,
-            vote: [
+            node_contents: [
               {
                 title: String,
                 options: [String],

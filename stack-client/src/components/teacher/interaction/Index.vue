@@ -31,7 +31,9 @@
                 </a-col>
                 <a-col :span="4">
                   <a-space>
-                    <a-button @click="navigateToEvent(curEvent)"> 发送信息 </a-button>
+                    <a-button @click="navigateToEvent(curEvent)">
+                      发送信息
+                    </a-button>
                     <a-button @click="showResult"> 显示结果 </a-button>
                   </a-space>
                 </a-col>
@@ -40,7 +42,12 @@
           </div>
 
           <div class="event-steps">
-            <a-steps size="small" progress-dot v-model="curEvent" @change="eventChange">
+            <a-steps
+              size="small"
+              progress-dot
+              v-model="curEvent"
+              @change="eventChange"
+            >
               <a-step
                 v-for="(step, index) in steps"
                 :key="index"
@@ -133,7 +140,7 @@ export default {
       console.log("授课过程");
     },
     sendtestEvent() {
-      const testList = this.nodes[this.curEvent].vote;
+      const testList = this.nodes[this.curEvent].node_contents;
 
       socket.sendEvent("joinRoom", {
         actionType: "test",
@@ -151,7 +158,7 @@ export default {
       });
     },
     sendraceEvent() {
-      const [raceData] = this.nodes[this.curEvent].vote;
+      const [raceData] = this.nodes[this.curEvent].node_contents;
       const limit = this.nodes[this.curEvent].people_num;
       socket.sendEvent("joinRoom", {
         actionType: "race",
@@ -172,7 +179,7 @@ export default {
       });
     },
     senddispatchEvent() {
-      const [files] = this.nodes[this.curEvent].vote;
+      const [files] = this.nodes[this.curEvent].node_contents;
       const fileIdList = files.options;
       axios
         .post("pc/v1/resources/getURLByIDs", {
@@ -197,7 +204,7 @@ export default {
         });
     },
     sendvoteEvent() {
-      const voteList = this.nodes[this.curEvent].vote;
+      const voteList = this.nodes[this.curEvent].node_contents;
       socket.sendEvent("joinRoom", {
         actionType: "vote",
         role: "teacher",
@@ -212,7 +219,7 @@ export default {
       });
     },
     sendaskEvent() {
-      const [askData] = this.nodes[this.curEvent].vote;
+      const [askData] = this.nodes[this.curEvent].node_contents;
       // console.log("askData+++++");
       // console.log(askData);
       let tempID = randomID.idCreator(6, 16);
