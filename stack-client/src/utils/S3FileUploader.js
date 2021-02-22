@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import axios from "@/utils/axios";
-import random from "@/utils/utils";
+import * as random from "@/utils/utils";
 
 const DEFAULT_REGION = "cn-northwest-1";
 
@@ -65,7 +65,7 @@ function getVideoDuration(file) {
 async function updateAccessConfig(file, config) {
   try {
     const key = getFileContentType(file);
-    const fileID = random(8, 16);
+    const fileID = random.idCreator(8, 16);
     DEFAULT_PARAMS.Key = fileID;
 
     config.body.url = `${config.filePath}${fileID}.${key}`;
