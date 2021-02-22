@@ -43,27 +43,35 @@ const activitySchema = new mongoose.Schema(
       ],
     },
     // 抢答
-    race_data:
-    {
-      // 抢答学生的信息
-      race_students: [
-        {
-          studentID: String,
-          studentName: String,
-          student_answer: String,
+    race_data: [
+      {
+        // 抢答学生的信息
+        race_students: [
+          {
+            studentID: String,
+            studentName: String,
+            student_answer: String,
+          }
+        ],
+        // 问题信息
+        race_question: {
+          title: String,
+          options: [{
+            text: String,
+            value: String
+          }],
+          question_type: Number,
+          right_answer: String,
         }
-      ],
-      // 问题信息
-      race_question: {
-        title: String,
-        options: [{
-          text: String,
-          value: String
-        }],
-        question_type: Number,
-        right_answer: String,
+      }],
+    //随机点名
+    randomSign_data: [
+      {
+        studentID: String,
+        studentName: String,
+        signStatus: String,
       }
-    },
+    ],
     sign_data: {
       type: [
         {

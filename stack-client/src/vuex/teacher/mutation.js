@@ -111,6 +111,15 @@ const mutation = {
 
   addRandomStudent(state, randomStudent) {
     state.randomStudent = randomStudent;
+    if (!state.randomStudents) state.randomStudents = [];
+    let singleStudent = {};
+    state.curRealStudents.forEach(student => {
+      if (student.name === randomStudent) {
+        singleStudent.studentName = randomStudent;
+        singleStudent.studentID = student.id;
+      }
+    })
+    state.randomStudents.push(singleStudent);
   },
   updateCurActivity(state, params) {
     state.curActivity = params;
