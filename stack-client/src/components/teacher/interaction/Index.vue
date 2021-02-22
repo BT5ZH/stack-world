@@ -70,7 +70,7 @@
 <script>
 import * as socket from "@/utils/socket";
 import axios from "@/utils/axios";
-import * as randomID from "@/utils/randomString";
+import * as randomID from "@/utils/utils";
 import { mapState } from "vuex";
 import TeacherLive from "./Live";
 import Result from "./Result";

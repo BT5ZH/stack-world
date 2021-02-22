@@ -21,4 +21,17 @@ export function idCreator(len, radix) {
   return temp.join("");
 }
 
-// export default idCreator;
+export function formatDate(time) {
+  var date = new Date(time);
+
+  var year = date.getFullYear(),
+    month = date.getMonth() + 1, //月份是从0开始的
+    day = date.getDate(),
+    hour = date.getHours(),
+    min = date.getMinutes(),
+    sec = date.getSeconds();
+  // var newTime = hour + ":" + min + ":" + sec;
+  var newTime =
+    year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+  return newTime;
+}

@@ -98,7 +98,7 @@ const activitySchema = new mongoose.Schema(
       ],
     },
     // 提问
-    vote_data: {
+    question_data: {
       type: [
         {
           total_number: { type: Number },

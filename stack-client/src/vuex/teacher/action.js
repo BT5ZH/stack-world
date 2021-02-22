@@ -156,7 +156,6 @@ const action = {
 
       commit("updatePapers", data.papers);
     } catch (err) {
-
       commit("updatePapers", []);
       console.error(err);
     }
@@ -201,7 +200,7 @@ const action = {
       console.log(payload);
       const url = `pc/v1/activities/activityMessage/${payload.curActivityID}`;
       const data = await axios.patch(url, {
-        request:payload.request
+        request: payload.request,
       });
       console.log(data);
     } catch (err) {
@@ -214,6 +213,7 @@ const action = {
       const url = `pc/v1/activities/activity_data/${payload.curActivityID}`;
       await axios.patch(url, {
         sign_data: payload.signedData,
+        question_data: payload.questionData,
         activity_id: payload.curActivityID,
       });
     } catch (err) {

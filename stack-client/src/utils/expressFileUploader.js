@@ -1,4 +1,4 @@
-import random from "@/utils/randomString";
+import random from "@/utils/utils";
 import axios from "@/utils/axios";
 
 /**
@@ -29,7 +29,7 @@ function getVideoDuration(file) {
   let videoEle = document.createElement("video");
   videoEle.src = URL.createObjectURL(file);
   return new Promise((resolve) => {
-    videoEle.onloadedmetadata = function() {
+    videoEle.onloadedmetadata = function () {
       resolve(videoEle.duration);
     };
   });
@@ -41,7 +41,7 @@ async function uploadFile([file], config = {}) {
   const fileID = random(8, 16);
   const key = getFileContentType(file);
   body = {
-    ...body,    
+    ...body,
     fileID: fileID,
     filePath: config.filePath,
     url: `${config.filePath}${fileID}.${key}`,

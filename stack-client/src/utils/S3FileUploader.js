@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import axios from "@/utils/axios";
-import random from "@/utils/randomString";
+import random from "@/utils/utils";
 
 const DEFAULT_REGION = "cn-northwest-1";
 
@@ -10,12 +10,12 @@ const DEFAULT_PARAMS = {
 };
 
 const DEFAULT_CONFIG = {
-  accessErrCallback: function(error) {
+  accessErrCallback: function (error) {
     console.error("update S3 credential failed！");
     console.error(error);
   },
-  progressCallback: function() {},
-  failCallback: function(error) {
+  progressCallback: function () {},
+  failCallback: function (error) {
     console.error("error happened when file is uploading, reason is:");
     console.error(error);
     !error && console.error("file upload ended, but no Etag returned.");
@@ -50,7 +50,7 @@ function getVideoDuration(file) {
   let videoEle = document.createElement("video");
   videoEle.src = URL.createObjectURL(file);
   return new Promise((resolve) => {
-    videoEle.onloadedmetadata = function() {
+    videoEle.onloadedmetadata = function () {
       resolve(videoEle.duration);
     };
   });

@@ -88,6 +88,7 @@ export default {
       raceList: (state) => state.teacher.raceList,
       randomSignList: (state) => state.teacher.randomList,
       randomStudents: (state) => state.teacher.randomStudents,
+      questionsDataList: (state) => state.teacher.ask_answer,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -217,7 +218,7 @@ export default {
         // race
         console.log("err");
 
-        // sign
+        // **************保存签到数据
         let finalList = [];
         this.realStudents.forEach((real) => {
           let finalStatus = {};
@@ -259,6 +260,50 @@ export default {
           curActivityID: this.curActivityID,
           signedData: signedDataArray,
         });
+
+        // **************保存提问数据
+        let questionAnswersData = [];
+        this.realStudents.forEach((real) => {
+          let questionStatus = {};
+          let flag = false;
+          this.questionsDataList.forEach((online) => {
+            if (real.user_id == online.studentId && online.role != "teacher") {
+              questionStatus = {
+                questionId: online.questionId,
+                studentId: online.studentId,
+                studentName: online.studentName,
+                answerSelection: online.answerSelection,
+                answerResult: online.answerResult,
+              };
+              flag = true;
+              finalList.push(finalStatus);
+            }
+          });
+          if (flag == false) {
+            questionStatus = {
+              questionId: online.questionId,
+              studentId: real.user_id,
+              studentName: real.name,
+              enterTime: "",
+              signStatus: "",
+            };
+            questionAnswersData.push(questionStatus);
+          }
+        });
+        let questionDataArray = [];
+        let questionData = {
+          total_number: this.realStudents.length,
+          real_number: this.questionsDataList.length - 1,
+          class_name: this.curclassName,
+          class_id: this.curclassId,
+          class_list: finalList,
+        };
+        questionDataArray.push(questionData);
+        await this.$store.dispatch("teacher/saveActivityData", {
+          curActivityID: this.curActivityID,
+          signedData: questionDataArray,
+        });
+
         // 1）更改房间使用状态
         this.$store.dispatch("teacher/clearRoomMembers", {
           channelId: this.$route.query.lessonId,
