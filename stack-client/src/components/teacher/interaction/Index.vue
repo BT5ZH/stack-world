@@ -43,12 +43,7 @@
           </div>
 
           <div class="event-steps">
-            <a-steps
-              size="small"
-              progress-dot
-              v-model="curEvent"
-              @change="eventChange"
-            >
+            <a-steps size="small" progress-dot v-model="curEvent" @change="eventChange">
               <a-step
                 v-for="(step, index) in steps"
                 :key="index"
