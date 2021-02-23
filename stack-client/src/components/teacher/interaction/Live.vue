@@ -74,6 +74,7 @@ export default {
 
       signedDataArray: [],
       questionDataArray: [],
+      voteDataArray: [],
     };
   },
   computed: {
@@ -92,6 +93,7 @@ export default {
       randomSignList: (state) => state.teacher.randomList,
       randomStudents: (state) => state.teacher.randomStudents,
       questionsDataList: (state) => state.teacher.ask_answer,
+      voteDataList: (state) => state.teacher.voteAnswerList,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -228,10 +230,8 @@ export default {
       }
     },
     async closeRoom() {
-      // 2）保存本次课教学活动 TODO
-      // race
       try {
-        // 2）保存本次课教学活动 TODO
+        // 1）保存本次课教学活动 TODO
         // 本次课活动列表
         // 将所有事件包在request中，一次传给后端
 
@@ -281,6 +281,12 @@ export default {
             [...payload.sign_Data] = this.signedDataArray;
             this.signedDataArray.length = 0;
           }
+          if (node.tag === "Vote") {
+            this.saveVoteData();
+            // 先赋值signedData 再清空signedDataArray
+            [...payload.vote_Data] = this.signedDataArray;
+            this.signedDataArray.length = 0;
+          }
         });
 
         // this.$store.dispatch("teacher/saveActivityMessage", {
@@ -296,20 +302,15 @@ export default {
 
         await this.$store.dispatch("teacher/saveActivityData", payload);
 
-        // await this.$store.dispatch("teacher/saveActivityData", {
-        //   curActivityID: this.curActivityID,
-        //   questionData: questionDataArray,
-        // });
-
-        // 1）更改房间使用状态
-        // this.$store.dispatch("teacher/clearRoomMembers", {
-        //   channelId: this.$route.query.lessonId,
-        // });
-        // await this.$store.dispatch("teacher/updateRoomStatus", {
-        //   room_id: this.$route.query.room_id,
-        //   status: "avaliable",
-        //   lessonId: null,
-        // });
+        // 2）更改房间使用状态
+        this.$store.dispatch("teacher/clearRoomMembers", {
+          channelId: this.$route.query.lessonId,
+        });
+        await this.$store.dispatch("teacher/updateRoomStatus", {
+          room_id: this.$route.query.room_id,
+          status: "avaliable",
+          lessonId: null,
+        });
 
         console.log("成功退出教室");
         // 3) 页面跳转返回主页 TODO
@@ -414,6 +415,51 @@ export default {
         question_answer_list: questionAnswersData,
       };
       this.questionDataArray.push(questionData);
+    },
+    saveVoteData() {
+      // **************保存投票数据
+      let voteAnswersData = [];
+      let join_student_count = 0;
+      this.realStudents.forEach((real) => {
+        let voteStatus = {};
+        let flag = false;
+
+        this.voteDataList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            voteStatus = {
+              studentId: online.studentId,
+              studentName: online.studentName,
+              submitTime: online.submitTime,
+              joinFlag: true,
+              phaseIndex: online.phaseIndex,
+              result_list: online.result_list,
+            };
+            join_student_count++;
+            flag = true;
+            voteAnswersData.push(voteStatus);
+          }
+        });
+        if (flag == false) {
+          voteStatus = {
+            studentId: real.user_id,
+            studentName: real.name,
+            submitTime: "",
+            joinFlag: false,
+            phaseIndex: "",
+            result_list: "",
+          };
+          voteAnswersData.push(questionStatus);
+        }
+      });
+
+      let voteData = {
+        total_number: this.realStudents.length,
+        real_number: join_student_count,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        vote_list: voteAnswersData,
+      };
+      this.questionDataArray.push(voteData);
     },
   },
 };

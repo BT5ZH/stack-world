@@ -2,7 +2,7 @@
   <div>
     <h1 class="sign-title">投票结果</h1>
     <a-empty v-if="emptyShow" class="empty-area"></a-empty>
-    <a-row v-else v-for="(item, index) in tempdata" :key="index" class="chart">
+    <a-row v-else v-for="(item, index) in localList" :key="index" class="chart">
       <v-chart :options="item.echartConfig" />
     </a-row>
   </div>
@@ -17,21 +17,64 @@ import { mapState, mapGetters } from "vuex";
 export default {
   components: { "v-chart": ECharts },
   data() {
-    return {};
+    return {
+      localList: [],
+    };
+  },
+  computed: {
+    ...mapState({
+      voteData: (state) => state.student.interaction.vote,
+      teacherId: (state) => state.public.studentId,
+      teacherName: (state) => state.public.userName,
+    }),
+    emptyShow() {
+      return !this.voteShowList.length;
+    },
+    voteShowList() {
+      return this.$store.state.teacher.voteShowList;
+    },
+    // tempdata() {
+    //   return this.voteShowList.map((ques) => ({
+    //     quesId: ques.itemId,
+    //     echartConfig: this.getEchartConfig(ques), //Object.assign({}, ques)
+    //   }));
+    // },
+  },
+  watch: {
+    voteShowList: {
+      immediate: true,
+      deep: true,
+      handler(newValue, oldValue) {
+        console.log(newValue);
+        // this.tempData = this.tempData;
+        this.getLocallist();
+      },
+    },
+  },
+  mounted() {
+    this.getLocallist();
   },
   methods: {
+    getLocallist() {
+      this.localList = this.voteShowList.map((ques) => ({
+        quesId: ques.itemId,
+        echartConfig: this.getEchartConfig(ques), //Object.assign({}, ques)
+      }));
+    },
     getEchartConfig(value) {
-      delete value.id;
+      // delete value.id;
+      console.log(value);
+
       return {
         color: ["#019d96"],
         xAxis: {
           type: "category",
-          data: Object.keys(value),
+          data: value.xArr,
         },
         yAxis: { type: "value", minInterval: 1 },
         series: [
           {
-            data: Object.values(value),
+            data: value.yArr,
             type: "bar",
             showBackground: true,
             backgroundStyle: {
@@ -40,20 +83,6 @@ export default {
           },
         ],
       };
-    },
-  },
-  computed: {
-    emptyShow() {
-      return !this.voteAnswerList.length;
-    },
-    voteAnswerList() {
-      return this.$store.state.teacher.voteAnswerList;
-    },
-    tempdata() {
-      return this.voteAnswerList.map((ques) => ({
-        quesId: ques.id,
-        echartConfig: this.getEchartConfig(Object.assign({}, ques)),
-      }));
     },
   },
 };

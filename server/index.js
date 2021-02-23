@@ -98,6 +98,8 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "vote":
+          console.log("收到了老师发送投票的命令");
+          console.log(data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "ques":

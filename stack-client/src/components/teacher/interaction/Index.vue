@@ -110,6 +110,7 @@ export default {
       this.$router.push({ name: "teacher_index" });
     },
     eventChange(value) {
+      console.log("当前事件: " + value);
       this.curEvent = value;
       this.$store.commit("teacher/updateCurActivity", {
         curType: this.steps[this.curEvent].type,
@@ -125,21 +126,22 @@ export default {
     },
     navigateToEvent(eventIndex) {
       console.log("---step---");
+      console.log(eventIndex);
       console.log(this.steps[eventIndex]);
       const event = this.steps[eventIndex];
-      this[`send${event.type}Event`]();
+      this[`send${event.type}Event`](eventIndex);
     },
-    sendsignEvent() {
+    sendsignEvent(phaseIndex) {
       socket.sendEvent("joinRoom", {
         actionType: "sign",
         role: "teacher",
         roomId: this.lessonId,
       });
     },
-    sendteachEvent() {
+    sendteachEvent(phaseIndex) {
       console.log("授课过程");
     },
-    sendtestEvent() {
+    sendtestEvent(phaseIndex) {
       const testList = this.nodes[this.curEvent].node_contents;
 
       socket.sendEvent("joinRoom", {
@@ -157,7 +159,7 @@ export default {
         ],
       });
     },
-    sendraceEvent() {
+    sendraceEvent(phaseIndex) {
       const [raceData] = this.nodes[this.curEvent].node_contents;
       const limit = this.nodes[this.curEvent].people_num;
       socket.sendEvent("joinRoom", {
@@ -178,7 +180,7 @@ export default {
         },
       });
     },
-    senddispatchEvent() {
+    senddispatchEvent(phaseIndex) {
       const [files] = this.nodes[this.curEvent].node_contents;
       const fileIdList = files.options;
       axios
@@ -203,12 +205,31 @@ export default {
           this.$message.error("获取文件信息失败");
         });
     },
-    sendvoteEvent() {
+    sendvoteEvent(phaseIndex) {
       const voteList = this.nodes[this.curEvent].node_contents;
+      let voteShowList = [];
+      for (let i = 0; i < voteList.length; i++) {
+        let itemList = voteList[i].options;
+        let itemTitle = voteList[i].title;
+        let yArr = [];
+        let xArr = [];
+        let itemObj = {};
+        for (let j = 0; j < itemList.length; j++) {
+          yArr[j] = 0;
+          xArr[j] = itemList[j];
+        }
+        itemObj.xArr = xArr;
+        itemObj.yArr = yArr;
+        itemObj.title = itemTitle;
+        itemObj.itemId = "";
+        voteShowList.push(itemObj);
+      }
+      this.$store.commit("teacher/updateVoteShowList", voteShowList);
       socket.sendEvent("joinRoom", {
         actionType: "vote",
         role: "teacher",
         roomId: this.lessonId,
+        phaseIndex: phaseIndex,
         data: voteList.map((item, index) => ({
           id: `AH83CP${index}`,
           stem: item.title,
@@ -218,7 +239,7 @@ export default {
         })),
       });
     },
-    sendaskEvent() {
+    sendaskEvent(phaseIndex) {
       const [askData] = this.nodes[this.curEvent].node_contents;
       // console.log("askData+++++");
       // console.log(askData);
@@ -241,7 +262,7 @@ export default {
         },
       });
     },
-    sendrandomsignEvent() {
+    sendrandomsignEvent(phaseIndex) {
       if (this.signList[0] == undefined) {
         this.$message.info("请先发布大签到");
         return;

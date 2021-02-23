@@ -68,18 +68,57 @@ const mutation = {
       [answer]: ques[answer] ? ques[answer] + 1 : 1,
     });
   },
+
   updateVoteResult(state, params) {
-    const { id, answer } = params;
-    let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
-    if (quesIndex < 0) {
-      state.voteAnswerList.push({ id: id, [answer]: 1 });
-      return null;
+    console.log("学生端返回的  投票  数据是");
+    if (params) {
+      if (!state.voteAnswerList[0]) state.voteAnswerList = [];
+      var repeatStatus = false;
+      state.voteAnswerList.forEach((item) => {
+        if (item.studentId === params.studentId) {
+          repeatStatus = true;
+          // item.answerSelection = params.answerSelection;
+        }
+      });
+      if (repeatStatus) {
+        return;
+      } else {
+        state.voteAnswerList.push(params);
+      }
+    } else {
+      console.error("学生端未返回数据");
     }
-    let ques = state.voteAnswerList[quesIndex];
-    state.voteAnswerList.splice(quesIndex, 1, {
-      ...ques,
-      [answer]: ques[answer] ? ques[answer] + 1 : 1,
+
+    console.log("投票结果数据");
+    console.log(params);
+
+    const {
+      studentId,
+      studentName,
+      submitTime,
+      result_list,
+      phaseIndex,
+    } = params;
+
+    result_list.forEach((result) => {
+      state.voteShowList[result.voteIndex].yArr[result.voteSelection]++;
+      state.voteShowList[result.voteIndex].itemId = result.voteItemId;
     });
+
+    // let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
+
+    // if (quesIndex < 0) {
+    //   state.voteAnswerList.push({ id: id, [answer]: 1 });
+    //   return null;
+    // }
+    // let ques = state.voteAnswerList[quesIndex];
+    // state.voteAnswerList.splice(quesIndex, 1, {
+    //   ...ques,
+    //   [answer]: ques[answer] ? ques[answer] + 1 : 1,
+    // });
+  },
+  updateVoteShowList(state, payload) {
+    state.voteShowList = payload;
   },
   updateRaceResult(state, params) {
     state.raceList.push(params);

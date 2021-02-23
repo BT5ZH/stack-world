@@ -57,7 +57,9 @@ let lesson_listeners = {
       },
     });
   },
-  vote(data, that) {
+  vote(data, that, eventData) {
+    console.log("发送到投票数据");
+    console.log(data);
     that.$store.commit("student/updateInteraction", {
       name: "vote",
       params: {
@@ -69,6 +71,7 @@ let lesson_listeners = {
           }));
           return item;
         }),
+        phaseIndex: eventData.phaseIndex,
       },
     });
   },
