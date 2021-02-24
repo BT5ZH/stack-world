@@ -259,8 +259,7 @@ export default {
         // console.log(this.Tree_spin_status);
         // console.log(this.orgName)
         // this.treeSpin_status = false;
-        // console.log(data.data);
-        this.treeData = data.data;
+        this.treeData = data.result;
       } catch (err) {
         this.$store.dispatch("admin/change_Tree_spin_status", false);
         console.log(err);
