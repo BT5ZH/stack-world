@@ -28,7 +28,8 @@ const state = {
   updateSetHomeworks: [],
   // courseinfo
   courseInfo: {},
-
+  voteShowList: [],
+  voteRefresh: 0,
 };
 
 export default state;
