@@ -201,7 +201,7 @@ const action = {
       console.log(payload);
       const url = `pc/v1/activities/activityMessage/${payload.curActivityID}`;
       const data = await axios.patch(url, {
-        request: payload.request,
+        request: payload,
       });
       console.log(data);
     } catch (err) {

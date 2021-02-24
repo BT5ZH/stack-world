@@ -35,8 +35,7 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName
-                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter
@@ -233,41 +232,13 @@ export default {
       try {
         // 1）保存本次课教学活动 TODO
         // 本次课活动列表
-        // 将所有事件包在request中，一次传给后端
-
-        var request = {};
         let payload = {};
         this.precourse.nodes.forEach((node) => {
           if (node.tag === "Race") {
-            // if (!request.race_data) request.race_data = [];
-            // let race_students = this.raceList.map((raceData) => {
-            //   return {
-            //     studentID: raceData.studentID,
-            //     studentName: raceData.studentName,
-            //     student_answer: raceData.answer,
-            //   };
-            // });
-            // let race_question = {
-            //   title: this.raceList[0].question.content,
-            //   options: this.raceList[0].question.options,
-            //   question_type: this.raceList[0].question.type,
-            //   right_answer: this.raceList[0].question.right_answer,
-            // };
-            // request.race_data.push({ race_students, race_question });
+            this.saveRaceData(payload);
           }
           if (node.tag === "randomSign") {
-            // console.log(this.randomSignList);
-            // if (!request.randomSign_data) request.randomSign_data = [];
-            // console.log(this.randomStudents);
-            // this.randomStudents.forEach((student) => {
-            //   student.signStatus = "未签到";
-            //   this.randomSignList.forEach((randomData) => {
-            //     if (student.studentName === randomData.studentName) {
-            //       student.signStatus = "已签到";
-            //     }
-            //   });
-            // });
-            // request.randomSign_data = this.randomStudents;
+            this.saveRandomSignData(payload);
           }
           if (node.tag === "Ask") {
             this.saveQuestionData();
@@ -288,17 +259,11 @@ export default {
             this.signedDataArray.length = 0;
           }
         });
-
         // this.$store.dispatch("teacher/saveActivityMessage", {
         //   curActivityID: this.curActivityID,
         //   request,
         // });
-
-        // if (this.precourse !== null) return;
-        // race
-
-        (payload.curActivityID = this.curActivityID),
-          console.log("最终存储数据");
+        (payload.curActivityID = this.curActivityID), console.log("最终存储数据");
 
         await this.$store.dispatch("teacher/saveActivityData", payload);
 
@@ -325,6 +290,37 @@ export default {
         console.log(err);
         this.$message.error("信息保存失败");
       }
+    },
+    saveRandomSignData(payload) {
+      console.log(this.randomSignList);
+      if (!payload.randomSign_data) payload.randomSign_data = [];
+      console.log(this.randomStudents);
+      this.randomStudents.forEach((student) => {
+        student.signStatus = "未签到";
+        this.randomSignList.forEach((randomData) => {
+          if (student.studentName === randomData.studentName) {
+            student.signStatus = "已签到";
+          }
+        });
+      });
+      payload.randomSign_data = this.randomStudents;
+    },
+    saveRaceData(payload) {
+      if (!payload.race_data) payload.race_data = [];
+      let race_students = this.raceList.map((raceData) => {
+        return {
+          studentID: raceData.studentID,
+          studentName: raceData.studentName,
+          student_answer: raceData.answer,
+        };
+      });
+      let race_question = {
+        title: this.raceList[0].question.content,
+        options: this.raceList[0].question.options,
+        question_type: this.raceList[0].question.type,
+        right_answer: this.raceList[0].question.right_answer,
+      };
+      payload.race_data.push({ race_students, race_question });
     },
     saveSignData() {
       // **************保存签到数据
@@ -448,7 +444,7 @@ export default {
             phaseIndex: "",
             result_list: "",
           };
-          voteAnswersData.push(questionStatus);
+          voteAnswersData.push(voteStatus);
         }
       });
 
