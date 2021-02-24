@@ -152,6 +152,45 @@ const activitySchema = new mongoose.Schema(
         },
       ],
     },
+    // 随堂测试
+    quiz_data: {
+      type: [
+        {
+          total_number: { type: Number },
+          real_number: { type: Number },
+          class_name: { type: String },
+          class_id: { type: String },
+          quit_result_list: {
+            type: [
+              {
+                quizSelection: { type: String },
+                quizIndex: { type: Number },
+                quizItemId: { type: String },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    // 文件下发
+    file_data: {
+      type: [
+        {
+          total_number: { type: Number },
+          real_number: { type: Number },
+          class_name: { type: String },
+          class_id: { type: String },
+          file_list: {
+            type: [
+              {
+                studentId: { type: String },
+                studentName: { type: String },
+              },
+            ],
+          },
+        },
+      ],
+    },
   },
   {
     toJSON: { virtuals: true },
