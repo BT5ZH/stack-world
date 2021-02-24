@@ -37,7 +37,7 @@ export default {
 <style>
 .quit {
   position: absolute;
-  right: 0;
+  right: 200px;
   top: 20px;
 }
 </style>

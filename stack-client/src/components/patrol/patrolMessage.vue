@@ -5,6 +5,7 @@
       <a-button block> {{ orgName }} <a-icon type="down" /> </a-button>
       <a-menu slot="overlay">
         <a-sub-menu
+          style="width=800px;"
           v-for="SubOrg in treeData"
           :key="SubOrg.showName"
           :title="SubOrg.showName"
@@ -18,8 +19,27 @@
         </a-sub-menu>
       </a-menu>
     </a-dropdown>
+    <br /><br />
     <!-- 直播房间列表 -->
-    <ul class="liveList">
+    <a-table
+      rowKey="timeTable_id"
+      :pagination="{
+        total: liveRooms.length,
+        pageSizeOptions: pageSize,
+        'show-less-items': true,
+        'show-size-changer': true,
+        'show-quick-jumper': true,
+        'hide-on-single-page': true,
+      }"
+      :bordered="true"
+      :columns="columns"
+      :data-source="liveRooms"
+    >
+      <template #operation="record">
+        <a-button type="link" @click="goLook(record.lesson_id)">巡课</a-button>
+      </template>
+    </a-table>
+    <!-- <ul class="liveList">
       <li style="color: #6d757a">
         <span>课程名</span>
         <span>教师名</span>
@@ -54,7 +74,7 @@
         </a-popover>
         <a @click="goLook(item.lesson_id)">巡课</a>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 <script>
@@ -65,6 +85,44 @@ export default {
   data() {
     return {
       menuData: {},
+      pageSize: ["10", "20", "30", "50", "100"],
+      columns: [
+        {
+          title: "学院",
+          dataIndex: "subOrg",
+          align: "center",
+        },
+        {
+          title: "专业",
+          dataIndex: "major",
+          align: "center",
+        },
+        {
+          title: "课程名",
+          dataIndex: "course.name",
+          align: "center",
+        },
+        {
+          title: "班级名",
+          dataIndex: "class.class_name",
+          align: "center",
+        },
+        {
+          title: "教师名",
+          dataIndex: "teacher.name",
+          align: "center",
+        },
+        {
+          title: "教室名",
+          dataIndex: "room.room_number",
+          align: "center",
+        },
+        {
+          title: "操作",
+          align: "center",
+          scopedSlots: { customRender: "operation" },
+        },
+      ],
     };
   },
   mounted() {
@@ -108,12 +166,12 @@ export default {
   padding: 10px;
 }
 .liveList > li {
-  padding: 10px;
+  padding: 12px;
   display: flex;
   justify-content: space-around;
 }
 .liveList > li > span {
-  width: 3em;
+  width: 6em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

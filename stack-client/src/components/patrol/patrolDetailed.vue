@@ -172,7 +172,8 @@ export default {
 
 <style scoped>
 #remote_stream {
-  width: 100%;
+  width: 40%;
+  margin: auto;
   min-height: 300px;
   background-image: url("../../assets/img/video/直播.png");
 }
@@ -186,7 +187,7 @@ export default {
 }
 
 .rate_container {
-  width: 92%;
+  width: 52%;
   margin: 2rem auto;
   padding-bottom: 3rem;
 }
