@@ -1,4 +1,4 @@
-import random from "@/utils/utils";
+import { idCreator } from "@/utils/utils";
 import axios from "@/utils/axios";
 
 /**
@@ -29,7 +29,7 @@ function getVideoDuration(file) {
   let videoEle = document.createElement("video");
   videoEle.src = URL.createObjectURL(file);
   return new Promise((resolve) => {
-    videoEle.onloadedmetadata = function () {
+    videoEle.onloadedmetadata = function() {
       resolve(videoEle.duration);
     };
   });
@@ -38,7 +38,7 @@ function getVideoDuration(file) {
 async function uploadFile([file], config = {}) {
   let { body, failCallback, successCallback } = config;
   const formData = new FormData();
-  const fileID = random(8, 16);
+  const fileID = idCreator(8, 16);
   const key = getFileContentType(file);
   body = {
     ...body,

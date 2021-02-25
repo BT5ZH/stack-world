@@ -29,7 +29,7 @@
       </a-form-model-item>
       <a-form-model-item label="存储位置">
         <a-radio-group v-model="location">
-          <a-radio value="public"> 公有云 </a-radio>
+          <!-- <a-radio value="public"> 公有云 </a-radio> -->
           <a-radio value="private"> 私有云 </a-radio>
         </a-radio-group>
       </a-form-model-item>
@@ -73,7 +73,7 @@ export default {
         name: [{ required: true, message: "资源名称不能为空" }],
       },
       // private or public
-      location: "public",
+      location: "private",
     };
   },
   methods: {
