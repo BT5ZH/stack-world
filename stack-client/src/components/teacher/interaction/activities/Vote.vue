@@ -40,8 +40,14 @@ export default {
     // },
   },
   watch: {
-    voteRefresh(val) {
-      this.getLocallist();
+    voteRefresh: {
+      handler(newval) {
+        console.log(newval);
+        this.getLocallist();
+      },
+
+      deep: true,
+      immediate: true,
     },
   },
   mounted() {
@@ -57,7 +63,6 @@ export default {
     getEchartConfig(value) {
       // delete value.id;
       console.log(value);
-
       return {
         color: ["#019d96"],
         xAxis: {

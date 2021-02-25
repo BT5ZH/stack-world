@@ -35,7 +35,8 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter
@@ -248,24 +249,21 @@ export default {
           }
           if (node.tag === "Sign") {
             this.saveSignData();
-            // 先赋值signedData 再清空signedDataArray
-            [...payload.sign_Data] = this.signedDataArray;
+            [...payload.sign_data] = this.signedDataArray;
             this.signedDataArray.length = 0;
           }
           if (node.tag === "Vote") {
             this.saveVoteData();
-            // 先赋值signedData 再清空signedDataArray
-            [...payload.vote_Data] = this.signedDataArray;
-            this.signedDataArray.length = 0;
+            [...payload.vote_data] = this.voteDataArray;
+            this.voteDataArray.length = 0;
           }
         });
         // this.$store.dispatch("teacher/saveActivityMessage", {
         //   curActivityID: this.curActivityID,
         //   request,
         // });
-        (payload.curActivityID = this.curActivityID), console.log("最终存储数据");
-
-        await this.$store.dispatch("teacher/saveActivityData", payload);
+        (payload.curActivityID = this.curActivityID),
+          await this.$store.dispatch("teacher/saveActivityData", payload);
 
         // 2）更改房间使用状态
         this.$store.dispatch("teacher/clearRoomMembers", {
@@ -402,7 +400,7 @@ export default {
           questionAnswersData.push(questionStatus);
         }
       });
-      // let questionDataArray = [];
+
       let questionData = {
         total_number: this.realStudents.length,
         real_number: join_student_count,
@@ -455,7 +453,7 @@ export default {
         class_id: this.curclassId,
         vote_list: voteAnswersData,
       };
-      this.questionDataArray.push(voteData);
+      this.voteDataArray.push(voteData);
     },
   },
 };

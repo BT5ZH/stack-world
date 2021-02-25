@@ -39,9 +39,8 @@ exports.saveActivityMessage = catchAsync(async (req, res, next) => {
 exports.saveActivity = catchAsync(async (req, res, next) => {
   const payload = req.body;
   console.log("connect+++++++");
-  console.log(payload);
   const activityId = payload.activity_id;
-  // const signData = payload.sign_data;
+  console.log(payload);
   let dataIn = {};
   let flag = false;
   if (payload.hasOwnProperty("sign_data")) {
@@ -56,11 +55,11 @@ exports.saveActivity = catchAsync(async (req, res, next) => {
   } else if (payload.hasOwnProperty("randomSign_data")) {
     dataIn.randomSign_data = payload.randomSign_data;
     flag = true;
+  } else if (payload.hasOwnProperty("vote_data")) {
+    dataIn.vote_data = payload.vote_data;
+    flag = true;
   }
   // else if(payload.hasOwnProperty(sign_data)){
-  //   dataIn.sign_data=payload.sign_data;
-  //   flag=true;
-  // }else if(payload.hasOwnProperty(sign_data)){
   //   dataIn.sign_data=payload.sign_data;
   //   flag=true;
   // }else if(payload.hasOwnProperty(sign_data)){
@@ -72,12 +71,11 @@ exports.saveActivity = catchAsync(async (req, res, next) => {
     return;
   }
 
-  const updatedResult = await Activity.findOneAndUpdate(activityId, dataIn, {
+  const resulttemp = await Activity.findOneAndUpdate(activityId, dataIn, {
     new: true,
   });
   res.status(200).json({
     status: "success",
-    data: updatedResult,
   });
 });
 

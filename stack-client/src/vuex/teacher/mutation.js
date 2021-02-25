@@ -72,7 +72,7 @@ const mutation = {
   updateVoteResult(state, params) {
     console.log("学生端返回的  投票  数据是");
     if (params) {
-      if (!state.voteAnswerList[0]) state.voteAnswerList = [];
+      if (!state.voteAnswerList) state.voteAnswerList = [];
       var repeatStatus = false;
       state.voteAnswerList.forEach((item) => {
         if (item.studentId === params.studentId) {
@@ -81,6 +81,7 @@ const mutation = {
         }
       });
       if (repeatStatus) {
+        console.log("该学院已经提交过投票，不再接收新的投票");
         return;
       } else {
         state.voteAnswerList.push(params);
@@ -89,9 +90,7 @@ const mutation = {
       console.error("学生端未返回数据");
     }
 
-    console.log("投票结果数据");
-    console.log(params);
-
+    console.log("用于显示统计结果数据");
     const {
       studentId,
       studentName,
@@ -99,7 +98,7 @@ const mutation = {
       result_list,
       phaseIndex,
     } = params;
-
+    // 统计投票数量
     result_list.forEach((result) => {
       state.voteShowList[result.voteIndex].yArr[result.voteSelection]++;
       state.voteShowList[result.voteIndex].itemId = result.voteItemId;
@@ -107,19 +106,7 @@ const mutation = {
 
     // 投票状态
     if (state.voteRefresh == undefined) state.voteRefresh = 0;
-    else state.voteRefresh++
-
-    // let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
-
-    // if (quesIndex < 0) {
-    //   state.voteAnswerList.push({ id: id, [answer]: 1 });
-    //   return null;
-    // }
-    // let ques = state.voteAnswerList[quesIndex];
-    // state.voteAnswerList.splice(quesIndex, 1, {
-    //   ...ques,
-    //   [answer]: ques[answer] ? ques[answer] + 1 : 1,
-    // });
+    else state.voteRefresh++;
   },
   updateVoteShowList(state, payload) {
     state.voteShowList = payload;
