@@ -105,6 +105,10 @@ const mutation = {
       state.voteShowList[result.voteIndex].itemId = result.voteItemId;
     });
 
+    // 投票状态
+    if (state.voteRefresh == undefined) state.voteRefresh = 0;
+    else state.voteRefresh++
+
     // let quesIndex = state.voteAnswerList.findIndex((item) => item.id === id);
 
     // if (quesIndex < 0) {

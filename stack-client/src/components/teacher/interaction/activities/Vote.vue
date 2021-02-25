@@ -26,12 +26,11 @@ export default {
       voteData: (state) => state.student.interaction.vote,
       teacherId: (state) => state.public.studentId,
       teacherName: (state) => state.public.userName,
+      voteShowList: (state) => state.teacher.voteShowList,
+      voteRefresh: (state) => state.teacher.voteRefresh,
     }),
     emptyShow() {
       return !this.voteShowList.length;
-    },
-    voteShowList() {
-      return this.$store.state.teacher.voteShowList;
     },
     // tempdata() {
     //   return this.voteShowList.map((ques) => ({
@@ -41,14 +40,8 @@ export default {
     // },
   },
   watch: {
-    voteShowList: {
-      immediate: true,
-      deep: true,
-      handler(newValue, oldValue) {
-        console.log(newValue);
-        // this.tempData = this.tempData;
-        this.getLocallist();
-      },
+    voteRefresh(val) {
+      this.getLocallist();
     },
   },
   mounted() {
