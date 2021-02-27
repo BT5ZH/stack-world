@@ -67,7 +67,7 @@ const favorite = () => import("@/pages/student/menu/Favorite.vue");
 const analysis = () => import("@/pages/student/menu/Analysis.vue");
 
 const sign = () => import("@/pages/student/course/class/Sign.vue");
-const quiz = () => import("@/pages/student/course/class/Quiz.vue");
+const test = () => import("@/pages/student/course/class/Test.vue");
 const random = () => import("@/pages/student/course/class/Random.vue");
 const questionnaire = () =>
   import("@/pages/student/course/class/Questionnaire.vue");
@@ -241,8 +241,8 @@ export const routes = [
             component: sign,
           },
           {
-            path: "quiz",
-            component: quiz,
+            path: "test",
+            component: test,
           },
           {
             path: "random",

@@ -37,7 +37,7 @@
         <a-divider style="margin-bottom: 0"></a-divider>
         <div>
           <sign v-if="flag == 1" :socket="socket"></sign>
-          <quiz v-if="flag == 2" :socket="socket"></quiz>
+          <test v-if="flag == 2" :socket="socket"></test>
           <random v-if="flag == 3" :socket="socket"></random>
           <file v-if="flag == 4" :socket="socket"></file>
           <vote v-if="flag == 5" :socket="socket"></vote>
@@ -84,7 +84,7 @@ import sign from "./class/Sign.vue";
 import random from "./class/Random.vue";
 import vote from "./class/Vote.vue";
 import ques from "./class/Ques.vue";
-import quiz from "./class/Quiz.vue";
+import test from "./class/Test.vue";
 import race from "./class/Race";
 import file from "./class/File";
 
@@ -103,7 +103,7 @@ export default {
     random,
     vote,
     ques,
-    quiz,
+    test,
     file,
     race,
   },
