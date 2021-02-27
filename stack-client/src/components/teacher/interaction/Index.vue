@@ -161,6 +161,8 @@ export default {
         testShowList.push(itemObj);
       }
       this.$store.commit("teacher/updateTestShowList", testShowList);
+
+      console.log(testList);
       socket.sendEvent("joinRoom", {
         actionType: "test",
         role: "teacher",
@@ -168,6 +170,7 @@ export default {
         phaseIndex: phaseIndex,
         data: testList.map((item, index) => ({
           id: randomID.idCreator(6, 16),
+          right_answer: item.right_answer,
           stem: item.title,
           type: 2,
           multiple: false,

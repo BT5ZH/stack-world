@@ -273,6 +273,7 @@ export default {
         (payload.curActivityID = this.curActivityID),
           await this.$store.dispatch("teacher/saveActivityData", payload);
 
+        this.$store.commit("teacher/clearActivity");
         // 2）更改房间使用状态
         this.$store.dispatch("teacher/clearRoomMembers", {
           channelId: this.$route.query.lessonId,
@@ -504,7 +505,7 @@ export default {
         real_number: join_student_count,
         class_name: this.curclassName,
         class_id: this.curclassId,
-        vote_list: testAnswersData,
+        test_list: testAnswersData,
       };
       this.testDataArray.push(testData);
     },

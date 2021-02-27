@@ -196,7 +196,6 @@ const action = {
     }
   },
   async saveActivityMessage({ commit }, payload) {
-    console.log("保存数据第一步：saveActivityMessage");
     try {
       console.log(payload);
       const url = `pc/v1/activities/activityMessage/${payload.curActivityID}`;
@@ -209,6 +208,7 @@ const action = {
     }
   },
   async saveActivityData({ commit }, payload) {
+    console.log("保存数据第一步：saveActivityMessage");
     console.log(payload);
     try {
       const url = `pc/v1/activities/activity_data/${payload.curActivityID}`;

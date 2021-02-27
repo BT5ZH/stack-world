@@ -29,7 +29,9 @@ const state = {
   // courseinfo
   courseInfo: {},
   voteShowList: [],
+  testShowList: [],
   voteRefresh: 0,
+  testRefresh: 0,
 };
 
 export default state;

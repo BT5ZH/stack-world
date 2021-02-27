@@ -5,6 +5,14 @@ const mutation = {
   updateToday(state, params) {
     state.today = params;
   },
+  clearActivity(state) {
+    state.testRefresh = 0;
+    state.testAnswerList.length = 0;
+    state.testShowList.length = 0;
+    state.voteRefresh = 0;
+    state.voteAnswerList.length = 0;
+    state.voteShowList.length = 0;
+  },
   clearStorage(state) {
     Object.keys(state).forEach((key) => {
       if (Array.isArray(state[key])) {
@@ -68,7 +76,7 @@ const mutation = {
       });
       if (repeatStatus) {
         console.log("该学生已经提交过测试结果，不再接收新的测试");
-        return;
+        // return;
       } else {
         state.testAnswerList.push(params);
       }
@@ -147,6 +155,9 @@ const mutation = {
   },
   updateVoteShowList(state, payload) {
     state.voteShowList = payload;
+  },
+  updateTestShowList(state, payload) {
+    state.testShowList = payload;
   },
   updateRaceResult(state, params) {
     state.raceList.push(params);

@@ -114,6 +114,24 @@ let lesson_listeners = {
       params: { ...data },
     });
   },
+  test(data, that, eventData) {
+    console.log("发送到隋唐测试数据");
+    console.log(data);
+    that.$store.commit("student/updateInteraction", {
+      name: "test",
+      params: {
+        questions: data.map((item) => {
+          item.content = item.stem;
+          item.options = item.options.map((option, index) => ({
+            value: String.fromCharCode(65 + index),
+            text: option,
+          }));
+          return item;
+        }),
+        phaseIndex: eventData.phaseIndex,
+      },
+    });
+  },
 };
 
 export default function studentListeners(lessonId) {

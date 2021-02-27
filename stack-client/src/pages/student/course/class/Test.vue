@@ -89,11 +89,15 @@ export default {
 
       let resultList = [];
       this.answerList.forEach((item, index) => {
-        let voteAnswer = {};
-        voteAnswer.voteSelection = item.tempVal;
-        voteAnswer.voteIndex = index;
-        voteAnswer.voteItemId = item.tempId;
-        resultList.push(voteAnswer);
+        let testAnswer = {};
+        testAnswer.testSelection = item.tempVal;
+        testAnswer.testIndex = index;
+        testAnswer.testItemId = item.tempId;
+        testAnswer.answerResult =
+          item.tempVal == this.testData.questions[index].right_answer
+            ? true
+            : false;
+        resultList.push(testAnswer);
       });
       this.socket.sendEvent("joinRoom", {
         actionType: "test",
@@ -101,7 +105,7 @@ export default {
         roomId: this.lessonId,
         studentId: this.studentId,
         data: {
-          phaseIndex: this.voteData.phaseIndex,
+          phaseIndex: this.testData.phaseIndex,
           studentName: this.studentName,
           studentId: this.studentId,
           submitTime: submitTime,

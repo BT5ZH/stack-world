@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import singleQues from "@/components/SingleQues.vue";
 import * as UTILS from "@/utils/utils";
 import { mapState } from "vuex";
 

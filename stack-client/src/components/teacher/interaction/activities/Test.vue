@@ -62,17 +62,17 @@ export default {
       }));
     },
     getEchartConfig(value) {
-      delete value.id;
+      // delete value.id;
       return {
         color: ["#019d96"],
         xAxis: {
           type: "category",
-          data: Object.keys(value),
+          data: value.xArr, //Object.keys(value),
         },
         yAxis: { type: "value", minInterval: 1 },
         series: [
           {
-            data: Object.values(value),
+            data: value.yArr, //Object.values(value),
             type: "bar",
             showBackground: true,
             backgroundStyle: {
