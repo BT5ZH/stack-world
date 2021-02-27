@@ -9,6 +9,10 @@ router
   .post(authController.protect, resourceController.uploadResource);
 
 router
+  .route("/uploadLocal")
+  .post(authController.protect, resourceController.uploadLocalResource);
+
+router
   .route("/collect")
   .post(authController.protect, resourceController.collectResource);
 router

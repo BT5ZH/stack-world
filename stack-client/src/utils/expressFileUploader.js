@@ -29,7 +29,7 @@ function getVideoDuration(file) {
   let videoEle = document.createElement("video");
   videoEle.src = URL.createObjectURL(file);
   return new Promise((resolve) => {
-    videoEle.onloadedmetadata = function() {
+    videoEle.onloadedmetadata = function () {
       resolve(videoEle.duration);
     };
   });
@@ -37,29 +37,34 @@ function getVideoDuration(file) {
 
 async function uploadFile([file], config = {}) {
   let { body, failCallback, successCallback } = config;
-  const formData = new FormData();
   const fileID = idCreator(8, 16);
   const key = getFileContentType(file);
   body = {
     ...body,
-    fileID: fileID,
-    filePath: config.filePath,
     url: `${config.filePath}${fileID}.${key}`,
     rsType: key,
     size: file.size,
     originName: file.name,
     duration: key === "mp4" ? await getVideoDuration(file) : 0,
-    file: file,
   };
-  for (let item in body) {
-    formData.append(item, body[item]);
-  }
   try {
-    const { data } = await axios.post(config.apiUrl, formData);
-    if (successCallback) {
+    const idResult = await axios.post(config.apiUrl, body);
+    if (idResult.data.status !== "success") {
+      throw "get fileId from server faild!";
+    }
+    let formData = new FormData();
+    formData.append("fileID", fileID);
+    formData.append("filePath", filePath);
+    formData.append("rsType", key);
+    formData.append("file", file);
+    // TODO 修改为动态URL
+    const apiUrl = "http://localhost:3000/upload";
+    const uploadResult = await axios.post(apiUrl, formData);
+
+    if (uploadResult.data === "success" && successCallback) {
       successCallback(data);
     } else {
-      console.log(data);
+      throw "upload file faild!";
     }
   } catch (error) {
     if (failCallback) {

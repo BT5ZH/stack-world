@@ -27,12 +27,12 @@
           v-model="fileForm.tags"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="存储位置">
+      <!-- <a-form-model-item label="存储位置">
         <a-radio-group v-model="location">
-          <!-- <a-radio value="public"> 公有云 </a-radio> -->
+          <a-radio value="public"> 公有云 </a-radio>
           <a-radio value="private"> 私有云 </a-radio>
         </a-radio-group>
-      </a-form-model-item>
+      </a-form-model-item> -->
     </a-form-model>
     <a-upload-dragger
       :multiple="true"
@@ -83,10 +83,10 @@ export default {
       return false;
     },
     uploadFile() {
-      if (this.location === "public") {
-        this.uploadToPublicCloud();
-        return null;
-      }
+      // if (this.location === "public") {
+      //   this.uploadToPublicCloud();
+      //   return null;
+      // }
       this.uploadToPrivateCloud();
     },
     uploadToPublicCloud() {
@@ -119,8 +119,7 @@ export default {
       const that = this;
       const config = {
         body: this.createResource(),
-        // TODO 同上面的代码一样，修改为正常接口即可，不用加 http://xxx
-        apiUrl: "http://localhost:3000/upload",
+        apiUrl: "/pc/v1/resources/uploadLocal",
         filePath: `${this.oid}/teacher/`,
         successCallback() {
           that.$message.success("上传成功！");

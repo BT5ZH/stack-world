@@ -31,6 +31,29 @@ exports.uploadResource = async (req, res) => {
   }
 };
 
+// 2021-02-27 新增本地存储 Henrenx
+exports.uploadLocalResource = async (req, res) => {
+  try {
+    // TODO 修改为动态 url
+    let url = "http://localhost:3000/static/";
+    url += req.body.url;
+    console.log(req.body);
+    const newResource = await Resource.create({ ...req.body, url });
+
+    //返回信息
+    res.status(200).json({
+      status: "success",
+      message: "上传成功",
+    });
+  } catch (err) {
+    console.log("上传失败");
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
 exports.getAllResources = catchAsync(async (req, res, next) => {
   console.log("organizationController getAllResources 进来啦");
 
@@ -160,22 +183,22 @@ exports.getURLByIDs = catchAsync(async (req, res) => {
  */
 exports.getLessonResourceOfSubOrg = catchAsync(async (req, res) => {
   let allResources = await Resource.find({
-      org_name:req.body.org_name,
-      subOrg_name: req.body.subOrg_name,
-  }).populate('authorId','name -_id');
+    org_name: req.body.org_name,
+    subOrg_name: req.body.subOrg_name,
+  }).populate("authorId", "name -_id");
 
   res.status(200).json({
     status: true,
     allResources,
   });
 });
-exports.deleteResourceById = catchAsync(async (req, res,next) => {
+exports.deleteResourceById = catchAsync(async (req, res, next) => {
   var data = await Resource.findOneAndDelete({ _id: req.params.resource_id });
-  
+
   if (!data) {
     return next(new AppError("资源删除失败", 404));
   }
-  
+
   res.status(200).json({
     status: true,
     message: "资源删除成功",
