@@ -75,6 +75,8 @@ export default {
       signedDataArray: [],
       questionDataArray: [],
       voteDataArray: [],
+      testDataArray: [],
+      fileDataArray: [],
     };
   },
   computed: {
@@ -94,6 +96,7 @@ export default {
       randomStudents: (state) => state.teacher.randomStudents,
       questionsDataList: (state) => state.teacher.ask_answer,
       voteDataList: (state) => state.teacher.voteAnswerList,
+      testDataList: (state) => state.teacher.testAnswerList,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -256,6 +259,11 @@ export default {
             this.saveVoteData();
             [...payload.vote_data] = this.voteDataArray;
             this.voteDataArray.length = 0;
+          }
+          if (node.tag === "Test") {
+            this.saveTestData();
+            [...payload.test_data] = this.testDataArray;
+            this.testDataArray.length = 0;
           }
         });
         // this.$store.dispatch("teacher/saveActivityMessage", {
@@ -454,6 +462,51 @@ export default {
         vote_list: voteAnswersData,
       };
       this.voteDataArray.push(voteData);
+    },
+    saveTestData() {
+      // **************保存随堂测试数据
+      let testAnswersData = [];
+      let join_student_count = 0;
+      this.realStudents.forEach((real) => {
+        let testStatus = {};
+        let flag = false;
+
+        this.testDataList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            testStatus = {
+              studentId: online.studentId,
+              studentName: online.studentName,
+              submitTime: online.submitTime,
+              joinFlag: true,
+              phaseIndex: online.phaseIndex,
+              result_list: online.result_list,
+            };
+            join_student_count++;
+            flag = true;
+            testAnswersData.push(testStatus);
+          }
+        });
+        if (flag == false) {
+          testStatus = {
+            studentId: real.user_id,
+            studentName: real.name,
+            submitTime: "",
+            joinFlag: false,
+            phaseIndex: "",
+            result_list: "",
+          };
+          testAnswersData.push(testStatus);
+        }
+      });
+
+      let testData = {
+        total_number: this.realStudents.length,
+        real_number: join_student_count,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        vote_list: testAnswersData,
+      };
+      this.testDataArray.push(testData);
     },
   },
 };

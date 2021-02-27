@@ -72,7 +72,7 @@ const random = () => import("@/pages/student/course/class/Random.vue");
 const questionnaire = () =>
   import("@/pages/student/course/class/Questionnaire.vue");
 const vote = () => import("@/pages/student/course/class/Vote.vue");
-const test = () => import("@/pages/student/course/class/Test.vue");
+const ques = () => import("@/pages/student/course/class/Ques.vue");
 const file = () => import("@/pages/student/course/class/File.vue");
 const live = () => import("@/pages/student/course/Live");
 
@@ -257,8 +257,8 @@ export const routes = [
             component: vote,
           },
           {
-            path: "test",
-            component: test,
+            path: "ques",
+            component: ques,
           },
           {
             path: "file",
@@ -314,7 +314,6 @@ export const routes = [
       // { path: "pick", component: InteractionPick, name: "interaction_pick" },
       // { path: "race", component: InteractionRace, name: "interaction_race" },
       // { path: "sign", component: InteractionSign, name: "interaction_sign" },
-      // { path: "test", component: InteractionTest, name: "interaction_test" },
       // { path: "file", component: InteractionFile, name: "interaction_file" },
       // { path: "ques", component: InteractionQues, name: "interaction_ques" },
     ],

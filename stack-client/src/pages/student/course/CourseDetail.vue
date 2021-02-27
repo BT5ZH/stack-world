@@ -4,7 +4,9 @@
       <a-col :span="6" :key="index" v-for="(item, index) in courseDetailMenu">
         <!-- 菜单栏 -->
         <button
-          :class="isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'"
+          :class="
+            isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'
+          "
           @click="changeNav(index)"
         >
           {{ item.title }}
@@ -39,7 +41,7 @@
           <random v-if="flag == 3" :socket="socket"></random>
           <file v-if="flag == 4" :socket="socket"></file>
           <vote v-if="flag == 5" :socket="socket"></vote>
-          <test v-if="flag == 6" :socket="socket"></test>
+          <ques v-if="flag == 6" :socket="socket"></ques>
           <race v-if="flag == 7" :socket="socket"></race>
         </div>
       </div>
@@ -81,7 +83,7 @@ import gridView4 from "../../../layout/GridView4.vue";
 import sign from "./class/Sign.vue";
 import random from "./class/Random.vue";
 import vote from "./class/Vote.vue";
-import test from "./class/Test.vue";
+import ques from "./class/Ques.vue";
 import quiz from "./class/Quiz.vue";
 import race from "./class/Race";
 import file from "./class/File";
@@ -100,7 +102,7 @@ export default {
     sign,
     random,
     vote,
-    test,
+    ques,
     quiz,
     file,
     race,

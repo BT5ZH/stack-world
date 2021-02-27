@@ -56,17 +56,54 @@ const mutation = {
     }
   },
   updateTestResult(state, params) {
-    const { id, answer } = params;
-    let quesIndex = state.testAnswerList.findIndex((item) => item.id === id);
-    if (quesIndex < 0) {
-      state.testAnswerList.push({ id: id, [answer]: 1 });
-      return null;
+    console.log("学生端返回的  随堂测试  数据是");
+    if (params) {
+      if (!state.testAnswerList) state.testAnswerList = [];
+      var repeatStatus = false;
+      state.testAnswerList.forEach((item) => {
+        if (item.studentId === params.studentId) {
+          repeatStatus = true;
+          // item.answerSelection = params.answerSelection;
+        }
+      });
+      if (repeatStatus) {
+        console.log("该学生已经提交过测试结果，不再接收新的测试");
+        return;
+      } else {
+        state.testAnswerList.push(params);
+      }
+    } else {
+      console.error("学生端未返回数据");
     }
-    let ques = state.testAnswerList[quesIndex];
-    state.testAnswerList.splice(quesIndex, 1, {
-      ...ques,
-      [answer]: ques[answer] ? ques[answer] + 1 : 1,
+
+    console.log("用于显示统计结果数据");
+    const {
+      studentId,
+      studentName,
+      submitTime,
+      result_list,
+      phaseIndex,
+    } = params;
+    // 统计投票数量
+    result_list.forEach((result) => {
+      state.testShowList[result.testIndex].yArr[result.testSelection]++;
+      state.testShowList[result.testIndex].itemId = result.testItemId;
     });
+
+    // 投票状态
+    if (state.testRefresh == undefined) state.testRefresh = 0;
+    else state.testRefresh++;
+    // const { id, answer } = params;
+    // let quesIndex = state.testAnswerList.findIndex((item) => item.id === id);
+    // if (quesIndex < 0) {
+    //   state.testAnswerList.push({ id: id, [answer]: 1 });
+    //   return null;
+    // }
+    // let ques = state.testAnswerList[quesIndex];
+    // state.testAnswerList.splice(quesIndex, 1, {
+    //   ...ques,
+    //   [answer]: ques[answer] ? ques[answer] + 1 : 1,
+    // });
   },
 
   updateVoteResult(state, params) {

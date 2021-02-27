@@ -153,19 +153,31 @@ const activitySchema = new mongoose.Schema(
       ],
     },
     // 随堂测试
-    quiz_data: {
+    test_data: {
       type: [
         {
           total_number: { type: Number },
           real_number: { type: Number },
           class_name: { type: String },
           class_id: { type: String },
-          quit_result_list: {
+          test_list: {
             type: [
               {
-                quizSelection: { type: String },
-                quizIndex: { type: Number },
-                quizItemId: { type: String },
+                studentId: { type: String },
+                studentName: { type: String },
+                submitTime: { type: String }, // 需要改成日期类型
+                joinFlag: { type: Boolean },
+                phaseIndex: { type: Number },
+                result_list: {
+                  type: [
+                    {
+                      testSelection: { type: String },
+                      testIndex: { type: Number },
+                      testItemId: { type: String },
+                      answerResult: { type: Boolean },
+                    },
+                  ],
+                },
               },
             ],
           },

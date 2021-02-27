@@ -58,11 +58,11 @@ exports.saveActivity = catchAsync(async (req, res, next) => {
   } else if (payload.hasOwnProperty("vote_data")) {
     dataIn.vote_data = payload.vote_data;
     flag = true;
+  } else if (payload.hasOwnProperty("test_data")) {
+    dataIn.test_data = payload.test_data;
+    flag = true;
   }
   // else if(payload.hasOwnProperty(sign_data)){
-  //   dataIn.sign_data=payload.sign_data;
-  //   flag=true;
-  // }else if(payload.hasOwnProperty(sign_data)){
   //   dataIn.sign_data=payload.sign_data;
   //   flag=true;
   // }

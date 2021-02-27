@@ -143,21 +143,51 @@ export default {
     },
     sendtestEvent(phaseIndex) {
       const testList = this.nodes[this.curEvent].node_contents;
-
+      let testShowList = [];
+      for (let i = 0; i < testList.length; i++) {
+        let itemList = testList[i].options;
+        let itemTitle = testList[i].title;
+        let yArr = [];
+        let xArr = [];
+        let itemObj = {};
+        for (let j = 0; j < itemList.length; j++) {
+          yArr[j] = 0;
+          xArr[j] = itemList[j];
+        }
+        itemObj.xArr = xArr;
+        itemObj.yArr = yArr;
+        itemObj.title = itemTitle;
+        itemObj.itemId = "";
+        testShowList.push(itemObj);
+      }
+      this.$store.commit("teacher/updateTestShowList", testShowList);
       socket.sendEvent("joinRoom", {
         actionType: "test",
         role: "teacher",
         roomId: this.lessonId,
-        data: [
-          {
-            id: "1U7GVC0",
-            stem: "操作系统的目标有哪些？",
-            type: "subject",
-            multiple: true,
-            options: ["有效性", "开放性", "可扩充性", "方便性"],
-          },
-        ],
+        phaseIndex: phaseIndex,
+        data: testList.map((item, index) => ({
+          id: randomID.idCreator(6, 16),
+          stem: item.title,
+          type: 2,
+          multiple: false,
+          options: item.options,
+        })),
       });
+      // socket.sendEvent("joinRoom", {
+      //   actionType: "test",
+      //   role: "teacher",
+      //   roomId: this.lessonId,
+      //   data: [
+      //     {
+      //       id: "1U7GVC0",
+      //       stem: "操作系统的目标有哪些？",
+      //       type: "subject",
+      //       multiple: true,
+      //       options: ["有效性", "开放性", "可扩充性", "方便性"],
+      //     },
+      //   ],
+      // });
     },
     sendraceEvent(phaseIndex) {
       const [raceData] = this.nodes[this.curEvent].node_contents;
