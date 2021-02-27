@@ -54,7 +54,7 @@ async function uploadFile([file], config = {}) {
     }
     let formData = new FormData();
     formData.append("fileID", fileID);
-    formData.append("filePath", filePath);
+    formData.append("filePath", config.filePath);
     formData.append("rsType", key);
     formData.append("file", file);
     // TODO 修改为动态URL
@@ -62,7 +62,7 @@ async function uploadFile([file], config = {}) {
     const uploadResult = await axios.post(apiUrl, formData);
 
     if (uploadResult.data === "success" && successCallback) {
-      successCallback(data);
+      successCallback(uploadResult.data);
     } else {
       throw "upload file faild!";
     }
