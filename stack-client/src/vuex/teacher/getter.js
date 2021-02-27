@@ -75,7 +75,12 @@ const getter = {
     return state.nodes[state.nodeindex].node_contents[0].options;
   },
   getTest(state) {
-    return state.nodes[state.nodeindex].node_contents.map((item) => item.title);
+    return state.nodes[state.nodeindex].node_contents.map((item) => ({
+      title: item.title,
+      options: item.options,
+      question_type: item.question_type,
+      right_answer: item.right_answer,
+    }));
   },
   getSources(state) {
     return state.sources.map((item) => {

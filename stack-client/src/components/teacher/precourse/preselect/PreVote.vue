@@ -28,7 +28,7 @@
           <a-row class="title">
             <h3>投票题目</h3>
           </a-row>
-          <a-row style="height: 350px">
+          <a-row style="height: 200px">
             <div :id="'editor' + idx"></div>
           </a-row>
         </a-col>
@@ -36,15 +36,16 @@
           <a-row class="title">
             <h3>投票选项</h3>
           </a-row>
+          <!-- v-for="index in optionlength[idx]" -->
           <a-row>
             <a-input
-              v-for="index in optionlength[idx]"
+              v-for="(value, index) in card.options"
               :key="index"
               class="options"
-              v-model="card.options[index - 1]"
+              v-model="card.options[index]"
             >
               <template #prefix>
-                <a-button type="primary">{{ ENG_CHARS[index - 1] }}</a-button>
+                <a-button type="primary">{{ ENG_CHARS[index] }}</a-button>
               </template>
               <template #suffix>
                 <a-icon
@@ -79,6 +80,19 @@ export default {
       cards: [],
       optionlength: [2],
     };
+  },
+  computed: {
+    ...mapGetters({
+      vote: "teacher/getVote",
+    }),
+  },
+  mounted() {
+    this.cards = this.vote;
+    this.$nextTick(() => {
+      this.cards.forEach((item, index) => {
+        this.createEditor("#editor" + index, index, item.title);
+      });
+    });
   },
   methods: {
     node_vote() {
@@ -155,19 +169,6 @@ export default {
         editor.txt.html("<p>" + content + "</p>");
       }
     },
-  },
-  computed: {
-    ...mapGetters({
-      Vote: "teacher/getVote",
-    }),
-  },
-  mounted() {
-    this.cards = this.Vote;
-    this.$nextTick(() => {
-      this.cards.forEach((item, index) => {
-        this.createEditor("#editor" + index, index, item.title);
-      });
-    });
   },
 };
 </script>
