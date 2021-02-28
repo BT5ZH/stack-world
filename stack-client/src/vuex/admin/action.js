@@ -21,6 +21,20 @@ const action = {
         });
     });
   },
+  getAllResources({ commit }) {
+    return new Promise((resolve, reject) => {
+      const url = "/pc/v1/resources";
+      axios
+        .get(url)
+        .then((res) => {
+          console.log("🚀 ~ file: action.js ~ line 30 ~ .then ~ res", res)
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
   deleteResourceById({ commit }, resource_id) {
     return new Promise((resolve, reject) => {
       const url = "/pc/v1/resources";

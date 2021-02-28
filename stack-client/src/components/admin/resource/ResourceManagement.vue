@@ -72,9 +72,7 @@
             <!-- <a>下载 一 {{ record.name }}</a> -->
             <a @click="download(record)">下载</a>
             <a-divider type="vertical" />
-            <a
-              @click="deleteResource(record._id)"
-              v-show="isShowDeleteButton === 'yes'"
+            <a @click="deleteResource(record._id)" v-show="isShowDeleteButton === 'yes'"
               >删除</a
             >
           </span>
@@ -325,6 +323,16 @@ export default {
       //   console.log(err);
       // }
     },
+    async getAllresources() {
+      this.$store
+        .dispatch("admin/getAllResources")
+        .then((response) => {
+          this.resourceList = response.data.resources;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     async getResources(college, teacher) {
       const queryObject = {
         //org_name: this.org_name,
@@ -365,6 +373,7 @@ export default {
   },
   created: function () {},
   mounted() {
+    this.getAllresources();
     this.getSubOrgsName();
     this.getTeacherName();
     this.$store.dispatch("public/getOrgnizationName", this.oid);

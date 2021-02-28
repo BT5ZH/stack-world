@@ -59,10 +59,7 @@
 
         <a-tab-pane key="2" tab="课程">
           <a-spin :spinning="spin_status" tip="Loading...">
-            <course-table
-              class="class-table"
-              :courses="courseList2"
-            ></course-table>
+            <course-table class="class-table" :courses="courseList2"></course-table>
           </a-spin>
         </a-tab-pane>
       </a-tabs>
@@ -107,6 +104,7 @@ export default {
     }),
   },
   mounted() {
+    this.getCoursesFromCondition({ org_name: this.orgName }, 1);
     this.getTreeData();
   },
   methods: {
@@ -189,7 +187,6 @@ export default {
             // console.log(this.courseList);
           } else if (type == 2) {
             this.courseList2 = response.data.courses;
-            // console.log(this.courseList2);
           }
         })
         .catch((error) => {

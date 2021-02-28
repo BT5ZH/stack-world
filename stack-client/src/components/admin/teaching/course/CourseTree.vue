@@ -14,23 +14,14 @@
             backgroundColor: `${courseMap[course.course_type]['color']}`,
           }"
         >
-          <a-icon
-            :type="courseMap[course.course_type]['icon']"
-            class="room_icon"
-          />
+          <a-icon :type="courseMap[course.course_type]['icon']" class="room_icon" />
           <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            "
+            style="display: flex; justify-content: space-between; align-items: flex-start"
           >
             <a-checkbox @change="onChange($event, course.name)"></a-checkbox>
             <p>{{ course.course_name }}</p>
-            <a-tag color="#2db7f5">{{ collegeName[0] }}</a-tag>
-            <a-tag color="#ffb900">{{
-              courseMap[course.course_type]["name"]
-            }}</a-tag>
+            <a-tag color="#2db7f5">{{ course.subOrg_name }}</a-tag>
+            <a-tag color="#ffb900">{{ courseMap[course.course_type]["name"] }}</a-tag>
             <a-icon type="right-circle" style="font-size: 20px" />
           </div>
           <div>
@@ -46,11 +37,10 @@
 <script>
 import courseLayout from "@/utils/userConst";
 export default {
-  props: ["courseProp", "collegeName"],
+  props: ["courseProp"],
   data() {
     return {
       courseMap: courseLayout.courseMap,
-
       checkedList: [],
       courses: [],
     };

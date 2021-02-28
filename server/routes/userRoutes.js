@@ -23,7 +23,7 @@ router.patch(
 router
   .route("/")
   .get(authController.protect, userController.getAllUsers)
-  .post(userController.createUser);
+  .post(authController.protect,userController.createUser);
 
 router.route("/admin").post(userController.createAdmin);
 router.route("/teacher").post(userController.createTeacher);

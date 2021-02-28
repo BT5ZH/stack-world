@@ -28,11 +28,7 @@
     </a-row>
     <batchAddTeacher :visible.sync="bulkImport_visible"></batchAddTeacher>
     <a-modal v-model="editModal_visible" title="编辑" @ok="handleSubmit">
-      <a-form
-        :model="form"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 12 }"
-      >
+      <a-form :model="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-model-item label="工号">
           <p>{{ form.user_id }}</p>
         </a-form-model-item>
@@ -72,11 +68,7 @@
         <a-form-model-item label="职称">
           <!-- <a-input v-model="form.title" /> -->
           <a-select @change="handleSelectChange" v-model="form.title">
-            <a-select-option
-              v-for="item in titles"
-              :key="item._id"
-              :value="item.title"
-            >
+            <a-select-option v-for="item in titles" :key="item._id" :value="item.title">
               {{ item.title }}
             </a-select-option>
           </a-select>
@@ -90,9 +82,7 @@
           <div class="btn-area">
             <a-col> </a-col>
             <a-col class="btn">
-              <a-button
-                type="primary"
-                @click="changeStatus(selectedTeachers, 0)"
+              <a-button type="primary" @click="changeStatus(selectedTeachers, 0)"
                 >启用</a-button
               >
               <a-button type="danger" @click="changeStatus(selectedTeachers, 1)"
@@ -102,48 +92,44 @@
               <a-button type="primary" @click="bulkImport_visible = true"
                 >批量导入</a-button
               >
-              <a-button
-                type="danger"
-                @click="showDeleteConfirm(selectedTeachers)"
+              <a-button type="danger" @click="showDeleteConfirm(selectedTeachers)"
                 >批量删除</a-button
               >
             </a-col>
           </div>
         </a-row>
         <a-row>
-          <a-table
-            :key="tableIndex"
-            rowKey="_id"
-            :pagination="{
-              total: teacherList.length,
-              pageSizeOptions: pageSize,
-              'show-less-items': true,
-              'show-size-changer': true,
-              'show-quick-jumper': true,
-              'hide-on-single-page': true,
-            }"
-            :bordered="true"
-            :row-selection="{
-              selectedRowKeys: selectedTeachers,
-              onChange: onRowChange,
-            }"
-            :columns="columns"
-            :data-source="teacherList"
-          >
-            <template #operation="record">
-              <a-button type="link" @click="editTeacher(record)">编辑</a-button>
-              <a-button type="link" @click="resetPassword(record)"
-                >重置密码</a-button
-              >
-              <a-button type="link" @click="deleteTeacher(record)"
-                >删除</a-button
-              >
-            </template>
-            <template #state="text">
-              <a-tag color="#388e3c" v-if="text"> 已启用</a-tag>
-              <a-tag color="#ff5252" v-else> 已禁用</a-tag>
-            </template>
-          </a-table>
+          <a-spin :spinning="tableSpinningStatus">
+            <a-table
+              :key="tableIndex"
+              rowKey="_id"
+              :pagination="{
+                total: teacherList.length,
+                pageSizeOptions: pageSize,
+                'show-less-items': true,
+                'show-size-changer': true,
+                'show-quick-jumper': true,
+                'hide-on-single-page': true,
+              }"
+              :bordered="true"
+              :row-selection="{
+                selectedRowKeys: selectedTeachers,
+                onChange: onRowChange,
+              }"
+              :columns="columns"
+              :data-source="teacherList"
+            >
+              <template #operation="record">
+                <a-button type="link" @click="editTeacher(record)">编辑</a-button>
+                <a-button type="link" @click="resetPassword(record)">重置密码</a-button>
+                <a-button type="link" @click="deleteTeacher(record)">删除</a-button>
+              </template>
+              <template #state="text">
+                <a-tag color="#388e3c" v-if="text"> 已启用</a-tag>
+                <a-tag color="#ff5252" v-else> 已禁用</a-tag>
+              </template>
+            </a-table>
+          </a-spin>
         </a-row>
       </div>
     </a-row>
@@ -198,6 +184,7 @@ export default {
       },
     ];
     return {
+      tableSpinningStatus: false,
       value: undefined,
       editModal_visible: false,
       bulkImport_visible: false,
@@ -240,7 +227,7 @@ export default {
   mounted() {
     // 获取学院名
     this.getSubOrgsName();
-    // this.getTeacherList();
+    this.getAllTeacherList();
     // this.getSubOrgsName();
     this.getTreeList();
   },
@@ -272,8 +259,7 @@ export default {
       // console.log(queryString)
       // console.log(this.orgName
       this.form.major_name = "";
-      const url =
-        "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
+      const url = "/pc/v1/organizations/" + this.orgName + "/suborgs/" + queryString;
       try {
         const { data } = await axiosInstance.get(url);
         // console.log(data)
@@ -292,8 +278,7 @@ export default {
       try {
         // console.log(this.orgName);
         const url =
-          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" +
-          this.orgName;
+          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" + this.orgName;
         const { data } = await axiosInstance(url);
         this.peopleTreeList = data.result;
         // console.log(data);
@@ -313,16 +298,28 @@ export default {
       });
       queryString = "?" + queryString.slice(0, -1);
       const url = "/pc/v1/users/multipleUsers" + queryString;
-      // console.log(url);
       try {
         const { data } = await axiosInstance.get(url);
         this.teacherList = data.teachers;
-        // console.log(data);
       } catch (err) {
         console.log(err);
       }
     },
+    async getAllTeacherList() {
+      try {
+        let queryString = `?org_name=${this.orgName}`;
+        const url = "/pc/v1/users" + queryString;
+        console.log("🚀 ~ file: Teacher.vue ~ line 313 ~ getAllTeacherList ~ url", url);
 
+        this.tableSpinningStatus = true;
+        const { data } = await axiosInstance.get(url);
+        this.teacherList = data.users;
+        this.tableSpinningStatus = false;
+      } catch (err) {
+        console.log(err);
+        this.tableSpinningStatus = false;
+      }
+    },
     //table options
     onRowChange(keys) {
       this.selectedTeachers = keys;
@@ -332,13 +329,10 @@ export default {
     //row options
     editTeacher(record) {
       console.log("---record---");
-      // console.log(record);
       this.editModal_visible = true;
       this.form = record;
       this.subOrg_name = record.subOrg_name;
-      // console.log(this.form);
       this.user_id = record._id;
-      // console.log(this.form);
     },
     resetPassword(record) {
       // console.log(record);

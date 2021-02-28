@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  components: {  },
+  components: {},
   props: { courses: { type: Array } },
   data() {
     return {
