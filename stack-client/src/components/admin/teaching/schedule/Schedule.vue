@@ -1,12 +1,16 @@
 <template>
-  <a-row class="container">
-    <a-col :span="16" class="class-card">
-      <schedule-table :courseTableData="courseTableData"></schedule-table>
-    </a-col>
-    <a-col :span="8">
-      <schedule-info @courseTableData="getCourseTableData"></schedule-info>
-    </a-col>
-  </a-row>
+  <div>
+    <a-row>
+      <div>
+        <schedule-info @courseTableData="getCourseTableData"></schedule-info>
+      </div>
+    </a-row>
+    <a-row class="container">
+      <div class="class-card">
+        <schedule-table :courseTableData="courseTableData"></schedule-table>
+      </div>
+    </a-row>
+  </div>
 </template>
 
 <script>
@@ -18,17 +22,17 @@ export default {
   data() {
     return {
       courseTableData: [],
-    }
+    };
   },
   methods: {
     getCourseTableData(TableData) {
-      this.courseTableData = TableData
+      this.courseTableData = TableData;
       // console.log("---message---")
       // console.log(TableData)
       // console.log("---courseTableData---")
       // console.log(this.courseTableData)
-    }
-  }
+    },
+  },
 };
 </script>
 

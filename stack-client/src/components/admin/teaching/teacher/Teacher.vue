@@ -309,8 +309,6 @@ export default {
       try {
         let queryString = `?org_name=${this.orgName}`;
         const url = "/pc/v1/users" + queryString;
-        console.log("🚀 ~ file: Teacher.vue ~ line 313 ~ getAllTeacherList ~ url", url);
-
         this.tableSpinningStatus = true;
         const { data } = await axiosInstance.get(url);
         this.teacherList = data.users;

@@ -2,8 +2,8 @@
   <div>
     <a-row>
       <a-col>
-        <span>
-          <a-select v-model="year" style="width: 120px">
+        <span class="topSelect">
+          <a-select v-model="year" style="width: var(--width)">
             <a-select-option
               v-for="(item, index) in yearList"
               :key="index"
@@ -11,19 +11,20 @@
               >{{ item }}</a-select-option
             >
           </a-select>
-          <a-select v-model="semester" style="width: 120px">
+          <a-select v-model="semester" style="width: var(--width)">
             <a-select-option value="1"> 第一学期 </a-select-option
             ><a-select-option value="2"> 第二学期 </a-select-option>
           </a-select>
+          <a-select
+            default-value="place"
+            style="width: var(--width)"
+            @change="styleChange"
+          >
+            <a-select-option value="place"> 按地点查询 </a-select-option>
+            <a-select-option value="people"> 按人员查询 </a-select-option>
+          </a-select>
         </span>
-        <a-select
-          default-value="place"
-          style="width: 120px"
-          @change="styleChange"
-        >
-          <a-select-option value="place"> 按地点查询 </a-select-option>
-          <a-select-option value="people"> 按人员查询 </a-select-option>
-        </a-select>
+        <br />
       </a-col>
     </a-row>
     <a-row>
@@ -105,7 +106,7 @@ export default {
     return {
       Card_spin_status: false,
       // 选择
-      year: "", //moment().year(),
+      year: moment().year() + "-" + moment().add({ years: 1 }).year(),
       semester: "1",
       style: "place",
       value: "",
@@ -162,8 +163,7 @@ export default {
       try {
         // console.log(this.orgName);
         const url =
-          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" +
-          this.orgName;
+          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" + this.orgName;
         this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance(url);
         this.$store.dispatch("admin/change_Tree_spin_status", false);
@@ -293,9 +293,6 @@ export default {
     },
     // 卡片
     changeCard(record, label) {
-      // console.log("---record---")
-      // console.log(record)
-      // console.log(label)
       if (this.style === "place") {
         let url =
           "/pc/v1/timetables/getTimeTableFromRoomID?room_id=" +
@@ -401,4 +398,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+div {
+  /* 顶部选择框宽度 */
+  --width: 20%;
+}
+.topSelect {
+  display: flex;
+  justify-content: space-around;
+}
+</style>
