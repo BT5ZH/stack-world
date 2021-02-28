@@ -4,9 +4,7 @@
       <a-col :span="6" :key="index" v-for="(item, index) in courseDetailMenu">
         <!-- 菜单栏 -->
         <button
-          :class="
-            isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'
-          "
+          :class="isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'"
           @click="changeNav(index)"
         >
           {{ item.title }}
@@ -30,7 +28,7 @@
     <div class="course_content" v-if="isClick == 1">
       <!-- <div v-if="courseStart"> -->
       <div class="">
-        <div id="remote_stream"></div>
+        <!-- <div id="remote_stream"></div> -->
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
 
@@ -126,50 +124,50 @@ export default {
     changeNav(value) {
       this.isClick = value;
     },
-    initLiveClient() {
-      axios
-        .post("/pc/v1/activities/user_sig", {
-          user_id: this.userId,
-        })
-        .then(({ data }) => {
-          if (!data.userSig) throw "no sig in response";
-          this.client = TRTC.createClient({
-            mode: "live",
-            sdkAppId: data.sdkAppId,
-            userId: this.userId,
-            userSig: data.userSig,
-            useStringRoomId: true,
-          });
-          this.joinRoom();
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message.error("获取直播Token失败");
-        });
-    },
-    joinRoom() {
-      this.client
-        .join({ roomId: this.lessonId, role: "audience" })
-        .catch((error) => {
-          console.error(error);
-          this.$message.success("进入教室失败，请刷新后重试");
-        })
-        .then(() => {
-          this.$message.success("成功进入教室");
-          this.client.on("stream-added", (event) => {
-            this.client.subscribe(event.stream);
-          });
-          this.client.on("stream-subscribed", (event) => {
-            // 删除可能出现的多余播放器
-            let player = document.getElementById("remote_stream");
-            // console.log("player");
-            // console.log(player);
-            player.innerHTML = "";
-            // 开始播放
-            event.stream.play("remote_stream");
-          });
-        });
-    },
+    // initLiveClient() {
+    //   axios
+    //     .post("/pc/v1/activities/user_sig", {
+    //       user_id: this.userId,
+    //     })
+    //     .then(({ data }) => {
+    //       if (!data.userSig) throw "no sig in response";
+    //       this.client = TRTC.createClient({
+    //         mode: "live",
+    //         sdkAppId: data.sdkAppId,
+    //         userId: this.userId,
+    //         userSig: data.userSig,
+    //         useStringRoomId: true,
+    //       });
+    //       this.joinRoom();
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //       this.$message.error("获取直播Token失败");
+    //     });
+    // },
+    // joinRoom() {
+    //   this.client
+    //     .join({ roomId: this.lessonId, role: "audience" })
+    //     .catch((error) => {
+    //       console.error(error);
+    //       this.$message.success("进入教室失败，请刷新后重试");
+    //     })
+    //     .then(() => {
+    //       this.$message.success("成功进入教室");
+    //       this.client.on("stream-added", (event) => {
+    //         this.client.subscribe(event.stream);
+    //       });
+    //       this.client.on("stream-subscribed", (event) => {
+    //         // 删除可能出现的多余播放器
+    //         let player = document.getElementById("remote_stream");
+    //         // console.log("player");
+    //         // console.log(player);
+    //         player.innerHTML = "";
+    //         // 开始播放
+    //         event.stream.play("remote_stream");
+    //       });
+    //     });
+    // },
     closeLive() {
       this.client
         .leave()
@@ -185,7 +183,7 @@ export default {
   },
   created() {
     this.courseId = this.$route.params.id;
-    this.lessonId = this.$route.query.lessonId;
+    // this.lessonId = this.$route.query.lessonId;
   },
   mounted() {
     // 初始化WEB socket 管道
@@ -198,8 +196,8 @@ export default {
       data: { studentId: this.studentId, studentName: this.studentName },
     });
 
-    // 初始化腾讯实时音视频
-    this.initLiveClient();
+    // // 初始化腾讯实时音视频
+    // this.initLiveClient();
 
     // 获取作业数据
     let lesson_id = this.$route.query.lessonId;
