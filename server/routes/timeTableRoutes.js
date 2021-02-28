@@ -48,6 +48,6 @@ router
 //巡课
 router
   .route("/patrol/:orgName")
-  .get(timeTableController.getPatrolMessage)
+  .post(authController.protect, timeTableController.getPatrolMessage)
 
 module.exports = router;

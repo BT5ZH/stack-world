@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-row>
-      <a-col :span="6">
+      <a-col :span="3">
         <leftMenu></leftMenu>
       </a-col>
       <a-col :span="2"></a-col>

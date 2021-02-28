@@ -36,7 +36,13 @@
       :data-source="liveRooms"
     >
       <template #operation="record">
-        <a-button type="link" @click="goLook(record.lesson_id)">巡课</a-button>
+        <a-button
+          v-if="record.room.room_status === 'living'"
+          type="link"
+          @click="goLook(record.lesson_id)"
+          >巡课</a-button
+        >
+        <p v-else>未开始直播</p>
       </template>
     </a-table>
   </div>

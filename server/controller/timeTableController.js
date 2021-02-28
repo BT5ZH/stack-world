@@ -117,9 +117,10 @@ exports.deleteTimeTable = catchAsync(async (req, res, next) => {
   });
 });
 
-// 获取完整巡课信息
+// 获取完整巡课信息,传入当前节数
 exports.getPatrolMessage = catchAsync(async (req, res, next) => {
-  let data = await TimeTable.find()
+  // let data = await TimeTable.find({ year: req.body.year, semester: req.body.semester })
+  let data = await TimeTable.find({ year: req.body.year})
     .populate("course_id", "org_name  subOrg_name major_name name")
     .populate("teacher_id", "name")
     .populate("curriculum.class_id", "class_name")
@@ -132,22 +133,22 @@ exports.getPatrolMessage = catchAsync(async (req, res, next) => {
     data = data.filter((child) => {
       return child.course_id.org_name == req.params.orgName;
     });
-    data = data.filter((x) => {
-      let status = false;
-      x.curriculum.forEach((item) => {
-        if (!item.room_id) return;
-        if (item.room_id.room_status == "living") {
-          if (item.room_id.living_lessonID !== x.lesson_id) {
-            status = false;
-            return;
-          }
-          status = true;
-        } else {
-          status = false;
-        }
-      });
-      return status;
-    });
+    // data = data.filter((x) => {
+    //   let status = false;
+    //   x.curriculum.forEach((item) => {
+    //     if (!item.room_id) return;
+    //     if (item.room_id.room_status == "living") {
+    //       if (item.room_id.living_lessonID !== x.lesson_id) {
+    //         status = false;
+    //         return;
+    //       }
+    //       status = true;
+    //     } else {
+    //       status = false;
+    //     }
+    //   });
+    //   return status;
+    // });
   }
 
   if (!data || data.length === 0) {
