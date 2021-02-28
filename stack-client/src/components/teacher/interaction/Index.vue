@@ -214,6 +214,7 @@ export default {
       });
     },
     senddispatchEvent(phaseIndex) {
+      console.log(phaseIndex);
       const [files] = this.nodes[this.curEvent].node_contents;
       const fileIdList = files.options;
       axios
@@ -225,6 +226,7 @@ export default {
             actionType: "file",
             role: "teacher",
             roomId: this.lessonId,
+            phaseIndex: phaseIndex,
             data: {
               fileList: data.data.map((item) => ({
                 title: item.name,

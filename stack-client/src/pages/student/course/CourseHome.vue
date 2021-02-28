@@ -20,6 +20,14 @@ export default {
     };
   },
   mounted() {
+    socket.createInstance("student", this, this.lessonId);
+
+    socket.sendEvent("joinRoom", {
+      actionType: "enter",
+      role: "student",
+      roomId: this.lessonId,
+      data: { studentId: this.studentId, studentName: this.studentName },
+    });
     // 初始化腾讯实时音视频
     this.initLiveClient();
   },

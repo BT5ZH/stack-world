@@ -131,6 +131,8 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "file":
+          console.log("收到了老师发送文件下发的命令");
+          console.log(data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         default:
@@ -167,6 +169,11 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "race":
+          socket.to(roomChannel).emit(roomChannel, data);
+          break;
+        case "file":
+          console.log("收到了学生发送 关于文件下发的反馈");
+          console.log(data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "answer":

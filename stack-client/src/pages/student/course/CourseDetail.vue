@@ -4,7 +4,9 @@
       <a-col :span="6" :key="index" v-for="(item, index) in courseDetailMenu">
         <!-- 菜单栏 -->
         <button
-          :class="isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'"
+          :class="
+            isClick == index ? 'courseDetailMenu active' : 'courseDetailMenu'
+          "
           @click="changeNav(index)"
         >
           {{ item.title }}
@@ -187,14 +189,14 @@ export default {
   },
   mounted() {
     // 初始化WEB socket 管道
-    socket.createInstance("student", this, this.lessonId);
+    // socket.createInstance("student", this, this.lessonId);
 
-    socket.sendEvent("joinRoom", {
-      actionType: "enter",
-      role: "student",
-      roomId: this.lessonId,
-      data: { studentId: this.studentId, studentName: this.studentName },
-    });
+    // socket.sendEvent("joinRoom", {
+    //   actionType: "enter",
+    //   role: "student",
+    //   roomId: this.lessonId,
+    //   data: { studentId: this.studentId, studentName: this.studentName },
+    // });
 
     // // 初始化腾讯实时音视频
     // this.initLiveClient();

@@ -49,6 +49,11 @@ let lesson_listeners = {
     if (data.role === "teacher") return null;
     that.$store.commit("teacher/updateTestResult", data);
   },
+  file(data, that) {
+    console.log("这是一个测验");
+    if (data.role === "teacher") return null;
+    that.$store.commit("teacher/updateFileResult", data);
+  },
   ask(data, that) {
     console.log("student_data_come-----");
     if (data.role === "teacher") return null;

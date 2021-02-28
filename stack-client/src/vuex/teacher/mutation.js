@@ -63,6 +63,27 @@ const mutation = {
       console.error("学生端未返回数据");
     }
   },
+  updateFileResult(state, params) {
+    console.log("学生端返回的  文件下发  数据是");
+    if (params) {
+      if (!state.fileAnswerList) state.fileAnswerList = [];
+      var repeatStatus = false;
+      state.fileAnswerList.forEach((item) => {
+        if (item.studentId === params.studentId) {
+          repeatStatus = true;
+          // item.answerSelection = params.answerSelection;
+        }
+      });
+      if (repeatStatus) {
+        console.log("该学生已经提交过文件下发数据，不再接收新的数据");
+        // return;
+      } else {
+        state.fileAnswerList.push(params);
+      }
+    } else {
+      console.error("学生端未返回数据");
+    }
+  },
   updateTestResult(state, params) {
     console.log("学生端返回的  随堂测试  数据是");
     if (params) {

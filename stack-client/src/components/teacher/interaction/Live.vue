@@ -97,6 +97,7 @@ export default {
       questionsDataList: (state) => state.teacher.ask_answer,
       voteDataList: (state) => state.teacher.voteAnswerList,
       testDataList: (state) => state.teacher.testAnswerList,
+      fileDataList: (state) => state.teacher.fileAnswerList,
     }),
     audienceList() {
       let audienceList = this.onlineList.map((item) => {
@@ -265,6 +266,11 @@ export default {
             [...payload.test_data] = this.testDataArray;
             this.testDataArray.length = 0;
           }
+          if (node.tag === "File") {
+            this.saveFileData();
+            [...payload.file_data] = this.fileDataArray;
+            this.fileDataArray.length = 0;
+          }
         });
         // this.$store.dispatch("teacher/saveActivityMessage", {
         //   curActivityID: this.curActivityID,
@@ -274,7 +280,7 @@ export default {
           await this.$store.dispatch("teacher/saveActivityData", payload);
 
         this.$store.commit("teacher/clearActivity");
-        // 2）更改房间使用状态
+        // 2）更改房间使用状态 清空redis
         this.$store.dispatch("teacher/clearRoomMembers", {
           channelId: this.$route.query.lessonId,
         });
@@ -286,13 +292,13 @@ export default {
 
         console.log("成功退出教室");
         // 3) 页面跳转返回主页 TODO
-        // socket.sendEvent("joinRoom", {
-        //   actionType: "leave",
-        //   role: "teacher",
-        //   roomId: this.lessonId,
-        //   data: { studentId: this.teacherId },
-        // });
-        // this.$router.push({ name: "teacher_index" });
+        socket.sendEvent("joinRoom", {
+          actionType: "leave",
+          role: "teacher",
+          roomId: this.lessonId,
+          data: { studentId: this.teacherId },
+        });
+        this.$router.push({ name: "teacher_index" });
       } catch (err) {
         console.log(err);
         this.$message.error("信息保存失败");
@@ -508,6 +514,54 @@ export default {
         test_list: testAnswersData,
       };
       this.testDataArray.push(testData);
+    },
+
+    saveFileData() {
+      let fileAnswersData = [];
+      //**************保存随堂测试数据
+
+      let join_student_count = 0;
+      this.realStudents.forEach((real) => {
+        let fileStatus = {};
+        let flag = false;
+
+        this.fileDataList.forEach((online) => {
+          if (real.user_id == online.studentId && online.role != "teacher") {
+            fileStatus = {
+              studentId: online.studentId,
+              studentName: online.studentName,
+              submitTime: online.submitTime,
+              joinFlag: true,
+              phaseIndex: online.phaseIndex,
+              result_list: online.result_list,
+            };
+            join_student_count++;
+            flag = true;
+            fileAnswersData.push(fileStatus);
+          }
+        });
+        if (flag == false) {
+          fileStatus = {
+            studentId: real.user_id,
+            studentName: real.name,
+            submitTime: "",
+            joinFlag: false,
+            phaseIndex: "",
+            result_list: "",
+          };
+          fileAnswersData.push(fileStatus);
+        }
+      });
+
+      // fileAnswersData=this
+      let fileData = {
+        total_number: this.realStudents.length,
+        real_number: join_student_count,
+        class_name: this.curclassName,
+        class_id: this.curclassId,
+        file_list: fileAnswersData,
+      };
+      this.testDataArray.push(fileData);
     },
   },
 };

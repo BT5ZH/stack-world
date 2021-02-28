@@ -192,11 +192,12 @@ const activitySchema = new mongoose.Schema(
           real_number: { type: Number },
           class_name: { type: String },
           class_id: { type: String },
-          file_list: {
+          result_list: {
             type: [
               {
-                studentId: { type: String },
-                studentName: { type: String },
+                fileId: { type: String },
+                fileUrl: { type: String },
+                fileName: { type: String },
               },
             ],
           },

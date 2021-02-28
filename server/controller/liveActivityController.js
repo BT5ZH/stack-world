@@ -61,11 +61,10 @@ exports.saveActivity = catchAsync(async (req, res, next) => {
   } else if (payload.hasOwnProperty("test_data")) {
     dataIn.test_data = payload.test_data;
     flag = true;
+  } else if (payload.hasOwnProperty("file_data")) {
+    dataIn.file_data = payload.file_data;
+    flag = true;
   }
-  // else if(payload.hasOwnProperty(sign_data)){
-  //   dataIn.sign_data=payload.sign_data;
-  //   flag=true;
-  // }
 
   if (flag == false) {
     return;
