@@ -1,5 +1,5 @@
 const state = {
     patrolMessage: [],
-    PatrolTree: [],
+    patrolTree: [],
 };
 export default state;

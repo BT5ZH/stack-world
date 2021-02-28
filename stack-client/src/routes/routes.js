@@ -92,7 +92,7 @@ const InteractionIndex = () => import("@/components/teacher/interaction/Index");
 // ----------------  patrol router --------------------------
 const patrolRoute = () => import("@/components/patrol/index.vue");
 const patrolMessage = () => import("@/components/patrol/patrolMessage.vue");
-const Detailed = () => import("@/components/patrol/patrolDetailed.vue");
+const Detailed = () => import("@/components/patrol/patrolMessage/patrolDetailed.vue");
 
 export const routes = [
   {

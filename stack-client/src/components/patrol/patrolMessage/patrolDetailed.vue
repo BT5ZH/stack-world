@@ -175,7 +175,7 @@ export default {
   width: 40%;
   margin: auto;
   min-height: 300px;
-  background-image: url("../../assets/img/video/直播.png");
+  background-image: url("../../../assets/img/video/直播.png");
 }
 
 .font-white {
