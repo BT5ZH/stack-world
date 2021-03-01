@@ -73,13 +73,13 @@ const state = {
       route: "password",
       style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
     },
-    {
-      id: 3,
-      name: "督导巡课",
-      icon: "message",
-      route: "message",
-      style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
-    },
+    // {
+    //   id: 3,
+    //   name: "督导巡课",
+    //   icon: "message",
+    //   route: "message",
+    //   style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
+    // },
   ],
 
   classMenu: [
