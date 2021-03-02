@@ -10,9 +10,9 @@ const action = {
         // 测试
         year = year + "" + `-${year + 1}`
         let Day = myDate.getDay();
-        // // 测试
-        // Day = 2;
-        // // 测试
+        // 测试
+        Day = 2;
+        // 测试
         switch (Day) {
             case 0: Day = "Sun"; break;
             case 1: Day = "Mon"; break;
@@ -33,22 +33,52 @@ const action = {
         else if (time >= 19 && time < 21) time = ["9", "10"];
         else time = [];
         // let semester //之后加，测试时不建议加
-        const timeData = { year: year, Day: Day, time: time }
+        const timeData = { year: year }
         // 获取patrol信息
         let queryString = orgName;
         const url = "/pc/v1/timetables/patrol/" + queryString;
         try {
             let { data } = await axios.post(url, timeData);
-            // 数据处理
-            data.data = data.data.filter(course => {
-                let status = false;
+            console.log("🚀 ~ file: action.js ~ line 42 ~ getPatrolMessage ~ data", data)
+            // 数据处理 排巡课前的课表
+            let patrolScheduleTable = [];
+            data.data.forEach(course => {
                 course.curriculum.forEach(item => {
-                    if (item.date == timeData.Day && item.order.toString() == timeData.time.toString()) {
-                        status = true;
+                    for (let index = 1; index <= 10; index++) {
+                        if (patrolScheduleTable[index - 1] == undefined) {
+                            patrolScheduleTable[index - 1] = [];
+                        }
+                        if (item.order.indexOf(index + "") > -1) {
+                            // 分周定三维数组
+                            switch (item.date) {
+                                case "Mon":
+                                    assignScheduleDate(patrolScheduleTable, 0, index, course, item);
+                                    break;
+                                case "Tue":
+                                    assignScheduleDate(patrolScheduleTable, 1, index, course, item);
+                                    break;
+                                case "Wed":
+                                    assignScheduleDate(patrolScheduleTable, 2, index, course, item);
+                                    break;
+                                case "Thu":
+                                    assignScheduleDate(patrolScheduleTable, 3, index, course, item);
+                                    break;
+                                case "Fri":
+                                    assignScheduleDate(patrolScheduleTable, 4, index, course, item);
+                                    break;
+                                case "Sat":
+                                    assignScheduleDate(patrolScheduleTable, 5, index, course, item);
+                                    break;
+                                case "Sun":
+                                    assignScheduleDate(patrolScheduleTable, 6, index, course, item);
+                                    break;
+
+                            }
+                        }
                     }
                 })
-                return status;
-            })
+            });
+            console.log("🚀 ~ file: action.js ~ line 45 ~ getPatrolMessage ~ patrolScheduleTable", patrolScheduleTable)
             // 巡课数据
             data = data.data.map(item => {
                 return {
@@ -62,8 +92,8 @@ const action = {
                     room: item.curriculum[0].room_id
                 }
             })
-            console.log("🚀 ~ file: action.js ~ line 65 ~ getPatrolMessage ~ data", data)
             commit("updatePatrolMessage", data);
+            commit("updatePatrolSchedule", patrolScheduleTable);
             // 数据处理
             // 选择树
             // let treeData = [];
@@ -98,7 +128,20 @@ const action = {
             commit("updatePatrolTree", [])
             console.log(err);
         }
-    }
+    },
 };
+
+function assignScheduleDate(patrolScheduleTable, date, index, course, item) {
+    if (patrolScheduleTable[index - 1][date] == undefined) {
+        patrolScheduleTable[index - 1][date] = [];
+    }
+    patrolScheduleTable[index - 1][date].push({
+        date: item.date,
+        lesson_id: course.lesson_id,
+        course: { _id: course.course_id._id, name: course.course_id.name, course_type: course.course_id.course_type },
+        teacher: { _id: course.teacher_id.id, name: course.teacher_id.name },
+        room: item.room_id
+    })
+}
 
 export default action;

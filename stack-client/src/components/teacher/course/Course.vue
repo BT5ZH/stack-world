@@ -9,16 +9,9 @@
           }"
           @click="prepareCourse(index)"
         >
-          <a-icon
-            :type="courseMap[course.course_type]['icon']"
-            class="room_icon"
-          />
+          <a-icon :type="courseMap[course.course_type]['icon']" class="room_icon" />
           <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            "
+            style="display: flex; justify-content: space-between; align-items: flex-start"
           >
             <!-- <a-checkbox
               @change="onChange($event, course.lesson_name)"

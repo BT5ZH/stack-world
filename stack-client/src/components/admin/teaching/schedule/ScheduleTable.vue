@@ -42,15 +42,9 @@ export default {
         // console.log(val);
         // 标题
         let nextyear = Number(val[0].match.year) + 1;
-        this.tableTitle =
-          val[0].show.building_name + "-" + val[0].show.room_name;
+        this.tableTitle = val[0].show.building_name + "-" + val[0].show.room_name;
         this.tableSemester =
-          val[0].match.year +
-          "-" +
-          nextyear +
-          "第" +
-          val[0].match.semester +
-          "学期";
+          val[0].match.year + "-" + nextyear + "第" + val[0].match.semester + "学期";
 
         this.scheduleData = [
           {

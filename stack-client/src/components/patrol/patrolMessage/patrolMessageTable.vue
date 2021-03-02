@@ -1,128 +1,66 @@
 <template>
   <div>
-    <!-- 下拉菜单 -->
-    <a-dropdown>
-      <a-button block> {{ orgName }} <a-icon type="down" /> </a-button>
-      <a-menu slot="overlay">
-        <a-sub-menu
-          style="width=800px;"
-          v-for="SubOrg in treeData"
-          :key="SubOrg.subOrgName"
-          :title="SubOrg.subOrgName"
-        >
-          <a-menu-item
-            v-for="major in SubOrg.majors"
-            :key="major.majorName"
-            @click="menuSelect({ subOrg: SubOrg.subOrgName, major: major.majorName })"
-            >{{ major.majorName }}</a-menu-item
-          >
-        </a-sub-menu>
-      </a-menu>
-    </a-dropdown>
-    <br /><br />
     <!-- 直播房间列表 -->
-    <a-table
-      rowKey="timeTable_id"
-      :pagination="{
-        total: liveRooms.length,
-        pageSizeOptions: pageSize,
-        'show-less-items': true,
-        'show-size-changer': true,
-        'show-quick-jumper': true,
-        'hide-on-single-page': true,
-      }"
-      :bordered="true"
-      :columns="columns"
-      :data-source="liveRooms"
-    >
-      <template #operation="record">
-        <a-button
-          v-if="record.room.room_status === 'living'"
-          type="link"
-          @click="goLook(record.lesson_id)"
-          >巡课</a-button
-        >
-        <p v-else>未开始直播</p>
-      </template>
-    </a-table>
+    <a @click="backTo" style="color: blue">返 回</a>
+    <div class="title">当天课程</div>
+    <a-space class="patrolTable">
+      <div
+        v-for="(course, index) in patrolMessage"
+        :key="index"
+        class="patrolCard"
+        :style="{
+          backgroundColor: `${courseMap[course.course.course_type]['color']}`,
+        }"
+        @click="goLook(course)"
+      >
+        <p>代课老师：{{ course.teacher.name }}</p>
+        <p>课程名：{{ course.course.name }}</p>
+        <p>上课教室：{{ course.room.room_number }}</p>
+        <p class="livingStatus">
+          {{ course.room.room_status == "living" ? "老师正在直播" : "老师还没开始直播" }}
+        </p>
+      </div>
+      <!-- <p>课程类型：{{ courseMap[course.course.course_type]["name"] }}</p> -->
+    </a-space>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import axiosInstance from "@/utils/axios";
 
+import courseLayout from "@/utils/userConst";
+
 export default {
+  props: {
+    patrolMessage: Array,
+  },
   data() {
     return {
-      menuData: {},
-      pageSize: ["10", "20", "30", "50", "100"],
-      columns: [
-        {
-          title: "学院",
-          dataIndex: "subOrg",
-          align: "center",
-        },
-        {
-          title: "专业",
-          dataIndex: "major",
-          align: "center",
-        },
-        {
-          title: "课程名",
-          dataIndex: "course.name",
-          align: "center",
-        },
-        {
-          title: "班级名",
-          dataIndex: "class.class_name",
-          align: "center",
-        },
-        {
-          title: "教师名",
-          dataIndex: "teacher.name",
-          align: "center",
-        },
-        {
-          title: "教室名",
-          dataIndex: "room.room_number",
-          align: "center",
-        },
-        {
-          title: "操作",
-          align: "center",
-          scopedSlots: { customRender: "operation" },
-        },
-      ],
+      courseMap: courseLayout.courseMap,
     };
   },
-  mounted() {
-    // 获取查询树
-    this.$store.dispatch("patrol/getPatrolTree", this.oid);
-    // 获取所有巡课信息
-    this.$store.dispatch("patrol/getPatrolMessage", this.orgName);
-  },
+  mounted() {},
   methods: {
-    menuSelect(params) {
-      this.menuData = params;
+    backTo() {
+      this.$emit("goInfo", [], "patrolSchedule");
     },
-    goLook(lessonID) {
-      this.$router.push({
-        path: "/patrol/detail",
-        query: { lessonId: lessonID },
-      });
+    goLook(course) {
+      if (
+        course.room.room_status == "living" &&
+        course.room.living_lessonID == course.lesson_id
+      ) {
+        this.$router.push({
+          path: "/patrol/detail",
+          query: { lessonId: course.lesson_id },
+        });
+      } else {
+        this.$message.error("老师还没有开始直播哦");
+      }
     },
   },
   computed: {
-    liveRooms() {
-      if (!this.menuData.subOrg) return this.patrolMessage;
-      else
-        return this.patrolMessage.filter((item) => {
-          return item.subOrg == this.menuData.subOrg && item.major == this.menuData.major;
-        });
-    },
     ...mapState({
       orgName: (state) => state.public.orgName,
-      patrolMessage: (state) => state.patrol.patrolMessage,
       treeData: (state) => state.patrol.patrolTree,
       oid: (state) => state.public.oid,
     }),
@@ -130,9 +68,25 @@ export default {
 };
 </script>
 <style>
+.title {
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  color: black;
+}
+.patrolTable {
+  display: flex;
+  flex-direction: row;
+}
+.patrolCard {
+  width: 250px;
+  height: 150px;
+  cursor: pointer;
+}
+.livingStatus {
+  display: flex;
+  justify-content: center;
+}
 .quit {
-  position: absolute;
-  right: 0;
-  top: 20px;
 }
 </style>
