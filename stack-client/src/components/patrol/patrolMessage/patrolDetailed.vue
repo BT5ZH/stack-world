@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a href="#" class="quit" @click="$router.go()">返 回</a>
+    <a href="#" class="quit" @click="$router.go(-1)">返 回</a>
     <div id="remote_stream">
       <div class="live_header font-white">
         <p @click="$router.go(-1)">&lt; 1201 文渊楼</p>
