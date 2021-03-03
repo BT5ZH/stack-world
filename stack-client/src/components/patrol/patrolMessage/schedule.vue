@@ -202,14 +202,27 @@ export default {
   computed: {
     ...mapState({
       patrolscheduleData: (state) => state.patrol.patrolSchedule,
+      menuSelectsSubOrg: (state) => state.patrol.menuSelect.subOrg,
+      orgName: (state) => state.public.orgName,
     }),
   },
   mounted() {
     this.loadScheduleData();
   },
+  watch: {
+    async menuSelectsSubOrg(val) {
+      await this.$store.dispatch("patrol/getPatrolMessage", this.orgName);
+      this.loadScheduleData();
+      // 强制渲染
+      this.$forceUpdate();
+    },
+  },
   methods: {
     // 加载课程计划的数据
     loadScheduleData() {
+      // 初始化课表
+      this.initScheduleData();
+      // 重新加载课表
       this.patrolscheduleData.forEach((item, order) => {
         this.scheduleData[order].monday = item[0];
         this.scheduleData[order].tuesday = item[1];
@@ -219,9 +232,117 @@ export default {
         this.scheduleData[order].saturday = item[5];
         this.scheduleData[order].sunday = item[6];
       });
+      console.log(
+        "🚀 ~ file: schedule.vue ~ line 231 ~ loadScheduleData ~ this.scheduleData",
+        this.scheduleData
+      );
     },
     goInfo(element) {
       this.$emit("goInfo", element, "patrolTable");
+    },
+    initScheduleData() {
+      this.scheduleData = [
+        {
+          scheduleTitle: "第1节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第2节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第3节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第4节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第5节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第6节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第7节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第8节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第9节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+        {
+          scheduleTitle: "第10节",
+          monday: "",
+          tuesday: "",
+          wednesday: "",
+          thursday: "",
+          friday: "",
+          saturday: "",
+          sunday: "",
+        },
+      ];
     },
   },
 };

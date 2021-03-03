@@ -16,12 +16,6 @@
               :key="SubOrg.subOrgName"
               @click="menuSelect({ subOrg: SubOrg.subOrgName })"
               >{{ SubOrg.subOrgName }}
-              <!-- <a-menu-item
-            v-for="major in SubOrg.majors"
-            :key="major.majorName"
-            @click="menuSelect({ subOrg: SubOrg.subOrgName, major: major.majorName })"
-            >{{ major.majorName }}</a-menu-item
-          > -->
             </a-menu-item>
           </a-menu>
         </a-dropdown>
@@ -66,9 +60,7 @@ export default {
   },
   methods: {
     menuSelect(params) {
-      // this.$store.commit("updateMenuSelect")
-      // this.menuData = params;
-      console.log("menu");
+      this.$store.commit("patrol/updateMenuSelect", params);
     },
     goInfo(element, componentID) {
       console.log("🚀 ~ file: patrolMessage.vue ~ line 74 ~ goInfo ~ element", element);

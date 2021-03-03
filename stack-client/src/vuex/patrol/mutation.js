@@ -9,6 +9,9 @@ const mutation = {
         if (state.patrolSchedule) state.patrolSchedule = [];
         state.patrolSchedule = params;
     },
+    updateMenuSelect(state,params){
+        state.menuSelect = params;
+    },
 };
 
 export default mutation;

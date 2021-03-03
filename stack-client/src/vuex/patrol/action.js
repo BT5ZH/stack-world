@@ -1,7 +1,7 @@
 import axios from "@/utils/axios";
 
 const action = {
-    async getPatrolMessage({ commit }, orgName) {
+    async getPatrolMessage({ commit, state }, orgName) {
         // 获取当前时间
         var myDate = new Date();
         let year = myDate.getFullYear();
@@ -39,7 +39,13 @@ const action = {
         const url = "/pc/v1/timetables/patrol/" + queryString;
         try {
             let { data } = await axios.post(url, timeData);
-            console.log("🚀 ~ file: action.js ~ line 42 ~ getPatrolMessage ~ data", data)
+            // 模糊查询
+            if (state.menuSelect.subOrg) {
+                data.data = data.data.filter(item => {
+                    return item.course_id.subOrg_name == state.menuSelect.subOrg;
+                })
+            }
+            console.log("🚀 ~ file: action.js ~ line 42 ~ getPatrolMessage ~ data", data);
             // 数据处理 排巡课前的课表
             let patrolScheduleTable = [];
             data.data.forEach(course => {
