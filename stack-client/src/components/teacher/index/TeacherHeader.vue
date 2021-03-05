@@ -4,12 +4,13 @@
       <h2>教学小栈</h2>
     </a-col>
     <a-col :span="15">
-      <ul class="menu" @click="tabChange">
+      <ul class="menu">
         <li
           v-for="menu in menus"
           :key="menu.id"
           :class="{ 'menu-active': currentMenu === menu.id }"
           :id="menu.id"
+          @click="tabChange(menu)"
         >
           {{ menu.name }}
         </li>
@@ -54,7 +55,7 @@ export default {
     }),
   },
   methods: {
-    tabChange({ target }) {
+    tabChange(target) {
       const key = target.id;
       if (this.$route.name !== key) {
         this.currentMenu = key;

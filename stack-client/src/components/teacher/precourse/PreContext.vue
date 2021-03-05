@@ -44,11 +44,7 @@
           </a-col>
           <a-col :span="14" style="display: flex; align-items: center">
             <span>描述：</span>
-            <a-input
-              placeholder="本节课重难点"
-              v-model="form.desc1"
-              style="width: 80%"
-            />
+            <a-input placeholder="本节课重难点" v-model="form.desc1" style="width: 80%" />
           </a-col>
           <a-col :span="4">
             <a-button type="primary" @click="save"> 保存 </a-button>
@@ -62,9 +58,7 @@
               :key="item.id"
               :value="item"
             >
-              <a :href="item.url" target="_blink">
-                {{ index + 1 }}. {{ item.name }}</a
-              >
+              <a :href="item.url" target="_blink"> {{ index + 1 }}. {{ item.name }}</a>
             </a-radio>
           </a-radio-group>
           <a-row type="flex" justify="center">
@@ -85,13 +79,9 @@
                 <a-space>
                   <a-radio-button @click="addsteps"> 添加事件 </a-radio-button>
                   &nbsp;&nbsp;
-                  <a-radio-button @click="changesteps">
-                    修改事件
-                  </a-radio-button>
+                  <a-radio-button @click="changesteps"> 修改事件 </a-radio-button>
                   &nbsp;&nbsp;
-                  <a-radio-button @click="deletesteps">
-                    删除事件
-                  </a-radio-button>
+                  <a-radio-button @click="deletesteps"> 删除事件 </a-radio-button>
                 </a-space>
               </a-radio-group>
             </a-col>
@@ -113,9 +103,7 @@
                   :max="1000"
                 />分钟
               </a-col>
-              <a-col>
-                已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
-              </a-col>
+              <a-col> 已设置/总时长： {{ this.sumtime }}/{{ this.form.time }} </a-col>
             </a-row>
             <br />
             <div>
@@ -130,22 +118,16 @@
                   <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
                   <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
                   <a-radio-button value="PreVote"> 投票 </a-radio-button>
-                  <a-radio-button value="PreRandomSign">
-                    随机点名
-                  </a-radio-button>
+                  <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
                   <a-radio-button value="PreSign"> 签到 </a-radio-button>
                   <a-popover trigger="hover">
                     <template slot="content">
                       <p>视频,word,pdf,excel,图片等</p>
                     </template>
-                    <a-radio-button value="PreDocument">
-                      文件下发
-                    </a-radio-button>
+                    <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
                   </a-popover>
                   <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
-                  <a-radio-button value="PreHomework">
-                    布置作业
-                  </a-radio-button>
+                  <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>
                 </a-space>
               </a-radio-group>
             </div>
@@ -174,33 +156,23 @@
                   :max="1000"
                 />分钟
               </a-col>
-              <a-col>
-                已设置/总时长： {{ this.sumtime }}/{{ this.form.time }}
-              </a-col>
+              <a-col> 已设置/总时长： {{ this.sumtime }}/{{ this.form.time }} </a-col>
             </a-row>
             <br />
             <div>
-              <a-radio-group
-                v-model="componentId"
-                button-style="solid"
-                size="small"
-              >
+              <a-radio-group v-model="componentId" button-style="solid" size="small">
                 <a-space>
                   <a-radio-button value="PreTeaching"> 讲课 </a-radio-button>
                   <a-radio-button value="PreQuestion"> 提问 </a-radio-button>
                   <a-radio-button value="PreCompete"> 抢答 </a-radio-button>
                   <a-radio-button value="PreVote"> 投票 </a-radio-button>
                   <a-radio-button value="PreSign"> 签到 </a-radio-button>
-                  <a-radio-button value="PreRandomSign">
-                    随机点名
-                  </a-radio-button>
+                  <a-radio-button value="PreRandomSign"> 随机点名 </a-radio-button>
                   <a-popover trigger="hover">
                     <template slot="content">
                       <p>视频,word,pdf,excel,图片等</p>
                     </template>
-                    <a-radio-button value="PreDocument">
-                      文件下发
-                    </a-radio-button>
+                    <a-radio-button value="PreDocument"> 文件下发 </a-radio-button>
                   </a-popover>
                   <a-radio-button value="PreTest"> 随堂测试 </a-radio-button>
                   <!-- <a-radio-button value="PreHomework"> 布置作业 </a-radio-button>PreRandomSign -->
@@ -215,12 +187,7 @@
               v-show="show"
             />
           </a-modal>
-          <a-row
-            justify="space-between"
-            type="flex"
-            align="middle"
-            class="steptype"
-          >
+          <a-row justify="space-between" type="flex" align="middle" class="steptype">
             <a-col :span="24" @contextmenu.prevent="deletesteps">
               <a-steps
                 v-if="steps"
@@ -253,9 +220,7 @@
       <div class="cspC--tag" v-if="showTag[1]">
         <div class="resourceBlock" style="background: #f9f0fa; padding: 20px">
           <div :span="4">
-            <a-button type="primary" @click="uploadVisible = true">
-              上传资源
-            </a-button>
+            <a-button type="primary" @click="uploadVisible = true"> 上传资源 </a-button>
           </div>
           <br />
           <local-uploader :visible.sync="uploadVisible"></local-uploader>
@@ -268,8 +233,7 @@
           style="background: #f9f0fa; padding: 20px; margin-top: 20px"
         >
           <div :span="4">
-            <a-button type="primary" @click="questionVisible = true">
-              添加试题 </a-button
+            <a-button type="primary" @click="questionVisible = true"> 添加试题 </a-button
             >&nbsp;&nbsp;
             <a-button type="primary" @click="bulkImport_visible = true">
               批量导入</a-button
@@ -286,9 +250,7 @@
           style="background: #f9f0fa; padding: 20px; margin-top: 20px"
         >
           <div :span="4">
-            <a-button type="primary" @click="homeworkVisible = true">
-              布置作业
-            </a-button>
+            <a-button type="primary" @click="homeworkVisible = true"> 布置作业 </a-button>
           </div>
           <add-homework :visible.sync="homeworkVisible"></add-homework>
           <homework-list></homework-list>
@@ -296,9 +258,7 @@
       </div>
     </div>
     <div>
-      <batch-add-question
-        :visible.sync="bulkImport_visible"
-      ></batch-add-question>
+      <batch-add-question :visible.sync="bulkImport_visible"></batch-add-question>
     </div>
   </div>
 </template>
@@ -325,7 +285,6 @@ import axios from "@/utils/axios";
 import { mapState, mapGetters } from "vuex";
 import fileUploader from "@/utils/S3FileUploader";
 import BatchAddQuestion from "./BatchAddQuestion.vue";
-//import AddHomework from '../coursedetail/homework/AddHomework.vue';
 
 export default {
   components: {

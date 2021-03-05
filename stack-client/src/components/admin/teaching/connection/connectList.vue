@@ -1,10 +1,6 @@
 <template>
   <div id="components-form-demo-advanced-search">
-    <a-form
-      class="ant-advanced-search-form"
-      :form="form"
-      @submit="handleSearch"
-    >
+    <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
       <a-row :gutter="24">
         <a-col :span="8" label="Fields">
           <p>课程：</p>
@@ -76,7 +72,7 @@
       </a-row>
     </a-form>
     <div class="result-list">
-      <result-list :lessonList="lessonList" v-on:click="freshen"></result-list>
+      <result-list :lessonList="lessonList" @refresh="freshen"></result-list>
     </div>
   </div>
 </template>
@@ -215,7 +211,7 @@ export default {
     },
     freshen() {
       this.getOrgInfo();
-      this.submit();
+      // this.submit();
     },
   },
   watch: {

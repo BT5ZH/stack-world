@@ -8,9 +8,6 @@
           :data-source="lessonList"
           bordered
           :pagination="{
-            'show-less-items': true,
-            'show-size-changer': true,
-            'show-quick-jumper': true,
             'hide-on-single-page': true,
           }"
         >
@@ -23,7 +20,7 @@
           <template #operation="record">
             <a @click="edit(record)">编辑</a>
             &nbsp;&nbsp;
-            <a @click="relieve(record)" v-on:click="$emit('refresh')">解除关联</a>
+            <a @click="relieve(record)">解除关联</a>
           </template>
         </a-table>
       </a-spin>
@@ -36,9 +33,6 @@
           :data-source="dataSource.curriculum"
           :columns="courseMan_column"
           :pagination="{
-            'show-less-items': true,
-            'show-size-changer': true,
-            'show-quick-jumper': true,
             'hide-on-single-page': true,
           }"
         >
@@ -311,7 +305,6 @@ export default {
       const lesson_id = this.edit_message.lesson_id;
       const request = { lesson_id: this.edit_message.lesson_id };
       try {
-        // console.log(request);
         // this.$store.dispatch("admin/change_spin_status",true)
         const { data } = await axiosInstance.post(url, request);
         // this.$store.dispatch("admin/change_spin_status",false)
@@ -359,6 +352,9 @@ export default {
       else if (this.edit_message.odd_or_even === 2) this.edit_message.week = "双周";
       // 拼楼层
       this.edit_message.room_id.building_name = this.edit_message.address_text;
+      // 拼上课时间
+      let order = "";
+      this.edit_message.order.forEach((time) => {});
       // 添加
       let newData = {
         class_id: {
@@ -418,6 +414,8 @@ export default {
         building_id: dataArray[1],
       };
       this.getRooms(payload);
+      // 清空教室待选框
+      (this.edit_message.room_id.room_number = ""), (this.edit_message.room_id._id = "");
       // }
     },
     // async
@@ -523,6 +521,8 @@ export default {
           const { status } = data;
           if (status) throw "relieve course success";
           this.$message.success("解除关联成功");
+          // 刷新
+          this.$emit("refresh");
         })
         .catch((err) => {
           console.error(err);

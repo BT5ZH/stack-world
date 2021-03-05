@@ -7,11 +7,7 @@
     width="35%"
     @cancel="$emit('update:visible', false)"
   >
-    <a-form-model
-      :model="homeworkForm"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
-    >
+    <a-form-model :model="homeworkForm" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="标题">
         <a-input v-model="homeworkForm.title"></a-input>
       </a-form-model-item>
@@ -191,8 +187,7 @@ export default {
       let task_type = "homework";
       let resource_id = "not selected";
       let flg = 1;
-      if (this.selectedResource.length === 1)
-        resource_id = this.selectedResource[0];
+      if (this.selectedResource.length === 1) resource_id = this.selectedResource[0];
       if (this.homeworkForm.type === 1) {
         task_type = "preview";
         if (resource_id === "not selected") {
@@ -217,7 +212,7 @@ export default {
               this.$router.push({
                 query: { ...this.$route.query, add_Refresh: ++this.refresh },
               });
-              //this.$emit("update:visible", false);
+              this.$emit("update:visible", false);
             }
           })
           .catch((err) => {
