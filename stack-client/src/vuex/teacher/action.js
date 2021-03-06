@@ -57,7 +57,7 @@ const action = {
     try {
       const url = "/pc/v1/activities/online_list";
       const { data } = await axios.get(`${url}/${lesson_id}`);
-      console.log(data.data);
+      console.log("🚀 ~ file: action.js ~ line 60 ~ getOnlineStudents ~ data", data)
       if (data.status) {
         commit("updateOnlineList", data.data);
       }

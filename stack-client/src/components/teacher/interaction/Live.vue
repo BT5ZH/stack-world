@@ -35,8 +35,7 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName
-                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter
@@ -127,6 +126,9 @@ export default {
   filters: {
     timeFormatter(value) {
       console.log(value);
+      if (value == undefined) {
+        return;
+      }
       return value.trim().split(" ")[1];
     },
   },
@@ -320,6 +322,13 @@ export default {
     },
     saveRaceData(payload) {
       if (!payload.race_data) payload.race_data = [];
+      console.log(
+        "🚀 ~ file: Live.vue ~ line 326 ~ saveRaceData ~ this.raceList",
+        this.raceList
+      );
+      if (this.raceList.length === 0) {
+        return;
+      }
       let race_students = this.raceList.map((raceData) => {
         return {
           studentID: raceData.studentID,
