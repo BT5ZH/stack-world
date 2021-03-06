@@ -20,6 +20,7 @@ export default {
     };
   },
   mounted() {
+    // 初始化WEB socket 管道
     socket.createInstance("student", this, this.lessonId);
 
     socket.sendEvent("joinRoom", {
@@ -34,6 +35,8 @@ export default {
   computed: {
     ...mapState({
       userId: (state) => state.public.uid,
+      studentId: (state) => state.public.studentId,
+      studentName: (state) => state.public.userName,
     }),
   },
   methods: {

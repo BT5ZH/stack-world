@@ -102,26 +102,28 @@ exports.clearMembersOfLesson = function (req, res, next) {
     // data = data || {};
     console.log(data);
 
-    const result = Object.keys(data)
-      .filter((item) => {
-        return data[item].startsWith("{");
-      })
-      .map((key) => {
-        let info = JSON.parse(data[key]);
-        return info;
+    if (data != null || data != undefined) {
+      const result = Object.keys(data)
+        .filter((item) => {
+          return data[item].startsWith("{");
+        })
+        .map((key) => {
+          let info = JSON.parse(data[key]);
+          return info;
+        });
+      console.log(result);
+      result.forEach((item) => {
+        redisClient.hdel(channelId, item.studentId);
       });
-    console.log(result);
-    result.forEach((item) => {
-      redisClient.hdel(channelId, item.studentId);
+    }
+    redisClient.hgetall(channelId, (err, data) => {
+      if (err) {
+        console.error(err);
+        res.send({ status: false, msg: "get online list fail" });
+      }
+      console.log("删除之后");
+      console.log(data);
     });
-    // redisClient.hgetall(roomId, (err, data) => {
-    //   if (err) {
-    //     console.error(err);
-    //     res.send({ status: false, msg: "get online list fail" });
-    //   }
-    //   console.log("删除之后");
-    //   console.log(data);
-    // });
     res.send({ status: "success" });
   });
 };

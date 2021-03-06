@@ -94,6 +94,7 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "leave":
+          console.error("收到了老师端发来离开房间的命令");
           socketOP.leaveHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
@@ -147,6 +148,7 @@ io.on("connection", (socket) => {
           socket.to(roomChannel).emit(roomChannel, data);
           break;
         case "leave":
+          console.error("收到了学生端发来离开房间的命令");
           socketOP.leaveHandler(roomChannel, data.data);
           socket.to(roomChannel).emit(roomChannel, data);
           break;
