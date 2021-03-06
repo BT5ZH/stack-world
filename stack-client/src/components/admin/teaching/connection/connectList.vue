@@ -60,14 +60,7 @@
       </a-row>
       <a-row>
         <a-col :span="24" :style="{ textAlign: 'right' }">
-          <a-button
-            type="primary"
-            @click="
-              submit;
-              freshen();
-            "
-            >提交</a-button
-          >
+          <a-button type="primary" @click="submit">提交</a-button>
         </a-col>
       </a-row>
     </a-form>
@@ -177,10 +170,10 @@ export default {
       axios
         .post("pc/v1/lessons/", postData)
         .then(({ data }) => {
-          // console.log(data);
           const { status } = data;
           if (!status) throw "connect course fail";
           this.$message.success("关联课程成功");
+          this.freshen();
         })
         .catch((err) => {
           console.error(err);
