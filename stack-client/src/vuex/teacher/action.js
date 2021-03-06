@@ -45,9 +45,14 @@ const action = {
   },
   async getTeacherPrepare({ commit }, params) {
     // params => teacher_id, lesson_id, name
+    console.log("%%%%%%%%%%");
     try {
       const url = "/pc/v1/prepares/getOneClassByName";
       const { data } = await axios.post(url, params);
+
+      console.log("%%%%%%%%%%");
+      console.log(data);
+
       commit("updateTeacherPrepare", data.data.one_class);
     } catch (error) {
       console.error(error);
@@ -57,7 +62,10 @@ const action = {
     try {
       const url = "/pc/v1/activities/online_list";
       const { data } = await axios.get(`${url}/${lesson_id}`);
-      console.log("🚀 ~ file: action.js ~ line 60 ~ getOnlineStudents ~ data", data)
+      console.log(
+        "🚀 ~ file: action.js ~ line 60 ~ getOnlineStudents ~ data",
+        data
+      );
       if (data.status) {
         commit("updateOnlineList", data.data);
       }

@@ -35,7 +35,8 @@
               :key="item.studentName"
             >
               <span class="onlineInfo-body-li-name">
-                {{ item.studentName }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
+                {{ item.studentName
+                }}<b v-if="item.role === 'teacher'">🧑🏻‍🏫</b></span
               >
               <span class="onlineInfo-body-li-time">{{
                 item.enterTime | timeFormatter

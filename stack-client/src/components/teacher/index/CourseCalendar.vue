@@ -123,6 +123,7 @@ export default {
       orgName: (state) => state.public.orgName,
       subOrgName: (state) => state.public.subOrgName,
       teacherName: (state) => state.public.userName,
+      phases: (state) => state.teacher.precourse.nodes,
       realStudents: (state) => {
         // this.dispatch("teacher/getRealStudentsList",state.teacher.curRealStudents)
         state.teacher.curRealStudents;
@@ -198,7 +199,18 @@ export default {
       });
 
       // 2）初始化教学活动数据
-      // let course = this.curCourse;
+      let phaseArrData = [];
+      this.phases.forEach((item, index) => {
+        let objData = {
+          phase_time: parseInt(item.time.slice(0, 2)),
+          phase_type: item.tag,
+          phase_index: index,
+        };
+        phaseArrData.push(objData);
+      });
+      console.log("这个让我们仔细看一下");
+      console.log(this.phases);
+
       // const config = { params: { activityID: course.lessonId } };
       const payload = {
         activity_id: this.curCourse.lessonId,
@@ -208,6 +220,7 @@ export default {
         org_name: this.orgName,
         sub_org_name: this.subOrgName,
         teacher_name: this.teacherName,
+        phases: phaseArrData,
       };
       axios
         .post("pc/v1/activities", payload)

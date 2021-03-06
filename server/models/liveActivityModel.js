@@ -38,6 +38,7 @@ const activitySchema = new mongoose.Schema(
           phase_time: { type: Number },
           // 此处不需要枚举，因为存储内容在前端限制了。如果枚举以后添加活动麻烦
           phase_type: { type: String }, //暂时不添加枚举
+          phase_index: { type: String }, //暂时不添加枚举
         },
       ],
     },
