@@ -38,12 +38,7 @@
         <a-empty v-else />
       </a-card>
     </a-row>
-    <a-modal
-      title="选择题目"
-      v-model="selectvisible"
-      :zIndex="10001"
-      width="60%"
-    >
+    <a-modal title="选择题目" v-model="selectvisible" width="60%">
       <a-list :data-source="source" :pagination="pagination">
         <a-list-item slot="renderItem" slot-scope="item, index" :id="index">
           <a-list-item-meta>
@@ -69,7 +64,6 @@
     <a-modal
       title="查看题目"
       v-model="showvisible"
-      :zIndex="10001"
       width="40%"
       @ok="showvisible = false"
     >

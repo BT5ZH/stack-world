@@ -7,7 +7,7 @@
     width="60%"
     @cancel="handleOk"
   >
-     <a-row class="table-area">
+    <a-row class="table-area">
       <a-table
         :columns="columns"
         :data-source="tableData"
@@ -18,13 +18,11 @@
           'hide-on-single-page': true,
           'show-quick-jumper': true,
         }"
-        
         rowKey="index"
       >
-       
         <template #stem="record">
           <span>
-            {{  record.statement.stem  }}
+            {{ record.statement.stem }}
           </span>
         </template>
         <!-- <template #grade="grade">
@@ -37,10 +35,8 @@
             {{ type === 1 ? "主观题" : type === 2 ? "单选题" : "多选题" }}
           </span>
         </template> -->
-       
       </a-table>
     </a-row>
-  
   </a-modal>
 </template>
 
@@ -54,17 +50,17 @@ export default {
       type: Boolean,
       required: true,
     },
-    paper_id:{
-      type:String,
-      required:true,
+    paper_id: {
+      type: String,
+      required: true,
     },
     paper_ques_refresh: {
       type: Number,
       default: 0,
     },
-    queStems:{
-      type:String,
-      required:true,
+    queStems: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -80,7 +76,7 @@ export default {
         align: "left",
         dataIndex: "stem",
         //scopedSlots: { customRender: "stem" },
-       // ellipsis: true,
+        // ellipsis: true,
         width: "70%",
       },
       // {
@@ -107,7 +103,7 @@ export default {
         type: 2,
         content: "",
       },
-   
+
       optionLength: 2,
       columns,
       inputVisible: false,
@@ -131,14 +127,13 @@ export default {
       // }));
       // return temp;
       if (!this.queStems) return [];
-      let temp= this.queStems.split("$$")
+      let temp = this.queStems.split("$$");
 
       temp = temp.map((item, index) => ({
         index: index + 1,
         stem: item,
-       
       }));
-      
+
       return temp;
     },
   },
@@ -149,16 +144,14 @@ export default {
   //   },
   // },
   methods: {
-   
     onOk(value) {
       console.log("onOk: ", value);
     },
     handleOk() {
-      this.$emit('update:visible', false);
+      this.$emit("update:visible", false);
       //this.$store.state.teacher.questionOfPaper=[]
     },
-
-  },  
+  },
   mounted() {
     // let paper_id = this.paper_id;
     // console.log("-----------------------");
@@ -176,9 +169,7 @@ export default {
   right: 10px;
   margin-bottom: 20px;
 }
-.datepicker {
-  z-index: 111;
-}
+
 .backbody {
   position: relative;
   z-index: 1;

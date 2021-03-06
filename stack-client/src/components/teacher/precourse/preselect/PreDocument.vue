@@ -4,7 +4,6 @@
       title="选择资源"
       v-model="selectvisible"
       @ok="selectsource"
-      :zIndex="10001"
       width="40%"
     >
       <a-row>

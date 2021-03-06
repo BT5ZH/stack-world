@@ -22,7 +22,10 @@
         <a-input placeholder="请输入资源名称" v-model="fileForm.name"></a-input>
       </a-form-model-item>
       <a-form-model-item label="资源标签" prop="tags">
-        <a-input placeholder="请输入标签名，用 - 隔开" v-model="fileForm.tags"></a-input>
+        <a-input
+          placeholder="请输入标签名，用 - 隔开"
+          v-model="fileForm.tags"
+        ></a-input>
       </a-form-model-item>
       <!-- <a-form-model-item label="存储位置">
         <a-radio-group v-model="location">
@@ -31,12 +34,18 @@
         </a-radio-group>
       </a-form-model-item> -->
     </a-form-model>
-    <a-upload-dragger :multiple="true" :before-upload="fileInput" :file-list="fileList">
+    <a-upload-dragger
+      :multiple="true"
+      :before-upload="fileInput"
+      :file-list="fileList"
+    >
       <p class="ant-upload-drag-icon">
         <a-icon type="inbox" />
       </p>
       <p class="ant-upload-text">点击或拖拽以上传资源文件</p>
-      <p class="ant-upload-hint">支持 docx、xlsx、ppt 等文档类型，音视频资源。</p>
+      <p class="ant-upload-hint">
+        支持 docx、xlsx、ppt 等文档类型，音视频资源。
+      </p>
     </a-upload-dragger>
   </a-modal>
 </template>
@@ -153,12 +162,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.ant-modal-mask {
-  z-index: 100001;
-}
-.ant-modal-wrap {
-  z-index: 100002;
-}
-</style>

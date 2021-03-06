@@ -72,7 +72,9 @@
             <!-- <a>下载 一 {{ record.name }}</a> -->
             <a @click="download(record)">下载</a>
             <a-divider type="vertical" />
-            <a @click="deleteResource(record._id)" v-show="isShowDeleteButton === 'yes'"
+            <a
+              @click="deleteResource(record._id)"
+              v-show="isShowDeleteButton === 'yes'"
               >删除</a
             >
           </span>
@@ -210,7 +212,6 @@ export default {
         okText: "确定",
         okType: "danger",
         cancelText: "取消",
-        zIndex: 10001,
         onOk() {
           try {
             that.$store
