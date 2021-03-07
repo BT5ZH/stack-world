@@ -84,6 +84,9 @@ const mutation = {
       }
     })
   },
+  clearRandomMessage(state){
+    state.interaction.randomSign = {};
+  },
 };
 
 export default mutation;

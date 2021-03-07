@@ -10,8 +10,7 @@
               align="center"
               @click="switchToday(item.day, item.titleEn)"
               :style="{
-                background:
-                  item.titleEn === today.title ? '#13c2c2' : '#409EFF',
+                background: item.titleEn === today.title ? '#13c2c2' : '#409EFF',
               }"
               >{{ item.day }}</span
             >
@@ -44,9 +43,7 @@
           <span>{{ item.roomName }}</span>
         </a-col>
         <a-col :span="3">
-          <a-button @click="popSelectModal(item)" type="primary"
-            >开始上课</a-button
-          >
+          <a-button @click="popSelectModal(item)" type="primary">开始上课</a-button>
         </a-col>
       </a-row>
     </a-row>
@@ -200,16 +197,14 @@ export default {
 
       // 2）初始化教学活动数据
       let phaseArrData = [];
-      this.phases.forEach((item, index) => {
-        let objData = {
-          phase_time: parseInt(item.time.slice(0, 2)),
-          phase_type: item.tag,
-          phase_index: index,
-        };
-        phaseArrData.push(objData);
-      });
-      console.log("这个让我们仔细看一下");
-      console.log(this.phases);
+      // this.phases.forEach((item, index) => {
+      //   let objData = {
+      //     phase_time: parseInt(item.time.slice(0, 2)),
+      //     phase_type: item.tag,
+      //     phase_index: index,
+      //   };
+      //   phaseArrData.push(objData);
+      // });
 
       // const config = { params: { activityID: course.lessonId } };
       const payload = {

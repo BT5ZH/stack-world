@@ -27,7 +27,6 @@ const action = {
       axios
         .get(url)
         .then((res) => {
-          console.log("🚀 ~ file: action.js ~ line 30 ~ .then ~ res", res)
           resolve(res);
         })
         .catch((err) => {

@@ -64,9 +64,7 @@ export default {
       let timeZone = 8;
       let offset_GMT = new Date().getTimezoneOffset();
       var nowDate = new Date().getTime();
-      var now = new Date(
-        nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
-      );
+      var now = new Date(nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000);
 
       const answerTime = UTILS.formatDate(now);
 
@@ -82,6 +80,10 @@ export default {
           question: this.pickData.question,
           answerTime: answerTime,
         },
+      });
+      this.$store.commit("student/updateStudentBadge", {
+        event: "test",
+        status: false,
       });
     },
   },

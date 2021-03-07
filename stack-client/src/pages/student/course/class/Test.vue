@@ -12,11 +12,7 @@
         <div value="index">
           <p>{{ index }}.&nbsp;{{ item.content }}</p>
           <a-radio-group :name="`${item.id}_${index}`" @change="onChange">
-            <a-radio
-              :key="opt.value"
-              v-for="(opt, oi) in item.options"
-              :value="oi"
-            >
+            <a-radio :key="opt.value" v-for="(opt, oi) in item.options" :value="oi">
               {{ opt.text }}
             </a-radio>
           </a-radio-group>
@@ -81,9 +77,7 @@ export default {
       let timeZone = 8;
       let offset_GMT = new Date().getTimezoneOffset();
       var nowDate = new Date().getTime();
-      var now = new Date(
-        nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000
-      );
+      var now = new Date(nowDate + offset_GMT * 60 * 1000 + timeZone * 60 * 60 * 1000);
 
       const submitTime = UTILS.formatDate(now);
 
@@ -94,9 +88,7 @@ export default {
         testAnswer.testIndex = index;
         testAnswer.testItemId = item.tempId;
         testAnswer.answerResult =
-          item.tempVal == this.testData.questions[index].right_answer
-            ? true
-            : false;
+          item.tempVal == this.testData.questions[index].right_answer ? true : false;
         resultList.push(testAnswer);
       });
       this.socket.sendEvent("joinRoom", {
@@ -111,6 +103,10 @@ export default {
           submitTime: submitTime,
           result_list: resultList,
         },
+      });
+      this.$store.commit("student/updateStudentBadge", {
+        event: "quiz",
+        status: false,
       });
     },
   },
