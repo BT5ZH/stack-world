@@ -58,7 +58,15 @@ export default {
             studentName: this.name,
           },
         });
+        // 签到状态
+        this.signState.start = false;
+        // 重复签到检测
         this.signStatus = true;
+        // 签到徽标
+        this.$store.commit("student/updateStudentBadge", {
+          event: "sign",
+          status: false,
+        });
       } catch (err) {
         this.$message.error("签到失败");
         console.log(err);

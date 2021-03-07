@@ -71,6 +71,19 @@ const mutation = {
       }
     });
   },
+  updateStudentBadge(state,params){
+    console.log("🚀 ~ file: mutation.js ~ line 75 ~ updateStudentBadge ~ params", params)
+    console.log("come badge");
+    state.classMenu.forEach(menu=>{
+      if(menu.route == params.event){
+        if(menu.badge ==undefined){
+          menu.badge = false;
+        }
+        menu.badge = params.status;
+        console.log("🚀 ~ file: mutation.js ~ line 82 ~ updateStudentBadge ~ menu", menu)
+      }
+    })
+  },
 };
 
 export default mutation;

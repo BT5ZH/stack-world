@@ -4,7 +4,6 @@
       <div class="live-header">
         <h2>实时课堂</h2>
       </div>
-
       <div id="local_stream"></div>
       <div class="btn-area">
         <a-space>
@@ -282,7 +281,6 @@ export default {
         (payload.curActivityID = this.curActivityID),
           await this.$store.dispatch("teacher/saveActivityData", payload);
 
-        this.$store.commit("teacher/clearActivity");
         // 2）更改房间使用状态 清空redis
         this.$store.dispatch("teacher/clearRoomMembers", {
           channelId: this.$route.query.lessonId,
@@ -301,6 +299,7 @@ export default {
           roomId: this.lessonId,
           data: { studentId: this.teacherId },
         });
+        this.$store.commit("teacher/clearActivity");
         this.$router.push({ name: "teacher_index" });
       } catch (err) {
         console.log(err);
@@ -323,10 +322,6 @@ export default {
     },
     saveRaceData(payload) {
       if (!payload.race_data) payload.race_data = [];
-      console.log(
-        "🚀 ~ file: Live.vue ~ line 326 ~ saveRaceData ~ this.raceList",
-        this.raceList
-      );
       if (this.raceList.length === 0) {
         return;
       }

@@ -12,6 +12,12 @@ const mutation = {
     state.voteRefresh = 0;
     state.voteAnswerList.length = 0;
     state.voteShowList.length = 0;
+    state.raceList = [];
+    state.randomStudents = [];
+    state.randomStudent = "";
+    state.ask_answer = [];
+    state.randomList = [];
+    state.signList = [];
   },
   clearStorage(state) {
     Object.keys(state).forEach((key) => {

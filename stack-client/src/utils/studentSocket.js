@@ -25,22 +25,32 @@ let default_listeners = {
 };
 
 let lesson_listeners = {
-  sign(data, that) {
-    console.log("学生收到签到信号");
-    that.$store.commit("student/updateInteraction", {
-      name: "sign",
-      params: { start: true, endTime: Date.now() + 60000 },
-    });
+  sign(data, that, eventData) {
+    console.log("🚀 ~ file: studentSocket.js ~ line 29 ~ sign ~ eventData", eventData)
+    // 只接受老师的发布
+    if (eventData.role == "teacher") {
+      console.log("学生收到签到信号");
+      that.$store.commit("student/updateInteraction", {
+        name: "sign",
+        params: { start: true, endTime: Date.now() + 60000 },
+      });
+      // 通知学生,开启事件徽标
+      that.$store.commit("student/updateStudentBadge", { event: "sign", status: true })
+    }
   },
-  randomSign(data, that) {
-    that.$store.commit("student/updateInteraction", {
-      name: "randomSign",
-      params: {
-        start: true,
-        endTime: Date.now() + 60000,
-        randomStudent: data.studentList,
-      },
-    });
+  randomSign(data, that, eventData) {
+    if (eventData.role == "teacher") {
+      that.$store.commit("student/updateInteraction", {
+        name: "randomSign",
+        params: {
+          start: true,
+          endTime: Date.now() + 60000,
+          randomStudent: data.studentList,
+        },
+      });
+      // 通知学生,开启事件徽标
+      that.$store.commit("student/updateStudentBadge", { event: "random", status: true })
+    }
   },
   pick(data, that) {
     that.$store.commit("student/updateInteraction", {

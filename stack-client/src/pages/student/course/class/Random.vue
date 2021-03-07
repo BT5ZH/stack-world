@@ -53,6 +53,11 @@ export default {
           studentName: this.name,
         },
       });
+      // 关闭事件徽标
+      this.$store.commit("student/updateStudentBadge", {
+        event: "random",
+        status: false,
+      });
     },
   },
 };
