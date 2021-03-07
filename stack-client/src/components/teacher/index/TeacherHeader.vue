@@ -22,24 +22,32 @@
           {{ teacher_name }}（教师）<a-icon type="down" />
         </a>
         <a-menu slot="overlay">
-          <!-- <a-menu-item>
-            <a href="javascript:;">修改密码</a>
-          </a-menu-item> -->
+          <a-menu-item>
+            <a href="javascript:;"  @click="modifyPwdVisible=true">修改密码</a>
+          </a-menu-item>
           <a-menu-item>
             <a href="javascript:;" @click="quitLogin">退出登录</a>
           </a-menu-item>
         </a-menu>
       </a-dropdown>
     </a-col>
+    <modify-pwd :visible.sync="modifyPwdVisible"></modify-pwd>
   </a-row>
+   
 </template>
 
 <script>
 import { mapState } from "vuex";
+import modifyPwd from "./modifyPwd";
+
 export default {
+  components: {
+    modifyPwd,
+  }, 
   data() {
     return {
       currentMenu: "teacher_index",
+      modifyPwdVisible:false,
       menus: [
         { name: "首页", id: "teacher_index" },
         //{ name: "课程中心", id: "teacher_course" },
@@ -70,6 +78,9 @@ export default {
       sessionStorage.clear();
       this.$router.push({ name: "index" });
     },
+    modifyPwd(){
+
+    }
   },
 };
 </script>
