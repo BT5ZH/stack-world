@@ -86,7 +86,7 @@ import test from "./class/Test.vue";
 import race from "./class/Race";
 import file from "./class/File";
 
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import * as socket from "@/utils/socket";
 import TRTC from "trtc-js-sdk";
 import axios from "@/utils/axios";
@@ -151,12 +151,15 @@ export default {
     this.$store.dispatch("student/getExamList", { lesson_id, student_id });
   },
   computed: {
+    ...mapGetters({
+      resList: "student/resList",
+    }),
     ...mapState({
       userId: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
       studentName: (state) => state.public.userName,
       classMenu: (state) => state.student.classMenu,
-      resList: (state) => state.student.resList,
+      // resList: (state) => state.student.resList,
       examList: (state) => state.student.examList,
       classList: (state) => state.student.classList,
       homeworkList: (state) => state.student.homeworkList,

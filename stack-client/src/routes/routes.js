@@ -229,6 +229,10 @@ export const routes = [
         component: courseCatalog,
       },
       {
+        path: "video/:id",
+        component: videoPage,
+      },
+      {
         path: "course/:id",
         component: courseHome,
         children: [
@@ -263,10 +267,6 @@ export const routes = [
           {
             path: "file",
             component: file,
-          },
-          {
-            path: "video/:id",
-            component: videoPage,
           },
           {
             path: "homework",
