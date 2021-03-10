@@ -5,8 +5,7 @@ import teacherListeners from "./teacherSocket";
 
 const SOCKET_DEV_URL = "http://localhost:3050";
 
-const SOCKET_PROD_URL =
-  "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn";
+const SOCKE_INNER_URL = "http://10.8.51.45:3050";
 
 const SOCKET_PROD_URL_S = "https://test.w-click.cn";
 const client = io(SOCKET_DEV_URL, {});

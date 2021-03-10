@@ -10,8 +10,12 @@ const Altas = process.env.DATABASE.replace(
   "<password>",
   process.env.DATABASE_PASSWORD
 );
+const InnerDB = process.env.DATABASE_SNNU.replace(
+  "<password>",
+  process.env.DATABASE_SNNU_PASSWORD
+);
 mongoose
-  .connect(Altas, {
+  .connect(InnerDB, {
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
@@ -52,10 +56,9 @@ const devOptions = {
   },
 };
 
-const prodOptions = {
+const innerOptions = {
   cors: {
-    origin:
-      "https://stacksdocker-env-ysbhkejxhp.cn-northwest-1.eb.amazonaws.com.cn:8080",
+    origin: "http://10.8.51.45:8080",
     methods: ["GET", "HEAD", "OPTIONS", "POST", "PUT"],
   },
 };
@@ -67,7 +70,7 @@ const prodOptionsS = {
   },
 };
 
-const io = require("socket.io")(server, devOptions);
+const io = require("socket.io")(server, innerOptions);
 const socketOP = require("./utils/socket");
 // const nsp = io.of("/api");
 const gameRooms = [];
