@@ -10,8 +10,12 @@ const Altas = process.env.DATABASE.replace(
   "<password>",
   process.env.DATABASE_PASSWORD
 );
+const InnerDB = process.env.DATABASE_SNNU.replace(
+  "<password>",
+  process.env.DATABASE_SNNU_PASSWORD
+);
 mongoose
-  .connect(Altas, {
+  .connect(InnerDB, {
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
