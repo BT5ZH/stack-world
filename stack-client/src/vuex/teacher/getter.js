@@ -50,6 +50,7 @@ const getter = {
     return state.courseHours.map((item) => item.name);
   },
   curCourseHour(state) {
+    console.log("🚀 ~ file: getter.js ~ line 56 ~ curCourseHour ~ state.courseHours[state.curCourseHour]", state.courseHours[state.curCourseHour])
     return state.courseHours[state.curCourseHour];
   },
   curNode(state) {

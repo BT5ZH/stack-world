@@ -7,7 +7,7 @@
       <div>
         <!-- 实时课堂 -->
         <div style="margin-bottom: 20px">
-          <teacher-live></teacher-live>
+          <teacher-live ref="live"></teacher-live>
         </div>
         <!-- 课堂活动 -->
         <div>
@@ -31,9 +31,7 @@
                 </a-col>
                 <a-col :span="4">
                   <a-space>
-                    <a-button @click="navigateToEvent(curEvent)">
-                      发送信息
-                    </a-button>
+                    <a-button @click="navigateToEvent(curEvent)"> 发送信息 </a-button>
                     <a-button @click="showResult"> 显示结果 </a-button>
                   </a-space>
                 </a-col>
@@ -42,12 +40,7 @@
           </div>
 
           <div class="event-steps">
-            <a-steps
-              size="small"
-              progress-dot
-              v-model="curEvent"
-              @change="eventChange"
-            >
+            <a-steps size="small" progress-dot v-model="curEvent" @change="eventChange">
               <a-step
                 v-for="(step, index) in steps"
                 :key="index"
@@ -101,13 +94,8 @@ export default {
   },
   methods: {
     backHome() {
-      socket.sendEvent("joinRoom", {
-        actionType: "leave",
-        role: "teacher",
-        roomId: this.lessonId,
-        data: { studentId: this.teacherId },
-      });
-      this.$router.push({ name: "teacher_index" });
+      // 调用子组件的退出授课方法
+      this.$refs.live.closeRoom();
     },
     eventChange(value) {
       console.log("当前事件: " + value);

@@ -35,6 +35,7 @@ const state = {
       icon: "book",
       route: "/student/course",
       style: { backgroundColor: colorItems[1], borderColor: colorItems[1] },
+      badge: false,
     },
     {
       id: 2,
@@ -42,6 +43,7 @@ const state = {
       icon: "calculator",
       route: "/student/analysis",
       style: { backgroundColor: colorItems[2], borderColor: colorItems[2] },
+      badge: false,
     },
     {
       id: 3,
@@ -49,6 +51,7 @@ const state = {
       icon: "heart",
       route: "/student/favorite",
       style: { backgroundColor: colorItems[3], borderColor: colorItems[3] },
+      badge: false,
     },
     // {
     //     id: 4,
@@ -65,6 +68,7 @@ const state = {
       icon: "smile",
       route: "user",
       style: { backgroundColor: colorItems[5], borderColor: colorItems[5] },
+      badge: false,
     },
     {
       id: 2,
@@ -72,6 +76,7 @@ const state = {
       icon: "key",
       route: "password",
       style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+      badge: false,
     },
     // {
     //   id: 3,
@@ -81,7 +86,9 @@ const state = {
     //   style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
     // },
   ],
-
+  badge: {
+    sign:true,
+  },
   classMenu: [
     {
       id: 1,
@@ -89,6 +96,7 @@ const state = {
       icon: "carry-out",
       route: "sign",
       style: { backgroundColor: colorItems[1], borderColor: colorItems[1] },
+      badge: false,
     },
     {
       id: 2,
@@ -96,6 +104,7 @@ const state = {
       icon: "bulb",
       route: "quiz",
       style: { backgroundColor: colorItems[2], borderColor: colorItems[2] },
+      badge: false,
     },
     {
       id: 3,
@@ -103,6 +112,7 @@ const state = {
       icon: "alert",
       route: "random",
       style: { backgroundColor: colorItems[3], borderColor: colorItems[3] },
+      badge: false,
     },
     {
       id: 4,
@@ -110,6 +120,7 @@ const state = {
       icon: "solution",
       route: "file",
       style: { backgroundColor: colorItems[4], borderColor: colorItems[4] },
+      badge: false,
     },
     {
       id: 5,
@@ -117,6 +128,7 @@ const state = {
       icon: "tags",
       route: "vote",
       style: { backgroundColor: colorItems[5], borderColor: colorItems[5] },
+      badge: false,
     },
     {
       id: 6,
@@ -124,6 +136,7 @@ const state = {
       icon: "bulb",
       route: "test",
       style: { backgroundColor: colorItems[6], borderColor: colorItems[6] },
+      badge: false,
     },
     {
       id: 7,
@@ -131,6 +144,7 @@ const state = {
       icon: "hourglass",
       route: "race",
       style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
+      badge: false,
     },
     // {
     //   id: 6,

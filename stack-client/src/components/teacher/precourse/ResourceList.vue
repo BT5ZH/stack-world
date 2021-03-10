@@ -42,6 +42,49 @@ export default {
       {
         title: "资源类型",
         dataIndex: "rsType",
+        filters: [
+          {
+            text: "ppt",
+            value: "ppt",
+          },
+          {
+            text: "png",
+            value: "png",
+          },
+          {
+            text: "pptx",
+            value: "pptx",
+          },
+          {
+            text: "pdf",
+            value: "pdf",
+          },
+          {
+            text: "mp4",
+            value: "mp4",
+          },
+          {
+            text: "doc",
+            value: "doc",
+          },
+          {
+            text: "jpeg",
+            value: "jpeg",
+          },
+          {
+            text: "jpg",
+            value: "jpg",
+          },
+          {
+            text: "docx",
+            value: "docx",
+          },
+          {
+            text: "zip",
+            value: "zip",
+          },
+        ],
+        onFilter: (value, record) => record.rsType == value,
         align: "center",
         width: "10%",
       },

@@ -31,10 +31,14 @@ function dateTransform(value) {
 
 const action = {
   async changeUserInfo({ state }, obj) {
-    const url = "/pc/v1/users/" + state.user.id;
+    const url = "/pc/v1/users/" + obj.uid;
     const { data } = await axios.patch(url, obj);
+    console.log("🚀 ~ file: action.js ~ line 36 ~ changeUserInfo ~ data", data)
     errorHandler(data, "changeUserInfo");
-    return data.status;
+    return new Promise((res,rej)=>{
+      res(data.status);
+      rej("err");
+    });
   },
 
   async getCourseList({ commit }, timeData) {

@@ -53,6 +53,13 @@ export default {
           studentName: this.name,
         },
       });
+      // 清空随机点名列表
+      this.$store.commit("student/clearRandomMessage");
+      // 关闭事件徽标
+      this.$store.commit("student/updateStudentBadge", {
+        event: "random",
+        status: false,
+      });
     },
   },
 };

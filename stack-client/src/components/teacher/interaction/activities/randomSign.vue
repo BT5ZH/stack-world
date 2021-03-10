@@ -2,7 +2,7 @@
   <a-row>
     <a-col :span="18" :push="3">
       <div v-if="randomStudent != undefined">
-        <div class="randomStudent">抽到学生:&nbsp;{{ randomStudent }}</div>
+        <div class="randomStudent">本轮抽到学生:&nbsp;{{ randomStudent }}</div>
       </div>
       <br />
       <a-table

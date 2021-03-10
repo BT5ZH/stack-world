@@ -113,7 +113,6 @@ const action = {
       const requestData = { teacher_id, lesson_id };
       const url = "pc/v1/prepares/getOnePrepareLesson";
       const { data } = await axios.post(url, requestData);
-      console.log(data);
       commit("updateLessonNames", data.names);
     } catch (error) {
       console.error(error);

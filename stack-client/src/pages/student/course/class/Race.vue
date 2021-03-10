@@ -71,6 +71,11 @@ export default {
       });
       //一人不得反复提交
       this.raceData.start = false;
+      // 关闭事件徽标
+      this.$store.commit("student/updateStudentBadge", {
+        event: "race",
+        status: false,
+      });
     },
   },
 };

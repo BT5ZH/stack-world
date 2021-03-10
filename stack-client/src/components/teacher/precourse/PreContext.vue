@@ -488,11 +488,6 @@ export default {
           description: this.form.desc1,
         });
         const h = this.$createElement;
-        // if (this.$store.state.nodes == []) {
-        //   this.$info({
-        //     title: "请注意先暂存事件",
-        //   });
-        // }
         this.$store.dispatch("teacher/updateCourseHour", {
           lesson_id: this.lesson_id,
           teacher_id: this.uid,
@@ -694,6 +689,7 @@ export default {
           Test: "随堂测试",
           Dispatch: "文件下发",
         };
+        // 时间轴
         this.current = 0;
         const { PPT, description, duration, name, nodes } = value;
         this.form.desc1 = description;

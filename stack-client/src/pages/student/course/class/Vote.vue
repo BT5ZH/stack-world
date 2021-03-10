@@ -109,6 +109,10 @@ export default {
           result_list: resultList,
         },
       });
+         this.$store.commit("student/updateStudentBadge", {
+        event: "vote",
+        status: false,
+      });
     },
   },
   mounted() {},
