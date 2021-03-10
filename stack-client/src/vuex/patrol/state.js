@@ -2,6 +2,6 @@ const state = {
     patrolMessage: [],
     patrolTree: [],
     patrolSchedule:[],
-    menuSelect:{},
+    menuSelect:{subOrg:"陕西师范大学"},
 };
 export default state;

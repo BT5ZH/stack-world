@@ -12,7 +12,7 @@
         <template #renderItem="item">
           <a-list-item>
             <span class="name"> {{ item.studentName }} </span>
-            <a-tag color="#2db7f5">{{ item.answer }}</a-tag>
+            <a-tag color="#2db7f5">{{ item.answerSelection }}</a-tag>
           </a-list-item>
         </template>
       </a-list>

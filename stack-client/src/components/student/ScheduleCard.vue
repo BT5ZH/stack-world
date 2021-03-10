@@ -31,10 +31,7 @@
         <a-tag color="green" style="height: fit-content">
           {{ item.curriculum[nowIndex].time }}
         </a-tag>
-        <a-icon
-          type="right-circle"
-          style="font-size: 2rem; margin-top: 0.5rem"
-        />
+        <a-icon type="right-circle" style="font-size: 2rem; margin-top: 0.5rem" />
       </div>
       <div class="flexbox">
         <h4 style="color: #fff">{{ item.teacher }}</h4>
@@ -76,6 +73,10 @@ export default {
     },
   },
   created() {
+    // 处理徽标
+    // 初始化
+    this.weekbadage = [false, false, false, false, false, false, false];
+    //根据课表加载徽标
     this.courseList.map((item) => {
       item.curriculum.map((temp) => {
         switch (temp.week) {

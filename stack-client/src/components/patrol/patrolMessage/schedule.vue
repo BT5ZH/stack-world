@@ -232,10 +232,6 @@ export default {
         this.scheduleData[order].saturday = item[5];
         this.scheduleData[order].sunday = item[6];
       });
-      console.log(
-        "🚀 ~ file: schedule.vue ~ line 231 ~ loadScheduleData ~ this.scheduleData",
-        this.scheduleData
-      );
     },
     goInfo(element) {
       this.$emit("goInfo", element, "patrolTable");

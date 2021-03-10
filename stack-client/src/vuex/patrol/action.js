@@ -7,31 +7,9 @@ const action = {
         let year = myDate.getFullYear();
         // 测试
         year = 2020;
-        // 测试
+        // 
         year = year + "" + `-${year + 1}`
         let Day = myDate.getDay();
-        // 测试
-        Day = 2;
-        // 测试
-        switch (Day) {
-            case 0: Day = "Sun"; break;
-            case 1: Day = "Mon"; break;
-            case 2: Day = "Tue"; break;
-            case 3: Day = "Wed"; break;
-            case 4: Day = "Thu"; break;
-            case 5: Day = "Fri"; break;
-            case 6: Day = "Sat"; break;
-        }
-        let time = myDate.getHours();
-        // // 测试
-        // time = 9;
-        // // 测试
-        if (time >= 8 && time <= 10) time = ["1", "2"];
-        else if (time >= 10 && time < 12) time = ["3", "4"];
-        else if (time >= 14 && time < 16) time = ["5", "6"];
-        else if (time >= 16 && time < 18) time = ["7", "8"];
-        else if (time >= 19 && time < 21) time = ["9", "10"];
-        else time = [];
         // let semester //之后加，测试时不建议加
         const timeData = { year: year }
         // 获取patrol信息
@@ -45,7 +23,6 @@ const action = {
                     return item.course_id.subOrg_name == state.menuSelect.subOrg;
                 })
             }
-            console.log("🚀 ~ file: action.js ~ line 42 ~ getPatrolMessage ~ data", data);
             // 数据处理 排巡课前的课表
             let patrolScheduleTable = [];
             data.data.forEach(course => {
@@ -84,7 +61,6 @@ const action = {
                     }
                 })
             });
-            console.log("🚀 ~ file: action.js ~ line 45 ~ getPatrolMessage ~ patrolScheduleTable", patrolScheduleTable)
             // 巡课数据
             data = data.data.map(item => {
                 return {

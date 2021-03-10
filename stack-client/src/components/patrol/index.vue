@@ -19,6 +19,7 @@ export default {
   mounted() {},
   methods: {
     quitLogin() {
+      // 清楚缓存
       // this.$store.commit("patrol/clearStorage");
       this.$store.commit("public/clearStorage");
       localStorage.clear();

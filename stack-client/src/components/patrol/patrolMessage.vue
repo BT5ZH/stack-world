@@ -8,7 +8,7 @@
       <a-col :span="16">
         <!-- 下拉菜单 -->
         <a-dropdown>
-          <a-button block> {{ orgName }} <a-icon type="down" /> </a-button>
+          <a-button block> {{ menuSelectData }} <a-icon type="down" /> </a-button>
           <a-menu slot="overlay">
             <a-menu-item
               style="width=800px;"
@@ -49,6 +49,7 @@ export default {
     ...mapState({
       orgName: (state) => state.public.orgName,
       treeData: (state) => state.patrol.patrolTree,
+      menuSelectData: (state) => state.patrol.menuSelect.subOrg,
       oid: (state) => state.public.oid,
     }),
   },
@@ -63,7 +64,6 @@ export default {
       this.$store.commit("patrol/updateMenuSelect", params);
     },
     goInfo(element, componentID) {
-      console.log("🚀 ~ file: patrolMessage.vue ~ line 74 ~ goInfo ~ element", element);
       // 跳转页面
       this.componentID = componentID;
       this.patrolMessage = element;
