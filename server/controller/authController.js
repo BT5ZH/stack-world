@@ -5,6 +5,8 @@ const User = require("./../models/userModel");
 const Organization = require("./../models/organizationModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("../utils/appError");
+const bcrypt = require("bcryptjs");
+
 
 const signToken = (id) => {
   console.log(ms(process.env.JWT_EXPIRES_IN) / 1000);
@@ -42,34 +44,53 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email })
     .select("+password")
     .populate({ path: "organization", select: "_id" });
+  let filteredUser = {};
+  if (user.role == "superAdmin") {
+    // 超管不需要学院
+    console.log("come superAdmin");
+    filteredUser = {
+      class_id: user.class_id,
+      title: user.title,
+      photo: user.photo,
+      role: user.role,
+      entry_year: user.entry_year,
+      _id: user._id,
+      name: user.name,
+      user_id: user.user_id,
+      org_name: user.org_name,
+      email: user.email,
+      subOrg_name: user.subOrg_name,
+      major_name: user.major_name,
+      resources: user.resources,
+    };
+  } else {
+    const orgEntity = await Organization.findOne({
+      organizationName: user.org_name,
+    }).select("_id");
+    const orgId = orgEntity._id;
+    user.org_id = orgId;
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return next(new AppError("Incorrect email or password", 401));
+    }
+    //用...无法进行对象拷贝
+    filteredUser = {
+      class_id: user.class_id,
+      title: user.title,
+      photo: user.photo,
+      role: user.role,
+      entry_year: user.entry_year,
+      _id: user._id,
+      name: user.name,
+      user_id: user.user_id,
+      org_name: user.org_name,
+      email: user.email,
+      subOrg_name: user.subOrg_name,
+      major_name: user.major_name,
+      resources: user.resources,
+      org_id: user.org_id,
+    };
 
-  const orgEntity = await Organization.findOne({
-    organizationName: user.org_name,
-  }).select("_id");
-  const orgId = orgEntity._id;
-  user.org_id = orgId;
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError("Incorrect email or password", 401));
   }
-
-  //用...无法进行对象拷贝
-
-  const filteredUser = {
-    class_id: user.class_id,
-    title: user.title,
-    photo: user.photo,
-    role: user.role,
-    entry_year: user.entry_year,
-    _id: user._id,
-    name: user.name,
-    user_id: user.user_id,
-    org_name: user.org_name,
-    email: user.email,
-    subOrg_name: user.subOrg_name,
-    major_name: user.major_name,
-    resources: user.resources,
-    org_id: user.org_id,
-  };
 
   // 3) If everything ok, send token to client
   // createSendToken(user, 200, req, res);
@@ -174,3 +195,34 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   res.status(200).json({ status: "success", token });
 });
+
+// 检查数据库是否存在超管，没有则默认添加
+exports.initMongo = catchAsync(async (req, res, next) => {
+  const superAdmin = await User.find({ name: "superAdmin" });
+  console.log("🚀 ~ file: authController.js ~ line 182 ~ exports.initMongo=catchAsync ~ superAdmin", superAdmin)
+  if (superAdmin.length == 0) {
+    console.log("come");
+    const hashPassword = await bcrypt.hash("dajun1234", 12);
+    let user = {
+      name: "superAdmin",
+      email: "superAdmin@qq.com",
+      password: hashPassword,
+      passwordConfirm: hashPassword,
+      title: "superAdmin",
+      role: "superAdmin"
+    }
+    const newUser = await User.create(user)
+    console.log("🚀 ~ file: authController.js ~ line 191 ~ exports.initMongo=catchAsync ~ newUser", newUser)
+    if (newUser) {
+      console.log("success create superAdmin");
+    } else {
+      console.log("err create superAdmin");
+    }
+  }
+  else {
+    console.log("superAdmin success exist");
+  }
+  console.log("Altas Cluster connection successful!");
+});
+
+

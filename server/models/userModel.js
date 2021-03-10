@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     class_id: [],
     title: {
       type: String,
-      enum: ["student", "lecturer", "professor", "vice-professor"],
+      enum: ["student", "lecturer", "professor", "vice-professor","superAdmin"],
       default: "student",
     },
     name: {

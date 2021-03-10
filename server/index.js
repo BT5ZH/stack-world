@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const redis = require("redis");
 const app = require("./app");
+const authController = require("./controller/authController")
 
 // Mongodb Setup
 const Altas = process.env.DATABASE.replace(
@@ -22,7 +23,8 @@ mongoose
     useNewUrlParser: true,
   })
   .then(() => {
-    console.log("Altas Cluster connection successful!");
+    // 检查超管是否存在，不存在则创建
+    authController.initMongo();
   })
   .catch((err) => {
     console.error("Altas Cluster connection err");
