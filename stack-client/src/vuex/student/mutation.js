@@ -57,7 +57,12 @@ const mutation = {
     }
   },
   clearStorage(state) {
+    // 不清除学姐写在vuex里的菜单
+    let notClearList = ["classMenu", "userMenu", "courseMenu"]
     Object.keys(state).forEach((key) => {
+      if (notClearList.indexOf(key) > -1) {
+        return;
+      }
       if (Array.isArray(state[key])) {
         state[key] = [];
       } else if (typeof state[key] === "object") {
@@ -71,12 +76,12 @@ const mutation = {
       }
     });
   },
-  updateStudentBadge(state,params){
+  updateStudentBadge(state, params) {
     console.log("🚀 ~ file: mutation.js ~ line 75 ~ updateStudentBadge ~ params", params)
     console.log("come badge");
-    state.classMenu.forEach(menu=>{
-      if(menu.route == params.event){
-        if(menu.badge ==undefined){
+    state.classMenu.forEach(menu => {
+      if (menu.route == params.event) {
+        if (menu.badge == undefined) {
           menu.badge = false;
         }
         menu.badge = params.status;
@@ -84,7 +89,7 @@ const mutation = {
       }
     })
   },
-  clearRandomMessage(state){
+  clearRandomMessage(state) {
     state.interaction.randomSign = {};
   },
 };

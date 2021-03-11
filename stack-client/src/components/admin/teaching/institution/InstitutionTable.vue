@@ -32,11 +32,16 @@
     <a-row class="btn-area">
       <a-col :span="5"> </a-col>
       <a-col :span="10"></a-col>
-      <a-col :span="9" class="btn">
-        <a-button type="primary" @click="addClasses">添加班级</a-button>
-        <a-button type="primary" disabled>批量删除</a-button>
+      <a-col :span="9">
+        <a-space>
+          <a-button type="primary" @click="addSubOrgVisible = true">添加学院</a-button>
+          <a-button type="primary" @click="addMajorVisible = true">添加专业</a-button>
+          <a-button type="primary" @click="addClassVisible = true">添加班级</a-button>
+          <a-button type="primary" disabled>批量删除</a-button>
+        </a-space>
       </a-col>
     </a-row>
+    <br />
     <a-spin :spinning="spin_status" tip="Loading...">
       <a-table
         rowKey="_id"
@@ -63,8 +68,68 @@
         </template>
       </a-table>
     </a-spin>
+    <!-- 添加专业对话框 -->
+    <a-modal
+      v-model="addMajorVisible"
+      title="添加专业"
+      @ok="submitAddMajor"
+      :maskClosable="false"
+    >
+      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-model-item label="学校">
+          {{ orgName }}
+        </a-form-model-item>
+        <a-form-model-item label="学院">
+          <a-select v-model="addMajorForm.addMajor_subOrg_id">
+            <a-select-option v-for="item in colleges" :key="item._id" :value="item._id">
+              {{ item.subOrgName }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="专业名">
+          <a-input placeholder="请输入专业名" v-model="addMajorForm.majorName"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="专业简介">
+          <a-textarea
+            placeholder="请输入专业简介"
+            v-model="addMajorForm.majorIntro"
+            :auto-size="{ minRows: 3 }"
+          >
+          </a-textarea>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+    <!-- 添加学院对话框 -->
+    <a-modal
+      v-model="addSubOrgVisible"
+      title="添加学院"
+      @ok="submitAddSubOrg"
+      :maskClosable="false"
+    >
+      <a-form-model
+        :model="addSubForm"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+        :rules="subOrgFormRules"
+      >
+        <a-form-model-item label="学校名称">
+          {{ orgName }}
+        </a-form-model-item>
+        <a-form-model-item label="学院名称" prop="subOrgName">
+          <a-input placeholder="请输入学院名称" v-model="addSubForm.subOrgName"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="学院简介" prop="subOrgIntro">
+          <a-textarea
+            placeholder="请输入学校简介"
+            v-model="addSubForm.subOrgIntro"
+            :auto-size="{ minRows: 3 }"
+          >
+          </a-textarea>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
     <!-- 添加班级对话框 -->
-    <a-modal v-model="visible" title="添加" @ok="hideModal" :maskClosable="false">
+    <a-modal v-model="addClassVisible" title="添加" @ok="hideModal" :maskClosable="false">
       <a-form-model
         :model="addclass"
         :label-col="labelCol"
@@ -165,7 +230,9 @@ export default {
       colleges: [],
       teacherList: [],
       // 添加班级对话框
-      visible: false,
+      addClassVisible: false,
+      addSubOrgVisible: false,
+      addMajorVisible: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       addclass: {
@@ -173,11 +240,26 @@ export default {
         add_major_name: "",
         add_class_name: "",
       },
+
+      addMajorForm: {
+        addMajor_subOrg_id: "",
+        subOrgName: "",
+        majorName: "",
+        majorIntro: "",
+      },
+      addSubForm: {
+        organzationName: this.orgName,
+        subOrgName: "",
+        subOrgIntro: "",
+      },
       subOrg_name: "",
       //
       currentNode: "1",
       formRules: {
         add_class_name: [{ required: true, message: "班级名不能为空" }],
+      },
+      subOrgFormRules: {
+        subOrgName: [{ required: true, message: "学院名不能为空" }],
       },
       columns: [
         {
@@ -255,10 +337,9 @@ export default {
         this.$store.dispatch("admin/change_Tree_spin_status", true);
         const { data } = await axiosInstance.get(url);
         this.$store.dispatch("admin/change_Tree_spin_status", false);
-        // console.log("---spin---");
-        // console.log(this.Tree_spin_status);
-        // console.log(this.orgName)
-        // this.treeSpin_status = false;
+        if (data.result.message == "班级树形数据为空") {
+          return;
+        }
         this.treeData = data.result;
       } catch (err) {
         this.$store.dispatch("admin/change_Tree_spin_status", false);
@@ -311,10 +392,39 @@ export default {
         console.log(err);
       }
     },
-    // 添加班级
-    addClasses() {
-      // 添加班级对话框的打开
-      this.visible = true;
+    async submitAddSubOrg() {
+      try {
+        const url = `/pc/v1/organizations/${this.oid}/subOrgs/`;
+        const requestBody = this.addSubForm;
+        const data = await axiosInstance.post(url, requestBody);
+        this.$message.info("添加成功");
+        this.addSubOrgVisible = false;
+        // 重新加载选择树
+        this.getTreeData();
+        this.getSubOrgsName();
+      } catch (err) {
+        this.$message.error("添加失败");
+        console.log(err);
+      }
+    },
+    async submitAddMajor() {
+      try {
+        const url = `/pc/v1/organizations/${this.oid}/subOrgs/${this.addMajorForm.addMajor_subOrg_id}`;
+        const requestBody = this.addMajorForm;
+        console.log(
+          "🚀 ~ file: InstitutionTable.vue ~ line 459 ~ submitAddMajor ~ requestBody",
+          requestBody
+        );
+        const data = await axiosInstance.post(url, requestBody);
+        this.$message.info("添加成功");
+        this.addMajorVisible = false;
+        // 重新加载选择树
+        this.getTreeData();
+      } catch (err) {
+        this.$message.error("添加失败");
+        console.log(err);
+        this.addMajorVisible = false;
+      }
     },
     hideModal() {
       // 添加班级对话框的确定
@@ -338,7 +448,7 @@ export default {
         .catch(() => {
           this.$message.error("添加失败，请重试！");
         });
-      this.visible = false;
+      this.addClassVisible = false;
     },
     // 表格选择
     onSelectChange(selectedKeys) {
@@ -468,10 +578,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-area {
-  padding-bottom: 10px;
-}
-
 .btn .ant-btn {
   margin: 0 5px;
 }

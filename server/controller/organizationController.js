@@ -37,14 +37,11 @@ exports.getAllOrganizations = catchAsync(async (req, res, next) => {
 
 exports.getOrganization = catchAsync(async (req, res, next) => {
   console.log("getOrganization 进来啦");
-
   const organization = await Organization.findById(req.params.id);
-
   if (!organization) {
     return next(new AppError("该课程不存在", 404));
   }
-
-  //console.log(organization);
+  console.log(organization);
   res.status(200).json({
     status: "success",
     data: {
@@ -62,6 +59,7 @@ exports.createOrganization = catchAsync(async (req, res, next) => {
 });
 
 exports.updateOrganization = catchAsync(async (req, res, next) => {
+  console.log("come addSub");
   await Organization.findOneAndUpdate({ _id: req.params.id }, req.body);
   const organization = Organization.findById({_id: req.params.id});
   if (!organization) {
@@ -205,7 +203,7 @@ exports.addSubMajor = catchAsync(async (req, res, next) => {
   const newSubOrganization = await Organization.findOneAndUpdate(
     {
       _id: req.params.id,
-      subOrgs: { $elemMatch: { subOrgName: { $eq: sName } } },
+      subOrgs: { $elemMatch: { _id: { $eq: sId } } },
     },
     {
       $push: {

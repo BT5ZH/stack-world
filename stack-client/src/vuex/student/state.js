@@ -86,9 +86,6 @@ const state = {
     //   style: { backgroundColor: colorItems[7], borderColor: colorItems[7] },
     // },
   ],
-  badge: {
-    sign:true,
-  },
   classMenu: [
     {
       id: 1,

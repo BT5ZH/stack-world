@@ -75,20 +75,19 @@ const organizationSchema = new mongoose.Schema(
 );
 
 organizationSchema.post('findOneAndUpdate', async function (doc) {
-  var oldOrganizationName = doc.organizationName;
-  var newOrganizationName = this._update.$set.organizationName
+    var oldOrganizationName = doc.organizationName;
+    if(this._update.organizationName){
+      var newOrganizationName = this._update.$set.organizationName
+      await Building.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Activity.updateMany({ org: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Campus.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Class.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Course.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Resource.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await Room.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+      await User.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
+    }
 
-  await Building.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Activity.updateMany({ org: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Campus.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Class.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Course.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Resource.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await Room.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-  await User.updateMany({ org_name: oldOrganizationName }, { $set: { org_name: newOrganizationName } });
-
-
- 
 });
 // virtual populate
 organizationSchema.virtual("reviews", {
