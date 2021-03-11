@@ -1,6 +1,7 @@
 const Building = require("../models/buildingModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const Campus = require("../models/campusModel");
 
 /* 
 

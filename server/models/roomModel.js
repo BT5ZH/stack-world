@@ -95,14 +95,11 @@ roomSchema.post('find', function(result) {
 roomSchema.post("save", async function (doc) {
   const building = await Building.findOne({
     org_name: doc.org_name,
-    campus_name: doc.campus_name,
-    building_name: doc.building_name,
+    _id: doc.building_name,
   });
   if (building != null) {
     let room = building.rooms;
-
-    if (room.indexOf(doc._id) === -1) room.push(doc._id);
-
+    if (room.indexOf(doc._id) == -1) { room.push(doc._id) };
     await Building.updateOne({ _id: building._id }, { $set: { rooms: room } });
   }
 });

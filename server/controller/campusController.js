@@ -57,6 +57,7 @@ exports.getCampus = catchAsync(async (req, res, next) => {
 });
 
 exports.createCampus = catchAsync(async (req, res, next) => {
+  console.log("🚀 ~ file: campusController.js ~ line 62 ~ exports.createCampus=catchAsync ~ req.body", req.body)
   const newCampus = await Campus.create(req.body);
   res.status(201).json({
     status: "success",
