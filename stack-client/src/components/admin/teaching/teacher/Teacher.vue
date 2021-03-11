@@ -300,6 +300,11 @@ export default {
       const url = "/pc/v1/users/multipleUsers" + queryString;
       try {
         const { data } = await axiosInstance.get(url);
+        // 管理员不允许修改管理员
+        // 此处应该在后端修改，但由于一期快结束，所以不能改变太大。
+        data.teachers = data.teachers.filter((user) => {
+          return user.role != "orgAdmin";
+        });
         this.teacherList = data.teachers;
       } catch (err) {
         console.log(err);
@@ -311,6 +316,12 @@ export default {
         const url = "/pc/v1/users" + queryString;
         this.tableSpinningStatus = true;
         const { data } = await axiosInstance.get(url);
+        // 管理员不允许修改管理员
+        // 此处应该在后端修改，但由于一期快结束，所以不能改变太大。
+        data.users = data.users.filter((user) => {
+          return user.role != "orgAdmin";
+        });
+        //
         this.teacherList = data.users;
         this.tableSpinningStatus = false;
       } catch (err) {

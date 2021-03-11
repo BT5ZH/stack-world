@@ -31,11 +31,7 @@
             <a-button type="link" block @click="resetPassword(item._id)">
               重置密码
             </a-button>
-            <a-button
-              type="link"
-              block
-              @click="changeActive(item._id, item.active)"
-            >
+            <a-button type="link" block @click="changeActive(item._id, item.active)">
               {{ item.active ? "冻结管理" : "激活管理" }}
             </a-button>
           </template>
@@ -57,17 +53,14 @@
         :wrapper-col="wrapperCol"
         labelAlign="left"
       >
+        <a-form-model-item label="工号" prop="user_id">
+          <a-input placeholder="请输入工号" v-model="addUserInfo.user_id"></a-input>
+        </a-form-model-item>
         <a-form-model-item label="昵称" prop="name">
-          <a-input
-            placeholder="请输入昵称"
-            v-model="addUserInfo.name"
-          ></a-input>
+          <a-input placeholder="请输入昵称" v-model="addUserInfo.name"></a-input>
         </a-form-model-item>
         <a-form-model-item label="邮箱" prop="email">
-          <a-input
-            placeholder="请输入邮箱"
-            v-model="addUserInfo.email"
-          ></a-input>
+          <a-input placeholder="请输入邮箱" v-model="addUserInfo.email"></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -87,10 +80,11 @@ export default {
       labelCol: { span: 3 },
       wrapperCol: { span: 14 },
       rules: {
+        user_id: [{ required: true, message: "工号不能为空" }],
         name: [{ required: true, message: "昵称不能为空" }],
         email: [{ required: true, message: "邮箱不能为空" }],
       },
-      addUserInfo: { name: "", email: "" },
+      addUserInfo: { name: "", email: "", user_id: "" },
     };
   },
   computed: {
@@ -111,9 +105,7 @@ export default {
       const that = this;
       this.$confirm({
         title: "要为该管理员重置密码吗？",
-        content: (h) => (
-          <div style="color:red;">重置密码后，相关账户会收到一封邮件</div>
-        ),
+        content: (h) => <div style="color:red;">重置密码后，相关账户会收到一封邮件</div>,
         okType: "danger",
         onOk: () => {
           that.submitResetPassword(id);
@@ -169,14 +161,16 @@ export default {
     },
     handleOk() {
       this.confirmLoading = true;
-      const { email, name } = this.addUserInfo;
+      const { email, name, user_id } = this.addUserInfo;
       const requestData = {
         name,
         email,
-        password: "snnu1234",
-        passwordConfirm: "snnu1234",
+        user_id,
+        password: "dajun1234",
+        passwordConfirm: "dajun1234",
         org_name: this.curSchoolName,
         role: "orgAdmin",
+        title: "orgAdmin",
       };
       axios
         .post("/pc/v1/users/admin", requestData)

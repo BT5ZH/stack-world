@@ -43,7 +43,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   );
   // console.log(queryString);
   const query = User.find(JSON.parse(queryString)).select(
-    "_id user_id  subOrg_name major_name title name email"
+    "_id user_id  subOrg_name major_name title name email role"
   );
   //   console.log(query);
   // EXECUTE QUERY
@@ -300,7 +300,7 @@ exports.deleteUser = (req, res) => {
 //edit by chaos
 exports.getUsersBySubOrgAndSortByTitle = catchAsync(async (req, res, next) => {
   const data = await User.aggregate([
-    { $match: { org_name: req.query.org_name } },
+    { $match: { org_name: req.query.org_name,role:{$ne:"orgAdmin"} } },
     //{ $match: { subOrg_name: req.query.subOrg_name } },
     //{ $match: { role: 'teacher' } },
     {
