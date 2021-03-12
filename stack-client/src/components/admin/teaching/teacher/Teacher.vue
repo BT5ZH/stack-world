@@ -12,15 +12,15 @@
       >
         <a-tree-select-node
           :key="item._id"
-          :value="`${item._id}#`"
-          :title="item._id"
+          :value="`${item.subOrgName}#`"
+          :title="item.subOrgName"
           v-for="item in peopleTreeList"
         >
           <a-tree-select-node
-            :key="title"
-            :value="`${item._id}:${title}`"
-            :title="title"
-            v-for="title in item.title"
+            :key="element.title"
+            :value="`${item.subOrgName}:${element.title}`"
+            :title="element.title"
+            v-for="element in item.title"
           >
           </a-tree-select-node>
         </a-tree-select-node>
@@ -209,6 +209,8 @@ export default {
         { _id: "1", title: "教授" },
         { _id: "2", title: "副教授" },
         { _id: "3", title: "讲师" },
+        { _id: "4", title: "学生" },
+        { _id: "5", title: "其他" },
       ],
       subOrg_name: "",
       colleges: [],
@@ -277,10 +279,14 @@ export default {
     async getTreeList() {
       try {
         // console.log(this.orgName);
-        const url =
-          "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" + this.orgName;
+        // const url =
+        //   "/pc/v1/users/getUsersBySubOrgAndSortByTitle?org_name=" + this.orgName;
+        const url = "/pc/v1/organizations/" + this.oid + "/tree";
         const { data } = await axiosInstance(url);
-        this.peopleTreeList = data.result;
+        this.peopleTreeList = data.tree;
+        this.peopleTreeList.forEach((tree) => {
+          tree.title = this.titles;
+        });
         // console.log(data);
       } catch (err) {
         console.log(err);
@@ -321,7 +327,6 @@ export default {
         data.users = data.users.filter((user) => {
           return user.role != "orgAdmin";
         });
-        //
         this.teacherList = data.users;
         this.tableSpinningStatus = false;
       } catch (err) {
@@ -337,7 +342,6 @@ export default {
 
     //row options
     editTeacher(record) {
-      console.log("---record---");
       this.editModal_visible = true;
       this.form = record;
       this.subOrg_name = record.subOrg_name;
@@ -361,11 +365,8 @@ export default {
       // console.log(this.user_id);
       let url = `pc/v1/users/${this.user_id}`;
       let that = this;
-      console.log("---form---");
-      console.log(this.form);
       axiosInstance.patch(url, this.form).then(
         function (res) {
-          console.log(res);
           that.$message.success("编辑成功");
         },
         function (err) {
@@ -478,13 +479,15 @@ export default {
     //点击上传文件
     bulkimportSubmit() {},
     async onTreeChange(value, label) {
-      // console.log("onchange:  value " + value);
-      // console.log("onchange:   label" + label);
       this.flag = value;
       if (this.flag.slice(-1) == "#") {
         let payload = {};
         let temp = this.flag.slice(0, -1);
         payload = { subOrg_name: temp, org_name: this.orgName };
+        console.log(
+          "🚀 ~ file: Teacher.vue ~ line 496 ~ onTreeChange ~ payload",
+          payload
+        );
         this.getTeacherList(payload);
       } else {
         let payload = {};

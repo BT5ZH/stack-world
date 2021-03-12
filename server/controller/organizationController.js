@@ -341,14 +341,14 @@ exports.getOrgTree = catchAsync(async (req, res, next) => {
   console.log("getOrganization 进来啦");
 
   const orgTree = await Organization.findById(req.params.id).select(
-    "organizationName subOrgs.subOrgName subOrgs.majors.majorName"
+    "organizationName subOrgs.subOrgName subOrgs.majors.majorName subOrgs._id"
   );
+  console.log("🚀 ~ file: organizationController.js ~ line 346 ~ exports.getOrgTree=catchAsync ~ orgTree", orgTree)
 
   if (!orgTree) {
     return next(new AppError("该课程不存在", 404));
   }
 
-  console.log(orgTree);
   res.status(200).json({
     status: "success",
     tree: orgTree.subOrgs,

@@ -95,7 +95,7 @@ roomSchema.post('find', function(result) {
 roomSchema.post("save", async function (doc) {
   const building = await Building.findOne({
     org_name: doc.org_name,
-    _id: doc.building_name,
+    building_name: doc.building_name,
   });
   if (building != null) {
     let room = building.rooms;

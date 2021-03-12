@@ -41,7 +41,7 @@ const buildingSchema = new mongoose.Schema(
 buildingSchema.post('save', async function (doc) {
   const campus = await Campus.findOne({
     org_name: doc.org_name,
-    _id: doc.campus_name,
+    campus_name: doc.campus_name,
     //building_name: doc.building_name }
   })
   if (campus != null) {

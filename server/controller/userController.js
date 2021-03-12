@@ -43,12 +43,12 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   );
   // console.log(queryString);
   const query = User.find(JSON.parse(queryString)).select(
-    "_id user_id  subOrg_name major_name title name email role"
+    "_id user_id  subOrg_name major_name title name email role active"
   );
   //   console.log(query);
   // EXECUTE QUERY
   const users = await query;
-  console.log(users);
+  // console.log(users);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -61,16 +61,16 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 exports.getClassList = catchAsync(async (req, res) => {
   const nameList = req.body.curRealStudents;
 
-  console.log("班级学生列表");
-  console.log(nameList);
+  // console.log("班级学生列表");
+  // console.log(nameList);
   const result = await User.find({ _id: { $in: nameList } }).select(
     "_id user_id role name "
   );
   //   console.log(query);
   // EXECUTE QUERY
   // const users = await query;
-  console.log("获取班级学生列表");
-  console.log(result);
+  // console.log("获取班级学生列表");
+  // console.log(result);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -256,8 +256,8 @@ exports.updateUserRecords = catchAsync(async (req, res) => {
 });
 
 exports.updateMe = catchAsync(async (req, res) => {
-  console.log(req.file);
-  console.log(req.body);
+  // console.log(req.file);
+  // console.log(req.body);
   res.status(500).json({
     status: "error",
     message: "This route is not defined!",
@@ -274,7 +274,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
       // newData["passwordConfirm"] = hashPassword;
     }
   }
-  console.log(newData);
+  // console.log(newData);
 
   const user = await User.findByIdAndUpdate(req.params.id, newData, {
     new: true,

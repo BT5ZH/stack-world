@@ -30,21 +30,14 @@
         </a-spin>
       </a-row>
       <a-row>
-        <a-col :span="4">
-          <a-input></a-input>
-        </a-col>
-        <a-col :span="10"></a-col>
+        <a-col :span="14"></a-col>
         <a-col :span="6">
           <a-space>
-            <a-button type="primary" @click="addCampusVisible = true"
-              >添加校区</a-button
-            >
+            <a-button type="primary" @click="addCampusVisible = true">添加校区</a-button>
             <a-button type="primary" @click="addBuildingVisible = true"
               >添加建筑</a-button
             >
-            <a-button type="primary" @click="addRoomVisible = true"
-              >添加房间</a-button
-            >
+            <a-button type="primary" @click="addRoomVisible = true">添加房间</a-button>
             <a-button type="primary" @click="bulkImport_visible = true"
               >批量添加{{ spaceName }}</a-button
             >
@@ -61,10 +54,7 @@
       <a-row :span="20">
         <a-tabs :active-key="activeIndex" @change="callback">
           <a-tab-pane key="1" tab="建筑列表">
-            <space-tree
-              class="class-card"
-              :buildingProp="buildingList"
-            ></space-tree>
+            <space-tree class="class-card" :buildingProp="buildingList"></space-tree>
           </a-tab-pane>
           <a-tab-pane key="2" tab="房间列表" force-render>
             <a-spin :spinning="spin_status" tip="Loading...">
@@ -81,7 +71,7 @@
     <!-- 添加房间 -->
     <a-modal
       v-model="addRoomVisible"
-      title="添加建筑"
+      title="添加房间"
       @ok="submitAddRoom"
       :maskClosable="false"
     >
@@ -91,26 +81,21 @@
         </a-form-model-item>
         <a-form-model-item label="校区建筑">
           <a-tree-select
-            :value="building_value"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            :placeholder="orgName"
+            :value="selectValue"
             allow-clear
             tree-default-expand-all
             @change="campusAndBuilding"
           >
             <a-tree-select-node
+              :selectable="false"
               :key="campus.campus_name"
+              :value="`${campus._id}#`"
               :title="campus.campus_name"
               v-for="campus in campusList"
-              :selectable="false"
             >
               <a-tree-select-node
                 :key="buildings.building_name"
-                :value="{
-                  campus: campus._id,
-                  buildings: buildings._id,
-                  building_name: buildings.building_name,
-                }"
+                :value="`${campus.campus_name}:${buildings.building_name}`"
                 :title="buildings.building_name"
                 v-for="buildings in campus.buildings"
               >
@@ -129,11 +114,11 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
+        <a-form-model-item label="房间名">
+          <a-input placeholder="请输入房间名" v-model="roomForm.room_name"></a-input>
+        </a-form-model-item>
         <a-form-model-item label="房间号">
-          <a-input
-            placeholder="请输入房间号"
-            v-model="roomForm.room_number"
-          ></a-input>
+          <a-input placeholder="请输入房间号" v-model="roomForm.room_number"></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -174,11 +159,7 @@
         </a-form-model-item>
         <a-form-model-item label="校区">
           <a-select v-model="buildingForm.campus_name">
-            <a-select-option
-              v-for="item in campusList"
-              :key="item._id"
-              :value="item._id"
-            >
+            <a-select-option v-for="item in campusList" :key="item.campus_name">
               {{ item.campus_name }}
             </a-select-option>
           </a-select>
@@ -203,17 +184,8 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <a-modal
-      v-model="bulkImport_visible"
-      title="批量导入"
-      @ok="bulkimportSubmit"
-    >
-      <a-upload
-        name="file"
-        :multiple="true"
-        :action="upload_url"
-        @change="handleChange"
-      >
+    <a-modal v-model="bulkImport_visible" title="批量导入" @ok="bulkimportSubmit">
+      <a-upload name="file" :multiple="true" :action="upload_url" @change="handleChange">
         <a-button type="primary"> <a-icon type="upload" /> 上传文件 </a-button>
       </a-upload>
       <br />
@@ -232,6 +204,7 @@ export default {
   components: { SpaceCard, SpaceTree },
   data() {
     return {
+      selectValue: undefined,
       buildingTypes: [
         { key: "教学楼", value: "classroom" },
         { key: "实验楼", value: "lab" },
@@ -259,6 +232,7 @@ export default {
       },
       roomForm: {
         room_number: "",
+        room_name: "",
         room_type: "",
         building_name: "",
         campus_name: "",
@@ -266,7 +240,6 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       value: undefined,
-      building_value: undefined,
       campusList: [],
       buildingList: [],
       roomList: [],
@@ -304,7 +277,12 @@ export default {
       try {
         const url = `/pc/v1/rooms`;
         const requestBody = { ...this.roomForm, org_name: this.orgName };
+        console.log(
+          "🚀 ~ file: Space.vue ~ line 284 ~ submitAddRoom ~ requestBody",
+          requestBody
+        );
         const data = await axiosInstance.post(url, requestBody);
+
         this.$message.info("添加成功");
         this.addRoomVisible = false;
         // 重新加载选择树
@@ -344,10 +322,11 @@ export default {
         console.log(err);
       }
     },
-    async campusAndBuilding(params) {
-      this.roomForm.building_name = params.buildings;
-      this.roomForm.campus_name = params.campus;
-      this.building_value = params.building_name;
+    async campusAndBuilding(params, label) {
+      params = params.split(":");
+      this.roomForm.campus_name = params[0];
+      this.roomForm.building_name = params[1];
+      this.selectValue = label;
     },
     async onChange(value, label) {
       this.flag = value;
@@ -377,6 +356,10 @@ export default {
         const { data } = await axiosInstance.get(url);
         this.$store.dispatch("admin/change_Tree_spin_status", false);
         this.campusList = data.data.campus;
+        console.log(
+          "🚀 ~ file: Space.vue ~ line 362 ~ spaceList ~ this.campusList",
+          this.campusList
+        );
       } catch (err) {
         console.log(err);
       }
