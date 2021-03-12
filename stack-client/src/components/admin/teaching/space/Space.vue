@@ -36,11 +36,15 @@
         <a-col :span="10"></a-col>
         <a-col :span="6">
           <a-space>
-            <a-button type="primary" @click="addCampusVisible = true">添加校区</a-button>
+            <a-button type="primary" @click="addCampusVisible = true"
+              >添加校区</a-button
+            >
             <a-button type="primary" @click="addBuildingVisible = true"
               >添加建筑</a-button
             >
-            <a-button type="primary" @click="addRoomVisible = true">添加房间</a-button>
+            <a-button type="primary" @click="addRoomVisible = true"
+              >添加房间</a-button
+            >
             <a-button type="primary" @click="bulkImport_visible = true"
               >批量添加{{ spaceName }}</a-button
             >
@@ -57,7 +61,10 @@
       <a-row :span="20">
         <a-tabs :active-key="activeIndex" @change="callback">
           <a-tab-pane key="1" tab="建筑列表">
-            <space-tree class="class-card" :buildingProp="buildingList"></space-tree>
+            <space-tree
+              class="class-card"
+              :buildingProp="buildingList"
+            ></space-tree>
           </a-tab-pane>
           <a-tab-pane key="2" tab="房间列表" force-render>
             <a-spin :spinning="spin_status" tip="Loading...">
@@ -111,7 +118,7 @@
             </a-tree-select-node>
           </a-tree-select>
         </a-form-model-item>
-        <a-form-model-item label="教室类型">
+        <a-form-model-item label="房间类型">
           <a-select v-model="roomForm.room_type">
             <a-select-option
               v-for="room_type in roomTypes"
@@ -123,7 +130,10 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="房间号">
-          <a-input placeholder="请输入房间号" v-model="roomForm.room_number"></a-input>
+          <a-input
+            placeholder="请输入房间号"
+            v-model="roomForm.room_number"
+          ></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -164,7 +174,11 @@
         </a-form-model-item>
         <a-form-model-item label="校区">
           <a-select v-model="buildingForm.campus_name">
-            <a-select-option v-for="item in campusList" :key="item._id" :value="item._id">
+            <a-select-option
+              v-for="item in campusList"
+              :key="item._id"
+              :value="item._id"
+            >
               {{ item.campus_name }}
             </a-select-option>
           </a-select>
@@ -189,8 +203,17 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <a-modal v-model="bulkImport_visible" title="批量导入" @ok="bulkimportSubmit">
-      <a-upload name="file" :multiple="true" :action="upload_url" @change="handleChange">
+    <a-modal
+      v-model="bulkImport_visible"
+      title="批量导入"
+      @ok="bulkimportSubmit"
+    >
+      <a-upload
+        name="file"
+        :multiple="true"
+        :action="upload_url"
+        @change="handleChange"
+      >
         <a-button type="primary"> <a-icon type="upload" /> 上传文件 </a-button>
       </a-upload>
       <br />
