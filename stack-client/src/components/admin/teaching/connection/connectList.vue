@@ -146,8 +146,6 @@ export default {
           major_name,
         })
         .then(({ data }) => {
-          // console.log("-----getOrgInfo------")
-          // console.log(data);
           this.$store.dispatch("admin/change_spin_status", false);
           this.courseList = data.courses;
           this.teacherList = data.teachers;

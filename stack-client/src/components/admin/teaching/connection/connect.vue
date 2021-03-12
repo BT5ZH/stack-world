@@ -10,8 +10,6 @@
           allow-clear
           tree-default-expand-all
           @change="onChange"
-          @search="onSearch"
-          @select="onSelect"
         >
           <a-tree-select-node
             :selectable="false"
@@ -96,15 +94,9 @@ export default {
       // }
     },
     onChange(data) {
+      console.log("🚀 ~ file: connect.vue ~ line 97 ~ onChange ~ data", data)
       // console.log("onchange:   " + data);
       this.value = data;
-    },
-    onSearch() {
-      // console.log(...arguments);
-    },
-    onSelect() {
-      // console.log("selected:   ");
-      // console.log(...arguments);
     },
   },
 };
