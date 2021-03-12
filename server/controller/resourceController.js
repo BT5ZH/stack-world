@@ -127,12 +127,18 @@ exports.getLessonResourceOfTeacher = catchAsync(async (req, res, next) => {
   });
 
   if (resource.length === 0 || !resource) {
-    return next(new AppError("资源不存在", 404));
+    // return next(new AppError("资源不存在", 404));
+    res.status(200).json({
+      status: true,
+      resource: resource,
+      statusCode: 601,
+    });
+  } else {
+    res.status(200).json({
+      status: true,
+      resource: resource,
+    });
   }
-  res.status(200).json({
-    status: true,
-    resource: resource,
-  });
 });
 /**
  * 删除用户收藏的资源(操作的是user表)
