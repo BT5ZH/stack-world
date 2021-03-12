@@ -191,12 +191,22 @@ exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
   });
 });
 exports.getCourseTeacherClassByOrg = catchAsync(async (req, res, next) => {
-  const courses = await Course.find({
+  const allcourses = await Course.find({
     org_name: req.body.org_name,
-    subOrg_name: req.body.subOrg_name,
-    major_name: req.body.major_name,
-  }).select("course_id name semester");
-
+    // subOrg_name: req.body.subOrg_name,
+    // major_name: req.body.major_name,
+  }).select("course_id name semester course_type subOrg_name major_name");
+  let courses=[]
+  for(let i=0;i<allcourses.length;i++){
+      if(allcourses[i].course_type==='公共基础课') 
+        courses.push(allcourses[i]);
+      else if(allcourses[i].course_type==='学院基础课' && allcourses[i].subOrg_name===req.body.subOrg_name){
+        courses.push(allcourses[i]);
+      }
+      else if(allcourses[i].course_type==='专业方向课' && allcourses[i].major_name===req.body.major_name){
+        courses.push(allcourses[i]);
+      }
+  }
   const teachers = await User.find({
     org_name: req.body.org_name,
     subOrg_name: req.body.subOrg_name,
