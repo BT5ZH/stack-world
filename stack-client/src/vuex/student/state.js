@@ -27,6 +27,7 @@ const state = {
     randomSign: { start: false, endTime: 0, randomStudent: "" },
   },
   //student
+  vedioStatus:{},
   //首页目录分区
   courseMenu: [
     {

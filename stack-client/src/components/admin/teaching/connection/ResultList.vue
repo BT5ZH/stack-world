@@ -25,7 +25,13 @@
         </a-table>
       </a-spin>
     </a-row>
-    <a-modal width="800px" v-model="editModal_visible" title="课程管理" @ok="edit_submit">
+    <a-modal
+      width="800px"
+      v-model="editModal_visible"
+      title="课程管理"
+      okText="添加"
+      @ok="submitTip"
+    >
       <!--  -->
       <div>
         <a-table
@@ -36,6 +42,11 @@
             'hide-on-single-page': true,
           }"
         >
+          <template #tags="tags">
+            <a-tag v-for="(item, index) in tags" :key="index" color="#2db7f5">
+              {{ item }}
+            </a-tag>
+          </template>
           <template slot="operation" slot-scope="text, record">
             <a-popconfirm
               v-if="dataSource.curriculum.length"
@@ -47,7 +58,7 @@
           </template>
         </a-table>
         <br />
-        <a-button class="editable-add-btn" @click="handleAdd"> 添加 </a-button>
+        <!-- <a-button class="editable-add-btn" @click="singleAddTimeTable"> 添加 </a-button> -->
       </div>
       <a-form :modal="edit_message" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-model-item label="班级">
@@ -240,6 +251,7 @@ export default {
         {
           title: "时间",
           dataIndex: "order",
+          scopedSlots: { customRender: "tags" },
         },
         {
           title: "operation",
@@ -334,7 +346,7 @@ export default {
       let temp = this.dataSource.curriculum;
       this.dataSource.curriculum = temp.filter((item) => item.key !== key);
     },
-    handleAdd() {
+    singleAddTimeTable() {
       if (
         this.edit_message.class_id._id == "" ||
         this.edit_message.date == "" ||
@@ -452,7 +464,21 @@ export default {
       this.editModal_visible = true;
       // 编辑
     },
-    edit_submit() {
+    submitTip() {
+      var that = this;
+      this.$confirm({
+        title: "要继续添加课程吗？",
+        okText: "继续添加",
+        cancelText: "确认提交",
+        onOk: () => {
+          that.singleAddTimeTable();
+        },
+        onCancel: () => {
+          that.submitTimeTable();
+        },
+      });
+    },
+    submitTimeTable() {
       if (!this.AddStatus) {
         this.$message.error("当前信息无变化，请仔细检查待提交表格");
         return;

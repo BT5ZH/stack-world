@@ -94,8 +94,6 @@ export default {
       // }
     },
     onChange(data) {
-      console.log("🚀 ~ file: connect.vue ~ line 97 ~ onChange ~ data", data)
-      // console.log("onchange:   " + data);
       this.value = data;
     },
   },

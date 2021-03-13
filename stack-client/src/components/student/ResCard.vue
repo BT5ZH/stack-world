@@ -88,10 +88,17 @@ export default {
       });
     },
     jmpVideo(item) {
-      this.$router.push({
-        path: "/student/video/" + item.id,
-        query: { url: item.url, title: item.id },
+      this.$store.commit("student/updateVedioStatus", {
+        url: item.url,
+        title: item.id,
       });
+      // this.$router.push({
+      // query: {
+      //   ...this.$route.query,
+      //   url: item.url,
+      //   title: item.id,
+      // },
+      // });
     },
     jmpHomework(item) {
       this.$router.push({

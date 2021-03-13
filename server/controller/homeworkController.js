@@ -214,6 +214,7 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
           },
         },
       ]);
+
       if (data.length === 0) {
         return next(new AppError("该作业不存在", 404));
       }
@@ -260,6 +261,7 @@ exports.getSetAndSubmitHomeworkForStuByLessonID = catchAsync(
           score: score,
           flg: flg,
           answer: answer,
+          rsType:item.belongedToRecource[0].rsType,
         };
       });
       let resList = [];

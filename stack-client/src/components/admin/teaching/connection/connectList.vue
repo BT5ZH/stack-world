@@ -154,6 +154,7 @@ export default {
           // console.log( this.lessonList)
         })
         .catch((err) => {
+          this.$store.dispatch("admin/change_spin_status", false);
           console.error(err);
         });
     },
