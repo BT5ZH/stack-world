@@ -1,12 +1,27 @@
 <template>
   <div class="course_home">
-    <div id="remote_stream"></div>
+    <div id="remote_stream" v-if="!vedioContent.url"></div>
+    <!-- <div v-if="!vedioContent.url">living</div> -->
+    <video
+      v-else
+      id="myVideo"
+      :key="currentVideo"
+      style="width: 100%"
+      preload="auto"
+      controlsList="nodownload"
+      controls
+      autoplay
+    >
+      <source :src="vedioContent.url" type="video/mp4" />
+    </video>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+
+import Defvedio from "./Video";
 import TRTC from "trtc-js-sdk";
 import axios from "@/utils/axios";
 import * as socket from "@/utils/socket";
@@ -16,6 +31,16 @@ export default {
   components: {},
   data() {
     return {
+      // 视频播放
+      currentVideo: 1,
+      videoState: false, // 视频播放状态
+      // 学时
+      studyTime: {
+        currentTime: 0, // 当前已学时长
+        duration: 0, // 总时长
+      },
+      timer: {}, // 定时器
+      pauseTimer: {}, // 暂停定时器
       lessonId: this.$route.query.lessonId,
     };
   },
@@ -32,8 +57,22 @@ export default {
     // 初始化腾讯实时音视频
     this.initLiveClient();
   },
+  watch: {
+    vedioContent: {
+      handler: function () {
+        let player = document.querySelector("#myVideo");
+        player.src = this.vedioContent.url;
+        player.play();
+      },
+      deep: true,
+    },
+    /*let player = document.querySelector('#root') 
+player.src = "新的地址" 
+player.play()*/
+  },
   computed: {
     ...mapState({
+      vedioContent: (state) => state.student.vedioStatus,
       userId: (state) => state.public.uid,
       studentId: (state) => state.public.studentId,
       studentName: (state) => state.public.userName,

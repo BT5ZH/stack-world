@@ -92,6 +92,9 @@ const mutation = {
   clearRandomMessage(state) {
     state.interaction.randomSign = {};
   },
+  updateVedioStatus(state,params){
+    state.vedioStatus = params
+  }
 };
 
 export default mutation;

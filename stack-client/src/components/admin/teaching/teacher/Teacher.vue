@@ -88,7 +88,7 @@
               <a-button type="danger" @click="changeStatus(selectedTeachers, 1)"
                 >禁用</a-button
               >
-
+              <!-- <a-button type="primary">添加人员</a-button> -->
               <a-button type="primary" @click="bulkImport_visible = true"
                 >批量导入</a-button
               >
@@ -299,6 +299,9 @@ export default {
       // };
       let queryObject = payload;
       let queryString = "";
+      if (!queryObject) {
+        return;
+      }
       Object.keys(queryObject).forEach((key) => {
         queryString += key + "=" + queryObject[key] + "&";
       });
@@ -408,7 +411,9 @@ export default {
                   };
                   try {
                     await axiosInstance.patch(url, data);
+                    // 刷新
                     that.$message.success("启用成功");
+                    that.getAllTeacherList();
                   } catch (err) {
                     console.log(err);
                     that.$message.error("启用失败");
@@ -424,6 +429,8 @@ export default {
                   try {
                     await axiosInstance.patch(url, data);
                     that.$message.success("禁用成功");
+                    // 刷新数据
+                    that.getAllTeacherList();
                   } catch (err) {
                     console.log(err);
                     that.$message.error("禁用失败");

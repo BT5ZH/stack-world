@@ -30,7 +30,7 @@ const getter = {
         // 数据库还没有这个，但我觉得需要,表示资源完成情况。
         isFinish: false,
         resType: item.rsType,
-        url: item.url,
+        url: item.url||item.attachment_url,
       }));
     } else {
       throw "state.sources 空"

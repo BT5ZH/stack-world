@@ -28,7 +28,6 @@
     <div class="course_content" v-if="isClick == 1">
       <!-- <div v-if="courseStart"> -->
       <div class="">
-        <!-- <div id="remote_stream"></div> -->
         <a-divider></a-divider>
         <gridView4 :gridItems="classMenu" :itemFlag.sync="flag"></gridView4>
 
@@ -123,6 +122,10 @@ export default {
   methods: {
     changeNav(value) {
       this.isClick = value;
+      // 点击课堂结束播放学生自己得视频
+      if (value == 1) {
+        this.$store.commit("student/updateVedioStatus", {});
+      }
     },
     closeLive() {
       this.client
@@ -146,7 +149,6 @@ export default {
     let lesson_id = this.$route.query.lessonId;
     let student_id = this.userId;
     this.$store.dispatch("student/getHomeworkList", { lesson_id, student_id });
-
     // 获取试卷数据
     this.$store.dispatch("student/getExamList", { lesson_id, student_id });
   },
@@ -159,7 +161,6 @@ export default {
       studentId: (state) => state.public.studentId,
       studentName: (state) => state.public.userName,
       classMenu: (state) => state.student.classMenu,
-      // resList: (state) => state.student.resList,
       examList: (state) => state.student.examList,
       classList: (state) => state.student.classList,
       homeworkList: (state) => state.student.homeworkList,
