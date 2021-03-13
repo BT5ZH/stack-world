@@ -128,6 +128,22 @@ export default {
         console.log("Received values of form: ", values);
       });
     },
+    
+    getTeachersByCourse(courseID){
+      this.teacherList=[];
+      axios
+        .post("/pc/v1/courses/getTeacherByCourse", {
+          course_id: courseID,
+        })
+        .then(({ data }) => {
+          this.$store.dispatch("admin/change_spin_status", false);
+          this.teacherList = data.teachers;
+         
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     lessonchange(value) {
       const course = this.courseList.find((item) => value === item._id);
       if (course.semester % 2 == 0) {
@@ -135,6 +151,7 @@ export default {
       } else {
         this.termList = "1";
       }
+      this.getTeachersByCourse(course.course_id);
     },
     getOrgInfo() {
       const [major_name, subOrg_name] = this.orginfo.split(":");

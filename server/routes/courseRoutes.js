@@ -19,6 +19,9 @@ router
 router
   .route("/getCourseTeacherClassByOrg")
   .post(authController.protect, courseController.getCourseTeacherClassByOrg);
+  router
+  .route("/getTeacherByCourse")
+  .post(authController.protect, courseController.getTeacherByCourse);
   
 router
   .route("/:_id")

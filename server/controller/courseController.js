@@ -177,6 +177,26 @@ exports.getCoursesBySubOrgName = catchAsync(async (req, res, next) => {
   });
 });
 //edit by Chaos on 12-15
+exports.getTeacherByCourse = catchAsync(async (req, res, next) => {
+  const data = await Course.findOne({course_id:req.body.course_id}).select("org_name subOrg_name");
+
+  console.log(data);
+  let teachers = await User.find({
+    org_name: data.org_name,
+    subOrg_name: data.subOrg_name,
+    role: "teacher",
+  }).select("user_id name");
+
+  if (!teachers || teachers.length===0) {
+    //return next(new AppError("课程不存在", 500));
+    teachers=[]
+  }
+  
+  res.status(200).json({
+    status: "success",
+    teachers,
+  });
+});
 exports.getCoursesByMajorName = catchAsync(async (req, res, next) => {
   const data = await Course.find({ major_name: req.body.major_name });
   if (!data) {
