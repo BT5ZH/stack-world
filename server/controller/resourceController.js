@@ -35,7 +35,8 @@ exports.uploadResource = async (req, res) => {
 exports.uploadLocalResource = async (req, res) => {
   try {
     // TODO 修改为动态 url
-    let url = "http://localhost:3000/static/";
+    let url = "http://10.8.51.45:3000/static/";
+    // let url = "http://localhost:3000/static/";
     url += req.body.url;
     console.log(req.body);
     const newResource = await Resource.create({ ...req.body, url });
