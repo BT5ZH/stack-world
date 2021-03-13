@@ -58,8 +58,10 @@ async function uploadFile([file], config = {}) {
     formData.append("rsType", key);
     formData.append("file", file);
     // TODO 修改为动态URL 此处有问题
-    const apiUrl = "http://localhost:3000/upload";
+    const apiUrl = "http://10.8.51.45:3000/upload";
     const uploadResult = await axios.post(apiUrl, formData);
+
+    console.log(uploadResult);
 
     if (uploadResult.data === "success" && successCallback) {
       successCallback(uploadResult.data);
@@ -67,7 +69,7 @@ async function uploadFile([file], config = {}) {
       throw "upload file faild!";
     }
   } catch (error) {
-    console.log("come err")
+    console.log("come err");
     if (failCallback) {
       failCallback(error);
     } else {
