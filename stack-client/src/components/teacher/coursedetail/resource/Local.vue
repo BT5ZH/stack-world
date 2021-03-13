@@ -125,15 +125,15 @@ export default {
       const config = {
         body: this.createResource(),
         apiUrl: "/pc/v1/resources/uploadLocal",
-        filePath: `${this.oid}/teacher/`,
+        filePath: `${that.oid}/teacher/`,
         successCallback() {
           that.$message.success("上传成功！");
           that.confirmLoading = false;
           that.$emit("update:visible", false);
           // 刷新资源
-          this.$store.dispatch("teacher/getSources", {
-            teacher_id: this.uid,
-            lesson_id: this.$route.query.lessonId,
+          that.$store.dispatch("teacher/getSources", {
+            teacher_id: that.uid,
+            lesson_id: that.$route.query.lessonId,
           });
         },
         failCallback(err) {
