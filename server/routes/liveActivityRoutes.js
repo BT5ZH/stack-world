@@ -9,9 +9,9 @@ router
   .route("/")
   .post(authController.protect, liveActivityController.createActivity);
 
-// router
-//   .route("/:activity_id")
-//   .post(authController.protect, liveActivityController.createActivity);
+router
+  .route("/:_id")
+  .patch(authController.protect, liveActivityController.updateActivity);
 
 router
   .route("/user_sig")

@@ -135,6 +135,33 @@ export default {
   mounted() {
     this.$store.commit("teacher/clearOnlineList");
     this.$store.dispatch("teacher/getOnlineStudents", this.lessonId);
+    // 2）当前课程活动写入课程事件数据
+    let phaseArrData = [];
+    console.log("当前课程活动写入课程事件数据");
+    console.log(this.precourse.nodes);
+    this.precourse.nodes.forEach((item, index) => {
+      let objData = {
+        phase_time: parseInt(item.time.slice(0, 2)),
+        phase_type: item.tag,
+        phase_index: index,
+      };
+      phaseArrData.push(objData);
+    });
+    console.log(phaseArrData);
+    const payload = {
+      activity_id: this.curActivityID,
+      phases: phaseArrData,
+    };
+    console.log("更新教学活动测试");
+    axios
+      .patch("pc/v1/activities/" + this.curActivityID, payload)
+      .then(({ data }) => {
+        console.log("更新教学活动成功");
+      })
+      .catch((err) => {
+        console.error(err);
+        this.$message.error("更新活动失败");
+      });
   },
   methods: {
     createClient(sdkAppId, userSig) {

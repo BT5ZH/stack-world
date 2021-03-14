@@ -26,6 +26,26 @@ exports.createActivity = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateActivity = catchAsync(async (req, res, next) => {
+  console.log("更新活动事件数据");
+  console.log(req.params._id);
+  console.log(req.body);
+  const activity = await Activity.findOneAndUpdate(
+    { _id: req.params._id },
+    { phases: req.body.phases }
+  );
+
+  // const organization = Organization.findById({_id: req.params.id});
+  // if (!organization) {
+  //   return next(new AppError("该机构不存在", 404));
+  // }
+
+  res.status(200).json({
+    status: "success",
+    activity,
+  });
+});
+
 exports.saveActivityMessage = catchAsync(async (req, res, next) => {
   console.log(req.body.request);
   const activityId = req.params.activity_id;
