@@ -606,7 +606,7 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
       .populate("course_id", "name -_id")
       .populate("teacher_id", "user_id name -_id")
       .populate("curriculum.class_id", "class_name -_id")
-      .populate("curriculum.room_id", "room_number building_name -_id");
+      .populate("curriculum.room_id", " room_number building_name _id");
 
     if (!data || data.length === 0) {
       return next(new AppError("当前时刻无课程安排", 404));
@@ -618,7 +618,7 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
     ) {
       return next(new AppError("当前时刻无课程安排", 404));
     }
-
+ 
     let result = data.map((item) => {
       return {
         lesson_id: item.lesson_id,
@@ -627,6 +627,7 @@ exports.getLatestTimeTableofTeacher = catchAsync(async (req, res, next) => {
         teacher_number: item.teacher_id.user_id,
         class_name: item.curriculum[0].class_id.class_name,
         room_number: item.curriculum[0].room_id.room_number,
+        room_id:item.curriculum[0].room_id._id,
         building_name: item.curriculum[0].room_id.building_name,
       };
     });
