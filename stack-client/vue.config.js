@@ -2,24 +2,23 @@ module.exports = {
   publicPath: "/",
   assetsDir: "public",
   devServer: {
-    host: "192.168.1.108",
-    port: 80,
+    port: 8080,
     disableHostCheck: true,
     overlay: {
       warnings: false,
       errors: false,
     },
-    proxy: {
-      "/api": {
-        target: "http://192.168.1.109",
-        changeOrigin: true,
-        ws: false,
-        secure: false,
-        pathRewrite: {
-          "^/api": "",
-        },
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "http://192.168.1.109",
+    //     changeOrigin: true,
+    //     ws: false,
+    //     secure: false,
+    //     pathRewrite: {
+    //       "^/api": "",
+    //     },
+    //   },
+    // },
   },
   css: {
     loaderOptions: {
