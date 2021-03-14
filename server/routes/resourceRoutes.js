@@ -29,15 +29,16 @@ router
 router
   .route("/getLessonResourceOfSubOrg")
   .post(resourceController.getLessonResourceOfSubOrg);
-  
+
 // // 测试
 router
   .route("/")
-  .get(authController.protect, resourceController.getAllResources);
+  .get(authController.protect, resourceController.getAllResources)
+  .post(authController.protect, resourceController.createResource)
 router
   .route("/:resource_id")
   .delete(authController.protect, resourceController.deleteResourceById);
-  
+
 // router
 //   .route("/test1")
 //   .get(courseController.getcourse)
