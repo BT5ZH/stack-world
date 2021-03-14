@@ -36,7 +36,6 @@
           <a-row class="title">
             <h3>投票选项</h3>
           </a-row>
-          <!-- v-for="index in optionlength[idx]" -->
           <a-row>
             <a-input
               v-for="(value, index) in card.options"
@@ -88,6 +87,10 @@ export default {
   },
   mounted() {
     this.cards = this.vote;
+    console.log(
+      "🚀 ~ file: PreVote.vue ~ line 83 ~ mounted ~ this.cards",
+      this.cards
+    );
     this.$nextTick(() => {
       this.cards.forEach((item, index) => {
         this.createEditor("#editor" + index, index, item.title);
@@ -113,22 +116,21 @@ export default {
       }
     },
     closeOption(idx, index) {
-      if (this.optionlength[idx] <= 2) {
+      if (this.cards[idx].options.length <= 2) {
         this.$message.info("选项不能少于两个！");
         return null;
       }
-      this.cards[idx].options.splice(index, 1);
-      let newlength = this.optionlength[idx] - 1;
-      this.optionlength.splice(idx, 1, newlength);
+      this.cards[idx].options.splice(index + 1, 1);
+      // let newlength = this.optionlength[idx] - 1;
+      // this.optionlength.splice(idx, 1, newlength);
     },
     addOption(idx) {
-      const length = this.optionlength[idx];
+      const length = this.cards[idx].options.length;
       if (length >= this.MAX_OPTIONS) {
         this.$message.info(`选项不能超过${this.MAX_OPTIONS}个！`);
         return null;
       }
-      let newlength = this.optionlength[idx] + 1;
-      this.optionlength.splice(idx, 1, newlength);
+      this.cards[idx].options.push("");
     },
     closeCard(idx) {
       this.cards.splice(idx, 1);
