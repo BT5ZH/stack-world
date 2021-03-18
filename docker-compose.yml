@@ -37,3 +37,10 @@ services:
     volumes:
       - /app/node_modules
       - ./stack-client:/app
+  device:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./stack-device
+    ports:
+      - "8000:80"
+      - "1935:1935"

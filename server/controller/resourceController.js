@@ -211,3 +211,19 @@ exports.deleteResourceById = catchAsync(async (req, res, next) => {
     message: "资源删除成功",
   });
 });
+
+exports.modifyProperities = catchAsync(async (req, res, next) => {
+  let { tags, name, resourceId } = req.body;
+  if (tags || name) {
+    let update = {};
+    tags && (update.tags = tags);
+    name && (update.name = name);
+    console.log(req.body);
+    var data = await Resource.findOneAndUpdate({ _id: resourceId }, update);
+    if (!data) {
+      return next(new AppError("找不到相应资源", 404));
+    }
+  } else {
+    res.send({ status: "success" });
+  }
+});

@@ -13,6 +13,10 @@ router
   .post(authController.protect, resourceController.uploadLocalResource);
 
 router
+  .route("/modifyProperities")
+  .post(authController.protect, resourceController.modifyProperities);
+
+router
   .route("/collect")
   .post(authController.protect, resourceController.collectResource);
 router
@@ -29,7 +33,7 @@ router
 router
   .route("/getLessonResourceOfSubOrg")
   .post(resourceController.getLessonResourceOfSubOrg);
-  
+
 // // 测试
 router
   .route("/")
@@ -37,7 +41,7 @@ router
 router
   .route("/:resource_id")
   .delete(authController.protect, resourceController.deleteResourceById);
-  
+
 // router
 //   .route("/test1")
 //   .get(courseController.getcourse)
