@@ -37,7 +37,8 @@ router
 // // 测试
 router
   .route("/")
-  .get(authController.protect, resourceController.getAllResources);
+  .get(authController.protect, resourceController.getAllResources)
+  .post(authController.protect, resourceController.createResource)
 router
   .route("/:resource_id")
   .delete(authController.protect, resourceController.deleteResourceById);

@@ -45,7 +45,7 @@ export default {
     ...mapState({
       raceData: (state) => state.student.interaction.race,
       studentName: (state) => state.public.userName,
-      studentID: (state) => state.public.uid,
+      studentId: (state) => state.public.user_id,
     }),
     lessonId() {
       return this.$route.query.lessonId;

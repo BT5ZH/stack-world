@@ -50,19 +50,28 @@ const getter = {
     return state.courseHours.map((item) => item.name);
   },
   curCourseHour(state) {
-    console.log("🚀 ~ file: getter.js ~ line 56 ~ curCourseHour ~ state.courseHours[state.curCourseHour]", state.courseHours[state.curCourseHour])
+    console.log(
+      "🚀 ~ file: getter.js ~ line 56 ~ curCourseHour ~ state.courseHours[state.curCourseHour]",
+      state.courseHours[state.curCourseHour]
+    );
     return state.courseHours[state.curCourseHour];
   },
   curNode(state) {
     return state.nodes[state.nodeindex];
   },
   getVote(state) {
+    if (state.nodes.length == 0) {
+      return [];
+    }
     return state.nodes[state.nodeindex].node_contents.map((item) => ({
       title: item.title,
       options: item.options,
     }));
   },
   getCompete(state) {
+    if (state.nodes.length == 0) {
+      return [];
+    }
     const item = state.nodes[state.nodeindex].node_contents[0];
     return {
       value: state.nodes[state.nodeindex].people_num,
@@ -73,9 +82,15 @@ const getter = {
     };
   },
   getDocument(state) {
+    if (state.nodes.length == 0) {
+      return [];
+    }
     return state.nodes[state.nodeindex].node_contents[0].options;
   },
   getTest(state) {
+    if (state.nodes.length == 0) {
+      return [];
+    }
     return state.nodes[state.nodeindex].node_contents.map((item) => ({
       title: item.title,
       options: item.options,

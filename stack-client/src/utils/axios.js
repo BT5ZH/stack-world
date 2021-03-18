@@ -5,7 +5,7 @@ const devURL = "http://localhost:3050/api";
 const innerURL = "http://10.8.51.45:3050/api";
 const proURLS = "https://test.w-click.cn/api";
 export default axios.create({
-  baseURL: innerURL,
+  baseURL: devURL,
   headers: { Authorization: "Bearer " + token },
   timeout: 10000,
 });

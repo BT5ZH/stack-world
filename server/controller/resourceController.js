@@ -35,7 +35,7 @@ exports.uploadResource = async (req, res) => {
 exports.uploadLocalResource = async (req, res) => {
   try {
     // TODO 修改为动态 url
-    let url = "http://10.8.51.45:3000/static/";
+    let url = "http://192.168.1.109/static/";
     // let url = "http://localhost:3000/static/";
     url += req.body.url;
     console.log(req.body);
@@ -227,3 +227,21 @@ exports.modifyProperities = catchAsync(async (req, res, next) => {
     res.send({ status: "success" });
   }
 });
+// 创建资源,存本地的
+exports.createResource = async (req, res) => {
+  try {
+    // TODO 修改为动态 url
+    const newResource = await Resource.create({ ...req.body });
+    //返回信息
+    res.status(200).json({
+      status: "success",
+      message: "上传成功",
+    });
+  } catch (err) {
+    console.log("上传失败");
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
