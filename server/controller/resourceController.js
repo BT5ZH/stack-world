@@ -223,8 +223,9 @@ exports.modifyProperities = catchAsync(async (req, res, next) => {
     if (!data) {
       return next(new AppError("找不到相应资源", 404));
     }
-  } else {
     res.send({ status: "success" });
+  } else {
+    res.send({ status: "fail" });
   }
 });
 // 创建资源,存本地的

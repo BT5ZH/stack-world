@@ -20,13 +20,19 @@
         </template>
         <template #operation="record">
           <a-button type="link" @click="download(record)">查看</a-button>
+          <a-button type="link" @click="rename(record)">重命名</a-button>
         </template>
       </a-table>
     </a-row>
+
+    <a-modal title="修改资源名" @ok="submitRename" v-model="modifyVisible">
+      <a-input v-model="resourceName" placeholder="请输入资源名"></a-input>
+    </a-modal>
   </a-row>
 </template>
 
 <script>
+import axios from "@/utils/axios";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -106,8 +112,11 @@ export default {
       inputVisible: false,
       inputValue: "",
       localVisible: false,
+      modifyVisible: false,
       curPage: 1,
       pageSize: 50,
+      resourceName: "",
+      resourceId: "",
     };
   },
   computed: {
@@ -129,7 +138,7 @@ export default {
         let src = this.getResourceIconUrl(item.rsType);
         return {
           ...item,
-          sourceName: `${item.sourceName}.${item.rsType}`,
+          sourceName: `${item.sourceName}`,
           src: require("@/assets/img/SVGS/" + src + ".svg"),
         };
       });
@@ -181,12 +190,40 @@ export default {
     pageChange(page, pageSize) {
       this.curPage = page;
     },
+    rename(source) {
+      this.resourceName = source.sourceName;
+      this.resourceId = source.sourceId;
+      this.modifyVisible = true;
+    },
+    submitRename() {
+      axios
+        .post("/pc/v1/resources/modifyProperities", {
+          resourceId: this.resourceId,
+          name: this.resourceName,
+          // 可在此处添加 tags，进行 tags 的修改
+          // tags: [],
+        })
+        .then(({ data }) => {
+          if (data.status === "success") {
+            this.$message.success("修改成功");
+            this.modifyVisible = false;
+            this.getSources();
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error("修改信息失败");
+        });
+    },
+    getSources() {
+      this.$store.dispatch("teacher/getSources", {
+        teacher_id: this.uid,
+        lesson_id: this.lessonId,
+      });
+    },
   },
   mounted() {
-    this.$store.dispatch("teacher/getSources", {
-      teacher_id: this.uid,
-      lesson_id: this.lessonId,
-    });
+    this.getSources();
   },
 };
 </script>
