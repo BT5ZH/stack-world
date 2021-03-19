@@ -3,6 +3,7 @@ services:
   nginx:
     depends_on:
       - api
+      - storage
       - client
     restart: always
     build:
@@ -44,3 +45,10 @@ services:
     ports:
       - "8000:80"
       - "1935:1935"
+  storage:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./file-server
+    volumes:
+      - /app/node_modules
+      - ./file-server:/app

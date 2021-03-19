@@ -2,6 +2,8 @@
 node_modules
 /dist
 
+file-server/public/*
+!/file-server/public/templates
 
 # local env files
 .env.local
